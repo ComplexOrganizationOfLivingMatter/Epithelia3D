@@ -39,6 +39,27 @@ $RECYCLE.BIN/
 .Trashes
 .VolumeIcon.icns
 
+/Salivary Glands/Confocal stacks/Confocal images/
+/Salivary Glands/Confocal stacks/Segmented images/
+/Salivary Glands/Confocal stacks/Segmented images data/
+/Salivary Glands/Tolerance model/Data/
+/Salivary Glands/Tolerance model/Images/
+/Salivary Glands/Tolerance model/Seeds/
+/Salivary Glands/Tolerance model/*.docx/
+/Salivary Glands/Voronoi model/Images/
+/Salivary Glands/Voronoi model/Seeds/
+/Salivary Glands/*.xls/
+/culture epithelia/
+/Egg chamber/Confocal Images/
+/Egg chamber/Segmented images/
+/Egg chamber/Segmented images data/
+/Egg chamber/classifier.model
+/Gastrulation paper 2014/
+/Wing disc/
+/ZEBRA FISH/
+/*.xls
+
+
 # Directories potentially created on remote AFP share
 .AppleDB
 .AppleDesktop
