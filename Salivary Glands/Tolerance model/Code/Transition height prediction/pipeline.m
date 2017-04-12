@@ -1,6 +1,6 @@
 %%pipeline
 
-rootPath='D:\Pedro\Ephitelia 3D\';
+rootPath='D:\Pedro\Epithelia3D\';
 
 data2SavedPath=[rootPath 'Salivary Glands\Tolerance model\Data\localHeightTransitionPrediction\'];
 

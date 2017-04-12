@@ -17,8 +17,8 @@ addpath lib_VoronoiGeneration
 addpath lib_delaunayTolerance
 addpath lib_delaunayTolerance\lib
 
-FOLDER='D:\Pedro\Ephitelia 3D\Salivary Glands\Tolerance model\Data\3D Voronoi model\External cylindrical voronoi';
-FOLDER1='D:\Pedro\Ephitelia 3D\Salivary Glands\Tolerance model\Data\3D Voronoi model';
+FOLDER='D:\Pedro\Epithelia3D\Salivary Glands\Tolerance model\Data\3D Voronoi model\External cylindrical voronoi';
+FOLDER1='D:\Pedro\Epithelia3D\Salivary Glands\Tolerance model\Data\3D Voronoi model';
 
 for k=1:length(namesStructures)
     

@@ -1,6 +1,6 @@
 %%pipeline
 
-rootPath='D:\Pedro\Ephitelia 3D\';
+rootPath='D:\Pedro\Epithelia3D\';
 
 
 salivaryGlandFolder='Salivary Glands\Confocal stacks\Segmented images data\';
@@ -33,7 +33,7 @@ micronsToPixels=1024/631.02; %microns*(pixels/microns)= pixels;
 % 
 % %main(name2save,pathStructure,frame,cellsGroup,hTransition,hCell,curvature)
 % [angleScaledWT(end+1,1),angleScaled2WT(end+1,1),angleWithoutScaledWT(end+1,1),angleWithoutScaled2WT(end+1,1)]=mainLocalAngleFromRealHeightTransition(WTpaths{1},1,[15,18,13,21],72.9*micronsToPixels,0.204);
-% [angleScaledWT(end+1,1),angleScaled2WT(end+1,1),angleWithoutScaledWT(end+1,1),angleWithoutScaled2WT(end+1,1)]=mainLocalAngleFromRealHeightTransition(WTpaths{1},'end',[57,59,54,12],58*micronsToPixels,0.217);
+ [angleScaledWT(end+1,1),angleScaled2WT(end+1,1),angleWithoutScaledWT(end+1,1),angleWithoutScaled2WT(end+1,1)]=mainLocalAngleFromRealHeightTransition(WTpaths{1},'end',[57,59,54,12],58*micronsToPixels,0.217);
 % [angleScaledWT(end+1,1),angleScaled2WT(end+1,1),angleWithoutScaledWT(end+1,1),angleWithoutScaled2WT(end+1,1)]=mainLocalAngleFromRealHeightTransition(WTpaths{1},'end',[60,62,61,69],59.02*micronsToPixels,0.204);
 % [angleScaledWT(end+1,1),angleScaled2WT(end+1,1),angleWithoutScaledWT(end+1,1),angleWithoutScaled2WT(end+1,1)]=mainLocalAngleFromRealHeightTransition(WTpaths{1},'end',[68,67,22,58],57.2*micronsToPixels,0.192);
 % [angleScaledWT(end+1,1),angleScaled2WT(end+1,1),angleWithoutScaledWT(end+1,1),angleWithoutScaled2WT(end+1,1)]=mainLocalAngleFromRealHeightTransition(WTpaths{2},1,[7,5,17,3],79.26*micronsToPixels,0.214);
@@ -165,8 +165,8 @@ load(path2Load)
 % 
 % 
 % %CultE
- %[resultOfCompMean,resultOfCompMax,resultOfCompMedian]=mainCheckPredictedHeight(CultEpaths{1},42,[28,31,30,29],10.74*micronsToPixels,sqrt(0.358),meanAngleScaledCultEp,meanAngleScaled2CultEp,meanAngleWithoutScaledCultEp,meanAngleWithoutScaled2CultEp,maxAngleScaledCultEp,maxAngleScaled2CultEp,maxAngleWithoutScaledCultEp,maxAngleWithoutScaled2CultEp,medianAngleScaledCultEp,medianAngleScaled2CultEp,medianAngleWithoutScaledCultEp,medianAngleWithoutScaled2CultEp);
- [resultOfCompMean,resultOfCompMax,resultOfCompMedian]=mainCheckPredictedHeight(CultEpaths{2},'end',[32,31,30,29],9.92*micronsToPixels,sqrt(0.242),meanAngleScaledCultEp,meanAngleScaled2CultEp,meanAngleWithoutScaledCultEp,meanAngleWithoutScaled2CultEp,maxAngleScaledCultEp,maxAngleScaled2CultEp,maxAngleWithoutScaledCultEp,maxAngleWithoutScaled2CultEp,medianAngleScaledCultEp,medianAngleScaled2CultEp,medianAngleWithoutScaledCultEp,medianAngleWithoutScaled2CultEp);
+%[resultOfCompMean,resultOfCompMax,resultOfCompMedian]=mainCheckPredictedHeight(CultEpaths{1},42,[28,31,30,29],10.74*micronsToPixels,sqrt(0.358),meanAngleScaledCultEp,meanAngleScaled2CultEp,meanAngleWithoutScaledCultEp,meanAngleWithoutScaled2CultEp,maxAngleScaledCultEp,maxAngleScaled2CultEp,maxAngleWithoutScaledCultEp,maxAngleWithoutScaled2CultEp,medianAngleScaledCultEp,medianAngleScaled2CultEp,medianAngleWithoutScaledCultEp,medianAngleWithoutScaled2CultEp);
+%[resultOfCompMean,resultOfCompMax,resultOfCompMedian]=mainCheckPredictedHeight(CultEpaths{2},'end',[32,31,30,29],9.92*micronsToPixels,sqrt(0.242),meanAngleScaledCultEp,meanAngleScaled2CultEp,meanAngleWithoutScaledCultEp,meanAngleWithoutScaled2CultEp,maxAngleScaledCultEp,maxAngleScaled2CultEp,maxAngleWithoutScaledCultEp,maxAngleWithoutScaled2CultEp,medianAngleScaledCultEp,medianAngleScaled2CultEp,medianAngleWithoutScaledCultEp,medianAngleWithoutScaled2CultEp);
 % [resultOfCompMean,resultOfCompMax,resultOfCompMedian]=mainCheckPredictedHeight(CultEpaths{2},'end',[32,20,23,33],9.92*micronsToPixels,sqrt(0.242),meanAngleScaledCultEp,meanAngleScaled2CultEp,meanAngleWithoutScaledCultEp,meanAngleWithoutScaled2CultEp,maxAngleScaledCultEp,maxAngleScaled2CultEp,maxAngleWithoutScaledCultEp,maxAngleWithoutScaled2CultEp,medianAngleScaledCultEp,medianAngleScaled2CultEp,medianAngleWithoutScaledCultEp,medianAngleWithoutScaled2CultEp);
 % [resultOfCompMean,resultOfCompMax,resultOfCompMedian]=mainCheckPredictedHeight(CultEpaths{2},'end',[32,23,30,29],9.92*micronsToPixels,sqrt(0.242),meanAngleScaledCultEp,meanAngleScaled2CultEp,meanAngleWithoutScaledCultEp,meanAngleWithoutScaled2CultEp,maxAngleScaledCultEp,maxAngleScaled2CultEp,maxAngleWithoutScaledCultEp,maxAngleWithoutScaled2CultEp,medianAngleScaledCultEp,medianAngleScaled2CultEp,medianAngleWithoutScaledCultEp,medianAngleWithoutScaled2CultEp);
 % [resultOfCompMean,resultOfCompMax,resultOfCompMedian]=mainCheckPredictedHeight(CultEpaths{2},'end',[32,20,31,33],9.92*micronsToPixels,sqrt(0.242),meanAngleScaledCultEp,meanAngleScaled2CultEp,meanAngleWithoutScaledCultEp,meanAngleWithoutScaled2CultEp,maxAngleScaledCultEp,maxAngleScaled2CultEp,maxAngleWithoutScaledCultEp,maxAngleWithoutScaled2CultEp,medianAngleScaledCultEp,medianAngleScaled2CultEp,medianAngleWithoutScaledCultEp,medianAngleWithoutScaled2CultEp);

@@ -19,7 +19,7 @@ addpath lib
     Img=mask;
     
     %Calculate neighbors
-    [~,sidesCells]=calculate_neighbours(Img);
+    [~,sidesCells]=calculateNeighbours(Img);
     neigh2sides=find(sidesCells==2);
     neigh3sides=find(sidesCells==3);
     

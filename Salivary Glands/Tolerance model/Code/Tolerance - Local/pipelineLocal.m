@@ -1,5 +1,5 @@
 
-rootPath='D:\Pedro\Ephitelia 3D\';
+rootPath='D:\Pedro\Epithelia3D\';
 salivaryGlandFolder='Salivary Glands\Confocal stacks\Segmented images data\';
 
 WTpaths={[rootPath salivaryGlandFolder 'Wild type\13-06-16\gland 1 (sqhgfp ecadh gfp ed 1a 20x)\Label_sequence.mat'];...

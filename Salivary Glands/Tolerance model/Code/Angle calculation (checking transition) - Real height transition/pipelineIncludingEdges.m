@@ -1,6 +1,6 @@
 %%pipeline
 
-rootPath='D:\Pedro\Ephitelia3D\';
+rootPath='D:\Pedro\Epithelia3D\';
 
 
 salivaryGlandFolder='Salivary Glands\Confocal stacks\Segmented images data\';

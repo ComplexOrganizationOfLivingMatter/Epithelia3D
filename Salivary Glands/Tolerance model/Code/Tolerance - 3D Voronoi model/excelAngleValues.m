@@ -2,7 +2,7 @@
 
 addpath lib
 
-pathData='D:\Pedro\Ephitelia 3D\Salivary Glands\Tolerance model\Data\3D Voronoi model\';
+pathData='D:\Pedro\Epithelia3D\Salivary Glands\Tolerance model\Data\3D Voronoi model\';
 
 nImages=20;
 nFrames=20;

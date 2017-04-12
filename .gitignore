@@ -45,10 +45,11 @@ $RECYCLE.BIN/
 /Salivary Glands/Tolerance model/Data/
 /Salivary Glands/Tolerance model/Images/
 /Salivary Glands/Tolerance model/Seeds/
-/Salivary Glands/Tolerance model/*.docx/
+/Salivary Glands/Tolerance model/*.docx
 /Salivary Glands/Voronoi model/Images/
 /Salivary Glands/Voronoi model/Seeds/
-/Salivary Glands/*.xls/
+/Salivary Glands/*.xls
+/Salivary Glands/*.xlsx
 /culture epithelia/
 /Egg chamber/Confocal Images/
 /Egg chamber/Segmented images/
