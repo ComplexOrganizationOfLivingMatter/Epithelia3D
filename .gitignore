@@ -17,6 +17,9 @@ $RECYCLE.BIN/
 *.xlsx
 *.docx
 *.doc
+*.tif
+*.psd
+*.tiff
 
 # Windows shortcuts
 *.lnk
@@ -43,6 +46,12 @@ $RECYCLE.BIN/
 .Trashes
 .VolumeIcon.icns
 
+/Epithelia3DOld/*
+*/data/*
+*/docs/*
+*/edge4d_*
+*/results/*
+/CABD/
 /Salivary Glands/Confocal stacks/Confocal images/
 /Salivary Glands/Confocal stacks/Segmented images/
 /Salivary Glands/Confocal stacks/Segmented images data/
