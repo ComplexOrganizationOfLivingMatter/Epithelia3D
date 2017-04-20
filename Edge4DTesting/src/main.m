@@ -100,7 +100,7 @@ for i = 1:size(selectedPairOfCells, 1)
                 end
             end
         end
-        infoCells{(4 * (i-1)) + numCell} = regionPropsOfCells;
+        infoCells{i, numCell} = regionPropsOfCells;
     end
     
     
@@ -110,3 +110,8 @@ for i = 1:size(selectedPairOfCells, 1)
 end
 
 infoCells
+numMotif = 12;
+min([max(infoCells{numMotif, 1}.zPlane), max(infoCells{numMotif, 2}.zPlane), max(infoCells{numMotif, 3}.zPlane), max(infoCells{numMotif, 4}.zPlane)])
+
+
+max([min(infoCells{numMotif, 1}.zPlane), min(infoCells{numMotif, 2}.zPlane), min(infoCells{numMotif, 3}.zPlane), min(infoCells{numMotif, 4}.zPlane)])
