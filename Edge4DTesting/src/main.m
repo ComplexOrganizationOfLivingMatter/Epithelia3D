@@ -62,7 +62,8 @@ selectedPairOfCells = [533, 780;
     401, 682;
     83, 2;
     361, 209;
-    532, 297];
+    532, 297;
+    282, 485];
 
 
 % imgToShow = img;
@@ -73,10 +74,10 @@ img = labels3d(:, :, 50);
 se = strel('disk', 3);
 selectedCells = zeros(size(selectedPairOfCells, 1), 4);
 infoCells = {};
-for i = 1:size(selectedPairOfCells, 1)
-    cell1 = selectedPairOfCells(i, 1);
-    cell2 = selectedPairOfCells(i, 2);
-    i
+for numMotif = 1:size(selectedPairOfCells, 1)
+    cell1 = selectedPairOfCells(numMotif, 1);
+    cell2 = selectedPairOfCells(numMotif, 2);
+    numMotif
     cell1_dilate = imdilate(bwperim(img == cell1), se);
     cell2_dilate = imdilate(bwperim(img == cell2), se);
     
@@ -85,12 +86,12 @@ for i = 1:size(selectedPairOfCells, 1)
     
     neighboursCell1(neighboursCell1 == 0) = [];
     neighboursCell2(neighboursCell2 == 0) = [];
-    selectedCells(i, :) = intersect(neighboursCell1, neighboursCell2);
+    selectedCells(numMotif, :) = intersect(neighboursCell1, neighboursCell2);
 
-    for numCell = 1:4
+    parfor numCell = 1:4
         regionPropsOfCells = [];
         for zPlane = 1:size(labels3d, 3)
-            regionOfCell = struct2table(regionprops(labels3d(:, :, zPlane) == selectedCells(i, numCell), 'all'), 'AsArray', true);
+            regionOfCell = struct2table(regionprops(labels3d(:, :, zPlane) == selectedCells(numMotif, numCell), 'all'), 'AsArray', true);
             if size(regionOfCell, 1) == 1 && regionOfCell.Area > 10
                 regionOfCell.zPlane = zPlane;
                 if isempty(regionPropsOfCells)
@@ -100,18 +101,33 @@ for i = 1:size(selectedPairOfCells, 1)
                 end
             end
         end
-        infoCells{i, numCell} = regionPropsOfCells;
+        infoCells{numMotif, numCell} = regionPropsOfCells;
     end
     
     
-    if i == 20
+    maxPlane = min([max(infoCells{numMotif, 1}.zPlane), max(infoCells{numMotif, 2}.zPlane), max(infoCells{numMotif, 3}.zPlane), max(infoCells{numMotif, 4}.zPlane)]);
+    minPlane = max([min(infoCells{numMotif, 1}.zPlane), min(infoCells{numMotif, 2}.zPlane), min(infoCells{numMotif, 3}.zPlane), min(infoCells{numMotif, 4}.zPlane)]);
+    
+    outputDir = strcat('results\MotifSegments\motif_', num2str(numMotif));
+    mkdir(outputDir);
+    parfor numPlane = minPlane:maxPlane
+        imgPlane = ismember(labels3d(:, :, numPlane), selectedCells(numMotif, :));
+        %Cropping image
+        [row, col] = find(imgPlane);
+        bounding_box = [min(row), min(col), max(row) - min(row) + 1, max(col) - min(col) + 1];
+
+        % display with rectangle
+        rect = bounding_box([2,1,4,3]);
+        croppedImg = imcrop(imgPlane, rect);
+        imwrite(croppedImg, strcat(outputDir, '\segment_', num2str(numPlane), '.png'));
+    end
+    
+    
+    if numMotif == 20
         img = labels3d(:, :, 100);
     end
 end
 
 infoCells
-numMotif = 12;
-min([max(infoCells{numMotif, 1}.zPlane), max(infoCells{numMotif, 2}.zPlane), max(infoCells{numMotif, 3}.zPlane), max(infoCells{numMotif, 4}.zPlane)])
-
-
-max([min(infoCells{numMotif, 1}.zPlane), min(infoCells{numMotif, 2}.zPlane), min(infoCells{numMotif, 3}.zPlane), min(infoCells{numMotif, 4}.zPlane)])
+numMotif = 1;
+imshow(ismember(labels3d(:, :, 71), [172	297	532	638]))
