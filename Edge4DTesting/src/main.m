@@ -99,7 +99,7 @@ selectedMinSections = [28
 img = labels3d(:, :, 50);
 se = strel('disk', 3);
 selectedCells = zeros(size(selectedPairOfCells, 1), 4);
-infoCells = {};
+infoCells = cell(size(selectedPairOfCells, 1), 5);
 motifSequence = cell(size(selectedPairOfCells, 1), 1);
 for numMotif = 1:size(selectedPairOfCells, 1)
     cell1 = selectedPairOfCells(numMotif, 1);
@@ -159,6 +159,61 @@ for numMotif = 1:size(selectedPairOfCells, 1)
                 case 3
                     imgReshaped(28, 18) = 0;
                     imgReshaped(27, 17) = 573;
+                case 8
+                    imgReshaped(23, 24) = 331;
+                case 12
+                    imgReshaped(32, 20) = 390;
+                    imgReshaped(32, 19) = 390;
+                    imgReshaped(33, 19) = 390;
+                    imgReshaped(34, 19) = 390;
+                    imgReshaped(35, 19) = 390;
+                    
+                    imgReshaped(39, 21) = 390;
+                    imgReshaped(38, 20) = 390;
+                    imgReshaped(37, 19) = 390;
+                    imgReshaped(36, 18) = 390;
+                    imgReshaped(36, 19) = 390;
+                    imgReshaped(37, 20) = 390;
+                    imgReshaped(38, 21) = 390;
+                    
+                    
+                case 17
+                    imgReshaped(23, 33) = 260;
+                    imgReshaped(22, 33) = 0;
+                    imgReshaped(23, 32) = 0;
+                    imgReshaped(24, 33) = 260;
+                    imgReshaped(23, 35) = 260;
+                case 18
+                    imgReshaped(20, 19) = 564;
+                    imgReshaped(19, 20) = 564;
+                    imgReshaped(19, 21) = 564;
+                    imgReshaped(20, 20) = 564;
+                    
+                    
+                    imgReshaped(20, 28) = 564;
+                    imgReshaped(20, 29) = 564;
+                    imgReshaped(20, 30) = 564;
+                    imgReshaped(21, 31) = 564;
+                    imgReshaped(22, 32) = 564;
+                    imgReshaped(21, 30) = 564;
+                    imgReshaped = imfill(imgReshaped, 8, 'holes');
+                    
+                case 19
+                    imgReshaped(25, 22) = 619;
+                    imgReshaped(25, 23) = 619;
+                    imgReshaped(26, 23) = 619;
+                    imgReshaped(27, 24) = 619;
+                    imgReshaped(28, 25) = 619;
+                    imgReshaped(27, 23) = 619;
+                    imgReshaped(28, 24) = 619;
+                    
+                    imgReshaped(32, 11) = 619;
+                    imgReshaped(31, 12) = 619;
+                    imgReshaped(30, 13) = 619;
+                    imgReshaped(30, 14) = 619;
+                    imgReshaped(31, 13) = 619;
+                    imgReshaped(32, 12) = 619;
+                    imgReshaped = imfill(imgReshaped, 8, 'holes');
             end
             imwrite(imgReshaped, strcat(outputDirSelectedInitMotifs, '\motif_', num2str(numMotif), '.png'));
             motifSequence{numMotif} = imgReshaped;
@@ -168,11 +223,15 @@ for numMotif = 1:size(selectedPairOfCells, 1)
         bounding_box = [bounding_box(1) - 4, bounding_box(2) - 4, bounding_box(3) + 4, bounding_box(4) + 4];
         croppedImg2 = imcrop(imgPlaneWithLabels, bounding_box([2,1,4,3]));
         neighbourhoodCells = unique(croppedImg2);
-        imgPlaneWithLabelsNoHoles = imfill(imgPlaneWithLabels .* ismember(imgPlaneWithLabels, neighbourhoodCells(neighbourhoodCells ~= 0)), 8, 'holes');
-        neighbourhoodAreas = struct2array(regionprops(imgPlaneWithLabelsNoHoles, 'Area'));
-        meanAreasBySegment(end+1) = mean(neighbourhoodAreas(neighbourhoodAreas ~= 0));
+        imgPlaneWithLabelsCropped = imgPlaneWithLabels .* ismember(imgPlaneWithLabels, neighbourhoodCells(neighbourhoodCells ~= 0));
+        imgPlaneWithLabelsNoHoles = imfill(imgPlaneWithLabelsCropped, 8, 'holes');
+        neighbourhoodAreas = arrayfun(@(x) sum(sum(imgPlaneWithLabelsNoHoles == x)), unique(imgPlaneWithLabelsNoHoles));
+        %Deleting zero
+        neighbourhoodAreas(1) = [];
+        meanAreasBySegment(end+1) = mean(neighbourhoodAreas)
     end
     
+    infoCells{numMotif, 5} = meanAreasBySegment;
     
     if numMotif == 20
         img = labels3d(:, :, 100);
