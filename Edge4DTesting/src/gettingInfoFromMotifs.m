@@ -210,14 +210,7 @@ function [ ] = gettingInfoFromMotifs( )
 
             %Getting mean within neighbourhood
             bounding_box = [bounding_box(1) - 4, bounding_box(2) - 4, bounding_box(3) + 4, bounding_box(4) + 4];
-            croppedImg2 = imcrop(imgPlaneWithLabels, bounding_box([2,1,4,3]));
-            neighbourhoodCells = unique(croppedImg2);
-            imgPlaneWithLabelsCropped = imgPlaneWithLabels .* ismember(imgPlaneWithLabels, neighbourhoodCells(neighbourhoodCells ~= 0));
-            imgPlaneWithLabelsNoHoles = imfill(imgPlaneWithLabelsCropped, 8, 'holes');
-            neighbourhoodAreas = arrayfun(@(x) sum(sum(imgPlaneWithLabelsNoHoles == x)), unique(imgPlaneWithLabelsNoHoles));
-            %Deleting zero
-            neighbourhoodAreas(1) = [];
-            meanAreasBySegment(numPlane) = mean(neighbourhoodAreas);
+            meanAreasBySegment(numPlane) = mean(meanAreaOfCellsInRoi(imgPlaneWithLabels, bounding_box([2,1,4,3])));
             if numPlane == selectedInitSections(numMotif)
                 infoCells{numMotif, 6} = meanAreasBySegment(numPlane);
             end
