@@ -65,6 +65,32 @@ selectedPairOfCells = [533, 780;
     532, 297;
     282, 485];
 
+selectedMinSections = [28
+28
+35
+39
+35
+33
+34
+30
+30
+24
+40
+38
+28
+27
+28
+31
+48
+48
+48
+46
+88
+58
+110
+71
+30];
+
 
 % imgToShow = img;
 % imgToShow(ismember(img, unique(selectedPairOfCells)) == 0) = 0;
@@ -74,6 +100,7 @@ img = labels3d(:, :, 50);
 se = strel('disk', 3);
 selectedCells = zeros(size(selectedPairOfCells, 1), 4);
 infoCells = {};
+motifSequence = cell(size(selectedPairOfCells, 1), 1);
 for numMotif = 1:size(selectedPairOfCells, 1)
     cell1 = selectedPairOfCells(numMotif, 1);
     cell2 = selectedPairOfCells(numMotif, 2);
@@ -104,13 +131,16 @@ for numMotif = 1:size(selectedPairOfCells, 1)
         infoCells{numMotif, numCell} = regionPropsOfCells;
     end
     
-    
     maxPlane = min([max(infoCells{numMotif, 1}.zPlane), max(infoCells{numMotif, 2}.zPlane), max(infoCells{numMotif, 3}.zPlane), max(infoCells{numMotif, 4}.zPlane)]);
     minPlane = max([min(infoCells{numMotif, 1}.zPlane), min(infoCells{numMotif, 2}.zPlane), min(infoCells{numMotif, 3}.zPlane), min(infoCells{numMotif, 4}.zPlane)]);
     
     outputDir = strcat('results\MotifSegments\motif_', num2str(numMotif));
     mkdir(outputDir);
-    parfor numPlane = minPlane:maxPlane
+    outputDirSelectedInitMotifs = strcat('results\selectedInitMotifs');
+    mkdir(outputDirSelectedInitMotifs);
+    
+    meanAreasBySegment = zeros(maxPlane - minPlane, 1);
+    for numPlane = minPlane:maxPlane
         imgPlane = ismember(labels3d(:, :, numPlane), selectedCells(numMotif, :));
         %Cropping image
         [row, col] = find(imgPlane);
@@ -120,6 +150,27 @@ for numMotif = 1:size(selectedPairOfCells, 1)
         rect = bounding_box([2,1,4,3]);
         croppedImg = imcrop(imgPlane, rect);
         imwrite(croppedImg, strcat(outputDir, '\segment_', num2str(numPlane), '.png'));
+        
+        imgPlaneWithLabels = labels3d(:, :, numPlane);
+        if numPlane == selectedMinSections(numMotif)
+            croppedImgWithLabels = imcrop(imgPlaneWithLabels .* imgPlane, rect);
+            imgReshaped = imfill(croppedImgWithLabels, 8, 'holes');
+            switch (numMotif)
+                case 3
+                    imgReshaped(28, 18) = 0;
+                    imgReshaped(27, 17) = 573;
+            end
+            imwrite(imgReshaped, strcat(outputDirSelectedInitMotifs, '\motif_', num2str(numMotif), '.png'));
+            motifSequence{numMotif} = imgReshaped;
+        end
+        
+        %Getting mean within neighbourhood
+        bounding_box = [bounding_box(1) - 4, bounding_box(2) - 4, bounding_box(3) + 4, bounding_box(4) + 4];
+        croppedImg2 = imcrop(imgPlaneWithLabels, bounding_box([2,1,4,3]));
+        neighbourhoodCells = unique(croppedImg2);
+        imgPlaneWithLabelsNoHoles = imfill(imgPlaneWithLabels .* ismember(imgPlaneWithLabels, neighbourhoodCells(neighbourhoodCells ~= 0)), 8, 'holes');
+        neighbourhoodAreas = struct2array(regionprops(imgPlaneWithLabelsNoHoles, 'Area'));
+        meanAreasBySegment(end+1) = mean(neighbourhoodAreas(neighbourhoodAreas ~= 0));
     end
     
     
@@ -128,6 +179,7 @@ for numMotif = 1:size(selectedPairOfCells, 1)
     end
 end
 
+save('results\motifSequence.mat', 'motifSequence');
 infoCells
 numMotif = 1;
 imshow(ismember(labels3d(:, :, 71), [172	297	532	638]))
