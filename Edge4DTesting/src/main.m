@@ -19,26 +19,6 @@ colors = [colorcube(256); jet(256); parula(256); colorcube(256)];
 %     imwrite(img, colors, strcat('results/segments/segment_', num2str(i), '.jpg')); 
 % end
 
-load('D:\Pablo\Epithelia3D\Edge4DTesting\results\locationsOfMotifs.mat')
-imshow(labels3d(:, :, 100));
-
-positions = {[119.53 89.48 56.5 52.15]
-[159.89 256.28 46.96 46.52]
-[138.18 380.48 54.04 44.56]
-[135.81 428.83 63.99 44.56]
-[143.87 466.76 63.99 42.66]
-[137.4 131.43 46.6 60.94]
-[137.10 204.53 47.72 55.23]
-[151.63 292.66 42.09 58.23]
-[147.72 511.58 48.26 60.06]
-[148.17 513.46 49.87 57.91]};
-positionsVector = vertcat(positions{:});
-
-% for i = 1:size(positionsVector, 1)
-%     croppedImg = imcrop(segment_50, positionsVector(i, :));
-%     imwrite(croppedImg, strcat('results\motifSegments_atSegment50\motif_', num2str(i), '.png'));
-% end
-
 selectedPairOfCells = [533, 780;
     557, 463;
     600, 692;
@@ -65,7 +45,7 @@ selectedPairOfCells = [533, 780;
     532, 297;
     282, 485];
 
-selectedMinSections = [28
+selectedInitSections = [28
 28
 35
 39
@@ -90,6 +70,32 @@ selectedMinSections = [28
 110
 71
 30];
+
+selectedFinalSections = [71
+154
+160
+158
+156
+64
+138
+158
+159
+142
+162
+154
+149
+158
+160
+155
+166
+161
+158
+167
+167
+173
+182
+191
+160];
 
 
 % imgToShow = img;
@@ -152,7 +158,7 @@ for numMotif = 1:size(selectedPairOfCells, 1)
         imwrite(croppedImg, strcat(outputDir, '\segment_', num2str(numPlane), '.png'));
         
         imgPlaneWithLabels = labels3d(:, :, numPlane);
-        if numPlane == selectedMinSections(numMotif)
+        if numPlane == selectedInitSections(numMotif)
             croppedImgWithLabels = imcrop(imgPlaneWithLabels .* imgPlane, rect);
             imgReshaped = imfill(croppedImgWithLabels, 8, 'holes');
             switch (numMotif)
@@ -176,7 +182,7 @@ for numMotif = 1:size(selectedPairOfCells, 1)
                     imgReshaped(37, 20) = 390;
                     imgReshaped(38, 21) = 390;
                     
-                    
+                    imgReshaped = imfill(imgReshaped, 8, 'holes');
                 case 17
                     imgReshaped(23, 33) = 260;
                     imgReshaped(22, 33) = 0;
@@ -228,10 +234,18 @@ for numMotif = 1:size(selectedPairOfCells, 1)
         neighbourhoodAreas = arrayfun(@(x) sum(sum(imgPlaneWithLabelsNoHoles == x)), unique(imgPlaneWithLabelsNoHoles));
         %Deleting zero
         neighbourhoodAreas(1) = [];
-        meanAreasBySegment(end+1) = mean(neighbourhoodAreas)
+        meanAreasBySegment(numPlane) = mean(neighbourhoodAreas);
+        if numPlane == selectedInitSections(numMotif)
+            infoCells{numMotif, 6} = meanAreasBySegment(numPlane);
+        end
+        
+        if numPlane == selectedFinalSections(numMotif)
+            infoCells{numMotif, 7} = meanAreasBySegment(numPlane);
+        end
     end
     
     infoCells{numMotif, 5} = meanAreasBySegment;
+    
     
     if numMotif == 20
         img = labels3d(:, :, 100);
@@ -239,6 +253,7 @@ for numMotif = 1:size(selectedPairOfCells, 1)
 end
 
 save('results\motifSequence.mat', 'motifSequence');
+save('results\infoOfSelectedMotifs.mat', 'infoCells', 'selectedCells');
 infoCells
 numMotif = 1;
 imshow(ismember(labels3d(:, :, 71), [172	297	532	638]))
