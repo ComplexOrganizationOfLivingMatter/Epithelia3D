@@ -49,7 +49,6 @@ $RECYCLE.BIN/
 /Epithelia3DOld/*
 */data/*
 */docs/*
-*/edge4d_*
 */results/*
 /CABD/
 /Salivary Glands/Confocal stacks/Confocal images/
@@ -68,7 +67,9 @@ $RECYCLE.BIN/
 /Egg chamber/Segmented images/
 /Egg chamber/Segmented images data/
 /Egg chamber/classifier.model
-/Gastrulation paper 2014/
+/Gastrulation/rawImages & paper/
+/Gastrulation/selectedMotif/
+/Gastrulation/*.xlsx
 /Wing disc/
 /ZEBRA FISH/
 /*.xls

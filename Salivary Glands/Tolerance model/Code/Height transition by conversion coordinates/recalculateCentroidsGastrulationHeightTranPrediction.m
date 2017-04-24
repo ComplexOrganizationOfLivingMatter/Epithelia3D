@@ -1,24 +1,12 @@
-function [cellsGroup,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12PostCurvature,L34PostCurvature,CoordA,CoordB,LEdgeTransition,Coord1,Coord2,Coord3,Coord4]=recalculateCentroidsGlandsHeightTranPrediction(pathStructure,frame,cellsGroup,hTransition,curvature,D,alpha,hCell,validCentroidCell)
+function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12PostCurvature,L34PostCurvature,CoordA,CoordB,LEdgeTransition,Coord1,Coord2,Coord3,Coord4]=recalculateCentroidsGastrulationHeightTranPrediction(pathStructure,nMotif,hTransition,curvature,alpha,hCell,validCentroidCell)
 
 
     addpath lib
     
     %Load label image
     load(pathStructure)
-    
-    if frame=='end'
-        Img=Seq_Img_L{end};
-    else
-        Img=Seq_Img_L{frame};
-    end
-    
-    %Get only 4 cells neighborhood image
-    mask=Img;
-    mask1=mask;mask2=mask;mask3=mask;mask4=mask;
-    mask1(mask~=cellsGroup(1))=0;mask2(mask~=cellsGroup(2))=0;mask3(mask~=cellsGroup(3))=0;mask4(mask~=cellsGroup(4))=0;
-    mask=mask1+mask2+mask3+mask4;
-    Img=mask;
-    
+    Img=motifSequence{nMotif};
+       
     %Calculate neighbors
     [neighs,sidesCells]=calculateNeighbours(Img);
     neigh2sides=find(sidesCells==2);
@@ -32,6 +20,9 @@ function [cellsGroup,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34
     centr=cat(1,centr.Centroid);
     cent2neigh=centr(neigh2sides,:);
     cent3neigh=centr(neigh3sides,:);
+    
+    %Calculate an imaginary D.      h=(D-c*D)/2   ->   D=(2*h)/(1-c)
+    D=(2*hCell)/(1-curvature);
     
     %Distance edge transition
     LEdgeTransition=pdist([vertices{1,1};vertices{1,2}]);
