@@ -46,11 +46,12 @@ $RECYCLE.BIN/
 .Trashes
 .VolumeIcon.icns
 
-/Epithelia3DOld/*
-*/edge4d_*
 */data/*
-*/docs/*
-*/results/*
+/Epithelia3DOld/*
+/Gastrulation/*/edge4d_*
+Gastrulation/*/data/*
+Gastrulation/*/docs/*
+Gastrulation/*/results/*
 /CABD/
 /Salivary Glands/Confocal stacks/Confocal images/
 /Salivary Glands/Confocal stacks/Segmented images/
