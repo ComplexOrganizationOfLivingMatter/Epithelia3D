@@ -62,13 +62,19 @@ Img_list=dir(['..\Segmented images\' folder '\' name '\resultsFinal\gland*.tif']
         end
         
         if exist(['..\Segmented images\' folder '\' name '\Skeleton_images'])==0
-            
             mkdir(['..\Segmented images\' folder '\' name '\Skeleton_images']);
         end    
             
         
+        numFrame = num2str(str2num(na(8:end-4)),'%02d');
         
-        imwrite(skel,['..\Segmented images\' folder '\' name '\Skeleton_images\Skel_' num2str(str2num(na(8:end-4)),'%02d') '.tif'])
+        if length(na(8:end-4)) < 2
+            nameSplitted = strsplit(na, '_');
+            numFrame = nameSplitted{2};
+            numFrame = numFrame(1:end-4);
+        end
+        
+        imwrite(skel, ['..\Segmented images\' folder '\' name '\Skeleton_images\Skel_' numFrame '.tif'])
     end
     
 end
