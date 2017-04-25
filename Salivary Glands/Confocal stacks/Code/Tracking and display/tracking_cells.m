@@ -135,7 +135,7 @@ Img_list=dir(['..\..\Segmented images\' folder '\' name '\Skeleton_images\Skel*.
                 [fig]=display_labelled_glands(L_img_previous,mask,n,n_max,H,W);
                 
                 
-                want_modify=input('666 (change labelling mode) \n 0 (Break) \n Otherwise (Continue labelling) : ');
+                want_modify=input('666 (change labelling mode) \n 0 (Next frame) \n Otherwise (Continue labelling) : ');
                 switch want_modify
                     case 0
                         close all
