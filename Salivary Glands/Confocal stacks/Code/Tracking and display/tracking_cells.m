@@ -187,7 +187,7 @@ Img_list=dir(['..\..\Segmented images\' folder '\' name '\Skeleton_images\Skel*.
     end
 
 
-     %save(['..\..\Segmented images data\' folder '\' name '\Label_sequence.mat'],'Seq_Img_L')
+     save(['..\..\Segmented images data\' folder '\' name '\Label_sequence.mat'],'Seq_Img_L')
 
 
 
