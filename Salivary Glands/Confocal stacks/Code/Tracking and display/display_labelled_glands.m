@@ -34,7 +34,7 @@ function [fig]=display_labelled_glands(L_img_previous,mask,n,n_max,H,W)
     end
 
     if n~=n_max
-        title(['frame ' num2str(n-1) ' - frame ' num2str(n) ' - frame ' num2str(n+1)])
+        title(['frame ' num2str(n-1) ' - frame ' num2str(n)])
     else
         title(['frame ' num2str(n-1) ' - frame ' num2str(n)])
     end
