@@ -41,7 +41,17 @@ roiMotifsEnd = [58	322	78	122	35
 embryoDir = 'results\ProcessedImg\OR\Embryo4';
 
 for i = 1:size(roiMotifsInit, 1)
-    mkdir(strcat(embryoDir, '\', num2str(i))
-    
+    actualDir = strcat(embryoDir, '\Motifs\', num2str(i), '\');
+    mkdir(actualDir);
+    %Printing the roi selected with its beggining and end
+    if roiMotifsInit(i, 5) > 0
+        img = imread(strcat(embryoDir, '\ImageSequence\Embr4_Channel0', num2str(roiMotifsInit(i, 5)), '.tif'));
+        selectedRoi = roiMotifsInit(i, 1:4);
+        imwrite(imcrop(img, selectedRoi), strcat(actualDir, num2str(roiMotifsInit(i, 5)), '.tif'));
+
+        img = imread(strcat(embryoDir, '\ImageSequence\Embr4_Channel0', num2str(roiMotifsEnd(i, 5)), '.tif'));
+        selectedRoi = roiMotifsEnd(i, 1:4);
+        imwrite(imcrop(img, selectedRoi), strcat(actualDir, num2str(roiMotifsEnd(i, 5)), '.tif'));
+    end
 end
 
