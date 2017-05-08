@@ -42,9 +42,9 @@ embryoDir = 'results\ProcessedImg\OR\Embryo4';
 
 for i = 1:size(roiMotifsInit, 1)
     actualDir = strcat(embryoDir, '\Motifs\', num2str(i), '\');
-    mkdir(actualDir);
     %Printing the roi selected with its beggining and end
     if roiMotifsInit(i, 5) > 0
+        mkdir(actualDir);
         img = imread(strcat(embryoDir, '\ImageSequence\Embr4_Channel0', num2str(roiMotifsInit(i, 5)), '.tif'));
         selectedRoi = roiMotifsInit(i, 1:4);
         imwrite(imcrop(img, selectedRoi), strcat(actualDir, 'end_' ,num2str(roiMotifsInit(i, 5)), '.tif'));
@@ -62,12 +62,13 @@ for i = 1:size(roiMotifsInit, 1)
         maxX = max([roiPointsInit(:, 1); roiPointsEnd(:, 1)]);
         maxY = max([roiPointsInit(:, 2); roiPointsEnd(:, 2)]);
         %Formula
-        bigBoundingBox = [minX minY xMax-xMin+1 maxY-minY+1];
+        bigBoundingBox = [minX minY maxX-minX+1 maxY-minY+1];
         
-        RGB = insertShape(img,'FilledRectangle',roiMotifsEnd(i, 1:4),'Color','green');
-        RGB = insertShape(RGB,'FilledRectangle',roiMotifsInit(i, 1:4),'Color','yellow');
-        RGB = insertShape(RGB,'FilledRectangle',bigBoundingBox,'Color','red');
-        imshow(RGB)
+        %Showing shape correct
+%         RGB = insertShape(img,'FilledRectangle',roiMotifsEnd(i, 1:4),'Color','green');
+%         RGB = insertShape(RGB,'FilledRectangle',roiMotifsInit(i, 1:4),'Color','yellow');
+%         RGB = insertShape(RGB,'FilledRectangle',bigBoundingBox,'Color','red');
+%         imshow(RGB)
         
         initFrame = min(roiMotifsEnd(i, 5), roiMotifsInit(i, 5));
         endFrame = max(roiMotifsInit(i, 5), roiMotifsEnd(i, 5));
