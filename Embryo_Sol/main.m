@@ -39,48 +39,42 @@ roiMotifsEnd = [58	322	78	122	35
 85	449	72	147	28];
 
 embryoDir = 'results\ProcessedImg\OR\Embryo4';
+suffixFileName = 'Embr4_Channel0';
 
-for i = 1:size(roiMotifsInit, 1)
-    actualDir = strcat(embryoDir, '\Motifs\', num2str(i), '\');
-    %Printing the roi selected with its beggining and end
-    if roiMotifsInit(i, 5) > 0
-        mkdir(actualDir);
-        img = imread(strcat(embryoDir, '\ImageSequence\Embr4_Channel0', num2str(roiMotifsInit(i, 5)), '.tif'));
-        
-        RGB = insertShape(img,'FilledRectangle',roiMotifsInit(i, 1:4),'Color','green');
-        imwrite(RGB, strcat(actualDir, 'selectedArea.tif'));
-         
-        selectedRoi = roiMotifsInit(i, 1:4);
-        imwrite(imcrop(img, selectedRoi), strcat(actualDir, 'end_' ,num2str(roiMotifsInit(i, 5)), '.tif'));
+extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
 
-        img = imread(strcat(embryoDir, '\ImageSequence\Embr4_Channel0', num2str(roiMotifsEnd(i, 5)), '.tif'));
-        selectedRoi = roiMotifsEnd(i, 1:4);
-        imwrite(imcrop(img, selectedRoi), strcat(actualDir, 'init_' ,num2str(roiMotifsEnd(i, 5)), '.tif'));
-        
-        %Bounding box of the two bounding boxes
-        roiPointsInit = bbox2points(roiMotifsInit(i, 1:4));
-        roiPointsEnd = bbox2points(roiMotifsEnd(i, 1:4));
-        
-        minX = min([roiPointsInit(:, 1); roiPointsEnd(:, 1)]);
-        minY = min([roiPointsInit(:, 2); roiPointsEnd(:, 2)]);
-        maxX = max([roiPointsInit(:, 1); roiPointsEnd(:, 1)]);
-        maxY = max([roiPointsInit(:, 2); roiPointsEnd(:, 2)]);
-        %Formula
-        bigBoundingBox = [minX minY maxX-minX+1 maxY-minY+1];
-        
-        %Showing shape correct
-%         RGB = insertShape(img,'FilledRectangle',roiMotifsInit(i, 1:4),'Color','green');
-%         RGB = insertShape(RGB,'FilledRectangle',roiMotifsInit(i, 1:4),'Color','yellow');
-%         RGB = insertShape(RGB,'FilledRectangle',bigBoundingBox,'Color','red');
-%         imshow(RGB)
-        
-        initFrame = min(roiMotifsEnd(i, 5), roiMotifsInit(i, 5));
-        endFrame = max(roiMotifsInit(i, 5), roiMotifsEnd(i, 5));
-        %Printing
-        for numFrame = initFrame : endFrame
-            img = imread(strcat(embryoDir, '\ImageSequence\Embr4_Channel0', num2str(numFrame), '.tif'));
-            imwrite(imcrop(img, bigBoundingBox), strcat(actualDir, num2str(numFrame), '.tif'));
-        end
-    end
-end
+%% ScribGFP
+
+    %% Embryo 3
+    roiMotifsInit = [16	83	16	16	105
+87	68	22	20	91
+94	49	17	18	98
+17	41	17	17	128
+24	26	21	12	135
+85	57	19	22	107
+89	33	18	18	114
+87	15	17	11	108
+89	77	19	23	88
+19	73	18	20	111
+19	49	17	17	118
+19	47	22	13	131
+11	83	17	22	104
+4	98	16	21	94
+89	25	19	17	109];
+
+    roiMotifsEnd = [19	82	12	17	64
+92	68	13	20	61
+96	49	14	16	61
+23	41	12	15	84
+30	23	15	11	92
+90	57	12	19	63
+92	31	12	17	68
+91	12	11	10	55
+95	78	12	20	56
+23	73	12	17	74
+25	49	11	15	81
+25	44	15	14	83
+15	86	10	17	63
+6	102	13	17	57
+93	24	12	14	71];
 
