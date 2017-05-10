@@ -6,21 +6,17 @@ function [ ] = extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffi
         %Printing the roi selected with its beggining and end
         if roiMotifsInit(i, 5) > 0
             mkdir(actualDir);
-            labelOfFrameInit = num2str(roiMotifsInit(i, 5));
-            if roiMotifsInit(i, 5) < 100
-                labelOfFrameInit = strcat('0', labelOfFrameInit);
-            end
-            img = imread(strcat(embryoDir, '\ImageSequence\', suffixFileName, labelOfFrameInit, '.tif'));
+            img = imread(strcat(embryoDir, '\ImageSequence\', suffixFileName, sprintf('%03d', roiMotifsInit(i, 5)), '.tif'));
             
             RGB = insertShape(img,'FilledRectangle',roiMotifsInit(i, 1:4),'Color','green');
-            imwrite(RGB, strcat(actualDir, 'selectedArea', labelOfFrameInit ,'.tif'));
+            imwrite(RGB, strcat(actualDir, 'selectedArea', sprintf('%03d', roiMotifsInit(i, 5)) ,'.tif'));
             
             selectedRoi = roiMotifsInit(i, 1:4);
-            imwrite(imcrop(img, selectedRoi), strcat(actualDir, 'end_' ,labelOfFrameInit, '.tif'));
+            imwrite(imcrop(img, selectedRoi), strcat(actualDir, 'end_' ,sprintf('%03d', roiMotifsInit(i, 5)), '.tif'));
             
-            img = imread(strcat(embryoDir, '\ImageSequence\', suffixFileName, '0' ,num2str(roiMotifsEnd(i, 5)), '.tif'));
+            img = imread(strcat(embryoDir, '\ImageSequence\', suffixFileName, sprintf('%03d', roiMotifsEnd(i, 5)), '.tif'));
             selectedRoi = roiMotifsEnd(i, 1:4);
-            imwrite(imcrop(img, selectedRoi), strcat(actualDir, 'init_' , '0', num2str(roiMotifsEnd(i, 5)), '.tif'));
+            imwrite(imcrop(img, selectedRoi), strcat(actualDir, 'init_' , sprintf('%03d', roiMotifsEnd(i, 5)), '.tif'));
             
             %Bounding box of the two bounding boxes
             roiPointsInit = bbox2points(roiMotifsInit(i, 1:4));
@@ -43,12 +39,7 @@ function [ ] = extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffi
             endFrame = max(roiMotifsInit(i, 5), roiMotifsEnd(i, 5));
             %Printing
             for numFrame = initFrame : endFrame
-                if numFrame < 100
-                   img = imread(strcat(embryoDir, '\ImageSequence\', suffixFileName, '0', num2str(numFrame), '.tif'));
-                else
-                    img = imread(strcat(embryoDir, '\ImageSequence\', suffixFileName, num2str(numFrame), '.tif'));
-                end
-                
+                img = imread(strcat(embryoDir, '\ImageSequence\', suffixFileName, sprintf('%03d', numFrame), '.tif'));
                 imwrite(imcrop(img, bigBoundingBox), strcat(actualDir, num2str(numFrame), '.tif'));
             end
         end
