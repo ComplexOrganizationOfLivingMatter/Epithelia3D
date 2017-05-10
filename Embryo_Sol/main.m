@@ -117,7 +117,7 @@ extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
 643	487	115	124	82
 737	232	93	97	68
 713	809	111	125	78
-35	57	173	109	14
+63	170	101	109	42
 57	212	109	109	36
 20	260	102	109	33
 140	52	84	92	44
