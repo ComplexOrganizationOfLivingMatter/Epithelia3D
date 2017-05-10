@@ -13,7 +13,7 @@ function [ ] = extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffi
             img = imread(strcat(embryoDir, '\ImageSequence\', suffixFileName, labelOfFrameInit, '.tif'));
             
             RGB = insertShape(img,'FilledRectangle',roiMotifsInit(i, 1:4),'Color','green');
-            imwrite(RGB, strcat(actualDir, 'selectedArea.tif'));
+            imwrite(RGB, strcat(actualDir, 'selectedArea', labelOfFrameInit ,'.tif'));
             
             selectedRoi = roiMotifsInit(i, 1:4);
             imwrite(imcrop(img, selectedRoi), strcat(actualDir, 'end_' ,labelOfFrameInit, '.tif'));

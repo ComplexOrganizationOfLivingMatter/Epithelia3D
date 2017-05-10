@@ -60,7 +60,9 @@ suffixFileName = 'Embr4_Channel0';
 140	352	164	97	131
 79	617	123	161	104
 27	727	116	153	94
-665	187	138	123	109];
+665	187	138	123	109
+668	460	140	137	97
+];
 
     roiMotifsEnd = [144	612	86	128	64
 686	507	94	149	61
@@ -76,7 +78,9 @@ suffixFileName = 'Embr4_Channel0';
 186	329	115	106	83
 113	640	78	130	63
 44	760	99	130	57
-689	180	92	105	71];
+689	180	92	105	71
+694	466	102	131 61
+];
 
 embryoDir = 'results\ProcessedImg\ScribGFP\Embryo3';
 suffixFileName = 'Emb3_gast_ap_40x2_';
