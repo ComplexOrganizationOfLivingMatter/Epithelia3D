@@ -41,40 +41,45 @@ roiMotifsEnd = [58	322	78	122	35
 embryoDir = 'results\ProcessedImg\OR\Embryo4';
 suffixFileName = 'Embr4_Channel0';
 
-extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
+%extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
 
 %% ScribGFP
 
     %% Embryo 3
-    roiMotifsInit = [16	83	16	16	105
-87	68	22	20	91
-94	49	17	18	98
-17	41	17	17	128
-24	26	21	12	135
-85	57	19	22	107
-89	33	18	18	114
-87	15	17	11	108
-89	77	19	23	88
-19	73	18	20	111
-19	49	17	17	118
-19	47	22	13	131
-11	83	17	22	104
-4	98	16	21	94
-89	25	19	17	109];
+    roiMotifsInit = [118	618	122	122	105
+647	507	162	149	91
+698	367	126	133	98
+130	303	130	128	128
+176	192	158	90	135
+633	423	140	162	107
+662	242	135	137	114
+647	110	123	85	108
+664	573	143	173	88
+139	545	136	150	111
+141	365	124	125	118
+140	352	164	97	131
+79	617	123	161	104
+27	727	116	153	94
+665	187	138	123	109];
 
-    roiMotifsEnd = [19	82	12	17	64
-92	68	13	20	61
-96	49	14	16	61
-23	41	12	15	84
-30	23	15	11	92
-90	57	12	19	63
-92	31	12	17	68
-91	12	11	10	55
-95	78	12	20	56
-23	73	12	17	74
-25	49	11	15	81
-25	44	15	14	83
-15	86	10	17	63
-6	102	13	17	57
-93	24	12	14	71];
+    roiMotifsEnd = [144	612	86	128	64
+686	507	94	149	61
+713	367	101	122	61
+170	303	90	114	84
+221	170	108	84	92
+671	423	87	144	63
+687	234	91	127	68
+679	92	85	78	55
+704	578	88	149	56
+172	545	91	127	74
+186	365	79	114	81
+186	329	115	106	83
+113	640	78	130	63
+44	760	99	130	57
+689	180	92	105	71];
+
+embryoDir = 'results\ProcessedImg\ScribGFP\Embryo3';
+suffixFileName = 'Emb3_gast_ap_40x2_';
+
+extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
 
