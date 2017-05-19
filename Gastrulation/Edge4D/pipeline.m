@@ -1,6 +1,6 @@
 %%pipeline
 
-GastPath='..\data\Image_Sequence.mat';
+GastPath='data\Image_Sequence.mat';
 
 hTranGast={};
 

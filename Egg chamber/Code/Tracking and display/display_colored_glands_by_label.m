@@ -1,7 +1,7 @@
 %%  Display and save colored image sequence
-function display_colored_glands_by_label(folder,name)
+function display_colored_glands_by_label(folder)
 
-load(['..\..\Segmented images data\' folder '\' name '\Label_sequence.mat'],'Seq_Img_L')
+load(['..\..\Segmented images data\' folder '\Label_sequence.mat'],'Seq_Img_L')
 
     for i=1:size(Seq_Img_L,1)
 
@@ -11,9 +11,9 @@ load(['..\..\Segmented images data\' folder '\' name '\Label_sequence.mat'],'Seq
             fig=figure;
             
             mask=Seq_Img_L{i,1};
-            mask(mask==0)=150;
+            mask(mask==0)=300;
 
-            imshow(mask,colorcube (150))
+            imshow(mask,colorcube (300))
 
             for k=1:numel(s)
                 c=s(k).Centroid;
@@ -21,7 +21,7 @@ load(['..\..\Segmented images data\' folder '\' name '\Label_sequence.mat'],'Seq
             end
             
 
-            print('-f1','-dbmp',['..\..\Segmented images data\' folder '\' name '\Skel_Labelled_' num2str(i) '.bmp'])
+            print('-f1','-dbmp',['..\..\Segmented images data\' folder '\Skel_Labelled_' num2str(i) '.bmp'])
             
             close all
     end
