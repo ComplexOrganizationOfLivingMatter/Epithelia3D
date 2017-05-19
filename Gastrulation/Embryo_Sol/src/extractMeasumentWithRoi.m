@@ -87,7 +87,7 @@ suffixFileName = 'Emb3_gast_ap_40x2_';
 
 extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
 
-    %%Embryo 4
+    %% Embryo 4
     roiMotifsInit = [662	640	140	126	106
 610	606	174	118	106
 651	446	158	141	106
@@ -138,4 +138,48 @@ embryoDir = 'results\ProcessedImg\ScribGFP\Embryo4';
 suffixFileName = 'Emb4_gast_ap_40x2_';
 
 extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
+
+    %% Embryo 2
+    roiMotifsInit = [96	165	125	94	60
+151	82	121	101	54
+115	192	126	105	56
+121	598	135	142	49
+654	187	117	118	54
+671	126	104	127	54
+700	485	121	106	47
+661	726	128	125	49
+64	705	137	119	49
+46	760	140	111	59
+82	624	127	149	51
+103	115	149	112	60
+106	96	118	123	58
+664	563	162	109	45
+713	719	130	107	49
+751	735	118	111	52
+118	81	113	91	53
+    ];
+
+roiMotifsEnd = [135	133	84	115	25
+175	52	82	100	24
+152	168	74	102	27
+166	595	64	106	27
+675	187	73	90	33
+662	115	78	113	26
+729	468	74	123	23
+698	702	83	119	25
+108	690	90	123	30
+86	745	98	103	28
+140	616	69	119	28
+150	107	85	98	34
+139	52	75	129	27
+694	574	95	88	25
+731	694	86	113	26
+755	727	89	116	25
+137	50	87	114	25
+];
+    embryoDir = 'results\ProcessedImg\ScribGFP\Embryo2';
+    suffixFileName = 'Emb2_gast_ap_40x2_';
+
+    extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
+
     
