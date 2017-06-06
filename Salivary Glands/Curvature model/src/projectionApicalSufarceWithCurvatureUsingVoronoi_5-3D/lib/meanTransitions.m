@@ -15,24 +15,24 @@ for i=1:nImages
 
 end
 
-meanNLoss=mean(listNloss);
-meanNWin=mean(listNloss);
-meanNTransitions=mean(listNloss);
-stdNLoss=std(listNloss);
-stdNWin=std(listNloss);
-stdNTransitions=std(listNloss);
+meanNLoss=mean(listNloss,2);
+meanNWin=mean(listNwin,2);
+meanNTransitions=mean(listNtransitions,2);
+stdNLoss=std(listNloss,0,2);
+stdNWin=std(listNwin,0,2);
+stdNTransitions=std(listNtransitions,0,2);
 
 curvatures=listTransitionsByCurvature.reductionProportion;
 
-    listTransitionsByCurvature=[curvatures,meanNWin,meanNLoss,meanNTransitions,stdWin,stdNLoss,stdNTransitions];
+    listTransitionsByCurvature=[curvatures,meanNWin,stdNWin,meanNLoss,stdNLoss,meanNTransitions,stdNTransitions];
 
     listTransitionsByCurvature=array2table(listTransitionsByCurvature);
     listTransitionsByCurvature.Properties.VariableNames{1} = 'reductionProportion';
     listTransitionsByCurvature.Properties.VariableNames{2} = 'meanWins';
-    listTransitionsByCurvature.Properties.VariableNames{3} = 'meanLoss';
-    listTransitionsByCurvature.Properties.VariableNames{4} = 'meanTransitions';
-    listTransitionsByCurvature.Properties.VariableNames{5} = 'stdWins';
-    listTransitionsByCurvature.Properties.VariableNames{6} = 'stdLoss';
+    listTransitionsByCurvature.Properties.VariableNames{3} = 'stdWins';
+    listTransitionsByCurvature.Properties.VariableNames{4} = 'meanLoss';
+    listTransitionsByCurvature.Properties.VariableNames{5} = 'stdLoss';
+    listTransitionsByCurvature.Properties.VariableNames{6} = 'meanTransitions';
     listTransitionsByCurvature.Properties.VariableNames{7} = 'stdTransitions';
 
 clearvars -except listTransitionsByCurvature
