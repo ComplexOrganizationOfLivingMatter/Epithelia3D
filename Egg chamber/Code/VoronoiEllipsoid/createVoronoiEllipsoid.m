@@ -4,8 +4,8 @@ xCenter = 0;
 yCenter = 0;
 zCenter = 0;
 xRadius = 1;
-yRadius = 1;
-zRadius = 1;
+yRadius = 0.6;
+zRadius = 0.6;
 areaOfEllipsoid = ellipsoidSurfaceArea([xRadius, yRadius, zRadius]);
 
 %minDistanceBetweenCentroids = (areaOfEllipsoid / (numberOfCellsInVoronoi)) + 3 * (pi / 2) / (2 * pi) * pi * max([xRadius, yRadius, zRadius])^2;
@@ -35,9 +35,13 @@ randomCentroid = [x(indexRandomCentroid), y(indexRandomCentroid), z(indexRandomC
 centroids = randomCentroid;
 radius = max([xRadius, yRadius, zRadius]);
 %The rest centroids
-while numberOfCentroids < numberOfCellsInVoronoi
+while numberOfCentroids < numberOfCellsInVoronoi && totalNumberOfPossibleCentroids ~= 0
     indexRandomCentroid = randi(totalNumberOfPossibleCentroids);
     randomCentroid = [x(indexRandomCentroid), y(indexRandomCentroid), z(indexRandomCentroid)];
+    x(indexRandomCentroid) = [];
+    y(indexRandomCentroid) = [];
+    z(indexRandomCentroid) = [];
+    totalNumberOfPossibleCentroids = totalNumberOfPossibleCentroids - 1;
     
     minDistanceToExistingCentroids = min(pdist2(randomCentroid, centroids));
     if minDistanceToExistingCentroids > minDistanceBetweenCentroids
@@ -45,6 +49,7 @@ while numberOfCentroids < numberOfCellsInVoronoi
         centroids(numberOfCentroids, :) = randomCentroid;
     end
 end
+size(centroids, 1)
 scatter3(centroids(:, 1), centroids(:, 2), centroids(:, 3))
 axis equal
-voronoin
+paintVoronoi(centroids(:, 1), centroids(:, 2), centroids(:, 3));
