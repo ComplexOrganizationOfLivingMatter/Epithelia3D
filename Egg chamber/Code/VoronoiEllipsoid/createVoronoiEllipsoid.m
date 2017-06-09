@@ -1,5 +1,6 @@
+apicalReduction = 0.2;
 resolutionEllipse = 300;
-numberOfCellsInVoronoi = 400;
+numberOfCellsInVoronoi = 600;
 xCenter = 0;
 yCenter = 0;
 zCenter = 0;
@@ -24,9 +25,10 @@ parfor indexCentroid = 1:totalNumberOfPossibleCentroids
     distanceMatrix(indexCentroid) = mean(pdist2(randomCentroid, allCentroids));
     %distanceMatrix(indexCentroid) = mean(cellfun(@(actCentroid) sqrt(randomCentroid(1)^2 + actCentroid(1)^2 - 2*(randomCentroid(1)*actCentroid(1)) * (sin(randomCentroid(2)) * sin(randomCentroid(2)) * cos(randomCentroid(3) - actCentroid(3)) + cos(randomCentroid(2)) * cos(actCentroid(2)))), mat2cell(allCentroids, size(allCentroids, 1), 3)));
 end
-minDistanceBetweenCentroids = mean(distanceMatrix) / areaOfEllipsoid;
 %minDistanceBetweenCentroids = minDistanceBetweenCentroids / totalNumberOfPossibleCentroids * numberOfCellsInVoronoi;
 
+minDistanceBetweenCentroids = mean(distanceMatrix) / areaOfEllipsoid;
+minDistanceBetweenCentroids = 0.10
 numberOfCentroids = 1;
 
 %First Centroid
@@ -52,4 +54,10 @@ end
 size(centroids, 1)
 scatter3(centroids(:, 1), centroids(:, 2), centroids(:, 3))
 axis equal
-paintVoronoi(centroids(:, 1), centroids(:, 2), centroids(:, 3));
+%test_voronoisphere
+paintVoronoi(centroids(:, 1), centroids(:, 2), centroids(:, 3), xRadius, yRadius, zRadius);
+
+xReducted = centroids(:, 1) * (xRadius - apicalReduction) / xRadius;
+yReducted = centroids(:, 2) * (yRadius - apicalReduction) / yRadius;
+zReducted = centroids(:, 3) * (zRadius - apicalReduction) / zRadius;
+paintVoronoi(xReducted, yReducted, zReducted, xRadius - apicalReduction, yRadius - apicalReduction, zRadius - apicalReduction);
