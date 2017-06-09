@@ -1,8 +1,8 @@
-function [ ] = paintVoronoi(x, y, z)
+function [ ] = paintVoronoi(x, y, z, xRadius, yRadius, zRadius)
 %PAINTVORONOI Summary of this function goes here
 %   Detailed explanation goes here
-    figure('Color','w') 
-    plot3(x,y,z,'Marker','.','MarkerEdgeColor','r','MarkerSize',10, 'LineStyle', 'none')
+    %figure('Color','w') 
+    %plot3(x,y,z,'Marker','.','MarkerEdgeColor','r','MarkerSize',10, 'LineStyle', 'none')
     X=[x y z];
     Y = X * 0.8;
     X = [X; Y];
@@ -31,30 +31,23 @@ function [ ] = paintVoronoi(x, y, z)
     %xlabel('x');
     figure;
     [V,C]=voronoin(X);
-    V;
-    for k=1:length(C)
-        disp(C{k})
-    end
     clmap = colorcube();
     ncl = size(clmap,1);
-    for k=1:length(C)
-        %if all(C{k}~=1)
-        
-            cl = clmap(mod(k,ncl)+1,:);
-            sides = C{k};
-            VertCell = V(sides(sides~=1),:);
-            VertCell = [VertCell; 0, 0, 0];
-            %VertCell = VertCell(ismember(VertCell, Y, 'rows') == 0, :);
-            KVert = convhulln(VertCell);
-            %KVert = KVert(sum(KVert ~= (size(VertCell, 1)), 2) == 3, :);
-            %fill3(VertCell(:, 1), VertCell(:, 2), VertCell(:, 3), 'r')
-            patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha',1, 'EdgeColor', 'none')
-            
-            hold on;
-            if k == 220
-                disp('0'); 
-            end
-        %end
+    verticesPerCell = cell(length(Y), 1);
+    for k=1:length(Y)
+        cl = clmap(mod(k,ncl)+1,:);
+        sides = C{k};
+        VertCell = V(sides(sides~=1),:);
+        indicesOutsideEllipsoid = ((VertCell(:, 1).^2 / xRadius^2) + (VertCell(:, 2).^ 2 / yRadius^2) + (VertCell(:, 3).^2 / zRadius^2)) > 1;
+        VertCell (indicesOutsideEllipsoid, :) = [];
+        VertCell = [VertCell; 0, 0, 0];
+        %VertCell = VertCell(ismember(VertCell, Y, 'rows') == 0, :);
+        KVert = convhulln(VertCell);
+        %KVert = KVert(sum(KVert ~= (size(VertCell, 1)), 2) == 3, :);
+        patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha',1, 'EdgeColor', 'none')
+        verticesPerCell(k, 1) = {VertCell};
+        hold on;
     end
+    verticesPerCell
 end
 
