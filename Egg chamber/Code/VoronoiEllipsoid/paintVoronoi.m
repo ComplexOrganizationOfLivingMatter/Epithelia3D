@@ -3,9 +3,9 @@ function [ ] = paintVoronoi(x, y, z, xRadius, yRadius, zRadius)
 %   Detailed explanation goes here
     %figure('Color','w') 
     %plot3(x,y,z,'Marker','.','MarkerEdgeColor','r','MarkerSize',10, 'LineStyle', 'none')
-    X=[x y z];
-    Y = X * 0.8;
-    X = [X; Y];
+    XInitial=[x y z];
+    Y = XInitial * 0.9;
+    X = [XInitial*1.1; Y];
 %     X(end+1, :) = [0 0 0];
 %     X(end+1, :) = [-0.3 0 0];
 %     X(end+1, :) = [-0.5 0 0];
@@ -29,25 +29,37 @@ function [ ] = paintVoronoi(x, y, z, xRadius, yRadius, zRadius)
     %zlabel('z');
     %ylabel('y');
     %xlabel('x');
+    
+    %[xEllipsoid, yEllipsoid, zEllipsoid] = ellipsoid(0, 0, 0, xRadius, yRadius, zRadius, 1000);
+    %pointsInEllipsoid = [xEllipsoid(:), yEllipsoid(:), zEllipsoid(:)];
     figure;
-    [V,C]=voronoin(X);
+    [V,C]=voronoin(X, {'Q8'});
     clmap = colorcube();
     ncl = size(clmap,1);
     verticesPerCell = cell(length(Y), 1);
+    verticesPerCellBefore = cell(length(Y), 1);
+    
     for k=1:length(Y)
         cl = clmap(mod(k,ncl)+1,:);
         sides = C{k};
         VertCell = V(sides(sides~=1),:);
-        indicesOutsideEllipsoid = ((VertCell(:, 1).^2 / xRadius^2) + (VertCell(:, 2).^ 2 / yRadius^2) + (VertCell(:, 3).^2 / zRadius^2)) > 1;
-        VertCell (indicesOutsideEllipsoid, :) = [];
+        verticesPerCellBefore(k, 1) = {VertCell};
+        
+        indicesOutsideEllipsoid = (VertCell(:, 1).^2 / xRadius^2) + (VertCell(:, 2).^ 2 / yRadius^2) + (VertCell(:, 3).^2 / zRadius^2);
+        VertCell (indicesOutsideEllipsoid < 0.9 | indicesOutsideEllipsoid > 1.1, :) = [];
+        %VertCell = replaceVerticesOutsideForEllipsoidPoints(VertCell , pointsInEllipsoid);
         VertCell = [VertCell; 0, 0, 0];
         %VertCell = VertCell(ismember(VertCell, Y, 'rows') == 0, :);
         KVert = convhulln(VertCell);
         %KVert = KVert(sum(KVert ~= (size(VertCell, 1)), 2) == 3, :);
-        patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha',1, 'EdgeColor', 'none')
-        verticesPerCell(k, 1) = {VertCell};
+        patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
+        verticesPerCell(k, 1) = {VertCell(1:end-1, :)};
         hold on;
     end
-    verticesPerCell
+    %plot3(x,y,z,'Marker','.','MarkerEdgeColor','r','MarkerSize',10, 'LineStyle', 'none')
+    
+    %calculatePolygonDistributionFromVerticesInEllipsoid(X, verticesPerCellBefore )
+    calculatePolygonDistributionFromVerticesInEllipsoid(XInitial, verticesPerCell )
+    
 end
 
