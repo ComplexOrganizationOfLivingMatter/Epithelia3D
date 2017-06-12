@@ -4,7 +4,7 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     s = RandStream('mcg16807','Seed',0);
     RandStream.setGlobalStream(s);
     
-    close all
+
 
     %Init all the info for creating the voronoi
     ellipsoidInfo.xCenter = centerOfEllipsoid(1);
@@ -61,13 +61,22 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     
     %Paint the ellipsoid voronoi
     ellipsoidInfo.verticesPerCell = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
+    xs = cellfun(@(x) x(:, 1), ellipsoidInfo.verticesPerCell, 'UniformOutput', false)
+    ys = cellfun(@(x) x(:, 2), ellipsoidInfo.verticesPerCell, 'UniformOutput', false)
+    zs = cellfun(@(x) x(:, 3), ellipsoidInfo.verticesPerCell, 'UniformOutput', false)
+    allTheVertices = [vertcat(xs{:}), vertcat(ys{:}), vertcat(zs{:})];
+    uniqueVertices = unique(allTheVertices, 'rows');
+    goodVertices = zeros(size(uniqueVertices, 1), 1);
+    for vertexIndex = 1:size(uniqueVertices, 1)
+        goodVertices(vertexIndex) = sum(cellfun(@(x) ismember(uniqueVertices(vertexIndex, :), x, 'rows'), ellipsoidInfo.verticesPerCell)) > 2;
+    end
     [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
     ellipsoidInfo.finalCentroids = finalCentroids;
     savefig(strcat('results/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '.fig'));
     %Saving info
     save(strcat('results/ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
     
-    for cellHeight = 0.5:0.5:(min(ellipsoidDimensions)-0.1)
+    for cellHeight = 3.5:0.5:(min(ellipsoidDimensions)-0.1)
         ellipsoidInfo.cellHeight = cellHeight;
         %Creating the reduted centroids form the previous ones and the apical
         %reduction
