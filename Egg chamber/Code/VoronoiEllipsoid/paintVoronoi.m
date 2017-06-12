@@ -26,7 +26,7 @@ function [ verticesPerCell ] = paintVoronoi(x, y, z, xRadius, yRadius, zRadius)
         verticesPerCellBefore(k, 1) = {VertCell};
         
         indicesOutsideEllipsoid = (VertCell(:, 1).^2 / xRadius^2) + (VertCell(:, 2).^ 2 / yRadius^2) + (VertCell(:, 3).^2 / zRadius^2);
-        VertCell (indicesOutsideEllipsoid < 0.85 | indicesOutsideEllipsoid > 1.15, :) = [];
+        VertCell (indicesOutsideEllipsoid < 0.8 | indicesOutsideEllipsoid > 1.2, :) = [];
         indicesOutsideEllipsoid = (VertCell(:, 1).^2 / xRadius^2) + (VertCell(:, 2).^ 2 / yRadius^2) + (VertCell(:, 3).^2 / zRadius^2);
         slightlyBadVertices = indicesOutsideEllipsoid < 0.95 | indicesOutsideEllipsoid > 1.05;
         if any(slightlyBadVertices) 
