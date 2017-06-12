@@ -81,7 +81,7 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
         savefig(strcat('results/ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_apicalReduction', num2str(apicalReduction), '.fig'));
         
         %Saving info
-        save(strcat('results/ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_apicalReduction', strrep(num2str(apicalReduction), '.', ''), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
+        save(strcat('results/ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_apicalReduction', strrep(num2str(apicalReduction), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
     end
 end
 
