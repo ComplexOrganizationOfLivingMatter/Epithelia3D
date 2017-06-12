@@ -10,7 +10,7 @@ function [ polygonDistribution, neighbourhood ] = calculatePolygonDistributionFr
         actualNeighbours = find(cellfun(@(otherCell) any(ismember(actualCell, otherCell, 'rows')), verticesPerCell));
         neighbourhood(cellIndex) = {actualNeighbours(actualNeighbours ~= cellIndex)};
         polygonDistribution(cellIndex) = length(actualNeighbours(actualNeighbours ~= cellIndex));
-        text(centroids(cellIndex, 1), centroids(cellIndex, 2), centroids(cellIndex, 3), num2str(polygonDistribution(cellIndex)));
+        text(centroids(cellIndex, 1)*1.05, centroids(cellIndex, 2)*1.05, centroids(cellIndex, 3)*1.05, num2str(polygonDistribution(cellIndex)));
     end
 end
 
