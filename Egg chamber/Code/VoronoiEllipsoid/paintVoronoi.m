@@ -10,7 +10,7 @@ function [ verticesPerCell ] = paintVoronoi(x, y, z, xRadius, yRadius, zRadius)
     [xEllipsoid, yEllipsoid, zEllipsoid] = ellipsoid(0, 0, 0, xRadius, yRadius, zRadius, 300);
     pointsInEllipsoid = [xEllipsoid(:), yEllipsoid(:), zEllipsoid(:)];
     
-    figure;
+    figure('Visible', 'off');
     [V,C]=voronoin(X);
     %T = delaunayn([XInitial; [0 0 0]]);
     %tetramesh(T,X);
