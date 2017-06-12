@@ -1,0 +1,1 @@
+voronoiOnEllipsoidSurface( centerOfEllipsoid )
