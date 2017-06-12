@@ -16,7 +16,7 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     ellipsoidInfo.zRadius = ellipsoidDimensions(3);
     
     ellipsoidInfo.maxNumberOfCellsInVoronoi = maxNumberOfCellsInVoronoi;
-    ellipsoidInfo.apicalReduction = 0;
+    ellipsoidInfo.cellHeight = 0;
     ellipsoidInfo.minDistanceBetweenCentroids = minDistanceBetweenCentroids;
     
     
@@ -67,21 +67,21 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     %Saving info
     save(strcat('results/ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
     
-    for apicalReduction = 0.1:0.1:0.9
-        ellipsoidInfo.apicalReduction = apicalReduction;
+    for cellHeight = 0.5:0.5:(min(ellipsoidDimensions)-0.1)
+        ellipsoidInfo.cellHeight = cellHeight;
         %Creating the reduted centroids form the previous ones and the apical
         %reduction
-        xReducted = finalCentroids(:, 1) * (ellipsoidInfo.xRadius - apicalReduction) / ellipsoidInfo.xRadius;
-        yReducted = finalCentroids(:, 2) * (ellipsoidInfo.yRadius - apicalReduction) / ellipsoidInfo.yRadius;
-        zReducted = finalCentroids(:, 3) * (ellipsoidInfo.zRadius - apicalReduction) / ellipsoidInfo.zRadius;
+        xReducted = finalCentroids(:, 1) * (ellipsoidInfo.xRadius - cellHeight) / ellipsoidInfo.xRadius;
+        yReducted = finalCentroids(:, 2) * (ellipsoidInfo.yRadius - cellHeight) / ellipsoidInfo.yRadius;
+        zReducted = finalCentroids(:, 3) * (ellipsoidInfo.zRadius - cellHeight) / ellipsoidInfo.zRadius;
 
-        ellipsoidInfo.verticesPerCell = paintVoronoi(xReducted, yReducted, zReducted, ellipsoidInfo.xRadius - apicalReduction, ellipsoidInfo.yRadius - apicalReduction, ellipsoidInfo.zRadius - apicalReduction);
+        ellipsoidInfo.verticesPerCell = paintVoronoi(xReducted, yReducted, zReducted, ellipsoidInfo.xRadius - cellHeight, ellipsoidInfo.yRadius - cellHeight, ellipsoidInfo.zRadius - cellHeight);
         ellipsoidInfo.finalCentroids = horzcat([xReducted, yReducted, zReducted]);
         [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(ellipsoidInfo.finalCentroids, ellipsoidInfo.verticesPerCell);
-        savefig(strcat('results/ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_apicalReduction', num2str(apicalReduction), '.fig'));
+        savefig(strcat('results/ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(cellHeight), '.fig'));
         
         %Saving info
-        save(strcat('results/ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_apicalReduction', strrep(num2str(apicalReduction), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
+        save(strcat('results/ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
     end
 end
 
