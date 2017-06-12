@@ -55,7 +55,21 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
         end
     end
     
-    %
-    save('data/ellipsoid_x1_y06_z06_apicalReduction02', 'ellipsoidInfo', 'centroids', 'minDistanceBetweenCentroids');
+    %Paint the ellipsoid voronoi
+    ellipsoidInfo.verticesPerCell = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
+    [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
+    
+    %Creating the reduted centroids form the previous ones and the apical
+    %reduction
+    xReducted = finalCentroids(:, 1) * (ellipsoidInfo.xRadius - apicalReduction) / ellipsoidInfo.xRadius;
+    yReducted = finalCentroids(:, 2) * (ellipsoidInfo.yRadius - apicalReduction) / ellipsoidInfo.yRadius;
+    zReducted = finalCentroids(:, 3) * (ellipsoidInfo.zRadius - apicalReduction) / ellipsoidInfo.zRadius;
+    ellipsoidInfo.finalCentroids = finalCentroids;
+    ellipsoidInfo.verticesPerCellAtReducted = paintVoronoi(xReducted, yReducted, zReducted, ellipsoidInfo.xRadius - apicalReduction, ellipsoidInfo.yRadius - apicalReduction, ellipsoidInfo.zRadius - apicalReduction);
+    ellipsoidInfo.centroidsReducted = horzcat([xReducted, yReducted, zReducted]);
+    [ ellipsoidInfo.polygonDistributionReducted, ellipsoidInfo.neighbourhoodReducted ] = calculatePolygonDistributionFromVerticesInEllipsoid(ellipsoidInfo.centroidsReducted, ellipsoidInfo.verticesPerCellAtReducted);
+    
+    %Saving info
+    save('data/ellipsoid_x1_y06_z06_apicalReduction02', 'ellipsoidInfo', 'minDistanceBetweenCentroids');
 end
 
