@@ -60,7 +60,7 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     %Paint the ellipsoid voronoi
     ellipsoidInfo.verticesPerCell = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
     [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
-    
+    savefig(strcat('data/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_apicalReduction', num2str(apicalReduction), '.fig'));
     %Creating the reduted centroids form the previous ones and the apical
     %reduction
     xReducted = finalCentroids(:, 1) * (ellipsoidInfo.xRadius - apicalReduction) / ellipsoidInfo.xRadius;
@@ -70,8 +70,8 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     ellipsoidInfo.verticesPerCellAtReducted = paintVoronoi(xReducted, yReducted, zReducted, ellipsoidInfo.xRadius - apicalReduction, ellipsoidInfo.yRadius - apicalReduction, ellipsoidInfo.zRadius - apicalReduction);
     ellipsoidInfo.centroidsReducted = horzcat([xReducted, yReducted, zReducted]);
     [ ellipsoidInfo.polygonDistributionReducted, ellipsoidInfo.neighbourhoodReducted ] = calculatePolygonDistributionFromVerticesInEllipsoid(ellipsoidInfo.centroidsReducted, ellipsoidInfo.verticesPerCellAtReducted);
-    
+    savefig(strcat('data/ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_apicalReduction', num2str(apicalReduction), '.fig'));
     %Saving info
-    save('data/ellipsoid_x1_y06_z06_apicalReduction02', 'ellipsoidInfo', 'minDistanceBetweenCentroids');
+    save(strcat('data/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_apicalReduction', num2str(apicalReduction)), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
 end
 
