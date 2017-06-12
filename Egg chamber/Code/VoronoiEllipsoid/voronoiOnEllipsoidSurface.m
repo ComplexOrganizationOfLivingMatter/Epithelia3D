@@ -3,6 +3,8 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
 %   Detailed explanation goes here
     s = RandStream('mcg16807','Seed',0);
     RandStream.setGlobalStream(s);
+    
+    close all
 
     %Init all the info for creating the voronoi
     ellipsoidInfo.xCenter = centerOfEllipsoid(1);
@@ -71,7 +73,8 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     ellipsoidInfo.centroidsReducted = horzcat([xReducted, yReducted, zReducted]);
     [ ellipsoidInfo.polygonDistributionReducted, ellipsoidInfo.neighbourhoodReducted ] = calculatePolygonDistributionFromVerticesInEllipsoid(ellipsoidInfo.centroidsReducted, ellipsoidInfo.verticesPerCellAtReducted);
     savefig(strcat('results/ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_apicalReduction', num2str(apicalReduction), '.fig'));
+    
     %Saving info
-    save(strcat('results/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_apicalReduction', num2str(apicalReduction)), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
+    save(strcat('results/ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_apicalReduction', strrep(num2str(apicalReduction), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
 end
 
