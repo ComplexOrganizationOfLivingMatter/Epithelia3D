@@ -61,16 +61,47 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     
     %Paint the ellipsoid voronoi
     ellipsoidInfo.verticesPerCell = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
-    xs = cellfun(@(x) x(:, 1), ellipsoidInfo.verticesPerCell, 'UniformOutput', false)
-    ys = cellfun(@(x) x(:, 2), ellipsoidInfo.verticesPerCell, 'UniformOutput', false)
-    zs = cellfun(@(x) x(:, 3), ellipsoidInfo.verticesPerCell, 'UniformOutput', false)
+    xs = cellfun(@(x) x(:, 1), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
+    ys = cellfun(@(x) x(:, 2), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
+    zs = cellfun(@(x) x(:, 3), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
     allTheVertices = [vertcat(xs{:}), vertcat(ys{:}), vertcat(zs{:})];
     uniqueVertices = unique(allTheVertices, 'rows');
-    goodVertices = zeros(size(uniqueVertices, 1), 1);
+    %goodVertices = zeros(size(uniqueVertices, 1), 1);
+    cellsUnifyedPerVertex = cell(size(uniqueVertices, 1), 1);
     for vertexIndex = 1:size(uniqueVertices, 1)
-        goodVertices(vertexIndex) = sum(cellfun(@(x) ismember(uniqueVertices(vertexIndex, :), x, 'rows'), ellipsoidInfo.verticesPerCell)) > 2;
+        %goodVertices(vertexIndex) = sum(cellfun(@(x) ismember(uniqueVertices(vertexIndex, :), x, 'rows'), ellipsoidInfo.verticesPerCell)) > 2;
+        cellsUnifyedPerVertex(vertexIndex) = {find(cellfun(@(x) ismember(uniqueVertices(vertexIndex, :), x, 'rows'), ellipsoidInfo.verticesPerCell))};
     end
-    [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
+    
+    totalNumberOfUniqueVertices = size(uniqueVertices, 1);
+    refinedVertices = uniqueVertices;
+    numberOfVertex = 1;
+    while numberOfVertex <= totalNumberOfUniqueVertices
+        if (any(cellfun(@(x) all(ismember(cellsUnifyedPerVertex{numberOfVertex}, x, 'rows')), cellsUnifyedPerVertex)));
+            cellsUnifyedPerVertex(numberOfVertex) = [];
+            refinedVertices(numberOfVertex, :) = [];
+            numberOfVertex = numberOfVertex - 1;
+            totalNumberOfUniqueVertices = totalNumberOfUniqueVertices - 1;
+        end
+        numberOfVertex = numberOfVertex + 1;
+    end
+    
+    
+    refinedVertices = uniqueVertices(goodVertices == 1, :);
+    ellipsoidInfo.verticesPerCellRefined = cellfun(@(x) x(ismember(x, refinedVertices, 'rows'), :), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
+    figure;
+    clmap = colorcube();
+    ncl = size(clmap,1);
+    
+    for cellIndex = 1:size(ellipsoidInfo.verticesPerCellRefined, 1)
+        cl = clmap(mod(cellIndex,ncl)+1,:);
+        VertCell = ellipsoidInfo.verticesPerCellRefined{cellIndex};
+        KVert = convhulln(VertCell);
+        patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
+        hold on;
+    end
+    
+    [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCellRefined);
     ellipsoidInfo.finalCentroids = finalCentroids;
     savefig(strcat('results/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '.fig'));
     %Saving info
