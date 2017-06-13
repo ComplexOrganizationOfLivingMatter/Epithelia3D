@@ -54,6 +54,6 @@ function [ verticesPerCell ] = paintVoronoi(x, y, z, xRadius, yRadius, zRadius)
         patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
         verticesPerCell(k, 1) = {VertCell(1:end-1, :)};
         hold on;
-    end    
+    end
 end
 

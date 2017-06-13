@@ -61,53 +61,15 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     
     %Paint the ellipsoid voronoi
     ellipsoidInfo.verticesPerCell = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
-    xs = cellfun(@(x) x(:, 1), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
-    ys = cellfun(@(x) x(:, 2), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
-    zs = cellfun(@(x) x(:, 3), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
-    allTheVertices = [vertcat(xs{:}), vertcat(ys{:}), vertcat(zs{:})];
-    uniqueVertices = unique(allTheVertices, 'rows');
-    %goodVertices = zeros(size(uniqueVertices, 1), 1);
-    cellsUnifyedPerVertex = cell(size(uniqueVertices, 1), 1);
-    for vertexIndex = 1:size(uniqueVertices, 1)
-        %goodVertices(vertexIndex) = sum(cellfun(@(x) ismember(uniqueVertices(vertexIndex, :), x, 'rows'), ellipsoidInfo.verticesPerCell)) > 2;
-        cellsUnifyedPerVertex(vertexIndex) = {find(cellfun(@(x) ismember(uniqueVertices(vertexIndex, :), x, 'rows'), ellipsoidInfo.verticesPerCell))};
-    end
+    [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
     
-    totalNumberOfUniqueVertices = size(uniqueVertices, 1);
-    refinedVertices = uniqueVertices;
-    numberOfVertex = 1;
-    while numberOfVertex <= totalNumberOfUniqueVertices
-        sequenceToSearch = 1:totalNumberOfUniqueVertices;
-        sequenceToSearch(numberOfVertex == sequenceToSearch) = [];
-        if (any(cellfun(@(x) all(ismember(cellsUnifyedPerVertex{numberOfVertex}, x, 'rows')), cellsUnifyedPerVertex(sequenceToSearch))));
-            cellsUnifyedPerVertex(numberOfVertex) = [];
-            refinedVertices(numberOfVertex, :) = [];
-            numberOfVertex = numberOfVertex - 1;
-            totalNumberOfUniqueVertices = totalNumberOfUniqueVertices - 1;
-        end
-        numberOfVertex = numberOfVertex + 1;
-    end
-
-    ellipsoidInfo.verticesPerCellRefined = cellfun(@(x) x(ismember(x, refinedVertices, 'rows'), :), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
-    figure;
-    clmap = colorcube();
-    ncl = size(clmap,1);
-    
-    for cellIndex = 1:size(ellipsoidInfo.verticesPerCellRefined, 1)
-        cl = clmap(mod(cellIndex,ncl)+1,:);
-        VertCell = ellipsoidInfo.verticesPerCellRefined{cellIndex};
-        KVert = convhulln(VertCell);
-        patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
-        hold on;
-    end
-    
-    [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCellRefined);
+    [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
     ellipsoidInfo.finalCentroids = finalCentroids;
     savefig(strcat('results/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '.fig'));
     %Saving info
     save(strcat('results/ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
     
-    for cellHeight = 3.5:0.5:(min(ellipsoidDimensions)-0.1)
+    for cellHeight = 0.5:0.5:(min(ellipsoidDimensions)-0.1)
         ellipsoidInfo.cellHeight = cellHeight;
         %Creating the reduted centroids form the previous ones and the apical
         %reduction
@@ -116,6 +78,8 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
         zReducted = finalCentroids(:, 3) * (ellipsoidInfo.zRadius - cellHeight) / ellipsoidInfo.zRadius;
 
         ellipsoidInfo.verticesPerCell = paintVoronoi(xReducted, yReducted, zReducted, ellipsoidInfo.xRadius - cellHeight, ellipsoidInfo.yRadius - cellHeight, ellipsoidInfo.zRadius - cellHeight);
+        [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
+        
         ellipsoidInfo.finalCentroids = horzcat([xReducted, yReducted, zReducted]);
         [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(ellipsoidInfo.finalCentroids, ellipsoidInfo.verticesPerCell);
         savefig(strcat('results/ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(cellHeight), '.fig'));
