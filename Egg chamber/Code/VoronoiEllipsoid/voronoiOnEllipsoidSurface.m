@@ -76,14 +76,18 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
         zReducted = finalCentroids(:, 3) * (ellipsoidInfo.zRadius - cellHeight) / ellipsoidInfo.zRadius;
 
         ellipsoidInfo.verticesPerCell = paintVoronoi(xReducted, yReducted, zReducted, ellipsoidInfo.xRadius - cellHeight, ellipsoidInfo.yRadius - cellHeight, ellipsoidInfo.zRadius - cellHeight);
+        ellipsoidInfo.finalCentroids = horzcat([xReducted, yReducted, zReducted]);
         [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
         
-        ellipsoidInfo.finalCentroids = horzcat([xReducted, yReducted, zReducted]);
         [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(ellipsoidInfo.finalCentroids, ellipsoidInfo.verticesPerCell);
         savefig(strcat('results/ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(cellHeight), '.fig'));
         
         %Saving info
         save(strcat('results/ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
+        
+        %Creating heatmap
+        paintHeatmapOfTransitions( ellipsoidInfo, initialNeighbourhood );
+        savefig(strcat('results/heatMap_ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(cellHeight), '.fig'));
     end
 end
 
