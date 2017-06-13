@@ -77,7 +77,9 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     refinedVertices = uniqueVertices;
     numberOfVertex = 1;
     while numberOfVertex <= totalNumberOfUniqueVertices
-        if (any(cellfun(@(x) all(ismember(cellsUnifyedPerVertex{numberOfVertex}, x, 'rows')), cellsUnifyedPerVertex)));
+        sequenceToSearch = 1:totalNumberOfUniqueVertices;
+        sequenceToSearch(numberOfVertex == sequenceToSearch) = [];
+        if (any(cellfun(@(x) all(ismember(cellsUnifyedPerVertex{numberOfVertex}, x, 'rows')), cellsUnifyedPerVertex(sequenceToSearch))));
             cellsUnifyedPerVertex(numberOfVertex) = [];
             refinedVertices(numberOfVertex, :) = [];
             numberOfVertex = numberOfVertex - 1;
