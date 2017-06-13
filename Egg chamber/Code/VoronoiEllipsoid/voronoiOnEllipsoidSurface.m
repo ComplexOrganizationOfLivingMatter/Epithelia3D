@@ -3,8 +3,6 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
 %   Detailed explanation goes here
     s = RandStream('mcg16807','Seed',0);
     RandStream.setGlobalStream(s);
-    
-
 
     %Init all the info for creating the voronoi
     ellipsoidInfo.xCenter = centerOfEllipsoid(1);

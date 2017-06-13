@@ -1,7 +1,8 @@
 function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
 %REFINEVERTICESOFVORONOI Summary of this function goes here
 %   Detailed explanation goes here
-xs = cellfun(@(x) x(:, 1), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
+
+    xs = cellfun(@(x) x(:, 1), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
     ys = cellfun(@(x) x(:, 2), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
     zs = cellfun(@(x) x(:, 3), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
     allTheVertices = [vertcat(xs{:}), vertcat(ys{:}), vertcat(zs{:})];
@@ -12,7 +13,7 @@ xs = cellfun(@(x) x(:, 1), ellipsoidInfo.verticesPerCell, 'UniformOutput', false
         %goodVertices(vertexIndex) = sum(cellfun(@(x) ismember(uniqueVertices(vertexIndex, :), x, 'rows'), ellipsoidInfo.verticesPerCell)) > 2;
         cellsUnifyedPerVertex(vertexIndex) = {find(cellfun(@(x) ismember(uniqueVertices(vertexIndex, :), x, 'rows'), ellipsoidInfo.verticesPerCell))};
     end
-    
+
     totalNumberOfUniqueVertices = size(uniqueVertices, 1);
     refinedVertices = uniqueVertices;
     numberOfVertex = 1;
@@ -29,11 +30,10 @@ xs = cellfun(@(x) x(:, 1), ellipsoidInfo.verticesPerCell, 'UniformOutput', false
     end
 
     ellipsoidInfo.verticesPerCell = cellfun(@(x) x(ismember(x, refinedVertices, 'rows'), :), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
-    close all
     figure('Visible', 'off');
     clmap = colorcube();
     ncl = size(clmap,1);
-    
+
     for cellIndex = 1:size(ellipsoidInfo.verticesPerCell, 1)
         cl = clmap(mod(cellIndex,ncl)+1,:);
         VertCell = ellipsoidInfo.verticesPerCell{cellIndex};
