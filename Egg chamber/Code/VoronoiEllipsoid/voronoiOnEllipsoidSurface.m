@@ -87,9 +87,7 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
         end
         numberOfVertex = numberOfVertex + 1;
     end
-    
-    
-    refinedVertices = uniqueVertices(goodVertices == 1, :);
+
     ellipsoidInfo.verticesPerCellRefined = cellfun(@(x) x(ismember(x, refinedVertices, 'rows'), :), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
     figure;
     clmap = colorcube();
