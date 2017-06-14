@@ -1,4 +1,4 @@
-function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12PostCurvature,L34PostCurvature,CoordA,CoordB,LEdgeTransition,Coord1,Coord2,Coord3,Coord4]=recalculateCentroidsGastrulationHeightTranPrediction(pathStructure,nMotif,hTransition,curvature,alpha,hCell,validCentroidCell)
+function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12PostCurvature,L34PostCurvature,CoordA,CoordB,LEdgeTransition,Coord1,Coord2,Coord3,Coord4]=predictionWithNotModifiedCentroids(pathStructure,nMotif,hTransition,curvature,alpha,hCell,validCentroidCell)
 
 
     addpath lib
@@ -35,20 +35,19 @@ function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12
     %CENTROID ARE CORRECT IN 3 NEIGHS CELLS
     if (validCentroidCell==3)
         %Distance edge centroid
-        LCentroids=pdist([cent3neigh(1,:);cent3neigh(2,:)]);
-        X1= asin(mod((sin(alpha)*LCentroids)/D,1))*(D/2); Y1=(cos(alpha)*LCentroids)/2;
+        LCentroids3=pdist([cent3neigh(1,:);cent3neigh(2,:)]);
+        X1= asin(mod((sin(alpha)*LCentroids3)/D,1))*(D/2); Y1=(cos(alpha)*LCentroids3)/2;
         X2=-X1;    Y2=-Y1;
      
         
         Coord1=[X1,Y1];
         Coord2=[X2,Y2];
         
-        %get distances between vertices and centroids 
-        distX=mean([pdist([CoordA;Coord1]),pdist([CoordA;Coord2])]);
-        distY=mean([pdist([CoordB;Coord1]),pdist([CoordB;Coord2])]);
-
-        L_03=distX+LEdgeTransition/2;
-        L_04=distY+LEdgeTransition/2;
+        %get distances between vertices and centroids   
+        L34=pdist([cent2neigh(1,:);cent2neigh(2,:)]);
+        L_03=L34/2;
+        L_04=L_03;
+        
         X3=-L_03*cos(alpha);Y3=L_03*sin(alpha);
         X4=L_04*cos(alpha);Y4=-L_04*sin(alpha);
         Coord3=[X3,Y3];
@@ -60,26 +59,22 @@ function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12
     %CENTROID ARE CORRECT IN 2 NEIGHS CELLS
     if (validCentroidCell==2)
         %Distance edge centroid
-        LCentroids=pdist([cent2neigh(1,:);cent2neigh(2,:)]);
-        X3= -asin(mod((cos(alpha)*LCentroids)/D,1))*(D/2); Y3=(sin(alpha)*LCentroids)/2;
+        LCentroids2=pdist([cent2neigh(1,:);cent2neigh(2,:)]);
+        X3= -asin(mod((cos(alpha)*LCentroids2)/D,1))*(D/2); Y3=(sin(alpha)*LCentroids2)/2;
         X4=-X3;    Y4=-Y3;
         
         Coord3=[X3,Y3];
         Coord4=[X4,Y4];
         %get distances between vertices and centroids 
-        distX=pdist([CoordA;Coord3]);
-        distY=pdist([CoordB;Coord4]);
-
-        angAux=acos((LEdgeTransition/2)/mean([distX,distY]));
-        L_01=mean([distX,distY])*sin(angAux);
+        L12=pdist([cent3neigh(1,:);cent3neigh(2,:)]);
+        L_01=L12/2;
         L_02=L_01;
         
         X1=-L_01*sin(alpha);Y1=-L_01*cos(alpha);
         X2=L_02*sin(alpha);Y2=L_02*cos(alpha);
-        
         Coord1=[X1,Y1];
         Coord2=[X2,Y2];
-             
+                       
     end
    
     

@@ -1,5 +1,5 @@
 %Voronoi - Salivary gland model
-function [seeds,seeds_values_before,L_original,border_cells,valid_cells,pathToSaveData]=Voronoi_salivary_gland_generator(i,j,H,W,seeds,seeds_values_before)
+function [seeds,seeds_values_before,L_original,border_cells,valid_cells,pathToSaveData]=Voronoi_salivary_gland_generator(i,j,H,W,seeds,seeds_values_before,folder2save)
 
         %% Generate Voronoi image
         image=zeros(H,W); % Define image to assign seeds
@@ -113,15 +113,15 @@ function [seeds,seeds_values_before,L_original,border_cells,valid_cells,pathToSa
         
         %% Saving
         
-        FOLDER_1='..\Images\3D Voronoi model\External cylindrical voronoi';
-        FOLDER_2='..\Data\3D Voronoi model\External cylindrical voronoi';
+        FOLDER_1=['..\..\Images\3D Voronoi model\' folder2save];
+        FOLDER_2=['..\..\Data\3D Voronoi model\Cylindrical voronoi\' folder2save];
 
-        Name=['Image_',num2str(i),'_Diagram_',num2str(j),'_Vonoroi_out'];
+        Name=['Image_',num2str(i),'_Diagram_',num2str(j)];
         pathToSaveData=[FOLDER_2 '\' Name '.mat'];
         
         save(pathToSaveData,'L_original','seeds','new_seeds','seeds_values_before','new_seeds_values','border_cells','valid_cells','no_valid_cells')
         
-        imwrite(L_original, (strcat(FOLDER_1,'\',Name,'.png')))
+        imwrite(L_original, [FOLDER_1  '\' Name '.png'])
         
         %% Updating
         seeds=new_seeds;

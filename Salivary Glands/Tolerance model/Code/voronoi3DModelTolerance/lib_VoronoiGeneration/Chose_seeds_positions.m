@@ -38,5 +38,5 @@ end
 
 seeds = seeds(1:end,:);
 
-save(['..\Seeds\Salivary_Gland_outside_' num2str(H) 'x' num2str(W) '_' num2str(n_seeds) '_seeds_' num2str(indexImage) '.mat'],'seeds')
+save(['..\..\Seeds\' num2str(n_seeds)  'seeds\Salivary_Glande_' num2str(H) 'x' num2str(W) '_' num2str(n_seeds) '_seeds_' num2str(indexImage) '.mat'],'seeds')
     
