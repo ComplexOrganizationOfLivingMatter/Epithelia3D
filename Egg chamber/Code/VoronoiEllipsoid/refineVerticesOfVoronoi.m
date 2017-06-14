@@ -17,18 +17,23 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
     totalNumberOfUniqueVertices = size(uniqueVertices, 1);
     refinedVertices = uniqueVertices;
     numberOfVertex = 1;
+    removedVertices = zeros(1, 3);
     while numberOfVertex <= totalNumberOfUniqueVertices
         sequenceToSearch = 1:totalNumberOfUniqueVertices;
         sequenceToSearch(numberOfVertex == sequenceToSearch) = [];
         if (any(cellfun(@(x) all(ismember(cellsUnifyedPerVertex{numberOfVertex}, x)) & size(cellsUnifyedPerVertex{numberOfVertex},1) < size(x, 1), cellsUnifyedPerVertex(sequenceToSearch))));
             cellsUnifyedPerVertex(numberOfVertex) = [];
+            removedVertices(end+1, :) = refinedVertices(numberOfVertex, :);
             refinedVertices(numberOfVertex, :) = [];
             numberOfVertex = numberOfVertex - 1;
             totalNumberOfUniqueVertices = totalNumberOfUniqueVertices - 1;
         end
         numberOfVertex = numberOfVertex + 1;
     end
+    %Removing the first item 0 0 0
+    removedVertices (1, :) = [];
     
+    ellipsoidInfo.removedVertices = removedVertices;
     ellipsoidInfo.vertices = refinedVertices;
     ellipsoidInfo.verticesConnectCells = cellsUnifyedPerVertex;
     ellipsoidInfo.verticesPerCell = cellfun(@(x) x(ismember(x, refinedVertices, 'rows'), :), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
@@ -43,6 +48,7 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
         patch('Vertices',[VertCell; ellipsoidInfo.finalCentroids(cellIndex, :)],'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
         hold on;
     end
+    plot3(removedVertices(:, 1), removedVertices(:, 2), removedVertices(:, 3),'Marker','.','MarkerEdgeColor','r','MarkerSize',10, 'LineStyle', 'none')
     axis equal
 end
 
