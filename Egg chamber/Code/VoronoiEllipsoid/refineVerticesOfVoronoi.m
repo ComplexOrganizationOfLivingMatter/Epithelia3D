@@ -34,7 +34,7 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
                 actualVerticesPerCell = ellipsoidInfo.verticesPerCell{i};
                 foundVerticesToSubstitute = ismember(actualVerticesPerCell, actualRefinedVertices(numberOfVertex, :), 'rows');
                 if any(foundVerticesToSubstitute)
-                    actualVerticesPerCell(findfoundVerticesToSubstitute, :) = [];
+                    actualVerticesPerCell(foundVerticesToSubstitute, :) = [];
                     actualVerticesPerCell(end+1, :) = actualRefinedVertices(indicesOfConvergentCells(1), :);
                     ellipsoidInfo.verticesPerCell{i} = actualVerticesPerCell;
                 end
