@@ -25,6 +25,8 @@ function [ ] = paintHeatmapOfTransitions( ellipsoidInfo, initialNeighbourhood )
         
         while size(actualVerticesConnectCells, 1) > 0
             nextEdge = find(cellfun(@(x) sum(ismember(previousVerticesConnectCells, x)) == 2, mat2cell(actualVerticesConnectCells, ones(size(actualVerticesConnectCells, 1), 1), 3)));
+            %TODO: peta porque las aristas no cierran la celula, pero el
+            %error no esta aqui, esta en el refineVertices
             perimeterEdges(end+1, :) = ellipsoidInfo.vertices(indicesOfVertices(nextEdge(1)), :);
             previousVerticesConnectCells = actualVerticesConnectCells(nextEdge(1), :);
             actualVerticesConnectCells(nextEdge(1), :) = [];
