@@ -1,3 +1,7 @@
 
-
-voronoiOnEllipsoidSurface( [0 0 0], [1 0.6 0.6], 600, 0.2, 0.1 );
+addpath(genpath('VoronoiEllipsoid'));
+addpath(genpath('lib'));
+close all
+for radius = 5:9
+    voronoiOnEllipsoidSurface( [0 0 0], [10 radius radius], 400, 1 );
+end
