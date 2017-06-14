@@ -74,7 +74,6 @@ hTranProf={};
 
 [hTranEc{end+1,1},hTranEc{end+1,2},hTranEc{end+1,3},hTranEc{end+1,4},hTranEc{end+1,5},hTranEc{end+1,6},hTranEc{end+1,7},hTranEc{end+1,8},hTranEc{end+1,9},hTranEc{end+1,10},hTranEc{end+1,11},hTranEc{end+1,12},hTranEc{end+1,13},hTranEc{end+1,14},hTranEc{end+1,15},hTranEc{end+1,16},hTranEc{end+1,17}]=recalculateCentroidsGlandsHeightTranPrediction(Ecadhipaths{1},1,[11,7,9,10],12.05*micronsToPixels,0.218,68.53*micronsToPixels,deg2rad(11.3),27.11*micronsToPixels,3); %rareeee motif
 [hTranEc{end+1,1},hTranEc{end+1,2},hTranEc{end+1,3},hTranEc{end+1,4},hTranEc{end+1,5},hTranEc{end+1,6},hTranEc{end+1,7},hTranEc{end+1,8},hTranEc{end+1,9},hTranEc{end+1,10},hTranEc{end+1,11},hTranEc{end+1,12},hTranEc{end+1,13},hTranEc{end+1,14},hTranEc{end+1,15},hTranEc{end+1,16},hTranEc{end+1,17}]=recalculateCentroidsGlandsHeightTranPrediction(Ecadhipaths{2},1,[25,20,22,24],5.14*micronsToPixels,0.092,99.59*micronsToPixels,deg2rad(1),41.14*micronsToPixels,3);
-[hTranEc{end+1,1},hTranEc{end+1,2},hTranEc{end+1,3},hTranEc{end+1,4},hTranEc{end+1,5},hTranEc{end+1,6},hTranEc{end+1,7},hTranEc{end+1,8},hTranEc{end+1,9},hTranEc{end+1,10},hTranEc{end+1,11},hTranEc{end+1,12},hTranEc{end+1,13},hTranEc{end+1,14},hTranEc{end+1,15},hTranEc{end+1,16},hTranEc{end+1,17}]=recalculateCentroidsGlandsHeightTranPrediction(Ecadhipaths{4},'end',[97,86,71,78],33.7*micronsToPixels,0.156,80.1*micronsToPixels,deg2rad(11),33.7*micronsToPixels,3);
 
 %Overproliferation
 
