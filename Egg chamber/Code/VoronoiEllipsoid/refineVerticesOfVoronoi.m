@@ -14,43 +14,46 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
         cellsUnifiedPerVertex(vertexIndex) = {find(cellfun(@(x) ismember(uniqueVertices(vertexIndex, :), x, 'rows'), ellipsoidInfo.verticesPerCell))};
     end
 
-    totalNumberOfUniqueVertices = size(uniqueVertices, 1);
-    refinedVertices = uniqueVertices;
-    numberOfVertex = 1;
-    removedVertices = zeros(1, 3);
+    %totalNumberOfUniqueVertices = size(uniqueVertices, 1);
+    %refinedVertices = uniqueVertices;
+    %numberOfVertex = 1;
+    refinedVertices = uniqueVertices(cellfun(@(x) size(x, 1) > 2, cellsUnifiedPerVertex), :);
     
-    while numberOfVertex <= totalNumberOfUniqueVertices
-        sequenceToSearch = 1:totalNumberOfUniqueVertices;
-        sequenceToSearch(numberOfVertex == sequenceToSearch) = [];
-        actualRefinedVertices = refinedVertices(sequenceToSearch, :);
-        convergingCells = cellfun(@(x) all(ismember(cellsUnifiedPerVertex{numberOfVertex}, x)), cellsUnifiedPerVertex(sequenceToSearch));
-        if (any(convergingCells))
-            cellsUnifiedPerVertex(numberOfVertex) = [];
-            removedVertices(end+1, :) = actualRefinedVertices(numberOfVertex, :);
-            indicesOfConvergentCells = find(convergingCells);
-            
-            %Substitute vertex for the one that converget it
-            for i = 1:size(ellipsoidInfo.verticesPerCell, 1)
-                actualVerticesPerCell = ellipsoidInfo.verticesPerCell{i};
-                foundVerticesToSubstitute = ismember(actualVerticesPerCell, actualRefinedVertices(numberOfVertex, :), 'rows');
-                if any(foundVerticesToSubstitute)
-                    actualVerticesPerCell(foundVerticesToSubstitute, :) = [];
-                    actualVerticesPerCell(end+1, :) = actualRefinedVertices(indicesOfConvergentCells(1), :);
-                    ellipsoidInfo.verticesPerCell{i} = actualVerticesPerCell;
-                end
-            end
-            refinedVertices(numberOfVertex, :) = [];
-            numberOfVertex = numberOfVertex - 1;
-            totalNumberOfUniqueVertices = totalNumberOfUniqueVertices - 1;
-        end
-        numberOfVertex = numberOfVertex + 1;
-    end
+    removedVertices = uniqueVertices(cellfun(@(x) size(x, 1) <= 2, cellsUnifiedPerVertex), :);
+    %removedVertices = zeros(1, 3);
+    
+%     while numberOfVertex <= totalNumberOfUniqueVertices
+%         sequenceToSearch = 1:totalNumberOfUniqueVertices;
+%         sequenceToSearch(numberOfVertex == sequenceToSearch) = [];
+%         actualRefinedVertices = refinedVertices(sequenceToSearch, :);
+%         convergingCells = cellfun(@(x) all(ismember(cellsUnifiedPerVertex{numberOfVertex}, x)), cellsUnifiedPerVertex(sequenceToSearch));
+%         if (any(convergingCells))
+%             cellsUnifiedPerVertex(numberOfVertex) = [];
+%             removedVertices(end+1, :) = actualRefinedVertices(numberOfVertex, :);
+%             indicesOfConvergentCells = find(convergingCells);
+%             
+%             %Substitute vertex for the one that converget it
+%             for i = 1:size(ellipsoidInfo.verticesPerCell, 1)
+%                 actualVerticesPerCell = ellipsoidInfo.verticesPerCell{i};
+%                 foundVerticesToSubstitute = ismember(actualVerticesPerCell, actualRefinedVertices(numberOfVertex, :), 'rows');
+%                 if any(foundVerticesToSubstitute)
+%                     actualVerticesPerCell(foundVerticesToSubstitute, :) = [];
+%                     actualVerticesPerCell(end+1, :) = actualRefinedVertices(indicesOfConvergentCells(1), :);
+%                     ellipsoidInfo.verticesPerCell{i} = actualVerticesPerCell;
+%                 end
+%             end
+%             refinedVertices(numberOfVertex, :) = [];
+%             numberOfVertex = numberOfVertex - 1;
+%             totalNumberOfUniqueVertices = totalNumberOfUniqueVertices - 1;
+%         end
+%         numberOfVertex = numberOfVertex + 1;
+%     end
     %Removing the first item 0 0 0
-    removedVertices (1, :) = [];
+    %removedVertices (1, :) = [];
     
     ellipsoidInfo.removedVertices = removedVertices;
     ellipsoidInfo.vertices = refinedVertices;
-    ellipsoidInfo.verticesConnectCells = cellsUnifiedPerVertex;
+    ellipsoidInfo.verticesConnectCells = cellsUnifiedPerVertex(cellfun(@(x) size(x, 1) > 2, cellsUnifiedPerVertex));
     ellipsoidInfo.verticesPerCell = cellfun(@(x) unique(x(ismember(x, refinedVertices, 'rows'), :), 'rows'), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
     figure('Visible', 'off');
     clmap = colorcube();
