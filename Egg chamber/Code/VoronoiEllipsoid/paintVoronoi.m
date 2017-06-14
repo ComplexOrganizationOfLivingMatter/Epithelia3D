@@ -55,5 +55,6 @@ function [ verticesPerCell ] = paintVoronoi(x, y, z, xRadius, yRadius, zRadius)
         verticesPerCell(k, 1) = {VertCell(1:end-1, :)};
         hold on;
     end
+    axis equal
 end
 

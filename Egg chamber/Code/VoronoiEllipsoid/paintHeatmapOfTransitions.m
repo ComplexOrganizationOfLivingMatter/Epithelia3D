@@ -16,5 +16,6 @@ function [ ] = paintHeatmapOfTransitions( ellipsoidInfo, initialNeighbourhood )
         patch('Vertices',[VertCell; ellipsoidInfo.finalCentroids(cellIndex, :)],'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
         hold on;
     end
+    axis equal
 end
 

@@ -41,5 +41,6 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
         patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
         hold on;
     end
+    axis equal
 end
 
