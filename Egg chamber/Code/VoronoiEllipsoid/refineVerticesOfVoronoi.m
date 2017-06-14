@@ -20,7 +20,7 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
     while numberOfVertex <= totalNumberOfUniqueVertices
         sequenceToSearch = 1:totalNumberOfUniqueVertices;
         sequenceToSearch(numberOfVertex == sequenceToSearch) = [];
-        if (any(cellfun(@(x) all(ismember(cellsUnifyedPerVertex{numberOfVertex}, x, 'rows')), cellsUnifyedPerVertex(sequenceToSearch))));
+        if (any(cellfun(@(x) all(ismember(cellsUnifyedPerVertex{numberOfVertex}, x)) & size(cellsUnifyedPerVertex{numberOfVertex},1) < size(x, 1), cellsUnifyedPerVertex(sequenceToSearch))));
             cellsUnifyedPerVertex(numberOfVertex) = [];
             refinedVertices(numberOfVertex, :) = [];
             numberOfVertex = numberOfVertex - 1;
@@ -28,7 +28,9 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
         end
         numberOfVertex = numberOfVertex + 1;
     end
-
+    
+    ellipsoidInfo.vertices = refinedVertices;
+    ellipsoidInfo.verticesConnectCells = cellsUnifyedPerVertex;
     ellipsoidInfo.verticesPerCell = cellfun(@(x) x(ismember(x, refinedVertices, 'rows'), :), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
     figure('Visible', 'off');
     clmap = colorcube();
@@ -37,8 +39,8 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
     for cellIndex = 1:size(ellipsoidInfo.verticesPerCell, 1)
         cl = clmap(mod(cellIndex,ncl)+1,:);
         VertCell = ellipsoidInfo.verticesPerCell{cellIndex};
-        KVert = convhulln(VertCell);
-        patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
+        KVert = convhulln([VertCell; ellipsoidInfo.finalCentroids(cellIndex, :)]);
+        patch('Vertices',[VertCell; ellipsoidInfo.finalCentroids(cellIndex, :)],'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
         hold on;
     end
     axis equal

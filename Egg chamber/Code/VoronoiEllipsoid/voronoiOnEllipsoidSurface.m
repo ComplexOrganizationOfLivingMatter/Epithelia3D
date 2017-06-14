@@ -59,8 +59,9 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     
     %Paint the ellipsoid voronoi
     ellipsoidInfo.verticesPerCell = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
-    [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
     ellipsoidInfo.finalCentroids = finalCentroids;
+    
+    [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
     
     [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
     savefig(strcat('results/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '.fig'));
