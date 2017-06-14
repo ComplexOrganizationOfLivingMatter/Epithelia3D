@@ -60,13 +60,14 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     %Paint the ellipsoid voronoi
     ellipsoidInfo.verticesPerCell = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
     [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
+    ellipsoidInfo.finalCentroids = finalCentroids;
     
     [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
-    ellipsoidInfo.finalCentroids = finalCentroids;
     savefig(strcat('results/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '.fig'));
     %Saving info
     save(strcat('results/ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
-    
+    initialNeighbourhood = ellipsoidInfo.neighbourhood;
+
     for cellHeight = 0.5:0.5:(min(ellipsoidDimensions)-0.1)
         ellipsoidInfo.cellHeight = cellHeight;
         %Creating the reduted centroids form the previous ones and the apical
