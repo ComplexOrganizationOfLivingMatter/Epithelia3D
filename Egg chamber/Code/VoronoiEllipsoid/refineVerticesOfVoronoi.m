@@ -18,24 +18,28 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
     refinedVertices = uniqueVertices;
     numberOfVertex = 1;
     removedVertices = zeros(1, 3);
+    
     while numberOfVertex <= totalNumberOfUniqueVertices
         sequenceToSearch = 1:totalNumberOfUniqueVertices;
         sequenceToSearch(numberOfVertex == sequenceToSearch) = [];
-        convergingCells = cellfun(@(x) all(ismember(cellsUnifiedPerVertex{numberOfVertex}, x)) & size(cellsUnifiedPerVertex{numberOfVertex},1) < size(x, 1), cellsUnifiedPerVertex(sequenceToSearch));
+        actualRefinedVertices = refinedVertices(sequenceToSearch, :);
+        convergingCells = cellfun(@(x) all(ismember(cellsUnifiedPerVertex{numberOfVertex}, x)), cellsUnifiedPerVertex(sequenceToSearch));
         if (any(convergingCells))
             cellsUnifiedPerVertex(numberOfVertex) = [];
-            removedVertices(end+1, :) = refinedVertices(numberOfVertex, :);
+            removedVertices(end+1, :) = actualRefinedVertices(numberOfVertex, :);
             indicesOfConvergentCells = find(convergingCells);
             
             %Substitute vertex for the one that converget it
             for i = 1:size(ellipsoidInfo.verticesPerCell, 1)
                 actualVerticesPerCell = ellipsoidInfo.verticesPerCell{i};
-                foundVerticesToSubstitute = ismember(actualVerticesPerCell, uniqueVertices(numberOfVertex, :), 'rows');
+                foundVerticesToSubstitute = ismember(actualVerticesPerCell, actualRefinedVertices(numberOfVertex, :), 'rows');
                 if any(foundVerticesToSubstitute)
-                    actualVerticesPerCell(foundVerticesToSubstitute, :) = uniqueVertices(indicesOfConvergentCells(1), :);
+                    actualVerticesPerCell(findfoundVerticesToSubstitute, :) = [];
+                    actualVerticesPerCell(end+1, :) = actualRefinedVertices(indicesOfConvergentCells(1), :);
                     ellipsoidInfo.verticesPerCell{i} = actualVerticesPerCell;
                 end
             end
+            refinedVertices(numberOfVertex, :) = [];
             numberOfVertex = numberOfVertex - 1;
             totalNumberOfUniqueVertices = totalNumberOfUniqueVertices - 1;
         end
