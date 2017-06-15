@@ -1,4 +1,4 @@
-function [ verticesPerCell ] = paintVoronoi(x, y, z, xRadius, yRadius, zRadius)
+function [ verticesPerCell,verticesPerCellBefore ] = paintVoronoi(x, y, z, xRadius, yRadius, zRadius)
 %PAINTVORONOI Summary of this function goes here
 %   Detailed explanation goes here
     %figure('Color','w') 
@@ -25,15 +25,20 @@ function [ verticesPerCell ] = paintVoronoi(x, y, z, xRadius, yRadius, zRadius)
         VertCell = V(sides(sides~=1),:);
         verticesPerCellBefore(k, 1) = {VertCell};
         indicesOutsideEllipsoid = (VertCell(:, 1).^2 / xRadius^2) + (VertCell(:, 2).^ 2 / yRadius^2) + (VertCell(:, 3).^2 / zRadius^2);
-        VertCell (indicesOutsideEllipsoid < 0.8 | indicesOutsideEllipsoid > 1.2, :) = [];
+        VertCellOutlayers=VertCell (indicesOutsideEllipsoid < 0.7 | indicesOutsideEllipsoid > 1.3, :);
+        VertCell (indicesOutsideEllipsoid < 0.7 | indicesOutsideEllipsoid > 1.3, :) = [];
         
         indicesOutsideEllipsoid = (VertCell(:, 1).^2 / xRadius^2) + (VertCell(:, 2).^ 2 / yRadius^2) + (VertCell(:, 3).^2 / zRadius^2);
 
         upSide = xRadius^2 * yRadius^2 * zRadius^2;
         format long
         downSide = (yRadius^2 * zRadius^2 * VertCell(indicesOutsideEllipsoid > 1, 1).^2) + (xRadius^2 * zRadius^2 * VertCell(indicesOutsideEllipsoid > 1, 2).^2) + (yRadius^2 * xRadius^2 * VertCell(indicesOutsideEllipsoid > 1, 3).^2);
+        downSideOutLayers=(yRadius^2 * zRadius^2 * VertCellOutlayers(:, 1).^2) + (xRadius^2 * zRadius^2 * VertCellOutlayers(:, 2).^2) + (yRadius^2 * xRadius^2 * VertCellOutlayers(:, 3).^2);
         conversorFactor = sqrt(upSide./downSide);
+        conversorFactorOutLayers=sqrt(upSide./downSideOutLayers);
         VertCell(indicesOutsideEllipsoid > 1, :) = arrayfun(@(x, y) x * y, VertCell(indicesOutsideEllipsoid > 1, :), repmat(conversorFactor, 1, 3));
+        VertCellOutlayers(:, :) = arrayfun(@(x, y) x * y, VertCellOutlayers, repmat(conversorFactorOutLayers, 1, 3));
+        
         %         indicesOutsideEllipsoid = (VertCell(:, 1).^2 / xRadius^2) + (VertCell(:, 2).^ 2 / yRadius^2) + (VertCell(:, 3).^2 / zRadius^2);
 %         slightlyBadVertices = indicesOutsideEllipsoid < 0.99 | indicesOutsideEllipsoid > 1.01;
 %         if any(slightlyBadVertices) 
@@ -53,6 +58,7 @@ function [ verticesPerCell ] = paintVoronoi(x, y, z, xRadius, yRadius, zRadius)
         %KVert = KVert(sum(KVert ~= (size(VertCell, 1)), 2) == 3, :);
         patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
         verticesPerCell(k, 1) = {VertCell(1:end-1, :)};
+        verticesPerCellBefore(k,1)={VertCellOutlayers(:, :)};
         hold on;
     end
     axis equal
