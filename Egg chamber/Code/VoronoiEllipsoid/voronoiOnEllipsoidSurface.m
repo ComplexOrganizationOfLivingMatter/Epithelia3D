@@ -69,6 +69,7 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     save(strcat('..\resultsVoronoiEllipsoid/ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
     initialEllipsoid = ellipsoidInfo;
 
+    transitionsCSVInfo = {};
     for cellHeight = 0.5:0.5:(min(ellipsoidDimensions)-0.1)
         ellipsoidInfo.cellHeight = cellHeight;
         %Creating the reduted centroids form the previous ones and the apical
@@ -88,13 +89,14 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
             save(strcat('..\resultsVoronoiEllipsoid/ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
 
             %Creating heatmap
-            paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid);
+            transitionsCSVInfo(end+1) = {cellHeight, struct2table(paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid))};
         catch mexception
             disp(strcat('Error in creating ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius), ' and cell height=', num2str(cellHeight)));
             disp(mexception.getReport);
             disp('--------------------------');
         end
     end
+    writetable(vertcat(transitionsCSVInfo{:}), strcat('..\resultsVoronoiEllipsoid/transitions_in_ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')))
     %You can see the figures:
     %set(get(0,'children'),'visible','on')
 end
