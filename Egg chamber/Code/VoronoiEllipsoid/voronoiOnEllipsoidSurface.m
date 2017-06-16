@@ -89,7 +89,9 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
             save(strcat('..\resultsVoronoiEllipsoid/ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
 
             %Creating heatmap
-            transitionsCSVInfo(end+1) = {cellHeight, struct2table(paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid))};
+            newRowTable = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid);
+            newRowTable.cellHeight = cellHeight;
+            transitionsCSVInfo(end+1) = {struct2table(newRowTable)};
         catch mexception
             disp(strcat('Error in creating ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius), ' and cell height=', num2str(cellHeight)));
             disp(mexception.getReport);
