@@ -1,10 +1,10 @@
-function [ ] = paintHeatmapOfTransitions( ellipsoidInfo, initialNeighbourhood, cellHeight )
+function [ ] = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid )
 %PAINTHEATMAPOFTRANSITIONS Summary of this function goes here
 %   Detailed explanation goes here
     
     try
-        transitionsPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialNeighbourhood);
-
+        transitionsPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
+        
         figure('Visible', 'off');
         clmap = hot(10);
         clmap = clmap(size(clmap, 1):-1:1, :);
@@ -39,9 +39,9 @@ function [ ] = paintHeatmapOfTransitions( ellipsoidInfo, initialNeighbourhood, c
             end
         end
         axis equal
-        savefig(strcat('..\resultsVoronoiEllipsoid/heatMap_ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(cellHeight), '.fig'));
+        savefig(strcat('..\resultsVoronoiEllipsoid/heatMap_ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(ellipsoidInfo.cellHeight), '.fig'));
     catch exceptionHeatmap
-        disp(strcat('Error in heatmap of ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius), ' and cell height=', num2str(cellHeight)));
+        disp(strcat('Error in heatmap of ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius), ' and cell height=', num2str(ellipsoidInfo.cellHeight)));
         disp(exceptionHeatmap.getReport);
         disp('--------------------------');
     end
