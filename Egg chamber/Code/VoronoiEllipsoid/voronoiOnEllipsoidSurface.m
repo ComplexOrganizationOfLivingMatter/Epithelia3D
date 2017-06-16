@@ -98,7 +98,7 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
             disp('--------------------------');
         end
     end
-    writetable(vertcat(transitionsCSVInfo{:}), strcat('..\resultsVoronoiEllipsoid/transitions_in_ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')))
+    writetable(vertcat(transitionsCSVInfo{:}), strcat('..\resultsVoronoiEllipsoid/transitions_in_ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '.csv'),'Delimiter',';')
     %You can see the figures:
     %set(get(0,'children'),'visible','on')
 end
