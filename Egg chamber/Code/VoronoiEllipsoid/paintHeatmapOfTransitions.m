@@ -1,9 +1,22 @@
-function [ ] = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid )
+function [ transitionsInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid )
 %PAINTHEATMAPOFTRANSITIONS Summary of this function goes here
 %   Detailed explanation goes here
     
     try
         transitionsPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
+        
+        cellsAtXBorders = abs(initialEllipsoid.finalCentroids(:, 1)) > (3/4 * initialEllipsoid.xRadius);
+        cellsAtYBorders = abs(initialEllipsoid.finalCentroids(:, 2)) > (3/4 * initialEllipsoid.yRadius);
+        cellsAtZBorders = abs(initialEllipsoid.finalCentroids(:, 3)) > (3/4 * initialEllipsoid.zRadius);
+        
+        transitionsInfo.percentageOfTransitionsPerCell = sum(transitionsPerCell) / size(transitionsPerCell, 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtXBorders = sum(transitionsPerCell(cellsAtXBorders)) / size(transitionsPerCell(cellsAtXBorders), 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtYBorders = sum(transitionsPerCell(cellsAtYBorders)) / size(transitionsPerCell(cellsAtYBorders), 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtZBorders = sum(transitionsPerCell(cellsAtZBorders)) / size(transitionsPerCell(cellsAtZBorders), 1);
+        
+        transitionsInfo.numCellsAtXBorders = size(transitionsPerCell(cellsAtXBorders), 1);
+        transitionsInfo.numCellsAtYBorders = size(transitionsPerCell(cellsAtYBorders), 1);
+        transitionsInfo.numCellsAtZBorders = size(transitionsPerCell(cellsAtZBorders), 1);
         
         figure('Visible', 'off');
         clmap = hot(10);
