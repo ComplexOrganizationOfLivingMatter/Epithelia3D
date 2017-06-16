@@ -95,14 +95,18 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
     clmap = colorcube();
     ncl = size(clmap,1);
 
-    for cellIndexCrossHead = 1:size(ellipsoidInfo.verticesPerCell, 1)
-        cl = clmap(mod(cellIndexCrossHead,ncl)+1,:);
-        VertCell = ellipsoidInfo.verticesPerCell{cellIndexCrossHead};
-        KVert = convhulln([VertCell; ellipsoidInfo.finalCentroids(cellIndexCrossHead, :)]);
-        patch('Vertices',[VertCell; ellipsoidInfo.finalCentroids(cellIndexCrossHead, :)],'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
-        hold on;
+    try 
+        for cellIndexCrossHead = 1:size(ellipsoidInfo.verticesPerCell, 1)
+            cl = clmap(mod(cellIndexCrossHead,ncl)+1,:);
+            VertCell = ellipsoidInfo.verticesPerCell{cellIndexCrossHead};
+            KVert = convhulln([VertCell; ellipsoidInfo.finalCentroids(cellIndexCrossHead, :)]);
+            patch('Vertices',[VertCell; ellipsoidInfo.finalCentroids(cellIndexCrossHead, :)],'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
+            hold on;
+        end
+        plot3(removedVertices(:, 1), removedVertices(:, 2), removedVertices(:, 3),'Marker','.','MarkerEdgeColor','r','MarkerSize',10, 'LineStyle', 'none')
+        axis equal
+    catch mexception
+        rethrow(mexception);
     end
-    plot3(removedVertices(:, 1), removedVertices(:, 2), removedVertices(:, 3),'Marker','.','MarkerEdgeColor','r','MarkerSize',10, 'LineStyle', 'none')
-    axis equal
 end
 
