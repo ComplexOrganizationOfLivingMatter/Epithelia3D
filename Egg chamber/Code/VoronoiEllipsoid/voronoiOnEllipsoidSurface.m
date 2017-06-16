@@ -8,25 +8,25 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
     ellipsoidInfo.xCenter = centerOfEllipsoid(1);
     ellipsoidInfo.yCenter = centerOfEllipsoid(2);
     ellipsoidInfo.zCenter = centerOfEllipsoid(3);
-    
+
     ellipsoidInfo.xRadius = ellipsoidDimensions(1);
     ellipsoidInfo.yRadius = ellipsoidDimensions(2);
     ellipsoidInfo.zRadius = ellipsoidDimensions(3);
-    
+
     ellipsoidInfo.maxNumberOfCellsInVoronoi = maxNumberOfCellsInVoronoi;
     ellipsoidInfo.cellHeight = 0;
     ellipsoidInfo.minDistanceBetweenCentroids = minDistanceBetweenCentroids;
-    
-    
+
+
     ellipsoidInfo.areaOfEllipsoid = ellipsoidSurfaceArea([ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius]);
 
     %(resolutionEllipse + 1) * (resolutionEllipse + 1) number of points
     %generated at the surface of the ellipsoid
     ellipsoidInfo.resolutionEllipse = 300; %300 seems to be a good number
     [x, y, z] = ellipsoid(ellipsoidInfo.xCenter, ellipsoidInfo.yCenter, ellipsoidInfo.zCenter, ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius, ellipsoidInfo.resolutionEllipse);
-    
+
     totalNumberOfPossibleCentroids = size(x, 1) * size(x, 1);
-    
+
     %The actual number of centroids that will be increased per iteration
     numberOfCentroids = 1;
     %First Centroid created
@@ -56,13 +56,13 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
             finalCentroids(numberOfCentroids, :) = randomCentroid;
         end
     end
-    
+
     %Paint the ellipsoid voronoi
     [ellipsoidInfo.verticesPerCell,ellipsoidInfo.verticesPerCellOutlayers]  = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
     ellipsoidInfo.finalCentroids = finalCentroids;
-    
+
     [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
-    
+
     [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
     savefig(strcat('..\resultsVoronoiEllipsoid/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '.fig'));
     %Saving info
@@ -77,16 +77,16 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
         yReducted = finalCentroids(:, 2) * (ellipsoidInfo.yRadius - cellHeight) / ellipsoidInfo.yRadius;
         zReducted = finalCentroids(:, 3) * (ellipsoidInfo.zRadius - cellHeight) / ellipsoidInfo.zRadius;
 
-        [ellipsoidInfo.verticesPerCell,ellipsoidInfo.verticesPerCellWithOutLayers] = paintVoronoi(xReducted, yReducted, zReducted, ellipsoidInfo.xRadius - cellHeight, ellipsoidInfo.yRadius - cellHeight, ellipsoidInfo.zRadius - cellHeight);
+        [ellipsoidInfo.verticesPerCell, ellipsoidInfo.verticesPerCellWithOutLayers] = paintVoronoi(xReducted, yReducted, zReducted, ellipsoidInfo.xRadius - cellHeight, ellipsoidInfo.yRadius - cellHeight, ellipsoidInfo.zRadius - cellHeight);
         ellipsoidInfo.finalCentroids = horzcat([xReducted, yReducted, zReducted]);
         [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
-        
+
         [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(ellipsoidInfo.finalCentroids, ellipsoidInfo.verticesPerCell);
         savefig(strcat('..\resultsVoronoiEllipsoid/ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(cellHeight), '.fig'));
-        
+
         %Saving info
         save(strcat('..\resultsVoronoiEllipsoid/ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
-        
+
         %Creating heatmap
         paintHeatmapOfTransitions( ellipsoidInfo, initialNeighbourhood );
         savefig(strcat('..\resultsVoronoiEllipsoid/heatMap_ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(cellHeight), '.fig'));
