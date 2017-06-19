@@ -15,11 +15,11 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
 
     ellipsoidInfo.maxNumberOfCellsInVoronoi = maxNumberOfCellsInVoronoi;
     ellipsoidInfo.cellHeight = 0;
-    ellipsoidInfo.minDistanceBetweenCentroids = minDistanceBetweenCentroids;
-
 
     ellipsoidInfo.areaOfEllipsoid = ellipsoidSurfaceArea([ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius]);
 
+    ellipsoidInfo.minDistanceBetweenCentroids = (ellipsoidInfo.areaOfEllipsoid / maxNumberOfCellsInVoronoi) - (ellipsoidInfo.areaOfEllipsoid / maxNumberOfCellsInVoronoi * 0.05);
+    
     %(resolutionEllipse + 1) * (resolutionEllipse + 1) number of points
     %generated at the surface of the ellipsoid
     ellipsoidInfo.resolutionEllipse = 300; %300 seems to be a good number
@@ -98,9 +98,9 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
             disp('--------------------------');
         end
     end
-    if isempty(transitionsCSVInfo) == 0
-        %writetable(vertcat(transitionsCSVInfo{:}), strcat('..\resultsVoronoiEllipsoid/transitions_in_ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '.csv'),'Delimiter',';')
-    end
+%     if isempty(transitionsCSVInfo) == 0
+%         %writetable(vertcat(transitionsCSVInfo{:}), strcat('..\resultsVoronoiEllipsoid/transitions_in_ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '.csv'),'Delimiter',';')
+%     end
     %You can see the figures:
     %set(get(0,'children'),'visible','on')
 end
