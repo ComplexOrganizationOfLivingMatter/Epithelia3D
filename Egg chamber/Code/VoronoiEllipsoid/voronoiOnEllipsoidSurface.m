@@ -18,7 +18,7 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
 
     ellipsoidInfo.areaOfEllipsoid = ellipsoidSurfaceArea([ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius]);
 
-    ellipsoidInfo.minDistanceBetweenCentroids = (ellipsoidInfo.areaOfEllipsoid / maxNumberOfCellsInVoronoi) - (ellipsoidInfo.areaOfEllipsoid / maxNumberOfCellsInVoronoi * 0.05);
+    ellipsoidInfo.minDistanceBetweenCentroids = (ellipsoidInfo.areaOfEllipsoid / maxNumberOfCellsInVoronoi) - (ellipsoidInfo.areaOfEllipsoid / maxNumberOfCellsInVoronoi * 0.1);
     
     %(resolutionEllipse + 1) * (resolutionEllipse + 1) number of points
     %generated at the surface of the ellipsoid
@@ -57,51 +57,60 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
         end
     end
 
-    %Paint the ellipsoid voronoi
-    [ellipsoidInfo.verticesPerCell,ellipsoidInfo.verticesPerCellOutlayers]  = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
-    ellipsoidInfo.finalCentroids = finalCentroids;
+    try
+        transitionsCSVInfo = {};
+        
+        %Paint the ellipsoid voronoi
+        [ellipsoidInfo.verticesPerCell,ellipsoidInfo.verticesPerCellOutlayers]  = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
+        ellipsoidInfo.finalCentroids = finalCentroids;
 
-    [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
+        [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
 
-    [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
-    savefig(strcat('..\resultsVoronoiEllipsoid/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '.fig'));
-    %Saving info
-    save(strcat('..\resultsVoronoiEllipsoid/ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
-    initialEllipsoid = ellipsoidInfo;
+        [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
+        savefig(strcat('..\resultsVoronoiEllipsoid/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '.fig'));
+        %Saving info
+        save(strcat('..\resultsVoronoiEllipsoid/ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
+        initialEllipsoid = ellipsoidInfo;
 
-    transitionsCSVInfo = {};
-    for cellHeight = 0.5:0.5:(min(ellipsoidDimensions)-0.1)
-        ellipsoidInfo.cellHeight = cellHeight;
-        %Creating the reduted centroids form the previous ones and the apical
-        %reduction
-        xReducted = finalCentroids(:, 1) * (ellipsoidInfo.xRadius - cellHeight) / ellipsoidInfo.xRadius;
-        yReducted = finalCentroids(:, 2) * (ellipsoidInfo.yRadius - cellHeight) / ellipsoidInfo.yRadius;
-        zReducted = finalCentroids(:, 3) * (ellipsoidInfo.zRadius - cellHeight) / ellipsoidInfo.zRadius;
-        try
-            [ellipsoidInfo.verticesPerCell, ellipsoidInfo.verticesPerCellOutlayers] = paintVoronoi(xReducted, yReducted, zReducted, ellipsoidInfo.xRadius - cellHeight, ellipsoidInfo.yRadius - cellHeight, ellipsoidInfo.zRadius - cellHeight);
-            ellipsoidInfo.finalCentroids = horzcat([xReducted, yReducted, zReducted]);
-            [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
+        
+        for cellHeight = 0.5:0.5:(min(ellipsoidDimensions)-0.1)
+            ellipsoidInfo.cellHeight = cellHeight;
+            %Creating the reduted centroids form the previous ones and the apical
+            %reduction
+            xReducted = finalCentroids(:, 1) * (ellipsoidInfo.xRadius - cellHeight) / ellipsoidInfo.xRadius;
+            yReducted = finalCentroids(:, 2) * (ellipsoidInfo.yRadius - cellHeight) / ellipsoidInfo.yRadius;
+            zReducted = finalCentroids(:, 3) * (ellipsoidInfo.zRadius - cellHeight) / ellipsoidInfo.zRadius;
+            try
+                [ellipsoidInfo.verticesPerCell, ellipsoidInfo.verticesPerCellOutlayers] = paintVoronoi(xReducted, yReducted, zReducted, ellipsoidInfo.xRadius - cellHeight, ellipsoidInfo.yRadius - cellHeight, ellipsoidInfo.zRadius - cellHeight);
+                ellipsoidInfo.finalCentroids = horzcat([xReducted, yReducted, zReducted]);
+                [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
 
-            [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(ellipsoidInfo.finalCentroids, ellipsoidInfo.verticesPerCell);
-            savefig(strcat('..\resultsVoronoiEllipsoid/ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(cellHeight), '.fig'));
+                [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(ellipsoidInfo.finalCentroids, ellipsoidInfo.verticesPerCell);
+                savefig(strcat('..\resultsVoronoiEllipsoid/ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(cellHeight), '.fig'));
 
-            %Saving info
-            save(strcat('..\resultsVoronoiEllipsoid/ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
+                %Saving info
+                save(strcat('..\resultsVoronoiEllipsoid/ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
 
-            %Creating heatmap
-            newRowTable = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid);
-            newRowTable.cellHeight = cellHeight;
-            transitionsCSVInfo(end+1) = {struct2table(newRowTable)};
-        catch mexception
-            disp(strcat('Error in creating ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius), ' and cell height=', num2str(cellHeight)));
-            disp(mexception.getReport);
-            disp('--------------------------');
+                %Creating heatmap
+                newRowTable = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid);
+                newRowTable.cellHeight = cellHeight;
+                transitionsCSVInfo(end+1) = {struct2table(newRowTable)};
+            catch mexception
+                disp(strcat('Error in creating ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius), ' and cell height=', num2str(cellHeight)));
+                disp(mexception.getReport);
+                disp('--------------------------');
+            end
         end
+    %     if isempty(transitionsCSVInfo) == 0
+    %         %writetable(vertcat(transitionsCSVInfo{:}), strcat('..\resultsVoronoiEllipsoid/transitions_in_ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '.csv'),'Delimiter',';')
+    %     end
+    catch mexception
+        disp(strcat('Error in creating initial ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius)));
+        disp(strcat('Number of centroids = ', num2str(size(finalCentroids, 1))));
+        disp(mexception.getReport);
+        disp('--------------------------');
     end
-%     if isempty(transitionsCSVInfo) == 0
-%         %writetable(vertcat(transitionsCSVInfo{:}), strcat('..\resultsVoronoiEllipsoid/transitions_in_ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '.csv'),'Delimiter',';')
-%     end
-    %You can see the figures:
-    %set(get(0,'children'),'visible','on')
+        %You can see the figures:
+        %set(get(0,'children'),'visible','on')
 end
 
