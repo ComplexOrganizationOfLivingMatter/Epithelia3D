@@ -18,7 +18,7 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
 
     ellipsoidInfo.areaOfEllipsoid = ellipsoidSurfaceArea([ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius]);
 
-    ellipsoidInfo.minDistanceBetweenCentroids = (ellipsoidInfo.areaOfEllipsoid / maxNumberOfCellsInVoronoi) * 0.7;
+    ellipsoidInfo.minDistanceBetweenCentroids = (ellipsoidInfo.areaOfEllipsoid / maxNumberOfCellsInVoronoi) * 0.5;
     minDistanceBetweenCentroids = ellipsoidInfo.minDistanceBetweenCentroids;
     %(resolutionEllipse + 1) * (resolutionEllipse + 1) number of points
     %generated at the surface of the ellipsoid
@@ -98,7 +98,7 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 disp(strcat('Error in creating ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius), ' and cell height=', num2str(cellHeight)));
                 disp(mexception.getReport);
                 disp('--------------------------');
-                numException = numExceptions + 1;
+                numException = numException + 1;
                 if numException > 1
                     break
                 end
