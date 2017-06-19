@@ -18,8 +18,8 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
 
     ellipsoidInfo.areaOfEllipsoid = ellipsoidSurfaceArea([ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius]);
 
-    ellipsoidInfo.minDistanceBetweenCentroids = (ellipsoidInfo.areaOfEllipsoid / maxNumberOfCellsInVoronoi) - (ellipsoidInfo.areaOfEllipsoid / maxNumberOfCellsInVoronoi * 0.01);
-    
+    ellipsoidInfo.minDistanceBetweenCentroids = (ellipsoidInfo.areaOfEllipsoid / maxNumberOfCellsInVoronoi) * 0.7;
+    minDistanceBetweenCentroids = ellipsoidInfo.minDistanceBetweenCentroids;
     %(resolutionEllipse + 1) * (resolutionEllipse + 1) number of points
     %generated at the surface of the ellipsoid
     ellipsoidInfo.resolutionEllipse = 300; %300 seems to be a good number
