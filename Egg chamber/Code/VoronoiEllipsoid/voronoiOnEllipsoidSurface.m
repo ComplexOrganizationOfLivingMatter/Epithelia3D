@@ -72,7 +72,7 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
         save(strcat('..\resultsVoronoiEllipsoid/ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
         initialEllipsoid = ellipsoidInfo;
 
-        
+        numException = 0;
         for cellHeight = 0.5:0.5:(min(ellipsoidDimensions)-0.1)
             ellipsoidInfo.cellHeight = cellHeight;
             %Creating the reduted centroids form the previous ones and the apical
@@ -99,7 +99,10 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 disp(strcat('Error in creating ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius), ' and cell height=', num2str(cellHeight)));
                 disp(mexception.getReport);
                 disp('--------------------------');
-                break
+                numException = numExceptions + 1;
+                if numException > 1
+                    break
+                end
             end
         end
     %     if isempty(transitionsCSVInfo) == 0
