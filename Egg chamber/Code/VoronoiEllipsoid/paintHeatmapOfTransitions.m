@@ -41,8 +41,8 @@ function [ transitionsInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initial
         transitionsInfo.numCellsAtYBorderRight = size(transitionsPerCell(cellsAtYBorderRight), 1);
         transitionsInfo.numCellsAtYMiddle = size(transitionsPerCell(cellsAtYBorderRight == 0 & cellsAtYBorderLeft == 0), 1);
         
-        transitionsInfo.numCellsAtZBorderIzq = size(transitionsPerCell(cellsAtZBorderLeft), 1);
-        transitionsInfo.numCellsAtZBorders = size(transitionsPerCell(cellsAtZBorderRight), 1);
+        transitionsInfo.numCellsAtZBorderLeft = size(transitionsPerCell(cellsAtZBorderLeft), 1);
+        transitionsInfo.numCellsAtZBorderRight = size(transitionsPerCell(cellsAtZBorderRight), 1);
         transitionsInfo.numCellsAtZMiddle = size(transitionsPerCell(cellsAtZBorderRight == 0 & cellsAtZBorderLeft == 0), 1);
         
         figure('Visible', 'off');
