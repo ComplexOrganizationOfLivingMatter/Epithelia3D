@@ -10,30 +10,40 @@ function [ transitionsInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initial
         transitionsInfo.zRadius = ellipsoidInfo.zRadius;
         transitionsInfo.bordersSituatedAt = 2/3;
         
-        cellsAtXBorders = abs(initialEllipsoid.finalCentroids(:, 1)) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.xRadius);
-        cellsAtYBorders = abs(initialEllipsoid.finalCentroids(:, 2)) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.yRadius);
-        cellsAtZBorders = abs(initialEllipsoid.finalCentroids(:, 3)) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.zRadius);
+        cellsAtXBorderDer = initialEllipsoid.finalCentroids(:, 1) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.xRadius);
+        cellsAtYBorderDer = initialEllipsoid.finalCentroids(:, 2) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.yRadius);
+        cellsAtZBorderDer = initialEllipsoid.finalCentroids(:, 3) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.zRadius);
+        
+        cellsAtXBorderIzq = initialEllipsoid.finalCentroids(:, 1) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.xRadius);
+        cellsAtYBorderIzq = initialEllipsoid.finalCentroids(:, 2) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.yRadius);
+        cellsAtZBorderIzq = initialEllipsoid.finalCentroids(:, 3) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.zRadius);
         
         transitionsInfo.percentageOfTransitionsPerCell = sum(transitionsPerCell) / size(transitionsPerCell, 1);
         transitionsInfo.totalCells = size(transitionsPerCell, 1);
         
-        transitionsInfo.percentageOfTransitionsPerCellAtXBorders = sum(transitionsPerCell(cellsAtXBorders)) / size(transitionsPerCell(cellsAtXBorders), 1);
-        transitionsInfo.percentageOfTransitionsPerCellAtXMiddle = sum(transitionsPerCell(cellsAtXBorders == 0)) / size(transitionsPerCell(cellsAtXBorders == 0), 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtXBorderIzq = sum(transitionsPerCell(cellsAtXBorderIzq)) / size(transitionsPerCell(cellsAtXBorderIzq), 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtXBorderDer = sum(transitionsPerCell(cellsAtXBorderDer)) / size(transitionsPerCell(cellsAtXBorderDer), 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtXMiddle = sum(transitionsPerCell(cellsAtXBorderDer == 0 & cellsAtXBorderIzq == 0)) / size(transitionsPerCell(cellsAtXBorderDer == 0 & cellsAtXBorderIzq == 0), 1);
         
-        transitionsInfo.percentageOfTransitionsPerCellAtYBorders = sum(transitionsPerCell(cellsAtYBorders)) / size(transitionsPerCell(cellsAtYBorders), 1);
-        transitionsInfo.percentageOfTransitionsPerCellAtYMiddle = sum(transitionsPerCell(cellsAtYBorders == 0)) / size(transitionsPerCell(cellsAtYBorders == 0), 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtYBorderIzq = sum(transitionsPerCell(cellsAtYBorderIzq)) / size(transitionsPerCell(cellsAtYBorderIzq), 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtYBorderDer = sum(transitionsPerCell(cellsAtYBorderDer)) / size(transitionsPerCell(cellsAtYBorderDer), 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtYMiddle = sum(transitionsPerCell(cellsAtYBorderDer == 0 & cellsAtYBorderIzq == 0)) / size(transitionsPerCell(cellsAtYBorderDer == 0 & cellsAtYBorderIzq == 0), 1);
         
-        transitionsInfo.percentageOfTransitionsPerCellAtZBorders = sum(transitionsPerCell(cellsAtZBorders)) / size(transitionsPerCell(cellsAtZBorders), 1);
-        transitionsInfo.percentageOfTransitionsPerCellAtZMiddle = sum(transitionsPerCell(cellsAtZBorders == 0)) / size(transitionsPerCell(cellsAtZBorders == 0), 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtZBorderIzq = sum(transitionsPerCell(cellsAtZBorderIzq)) / size(transitionsPerCell(cellsAtZBorderIzq), 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtZBorderDer = sum(transitionsPerCell(cellsAtZBorderDer)) / size(transitionsPerCell(cellsAtZBorderDer), 1);
+        transitionsInfo.percentageOfTransitionsPerCellAtZMiddle = sum(transitionsPerCell(cellsAtZBorderDer == 0 & cellsAtZBorderIzq == 0)) / size(transitionsPerCell(cellsAtZBorderDer == 0 & cellsAtZBorderIzq == 0), 1);
         
-        transitionsInfo.numCellsAtXBorders = size(transitionsPerCell(cellsAtXBorders), 1);
-        transitionsInfo.numCellsAtXMiddle = size(transitionsPerCell(cellsAtXBorders == 0), 1);
+        transitionsInfo.numCellsAtXBorderIzq = size(transitionsPerCell(cellsAtXBorderIzq), 1);
+        transitionsInfo.numCellsAtXBorders = size(transitionsPerCell(cellsAtXBorderDer), 1);
+        transitionsInfo.numCellsAtXMiddle = size(transitionsPerCell(cellsAtXBorderDer == 0 & cellsAtXBorderIzq == 0), 1);
         
-        transitionsInfo.numCellsAtYBorders = size(transitionsPerCell(cellsAtYBorders), 1);
-        transitionsInfo.numCellsAtYMiddle = size(transitionsPerCell(cellsAtYBorders == 0), 1);
+        transitionsInfo.numCellsAtYBorderIzq = size(transitionsPerCell(cellsAtYBorderIzq), 1);
+        transitionsInfo.numCellsAtYBorders = size(transitionsPerCell(cellsAtYBorderDer), 1);
+        transitionsInfo.numCellsAtYMiddle = size(transitionsPerCell(cellsAtYBorderDer == 0 & cellsAtYBorderIzq == 0), 1);
         
-        transitionsInfo.numCellsAtZBorders = size(transitionsPerCell(cellsAtZBorders), 1);
-        transitionsInfo.numCellsAtZMiddle = size(transitionsPerCell(cellsAtZBorders == 0), 1);
+        transitionsInfo.numCellsAtZBorderIzq = size(transitionsPerCell(cellsAtZBorderIzq), 1);
+        transitionsInfo.numCellsAtZBorders = size(transitionsPerCell(cellsAtZBorderDer), 1);
+        transitionsInfo.numCellsAtZMiddle = size(transitionsPerCell(cellsAtZBorderDer == 0 & cellsAtZBorderIzq == 0), 1);
         
         figure('Visible', 'off');
         clmap = hot(10);
