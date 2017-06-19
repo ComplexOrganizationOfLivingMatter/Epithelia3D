@@ -1,4 +1,4 @@
-function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions, maxNumberOfCellsInVoronoi, minDistanceBetweenCentroids )
+function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions, maxNumberOfCellsInVoronoi, minDistanceBetweenCentroids )
 %VORONOIONELLIPSOIDSURFACE Summary of this function goes here
 %   Detailed explanation goes here
     s = RandStream('mcg16807','Seed',0);
@@ -98,7 +98,9 @@ function [ ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions
             disp('--------------------------');
         end
     end
-    writetable(vertcat(transitionsCSVInfo{:}), strcat('..\resultsVoronoiEllipsoid/transitions_in_ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '.csv'),'Delimiter',';')
+    if isempty(transitionsCSVInfo) == 0
+        %writetable(vertcat(transitionsCSVInfo{:}), strcat('..\resultsVoronoiEllipsoid/transitions_in_ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '.csv'),'Delimiter',';')
+    end
     %You can see the figures:
     %set(get(0,'children'),'visible','on')
 end
