@@ -5,6 +5,9 @@ function [ transitionsInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initial
     try
         transitionsPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
         
+        transitionsInfo.xRadius = ellipsoidInfo.xRadius;
+        transitionsInfo.yRadius = ellipsoidInfo.yRadius;
+        transitionsInfo.zRadius = ellipsoidInfo.zRadius;
         transitionsInfo.bordersSituatedAt = 2/3;
         
         cellsAtXBorders = abs(initialEllipsoid.finalCentroids(:, 1)) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.xRadius);
