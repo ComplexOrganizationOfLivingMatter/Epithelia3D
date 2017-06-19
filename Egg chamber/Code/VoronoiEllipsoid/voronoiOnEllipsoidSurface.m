@@ -93,7 +93,6 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
 
                 %Creating heatmap
                 newRowTable = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid);
-                newRowTable.cellHeight = cellHeight;
                 transitionsCSVInfo(end+1) = {struct2table(newRowTable)};
             catch mexception
                 disp(strcat('Error in creating ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius), ' and cell height=', num2str(cellHeight)));

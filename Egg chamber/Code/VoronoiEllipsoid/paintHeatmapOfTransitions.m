@@ -9,6 +9,8 @@ function [ transitionsInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initial
         transitionsInfo.yRadius = ellipsoidInfo.yRadius;
         transitionsInfo.zRadius = ellipsoidInfo.zRadius;
         transitionsInfo.bordersSituatedAt = 2/3;
+        transitionsInfo.totalCells = size(transitionsPerCell, 1);
+        transitionsInfo.cellHeight = ellipsoidInfo.cellHeight;
         
         cellsAtXBorderRight = initialEllipsoid.finalCentroids(:, 1) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.xRadius);
         cellsAtYBorderRight = initialEllipsoid.finalCentroids(:, 2) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.yRadius);
@@ -19,7 +21,7 @@ function [ transitionsInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initial
         cellsAtZBorderLeft = initialEllipsoid.finalCentroids(:, 3) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.zRadius);
         
         transitionsInfo.percentageOfTransitionsPerCell = sum(transitionsPerCell) / size(transitionsPerCell, 1);
-        transitionsInfo.totalCells = size(transitionsPerCell, 1);
+        
         
         transitionsInfo.percentageOfTransitionsPerCellAtXBorderLeft = sum(transitionsPerCell(cellsAtXBorderLeft)) / size(transitionsPerCell(cellsAtXBorderLeft), 1);
         transitionsInfo.percentageOfTransitionsPerCellAtXBorderRight = sum(transitionsPerCell(cellsAtXBorderRight)) / size(transitionsPerCell(cellsAtXBorderRight), 1);
