@@ -15,5 +15,6 @@ for radiusY = 1:maxRadiusY+1
             transitionByRadius(radiusY, radiusZ) = {vertcat(a{:})};
         end
     end
+    transitionByRadius
 end
 writetable(vertcat(transitionByRadius{:}), strcat('..\resultsVoronoiEllipsoid\transitionsInfo_', date, '.csv'), 'Delimiter', ';')
