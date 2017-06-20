@@ -4,7 +4,7 @@ function [ transitionsInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initial
     
     try
         transitionsPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
-        
+
         figure('Visible', 'off');
         clmap = hot(10);
         clmap = clmap(size(clmap, 1):-1:1, :);
