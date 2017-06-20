@@ -15,6 +15,7 @@ roiMotifsEnd = [530	495	60	73	24
 497	331	62	69	41
 347	558	68	86	30
 ];
+    %Image sequence should be in black & white
     embryoDir = 'results\ProcessedImg\50epib_1';
     suffixFileName = '50epib_1_';
 
