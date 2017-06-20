@@ -1,4 +1,4 @@
-function [ transitionsInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid )
+function [ transitionsInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid, outputDir )
 %PAINTHEATMAPOFTRANSITIONS Summary of this function goes here
 %   Detailed explanation goes here
     
@@ -103,7 +103,7 @@ function [ transitionsInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initial
         transitionsInfo.areaOfZMiddle = sum(ellipsoidInfo.cellArea(cellsAtZBorderRight == 0 & cellsAtZBorderLeft == 0));
         
         axis equal
-        savefig(strcat('..\resultsVoronoiEllipsoid/heatMap_ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(ellipsoidInfo.cellHeight), '.fig'));
+        savefig(strcat(outputDir, '\heatMap_ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(ellipsoidInfo.cellHeight), '.fig'));
     catch exceptionHeatmap
         disp(strcat('Error in heatmap of ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius), ' and cell height=', num2str(ellipsoidInfo.cellHeight)));
         disp(exceptionHeatmap.getReport);

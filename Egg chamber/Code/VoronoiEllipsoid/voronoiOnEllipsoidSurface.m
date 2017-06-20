@@ -1,4 +1,4 @@
-function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions, maxNumberOfCellsInVoronoi, minDistanceBetweenCentroids )
+function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions, maxNumberOfCellsInVoronoi, outputDir )
 %VORONOIONELLIPSOIDSURFACE Summary of this function goes here
 %   Detailed explanation goes here
     s = RandStream('mcg16807','Seed',0);
@@ -67,9 +67,9 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
         [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
 
         [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
-        savefig(strcat('..\resultsVoronoiEllipsoid/ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '.fig'));
+        savefig(strcat(outputDir, '\ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '.fig'));
         %Saving info
-        save(strcat('..\resultsVoronoiEllipsoid/ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
+        save(strcat(outputDir, '\ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
         initialEllipsoid = ellipsoidInfo;
 
         numException = 0;
@@ -86,13 +86,13 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
 
                 [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(ellipsoidInfo.finalCentroids, ellipsoidInfo.verticesPerCell);
-                savefig(strcat('..\resultsVoronoiEllipsoid/ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(cellHeight), '.fig'));
+                savefig(strcat(outputDir, '\ellipsoidReducted_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(cellHeight), '.fig'));
 
                 %Saving info
-                save(strcat('..\resultsVoronoiEllipsoid/ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
+                save(strcat(outputDir, '\ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
 
                 %Creating heatmap
-                newRowTable = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid);
+                newRowTable = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid, outputDir);
                 transitionsCSVInfo(end+1) = {struct2table(newRowTable)};
             catch mexception
                 disp(strcat('Error in creating ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius), ' and cell height=', num2str(cellHeight)));
