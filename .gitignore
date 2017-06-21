@@ -46,6 +46,7 @@ $RECYCLE.BIN/
 .Trashes
 .VolumeIcon.icns
 
+docs/*
 */data/*
 /Epithelia3DOld/*
 /Gastrulation/*/edge4d_*
