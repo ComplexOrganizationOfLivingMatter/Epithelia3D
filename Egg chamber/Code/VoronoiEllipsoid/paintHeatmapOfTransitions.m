@@ -51,7 +51,9 @@ function [ transitionsInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initial
         transitionsInfo.bordersSituatedAt = 2/3;
         transitionsInfo.totalCells = size(transitionsPerCell, 1);
         transitionsInfo.cellHeight = ellipsoidInfo.cellHeight;
-        
+        %We get select the cells at the borders from the initial ellipsoid.
+        %Not from the reduced ellipsoid. Thus, we'll always get the same
+        %centroids for all the different cell heights.
         cellsAtXBorderRight = initialEllipsoid.finalCentroids(:, 1) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.xRadius);
         cellsAtYBorderRight = initialEllipsoid.finalCentroids(:, 2) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.yRadius);
         cellsAtZBorderRight = initialEllipsoid.finalCentroids(:, 3) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.zRadius);
