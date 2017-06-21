@@ -80,18 +80,24 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
             ellipsoidInfo.cellHeight = cellHeight;
             %Creating the reduted centroids form the previous ones and the apical
             %reduction
+            % 2nd try
 %             xReduction = (sqrt(((ellipsoidInfo.yRadius - cellHeight)^2 + (ellipsoidInfo.zRadius - cellHeight)^2) / 2)) / (sqrt((ellipsoidInfo.yRadius^2 + ellipsoidInfo.zRadius^2) / 2));
 %             yReduction = (sqrt(((ellipsoidInfo.xRadius - cellHeight)^2 + (ellipsoidInfo.zRadius - cellHeight)^2) / 2)) / (sqrt((ellipsoidInfo.xRadius^2 + ellipsoidInfo.zRadius^2) / 2));
 %             zReduction = (sqrt(((ellipsoidInfo.yRadius - cellHeight)^2 + (ellipsoidInfo.xRadius - cellHeight)^2) / 2)) / (sqrt((ellipsoidInfo.yRadius^2 + ellipsoidInfo.xRadius^2) / 2));
 %             xReducted = finalCentroids(:, 1) * xReduction;
 %             yReducted = finalCentroids(:, 2) * yReduction;
 %             zReducted = finalCentroids(:, 3) * zReduction;
-            xReducted = finalCentroids(:, 1) * (ellipsoidInfo.xRadius - cellHeight) / ellipsoidInfo.xRadius;
-            yReducted = finalCentroids(:, 2) * (ellipsoidInfo.yRadius - cellHeight) / ellipsoidInfo.yRadius;
-            zReducted = finalCentroids(:, 3) * (ellipsoidInfo.zRadius - cellHeight) / ellipsoidInfo.zRadius;
+            % 1st try
+%             xReducted = finalCentroids(:, 1) * (ellipsoidInfo.xRadius - cellHeight) / ellipsoidInfo.xRadius;
+%             yReducted = finalCentroids(:, 2) * (ellipsoidInfo.yRadius - cellHeight) / ellipsoidInfo.yRadius;
+%             zReducted = finalCentroids(:, 3) * (ellipsoidInfo.zRadius - cellHeight) / ellipsoidInfo.zRadius;
+            upSide = (ellipsoidInfo.xRadius - cellHeight)^2 * (ellipsoidInfo.yRadius - cellHeight)^2 * (ellipsoidInfo.zRadius - cellHeight)^2;
+            downSide = ((ellipsoidInfo.yRadius - cellHeight)^2 * (ellipsoidInfo.zRadius - cellHeight)^2 * finalCentroids(:, 1).^2) + ((ellipsoidInfo.xRadius - cellHeight)^2 * (ellipsoidInfo.zRadius - cellHeight)^2 * finalCentroids(:, 2).^2) + ((ellipsoidInfo.yRadius - cellHeight)^2 * (ellipsoidInfo.xRadius - cellHeight)^2 * finalCentroids(:, 3).^2);
+            conversorFactor = sqrt(upSide./downSide);
+            finalCentroidsReducted = arrayfun(@(x, y) x * y, finalCentroids, repmat(conversorFactor, 1, 3));
             try
-                [ellipsoidInfo.verticesPerCell, ellipsoidInfo.verticesPerCellOutlayers] = paintVoronoi(xReducted, yReducted, zReducted, ellipsoidInfo.xRadius - cellHeight, ellipsoidInfo.yRadius - cellHeight, ellipsoidInfo.zRadius - cellHeight);
-                ellipsoidInfo.finalCentroids = horzcat([xReducted, yReducted, zReducted]);
+                [ellipsoidInfo.verticesPerCell, ellipsoidInfo.verticesPerCellOutlayers] = paintVoronoi(finalCentroidsReducted(:, 1), finalCentroidsReducted(:, 2), finalCentroidsReducted(:, 3), ellipsoidInfo.xRadius - cellHeight, ellipsoidInfo.yRadius - cellHeight, ellipsoidInfo.zRadius - cellHeight);
+                ellipsoidInfo.finalCentroids = finalCentroidsReducted;
                 [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
 
                 [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(ellipsoidInfo.finalCentroids, ellipsoidInfo.verticesPerCell);
