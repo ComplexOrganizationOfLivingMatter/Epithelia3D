@@ -80,9 +80,9 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
             ellipsoidInfo.cellHeight = cellHeight;
             %Creating the reduted centroids form the previous ones and the apical
             %reduction
-            xReduction = (sqrt(((ellipsoidInfo.yRadius - cellHeight)^2 + (ellipsoidInfo.zRadius - cellHeight)^2)) / 2) / (sqrt((ellipsoidInfo.yRadius^2 + ellipsoidInfo.zRadius^2) / 2));
-            yReduction = (sqrt(((ellipsoidInfo.xRadius - cellHeight)^2 + (ellipsoidInfo.zRadius - cellHeight)^2)) / 2) / (sqrt((ellipsoidInfo.xRadius^2 + ellipsoidInfo.zRadius^2) / 2));
-            zReduction = (sqrt(((ellipsoidInfo.yRadius - cellHeight)^2 + (ellipsoidInfo.xRadius - cellHeight)^2)) / 2) / (sqrt((ellipsoidInfo.yRadius^2 + ellipsoidInfo.xRadius^2) / 2));
+            xReduction = (sqrt(((ellipsoidInfo.yRadius - cellHeight)^2 + (ellipsoidInfo.zRadius - cellHeight)^2) / 2)) / (sqrt((ellipsoidInfo.yRadius^2 + ellipsoidInfo.zRadius^2) / 2));
+            yReduction = (sqrt(((ellipsoidInfo.xRadius - cellHeight)^2 + (ellipsoidInfo.zRadius - cellHeight)^2) / 2)) / (sqrt((ellipsoidInfo.xRadius^2 + ellipsoidInfo.zRadius^2) / 2));
+            zReduction = (sqrt(((ellipsoidInfo.yRadius - cellHeight)^2 + (ellipsoidInfo.xRadius - cellHeight)^2) / 2)) / (sqrt((ellipsoidInfo.yRadius^2 + ellipsoidInfo.xRadius^2) / 2));
             xReducted = finalCentroids(:, 1) * xReduction;
             yReducted = finalCentroids(:, 2) * yReduction;
             zReducted = finalCentroids(:, 3) * zReduction;
