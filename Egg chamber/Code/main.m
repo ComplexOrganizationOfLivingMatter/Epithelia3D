@@ -5,8 +5,8 @@ addpath(genpath('lib'));
 for numRandomization = 1:10
     outputDir = strcat('..\resultsVoronoiEllipsoid\random_', num2str(numRandomization));
     mkdir(outputDir);
-    maxRadiusY = 20;
-    maxRadiusZ = 20;
+    maxRadiusY = 10;
+    maxRadiusZ = 15;
     transitionByRadius = cell(maxRadiusY+1, maxRadiusZ+1);
     for radiusY = 1:maxRadiusY+1
         close all
