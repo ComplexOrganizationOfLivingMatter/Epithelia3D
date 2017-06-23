@@ -11,7 +11,7 @@ function [ verticesPerCell,verticesPerCellBefore ] = paintVoronoi(x, y, z, xRadi
     %     [xEllipsoid, yEllipsoid, zEllipsoid] = ellipsoid(0, 0, 0, xRadius, yRadius, zRadius, 1000);
     %     pointsInEllipsoid = [xEllipsoid(:), yEllipsoid(:), zEllipsoid(:)];
 
-        figure('Visible', 'off');
+        %figure('Visible', 'off');
         [V,C]=voronoin(X);
         %T = delaunayn([XInitial; [0 0 0]]);
         %tetramesh(T,X);
@@ -57,12 +57,12 @@ function [ verticesPerCell,verticesPerCellBefore ] = paintVoronoi(x, y, z, xRadi
             %VertCell = VertCell(ismember(VertCell, Y, 'rows') == 0, :);
             KVert = convhulln(VertCell, {'QJ'});
             %KVert = KVert(sum(KVert ~= (size(VertCell, 1)), 2) == 3, :);
-            patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
+            %patch('Vertices',VertCell,'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
             verticesPerCell(k, 1) = {VertCell(1:end-1, :)};
             verticesPerCellBefore(k,1)={VertCellOutlayers(:, :)};
-            hold on;
+            %hold on;
         end
-        axis equal
+        %axis equal
     catch mexception
         rethrow(mexception)
     end
