@@ -49,6 +49,54 @@ suffixFileName = '50epib_1_';
     
 %% 50 epib 2
 
+roiMotifsInit = [
+    385	418	90	73	14
+497	332	76	71	23
+427	550	71	55	27
+274	334	71	66	29
+603	538	52	61	22
+600	539	55	62	23
+362	394	62	68	29
+444	435	57	69	26
+283	468	80	72	20
+494	444	81	66	23
+365	422	59	63	27
+494	646	65	64	30
+327	669	83	69	32
+496	427	58	77	22
+317	371	52	76	26
+388	515	66	81	12
+576	313	93	60	40
+291	399	77	72	28
+    ];
+
+roiMotifsEnd = [
+    381	418	92	78	17
+497	334	74	69	27
+431	550	67	58	33
+277	334	68	67	34
+601	543	54	56	27
+600	545	55	53	27
+362	401	73	62	34
+445	435	56	62	29
+283	472	80	72	24
+507	444	73	62	27
+365	429	59	56	32
+488	647	67	63	33
+327	669	83	64	36
+500	436	58	71	26
+317	376	52	74	30
+382	515	72	81	15
+576	313	91	60	44
+277	399	91	79	31
+];
+
+%Image sequence should be in black & white
+embryoDir = 'results\ProcessedImg\50epib_2';
+suffixFileName = '50epib_2_';
+
+extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
+
 %% 50 epib 3
 
 roiMotifsInit = [
@@ -101,8 +149,57 @@ roiMotifsEnd = [
 embryoDir = 'results\ProcessedImg\50epib_3';
 suffixFileName = '50epib_3_';
 
-extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
+%extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
 
 %% 50 epib 4
 
+roiMotifsInit = [
+    496	656	81	62	31
+382	477	66	66	28
+650	645	85	93	33
+648	443	58	74	27
+399	270	80	85	28
+415	400	74	73	21
+480	588	72	72	25
+413	501	68	74	29
+644	542	75	69	29
+435	505	67	77	15
+281	304	79	76	43
+529	457	74	74	18
+558	580	70	59	28
+388	616	73	54	37
+298	529	76	75	29
+439	488	62	80	30
+576	334	86	90	32
+366	236	68	75	50
+461	234	87	64	50
+];
+
+roiMotifsEnd = [
+    496	654	82	64	34
+382	477	70	71	34
+653	652	87	84	36
+643	443	71	74	31
+397	271	86	86	32
+414	400	66	68	25
+479	585	72	71	28
+416	501	65	74	33
+644	537	81	74	34
+432	505	65	76	19
+281	296	76	90	47
+527	457	74	69	22
+558	571	70	75	33
+388	616	73	62	41
+294	534	72	70	32
+439	488	62	69	35
+576	334	86	87	36
+366	236	66	70	54
+461	234	83	72	55
+];
+
+%Image sequence should be in black & white
+embryoDir = 'results\ProcessedImg\50epib_4';
+suffixFileName = '50epib_4_';
+
+extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
     
