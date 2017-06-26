@@ -95,7 +95,7 @@ roiMotifsEnd = [
 embryoDir = 'results\ProcessedImg\50epib_2';
 suffixFileName = '50epib_2_';
 
-extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
+%extractInfoOfMotifs(roiMotifsInit, roiMotifsEnd, embryoDir, suffixFileName );
 
 %% 50 epib 3
 
@@ -156,7 +156,7 @@ suffixFileName = '50epib_3_';
 roiMotifsInit = [
     496	656	81	62	31
 382	477	66	66	28
-650	645	85	93	33
+654	635	77	69	33
 648	443	58	74	27
 399	270	80	85	28
 415	400	74	73	21
@@ -178,7 +178,7 @@ roiMotifsInit = [
 roiMotifsEnd = [
     496	654	82	64	34
 382	477	70	71	34
-653	652	87	84	36
+650	635	79	75	36
 643	443	71	74	31
 397	271	86	86	32
 414	400	66	68	25
