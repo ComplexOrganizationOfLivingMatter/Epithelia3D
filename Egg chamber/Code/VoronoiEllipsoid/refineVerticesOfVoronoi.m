@@ -92,7 +92,9 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
     ellipsoidInfo.verticesConnectCells = cellsUnifiedPerVertex;
     ellipsoidInfo.verticesPerCell = cellfun(@(x) unique(x(ismember(x, refinedVertices, 'rows'), :), 'rows'), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
     figure('Visible', 'off');
-    clmap = colorcube();
+%     clmap = colorcube();
+
+
     ncl = size(clmap,1);
 
     try 
@@ -103,7 +105,7 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
             patch('Vertices',[VertCell; ellipsoidInfo.finalCentroids(cellIndexCrossHead, :)],'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
             hold on;
         end
-        plot3(removedVertices(:, 1), removedVertices(:, 2), removedVertices(:, 3),'Marker','.','MarkerEdgeColor','r','MarkerSize',10, 'LineStyle', 'none')
+%         plot3(removedVertices(:, 1), removedVertices(:, 2), removedVertices(:, 3),'Marker','.','MarkerEdgeColor','r','MarkerSize',10, 'LineStyle', 'none')
         axis equal
     catch mexception
         rethrow(mexception);
