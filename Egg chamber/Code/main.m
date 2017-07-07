@@ -2,7 +2,7 @@
 addpath(genpath('VoronoiEllipsoid'));
 addpath(genpath('lib'));
 
-for numRandomization = 2:5
+for numRandomization = 5:11
     outputDir = strcat('..\resultsVoronoiEllipsoid\random_', num2str(numRandomization));
     mkdir(outputDir);
     maxRadiusY = 10;
