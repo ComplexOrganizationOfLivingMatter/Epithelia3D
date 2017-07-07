@@ -1,4 +1,4 @@
-function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoidInfo, ellipsoidInfoReducted, outputDir )
+function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoidInfo, ellipsoidInfoReducted, outputDir,cellsTransition )
 
 cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfoReducted.neighbourhood, ellipsoidInfo.neighbourhood)>0);
 

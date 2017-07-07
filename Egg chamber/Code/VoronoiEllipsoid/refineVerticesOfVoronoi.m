@@ -92,9 +92,7 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
     ellipsoidInfo.verticesConnectCells = cellsUnifiedPerVertex;
     ellipsoidInfo.verticesPerCell = cellfun(@(x) unique(x(ismember(x, refinedVertices, 'rows'), :), 'rows'), ellipsoidInfo.verticesPerCell, 'UniformOutput', false);
     figure('Visible', 'off');
-%     clmap = colorcube();
-
-
+    clmap = colorcube();
     ncl = size(clmap,1);
 
     try 

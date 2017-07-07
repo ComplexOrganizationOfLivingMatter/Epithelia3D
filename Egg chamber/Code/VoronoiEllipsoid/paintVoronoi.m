@@ -5,9 +5,19 @@ function [ verticesPerCell,verticesPerCellBefore ] = paintVoronoi(x, y, z, xRadi
     %plot3(x,y,z,'Marker','.','MarkerEdgeColor','r','MarkerSize',10, 'LineStyle', 'none')
     try
         XInitial=[x y z];
-        Y = XInitial * 0.9;
-        X = [XInitial*1.1; Y];
+        
+        upSide = (xRadius* 0.9)^2 * (yRadius* 0.9)^2 * (zRadius* 0.9)^2;
+        downSide = ((yRadius* 0.9)^2 * (zRadius* 0.9)^2 * XInitial(:, 1).^2) + ((xRadius* 0.9)^2 * (zRadius* 0.9)^2 * XInitial(:, 2).^2) + ((yRadius* 0.9)^2 * (xRadius* 0.9)^2 * XInitial(:, 3).^2);
+        conversorFactorY = sqrt(upSide./downSide);
+           
+        Y = arrayfun(@(x, y) x * y, XInitial, repmat(conversorFactorY, 1, 3));
+        
+        upSide = (xRadius* 1.1)^2 * (yRadius* 1.1)^2 * (zRadius* 1.1)^2;
+        downSide = ((yRadius* 1.1)^2 * (zRadius* 1.1)^2 * XInitial(:, 1).^2) + ((xRadius* 1.1)^2 * (zRadius* 1.1)^2 * XInitial(:, 2).^2) + ((yRadius* 1.1)^2 * (xRadius* 1.1)^2 * XInitial(:, 3).^2);
+        conversorFactorX = sqrt(upSide./downSide);
+        X = [arrayfun(@(x, y) x * y, XInitial, repmat(conversorFactorX, 1, 3));Y];
 
+        
     %     [xEllipsoid, yEllipsoid, zEllipsoid] = ellipsoid(0, 0, 0, xRadius, yRadius, zRadius, 1000);
     %     pointsInEllipsoid = [xEllipsoid(:), yEllipsoid(:), zEllipsoid(:)];
 
