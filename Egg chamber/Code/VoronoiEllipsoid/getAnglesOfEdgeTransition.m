@@ -1,4 +1,4 @@
-function [tableDataAngles] = getAnglesOfEdgeTransition( initialDataPath, reducDataPath )
+function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( initialDataPath, reducDataPath, outputDir )
 
 %load data of ellipsoid reducted
 load(reducDataPath) %reducted ellipsoid ->ellipsoidInfo2
@@ -14,7 +14,7 @@ for i=1:length(cellsTransition)
       
     %cellsNeighbors in reducted and not initially
     neighCelTransition=intersect(cellsTransition,setxor(ellipsoidInfo2.neighbourhood{cellsTransition(i),1},ellipsoidInfo.neighbourhood{cellsTransition(i),1}))';
-    if length(neighCelTransition)
+    if ~isempty(neighCelTransition)
         
         if length(neighCelTransition)>=2
             neighCelTransition=[neighCelTransition',ones(length(neighCelTransition),1)*cellsTransition(i)];
@@ -29,10 +29,6 @@ for i=1:length(cellsTransition)
             neighReducted(end+1:end+sum(memberReduct),:)=neighCelTransition(find(memberReduct),:);
         end
         %older neighs in initial ellipsoid
-%         if i==69
-%             'a'
-%         end
-
         if any(memberInit)
             neighInitial(end+1:end+sum(memberInit),:)=neighCelTransition(find(memberInit),:);
         end
@@ -87,26 +83,25 @@ tableDataAngles=[tableDataAngles tableAngle];
 
 
 %Paint initial ellipsoid and transition edges
-figure('Visible', 'on');
-clmap = gray();
-ncl = size(clmap,1);
-for cellIndexCrossHead = 1:size(ellipsoidInfo.verticesPerCell, 1)
-    cl = clmap(mod(cellIndexCrossHead,ncl)+1,:);
-    VertCell = ellipsoidInfo.verticesPerCell{cellIndexCrossHead};
-    KVert = convhulln([VertCell; ellipsoidInfo.finalCentroids(cellIndexCrossHead, :)]);
-    patch('Vertices',[VertCell; ellipsoidInfo.finalCentroids(cellIndexCrossHead, :)],'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
-    hold on;
-end
+
+[~]=paintHeatmapOfTransitions( ellipsoidInfo, ellipsoidInfo2, '' );
 axis equal
 
+endLimitRight=ellipsoidInfo.yRadius*2/3;
+endLimitLeft=-endLimitRight;
 
-
+numAnglesEndRight=0;
+numAnglesEndLeft=0;
+numAnglesCentralRegion=0;
+anglesEndLeft=[];
+anglesEndRight=[];
+anglesCentralRegion=[];
 for i=1:length(angles)
     edgeTran=tableDataAngles.verticesOfEdge{i};
     if (angles(i)<30)
         col='green';
     else if (angles(i) >=30 && angles(i)<60)
-         col='yellow';
+         col='blue';
         else
             col='red';
         end
@@ -114,4 +109,43 @@ for i=1:length(angles)
 
     plot3([edgeTran(1,1);edgeTran(2,1)],[edgeTran(1,2);edgeTran(2,2)],[edgeTran(1,3);edgeTran(2,3)],'LineStyle','-','Color',col,'LineWidth',5)
     
+    if mean(edgeTran(:,2))>endLimitRight
+        numAnglesEndRight=numAnglesEndRight+1;
+        anglesEndRight(end+1)=angles(i);
+
+    else if mean(edgeTran(:,2))<endLimitLeft
+        numAnglesEndLeft=numAnglesEndLeft+1;
+        anglesEndLeft(end+1)=angles(i);
+        else
+            numAnglesCentralRegion=numAnglesCentralRegion+1;
+            anglesCentralRegion(end+1)=angles(i);
+        end
+    end
 end
+
+savefig(strcat(outputDir, '\angles_ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(ellipsoidInfo2.cellHeight), '.fig'));
+
+
+anglesPerRegion.averLess30EndRight=sum(anglesEndRight<30)/length(anglesEndRight);
+anglesPerRegion.averBetw30_60EndRight=sum(anglesEndRight>=30 & anglesEndRight<60)/length(anglesEndRight);
+anglesPerRegion.averMore60EndRight=sum(anglesEndRight>=60)/length(anglesEndRight);
+
+anglesPerRegion.averLess30EndLeft=sum(anglesEndLeft<30)/length(anglesEndLeft);
+anglesPerRegion.averBetw30_60EndLeft=sum(anglesEndLeft>=30 & anglesEndLeft<60)/length(anglesEndLeft);
+anglesPerRegion.averMore60EndLeft=sum(anglesEndLeft>=60)/length(anglesEndLeft);
+
+anglesPerRegion.averLess30EndGlobal=sum([anglesEndLeft,anglesEndRight]<30)/length([anglesEndLeft,anglesEndRight]);
+anglesPerRegion.averBetw30_60EndGlobal=sum([anglesEndLeft,anglesEndRight]>=30 & [anglesEndLeft,anglesEndRight]<60)/length([anglesEndLeft,anglesEndRight]);
+anglesPerRegion.averMore60EndGlobal=sum([anglesEndLeft,anglesEndRight]>=60)/length([anglesEndLeft,anglesEndRight]);
+
+
+anglesPerRegion.averLess30CentralRegion=sum(anglesCentralRegion<30)/length(anglesCentralRegion);
+anglesPerRegion.averBetw30_60CentralRegion=sum(anglesCentralRegion>=30 & anglesCentralRegion<60)/length(anglesCentralRegion);
+anglesPerRegion.averMore60CentralRegion=sum(anglesCentralRegion>=60)/length(anglesCentralRegion);
+
+anglesPerRegion.numAnglesEndLeft=length(anglesEndLeft);
+anglesPerRegion.numAnglesCentralRegion=length(anglesCentralRegion);
+anglesPerRegion.numAnglesEndRight=length(anglesEndRight);
+end
+
+
