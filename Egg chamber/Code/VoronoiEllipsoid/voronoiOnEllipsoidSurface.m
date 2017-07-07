@@ -65,6 +65,7 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
     
     try
         transitionsCSVInfo = {};
+        transitionsAngleCSV = {};
         
         %Paint the ellipsoid voronoi
         [ellipsoidInfo.verticesPerCell,ellipsoidInfo.verticesPerCellOutlayers]  = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
@@ -117,7 +118,9 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 %Creating heatmap
                 newRowTable = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid, outputDir);
                 
-                [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( initialEllipsoid, ellipsoidInfo, outputDir );
+                [tableDataAngles, anglesPerRegion] = getAnglesOfEdgeTransition( initialEllipsoid, ellipsoidInfo, outputDir );
+                
+                transitionsAngleCSV(end+1) = {vertcat(tableDataAngles, struct2table(anglesPerRegion))};
                 
                 transitionsCSVInfo(end+1) = {struct2table(newRowTable)};
             catch mexception
@@ -130,9 +133,6 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 end
             end
         end
-    %     if isempty(transitionsCSVInfo) == 0
-    %         %writetable(vertcat(transitionsCSVInfo{:}), strcat('..\resultsVoronoiEllipsoid/transitions_in_ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '.csv'),'Delimiter',';')
-    %     end
     catch mexception
         disp(strcat('Error in creating initial ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius)));
         disp(strcat('Number of centroids = ', num2str(size(finalCentroids, 1))));
