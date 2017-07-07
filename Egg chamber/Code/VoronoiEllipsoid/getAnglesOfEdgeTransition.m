@@ -1,11 +1,6 @@
-function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( initialDataPath, reducDataPath, outputDir )
+function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoidInfo, ellipsoidInfoReducted, outputDir )
 
-%load data of ellipsoid reducted
-load(reducDataPath) %reducted ellipsoid ->ellipsoidInfo2
-ellipsoidInfo2=ellipsoidInfo;
-load(initialDataPath) %initial ellipsoid ->ellipsoidInfo
-
-cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo2.neighbourhood, ellipsoidInfo.neighbourhood)>0);
+cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfoReducted.neighbourhood, ellipsoidInfo.neighbourhood)>0);
 
 %% Find vertices of transition edges
 neighInitial=[];
@@ -13,7 +8,7 @@ neighReducted=[];
 for i=1:length(cellsTransition)
       
     %cellsNeighbors in reducted and not initially
-    neighCelTransition=intersect(cellsTransition,setxor(ellipsoidInfo2.neighbourhood{cellsTransition(i),1},ellipsoidInfo.neighbourhood{cellsTransition(i),1}))';
+    neighCelTransition=intersect(cellsTransition,setxor(ellipsoidInfoReducted.neighbourhood{cellsTransition(i),1},ellipsoidInfo.neighbourhood{cellsTransition(i),1}))';
     if ~isempty(neighCelTransition)
         
         if length(neighCelTransition)>=2
@@ -22,7 +17,7 @@ for i=1:length(cellsTransition)
             neighCelTransition=[neighCelTransition,cellsTransition(i)];
         end
             
-        memberReduct=ismember(neighCelTransition(:, 1),ellipsoidInfo2.neighbourhood{cellsTransition(i),1});
+        memberReduct=ismember(neighCelTransition(:, 1),ellipsoidInfoReducted.neighbourhood{cellsTransition(i),1});
         memberInit=1-memberReduct;
         % new neighs in reducted ellipsoid
         if any(memberReduct)
@@ -84,7 +79,7 @@ tableDataAngles=[tableDataAngles tableAngle];
 
 %Paint initial ellipsoid and transition edges
 
-[~]=paintHeatmapOfTransitions( ellipsoidInfo, ellipsoidInfo2, '' );
+[~]=paintHeatmapOfTransitions( ellipsoidInfo, ellipsoidInfoReducted, '' );
 axis equal
 
 endLimitRight=ellipsoidInfo.yRadius*2/3;
@@ -123,7 +118,7 @@ for i=1:length(angles)
     end
 end
 
-savefig(strcat(outputDir, '\angles_ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(ellipsoidInfo2.cellHeight), '.fig'));
+savefig(strcat(outputDir, '\angles_ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '_cellHeight', num2str(ellipsoidInfoReducted.cellHeight), '.fig'));
 
 
 anglesPerRegion.averLess30EndRight=sum(anglesEndRight<30)/length(anglesEndRight);

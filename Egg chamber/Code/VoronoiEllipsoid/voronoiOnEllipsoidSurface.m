@@ -117,7 +117,7 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 %Creating heatmap
                 newRowTable = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid, outputDir);
                 
-                [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( initialDataPath, reducDataPath, outputDir );
+                [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( initialEllipsoid, ellipsoidInfo, outputDir );
                 
                 transitionsCSVInfo(end+1) = {struct2table(newRowTable)};
             catch mexception
