@@ -118,14 +118,16 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 close
                 
                 cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood)>0);
+                tableDataAngles=[];
                 if ~isempty(cellsTransition)
                     [tableDataAngles, anglesPerRegion] = getAnglesOfEdgeTransition( initialEllipsoid, ellipsoidInfo, outputDir,cellsTransition );
                     close
-                else
-                    tableDataAngles=NaN;
-                    anglesPerRegion=array2table(NaN(15,1)');
-                    anglesPerRegion.Properties.VariableNames = {'averageAnglesLess30EndRight','averageAnglesBetw30_60EndRight','averageAnglesMore60EndRight','averageAnglesLess30EndLeft','averageAnglesBetw30_60EndLeft','averageAnglesMore60EndLeft','averageAnglesLess30EndGlobal','averageAnglesBetw30_60EndGlobal','averageAnglesMore60EndGlobal','averageAnglesLess30CentralRegion','averageAnglesBetw30_60CentralRegion','averageAnglesMore60CentralRegion','numAnglesEndLeft','numAnglesEndRight','numAnglesCentralRegion'};
-                    anglesPerRegion=table2struct(anglesPerRegion);
+                else if isempty(tableDataAngles)
+                        tableDataAngles=NaN;
+                        anglesPerRegion=array2table(NaN(15,1)');
+                        anglesPerRegion.Properties.VariableNames = {'averageAnglesLess30EndRight','averageAnglesBetw30_60EndRight','averageAnglesMore60EndRight','averageAnglesLess30EndLeft','averageAnglesBetw30_60EndLeft','averageAnglesMore60EndLeft','averageAnglesLess30EndGlobal','averageAnglesBetw30_60EndGlobal','averageAnglesMore60EndGlobal','averageAnglesLess30CentralRegion','averageAnglesBetw30_60CentralRegion','averageAnglesMore60CentralRegion','numAnglesEndLeft','numAnglesEndRight','numAnglesCentralRegion'};
+                        anglesPerRegion=table2struct(anglesPerRegion);
+                    end
                 end
                 %Saving info
                 save(strcat(outputDir, '\ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids', 'tableDataAngles');
