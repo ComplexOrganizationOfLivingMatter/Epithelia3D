@@ -124,7 +124,7 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 else
                     tableDataAngles=NaN;
                     anglesPerRegion=array2table(NaN(15,1)');
-                    anglesPerRegion.Properties.VariableNames = {'averLess30EndRight','averBetw30_60EndRight','averMore60EndRight','averLess30EndLeft','averBetw30_60EndLeft','averMore60EndLeft','averLess30EndGlobal','averBetw30_60EndGlobal','averMore60EndGlobal','averLess30CentralRegion','averBetw30_60CentralRegion','averMore60CentralRegion','numAnglesEndLeft','numAnglesCentralRegion','numAnglesEndRight'};
+                    anglesPerRegion.Properties.VariableNames = {'averageAnglesLess30EndRight','averageAnglesBetw30_60EndRight','averageAnglesMore60EndRight','averageAnglesLess30EndLeft','averageAnglesBetw30_60EndLeft','averageAnglesMore60EndLeft','averageAnglesLess30EndGlobal','averageAnglesBetw30_60EndGlobal','averageAnglesMore60EndGlobal','averageAnglesLess30CentralRegion','averageAnglesBetw30_60CentralRegion','averageAnglesMore60CentralRegion','numAnglesEndLeft','numAnglesEndRight','numAnglesCentralRegion'};
                     anglesPerRegion=table2struct(anglesPerRegion);
                 end
                 %Saving info
