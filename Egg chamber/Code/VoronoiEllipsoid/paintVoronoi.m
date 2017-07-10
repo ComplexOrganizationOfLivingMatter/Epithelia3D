@@ -6,14 +6,16 @@ function [ verticesPerCell,verticesPerCellBefore ] = paintVoronoi(x, y, z, xRadi
     try
         XInitial=[x y z];
         
-        upSide = (xRadius* 0.9)^2 * (yRadius* 0.9)^2 * (zRadius* 0.9)^2;
-        downSide = ((yRadius* 0.9)^2 * (zRadius* 0.9)^2 * XInitial(:, 1).^2) + ((xRadius* 0.9)^2 * (zRadius* 0.9)^2 * XInitial(:, 2).^2) + ((yRadius* 0.9)^2 * (xRadius* 0.9)^2 * XInitial(:, 3).^2);
+        reducedLayer = 0.98;
+        upSide = (xRadius* reducedLayer)^2 * (yRadius* reducedLayer)^2 * (zRadius* reducedLayer)^2;
+        downSide = ((yRadius* reducedLayer)^2 * (zRadius* reducedLayer)^2 * XInitial(:, 1).^2) + ((xRadius* reducedLayer)^2 * (zRadius* reducedLayer)^2 * XInitial(:, 2).^2) + ((yRadius* reducedLayer)^2 * (xRadius* reducedLayer)^2 * XInitial(:, 3).^2);
         conversorFactorY = sqrt(upSide./downSide);
            
         Y = arrayfun(@(x, y) x * y, XInitial, repmat(conversorFactorY, 1, 3));
         
-        upSide = (xRadius* 1.1)^2 * (yRadius* 1.1)^2 * (zRadius* 1.1)^2;
-        downSide = ((yRadius* 1.1)^2 * (zRadius* 1.1)^2 * XInitial(:, 1).^2) + ((xRadius* 1.1)^2 * (zRadius* 1.1)^2 * XInitial(:, 2).^2) + ((yRadius* 1.1)^2 * (xRadius* 1.1)^2 * XInitial(:, 3).^2);
+        augmentedLayer = 1.02;
+        upSide = (xRadius* augmentedLayer)^2 * (yRadius* augmentedLayer)^2 * (zRadius* augmentedLayer)^2;
+        downSide = ((yRadius* augmentedLayer)^2 * (zRadius* augmentedLayer)^2 * XInitial(:, 1).^2) + ((xRadius* augmentedLayer)^2 * (zRadius* augmentedLayer)^2 * XInitial(:, 2).^2) + ((yRadius* augmentedLayer)^2 * (xRadius* augmentedLayer)^2 * XInitial(:, 3).^2);
         conversorFactorX = sqrt(upSide./downSide);
         X = [arrayfun(@(x, y) x * y, XInitial, repmat(conversorFactorX, 1, 3));Y];
 
@@ -25,13 +27,13 @@ function [ verticesPerCell,verticesPerCellBefore ] = paintVoronoi(x, y, z, xRadi
         [V,C]=voronoin(X);
         %T = delaunayn([XInitial; [0 0 0]]);
         %tetramesh(T,X);
-        clmap = colorcube();
-        ncl = size(clmap,1);
+        %clmap = colorcube();
+        %ncl = size(clmap,1);
         verticesPerCell = cell(length(Y), 1);
         verticesPerCellBefore = cell(length(Y), 1);
 
         for k=1:length(Y)
-            cl = clmap(mod(k,ncl)+1,:);
+            %cl = clmap(mod(k,ncl)+1,:);
             sides = C{k};
             VertCell = V(sides(sides~=1),:);
             verticesPerCellBefore(k, 1) = {VertCell};
