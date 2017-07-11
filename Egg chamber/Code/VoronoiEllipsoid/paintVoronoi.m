@@ -6,14 +6,14 @@ function [ verticesPerCell,verticesPerCellBefore ] = paintVoronoi(x, y, z, xRadi
     try
         XInitial=[x y z];
         
-        reducedLayer = 0.98;
+        reducedLayer = 0.9;
         upSide = (xRadius* reducedLayer)^2 * (yRadius* reducedLayer)^2 * (zRadius* reducedLayer)^2;
         downSide = ((yRadius* reducedLayer)^2 * (zRadius* reducedLayer)^2 * XInitial(:, 1).^2) + ((xRadius* reducedLayer)^2 * (zRadius* reducedLayer)^2 * XInitial(:, 2).^2) + ((yRadius* reducedLayer)^2 * (xRadius* reducedLayer)^2 * XInitial(:, 3).^2);
         conversorFactorY = sqrt(upSide./downSide);
            
         Y = arrayfun(@(x, y) x * y, XInitial, repmat(conversorFactorY, 1, 3));
         
-        augmentedLayer = 1.02;
+        augmentedLayer = 1.1;
         upSide = (xRadius* augmentedLayer)^2 * (yRadius* augmentedLayer)^2 * (zRadius* augmentedLayer)^2;
         downSide = ((yRadius* augmentedLayer)^2 * (zRadius* augmentedLayer)^2 * XInitial(:, 1).^2) + ((xRadius* augmentedLayer)^2 * (zRadius* augmentedLayer)^2 * XInitial(:, 2).^2) + ((yRadius* augmentedLayer)^2 * (xRadius* augmentedLayer)^2 * XInitial(:, 3).^2);
         conversorFactorX = sqrt(upSide./downSide);
