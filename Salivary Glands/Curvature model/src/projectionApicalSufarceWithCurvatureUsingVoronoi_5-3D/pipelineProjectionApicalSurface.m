@@ -12,9 +12,11 @@ function pipelineProjectionApicalSurface (numSeeds)
     listOfCurvature=0.1:0.1:1;
 
     acumListTransitionByCurv=zeros(length(listOfCurvature),size(pathV5data,1)*3);
+    acumListDataAngles=cell(size(pathV5data,1),1);
     for i=1:size(pathV5data,1)
 
         listTransitionsByCurvature=[];
+        listDataAngles=[];
         listSeedsApical={};
         listLOriginalApical={};
 
@@ -46,7 +48,7 @@ function pipelineProjectionApicalSurface (numSeeds)
             numCells=size(seeds_values_before,1);
 
             name2save=pathV5data(i).name;
-            name2save=name2save(1:end-4);
+            name2save=name2save(1:end-16);
 
             if j==1
                 representAndSaveFigureWithColourfulCells(L_original,numCells,seeds_values_before(:,2:3),[directory2save nameOfFolder], name2save,'_basal')
@@ -56,10 +58,23 @@ function pipelineProjectionApicalSurface (numSeeds)
             %% Testing neighs exchanges
             [numberOfTransitionsBasApi,nWinBasApi,nLossBasApi] = testingNeighsExchange(L_original,L_originalApical);
 
+            
+            %% Measure angles of edges
+            if nWinBasApi>0
+                [dataAngles]=measureAnglesAndLengthOfEdgesTransition(L_original,L_originalApical);
+                listDataAngles(end+1,:)=[dataAngles.numOfEdgesOfTransition,dataAngles.proportionAnglesLess15deg,dataAngles.proportionAnglesBetween15_30deg,dataAngles.proportionAnglesBetween30_45deg,dataAngles.proportionAnglesBetween45_60deg,dataAngles.proportionAnglesBetween60_75deg,dataAngles.proportionAnglesBetween75_90deg];
+            else
+                dataAngles=[];
+                listDataAngles(end+1,:)=[0 0 0 0 0 0 0];
+            end
+            
+            
+            
             apicalReduction=1-curvature;
             listTransitionsByCurvature(end+1,:)=[apicalReduction,nWinBasApi,nLossBasApi,numberOfTransitionsBasApi];
             listSeedsApical{end+1,1}=apicalReduction;listSeedsApical{end,2}=seedsApical;
             listLOriginalApical{end+1,1}=apicalReduction;listLOriginalApical{end,2}=L_originalApical;
+            
             close all
 
 
@@ -68,40 +83,37 @@ function pipelineProjectionApicalSurface (numSeeds)
         acumListTransitionByCurv(:,i)=listTransitionsByCurvature(:,2);
         acumListTransitionByCurv(:,i+20)=listTransitionsByCurvature(:,3);
         acumListTransitionByCurv(:,i+40)=listTransitionsByCurvature(:,4);
-
+        
+        acumListDataAngles{i,1}=listDataAngles;
+        
+        listDataAngles=array2table(listDataAngles);
+        listDataAngles.Properties.VariableNames={'numOfEdgesOfTransition','proportionAnglesLess15deg','proportionAnglesBetween15_30deg','proportionAnglesBetween30_45deg','proportionAnglesBetween45_60deg','proportionAnglesBetween60_75deg','proportionAnglesBetween75_90deg'};
         listTransitionsByCurvature=array2table(listTransitionsByCurvature);
-        listTransitionsByCurvature.Properties.VariableNames{1} = 'apicalReduction';
-        listTransitionsByCurvature.Properties.VariableNames{2} = 'nWins';
-        listTransitionsByCurvature.Properties.VariableNames{3} = 'nLoss';
-        listTransitionsByCurvature.Properties.VariableNames{4} = 'nTransitions';
-
+        listTransitionsByCurvature.Properties.VariableNames = {'apicalReduction','nWins', 'nLoss','nTransitions'};
         listSeedsApical=cell2table(listSeedsApical);
-        listSeedsApical.Properties.VariableNames{1} = 'apicalReduction';
-        listSeedsApical.Properties.VariableNames{2} = 'seedsApical';
-
+        listSeedsApical.Properties.VariableNames = {'apicalReduction','seedsApical'};
         listLOriginalApical=cell2table(listLOriginalApical);
-        listLOriginalApical.Properties.VariableNames{1} = 'apicalReduction';
-        listLOriginalApical.Properties.VariableNames{2} = 'L_originalApical';
-
-        save([directory2save nameOfFolder name2save '\'  name2save '.mat'],'listLOriginalApical','listSeedsApical','listTransitionsByCurvature')
+        listLOriginalApical.Properties.VariableNames= {'apicalReduction','L_originalApical'};
+        
+        save([directory2save nameOfFolder name2save '\'  name2save '.mat'],'listLOriginalApical','listSeedsApical','listTransitionsByCurvature','listDataAngles')
 
 
 
     end
 
+    
     listAcumTransitions=sortrows([(1-listOfCurvature'),mean(acumListTransitionByCurv(:,1:20),2)/numSeeds,std(acumListTransitionByCurv(:,1:20),0,2)/numSeeds,mean(acumListTransitionByCurv(:,21:40),2)/numSeeds,...
             std(acumListTransitionByCurv(:,21:40),0,2)/numSeeds,mean(acumListTransitionByCurv(:,41:end),2)/numSeeds,std(acumListTransitionByCurv(:,41:end),0,2)/numSeeds]);
 
     listAcumTransitions=array2table(listAcumTransitions);
-    listAcumTransitions.Properties.VariableNames{1} = 'apicalReduction';
-    listAcumTransitions.Properties.VariableNames{2} = 'meanWins';
-    listAcumTransitions.Properties.VariableNames{3} = 'stdWins';
-    listAcumTransitions.Properties.VariableNames{4} = 'meanLoss';
-    listAcumTransitions.Properties.VariableNames{5} = 'stdLoss';
-    listAcumTransitions.Properties.VariableNames{6} = 'meanTransitions';    
-    listAcumTransitions.Properties.VariableNames{7} = 'stdTransitions';    
+    listAcumTransitions.Properties.VariableNames = {'apicalReduction','meanWins','stdWins','meanLoss','stdLoss','meanTransitions' ,'stdTransitions'};    
 
-    save([directory2save nameOfFolder 'summaryAverageTransitions.mat'],'listAcumTransitions')
+    acumListDataAngles=cat(3,acumListDataAngles{:});
+    meanListDataAngles=array2table(mean(acumListDataAngles,3));
+    stdListDataAngles=array2table(std(acumListDataAngles,[],3));
+    meanListDataAngles.Properties.VariableNames ={'numOfEdgesOfTransition','proportionAnglesLess15deg','proportionAnglesBetween15_30deg','proportionAnglesBetween30_45deg','proportionAnglesBetween45_60deg','proportionAnglesBetween60_75deg','proportionAnglesBetween75_90deg'};
+    stdListDataAngles.Properties.VariableNames ={'numOfEdgesOfTransition','proportionAnglesLess15deg','proportionAnglesBetween15_30deg','proportionAnglesBetween30_45deg','proportionAnglesBetween45_60deg','proportionAnglesBetween60_75deg','proportionAnglesBetween75_90deg'};
 
+    save([directory2save nameOfFolder 'summaryAverageTransitions.mat'],'listAcumTransitions','meanListDataAngles','stdListDataAngles')
 
 end
