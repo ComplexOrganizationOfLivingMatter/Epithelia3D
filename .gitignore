@@ -46,6 +46,7 @@ $RECYCLE.BIN/
 .Trashes
 .VolumeIcon.icns
 
+/docs/
 docs/*
 */data/*
 /Epithelia3DOld/*
