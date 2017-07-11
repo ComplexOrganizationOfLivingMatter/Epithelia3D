@@ -10,6 +10,7 @@ function [ numberOfTransitions,nWin,nLoss ] = testingNeighsExchange(L_original,L
  nTransitions=zeros(1,length(neighs_basal));
  nWin=0;
  nLoss=0;
+
  for i=1:length(neighs_basal)
      Lossing = setdiff(neighs_basal{i},neighs_apical{i});
      Winning = setdiff(neighs_apical{i},neighs_basal{i});

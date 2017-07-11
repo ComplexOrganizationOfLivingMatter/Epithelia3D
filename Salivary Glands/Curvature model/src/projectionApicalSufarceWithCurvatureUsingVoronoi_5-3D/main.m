@@ -1,6 +1,6 @@
+%50,75,100,200,
+listSeeds=[400];
 
-listSeeds=[50,75,100,200,400];
-
-parfor i= 1:length(listSeeds)
+for i= 1:length(listSeeds)
     pipelineProjectionApicalSurface (listSeeds(i))
 end
