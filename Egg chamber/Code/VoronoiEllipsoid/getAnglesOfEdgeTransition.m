@@ -39,9 +39,16 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
     for i=1:size(neighReducted,1)
         cellsFormingEdgeTransition{i,1}=neighReducted(i,:);
         cellsFormingEdgeTransition{i,2}=intersect(ellipsoidInfo.neighbourhood{neighReducted(i,:),1})';
-        cellsFormingEdgeTransition{i,3}=intersect(ellipsoidInfo.verticesPerCell{cellsFormingEdgeTransition{i,2}},'rows');
+        
+        if size(cellsFormingEdgeTransition(i,2)) > 1
+            cellsFormingEdgeTransition{i,3}=intersect(ellipsoidInfo.verticesPerCell{cellsFormingEdgeTransition{i,2}},'rows');
+        else %2 transitios have ocurred
+            cellsFormingEdgeTransition
+        end
     end
-    tableDataAngles=cell2table(cellsFormingEdgeTransition);
+    %Removing empty cells
+    notEmptyCells = cellfun(@(x) isempty(x(3)) == 0 , cellsFormingEdgeTransition);
+    tableDataAngles=cell2table(cellsFormingEdgeTransition(notEmptyCells));
     tableDataAngles.Properties.VariableNames = {'newNeighbors' 'cellsSharingEdge' 'verticesOfEdge'};
 
 
