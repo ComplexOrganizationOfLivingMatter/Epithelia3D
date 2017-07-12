@@ -43,7 +43,12 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
         if size(cellsFormingEdgeTransition{i,2}, 2) == 2
             cellsFormingEdgeTransition{i,3}=intersect(ellipsoidInfo.verticesPerCell{cellsFormingEdgeTransition{i,2}},'rows');
         else %2 transitios have ocurred
-            cellsFormingEdgeTransition
+            disp('2 transitions have ocurred within the same motif')
+%             cellsIntervining = [cellsFormingEdgeTransition{i, 1:2}];
+%             intersection1 = intersect(ellipsoidInfo.verticesPerCell{cellsIntervining(1)}, ellipsoidInfo.verticesPerCell{cellsIntervining(3)}, 'rows');
+%             intersection2 = intersect(ellipsoidInfo.verticesPerCell{cellsIntervining(2)}, ellipsoidInfo.verticesPerCell{cellsIntervining(3)}, 'rows');
+%             neighboursBasal = ellipsoidInfo.neighbourhood{cellsFormingEdgeTransition{i, 2}};
+%             neighboursApical = ellipsoidInfoReducted.neighbourhood{cellsFormingEdgeTransition{i, 2}};
         end
     end
     %Removing empty cells
