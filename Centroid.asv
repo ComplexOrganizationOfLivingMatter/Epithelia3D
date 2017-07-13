@@ -10,7 +10,7 @@ se=strel('disk',4);
 BW2=imdilate(imgBin,se);
 
  
-%%Separation between cells according to size
+%%Separation between cells According to size
  L=bwlabel(BW2,8);
  mask=zeros(size(BW2));
  
@@ -29,16 +29,13 @@ for i=1:max(max(L))
  mask=mask+BWM;
 end
 
+
 maskBW=bwlabel(mask,8);
 
-
-%%Specify the center of mass of the region
 centroids = regionprops(maskBW, 'Centroid');
 
 centroids = {centroids.Centroid};
 
-
-%%Show the real dilated image along with the image of the centroids
 imshow(BW2);
 
 hold on;
