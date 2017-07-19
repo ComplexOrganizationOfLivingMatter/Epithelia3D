@@ -1,4 +1,4 @@
-function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions, maxNumberOfCellsInVoronoi, outputDir )
+function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, ellipsoidDimensions, maxNumberOfCellsInVoronoi, outputDir, hCellsPredefined )
 %VORONOIONELLIPSOIDSURFACE Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -6,6 +6,10 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
     %In case you want to debug
 %    s = RandStream('mcg16807','Seed',0);
 %    RandStream.setGlobalStream(s);
+
+    if hCellsPredefined == -1
+        hCellsPredefined = 0.5:0.5:(min(ellipsoidDimensions)-0.1);
+    end
 
     %Init all the info for creating the voronoi
     ellipsoidInfo.xCenter = centerOfEllipsoid(1);
@@ -82,7 +86,7 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
         close
 
         numException = 0;
-        for cellHeight = 0.5:0.5:(min(ellipsoidDimensions)-0.1)
+        for cellHeight = hCellsPredefined
             ellipsoidInfo.cellHeight = cellHeight;
             %Creating the reduted centroids form the previous ones and the apical
             %reduction
