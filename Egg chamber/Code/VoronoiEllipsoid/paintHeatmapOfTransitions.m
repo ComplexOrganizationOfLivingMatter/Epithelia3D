@@ -1,28 +1,10 @@
-function [ exchangeNeighboursInfo, ellipsoidInfo, initialEllipsoid ] = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid, outputDir )
+function [ exchangeNeighboursInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid, outputDir )
 %PAINTHEATMAPOFTRANSITIONS Summary of this function goes here
 %   Detailed explanation goes here
     
     try
-        %exchangeNeighboursPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
-        exchangeNeighboursPerCell = cellfun(@(x, y) setxor(x, y), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood, 'UniformOutput', false);
-        
-        motifsInitial = [];
-        motifsReducted = [];
-        for numExchange = 1:size(exchangeNeighboursPerCell, 1)
-            neighbourExchangeActual = exchangeNeighboursPerCell{numExchange};
-            for numTransitions = 1:size(neighbourExchangeActual, 1)
-                motifsInitial(end+1, :) = vertcat(intersect(initialEllipsoid.neighbourhood{numExchange}, initialEllipsoid.neighbourhood{neighbourExchangeActual(numTransitions)}), neighbourExchangeActual(numTransitions), numExchange);
-                motifsReducted(end+1, :) = vertcat(intersect(ellipsoidInfo.neighbourhood{numExchange}, ellipsoidInfo.neighbourhood{neighbourExchangeActual(numTransitions)}), neighbourExchangeActual(numTransitions), numExchange);
-            end
-        end
-        
-        [~, indices] = unique(motifsReducted(:, 1:2), 'rows');
-        ellipsoidInfo.motifsFound = motifsReducted(indices, :);
-        
-        [~, indices] = unique(motifsInitial(:, 1:2), 'rows');
-        initialEllipsoid.motifsFound = motifsInitial(indices, :);
-        
-        
+        exchangeNeighboursPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
+
         figure('Visible', 'off');
         clmap = hot(10);
         clmap = clmap(size(clmap, 1):-1:1, :);

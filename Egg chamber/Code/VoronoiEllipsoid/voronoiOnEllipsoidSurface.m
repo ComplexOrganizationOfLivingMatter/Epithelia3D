@@ -136,7 +136,7 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 
                 close
                 %Creating heatmap
-                [newRowTable, ellipsoidInfo, initialEllipsoid ] = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid, outputDir);
+                newRowTable = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid, outputDir);
                 close
                 
                 cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood)>0);
