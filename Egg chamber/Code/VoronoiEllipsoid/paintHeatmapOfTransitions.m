@@ -17,15 +17,14 @@ function [ transitionsInfo, ellipsoidInfo, initialEllipsoid ] = paintHeatmapOfTr
                 centroidsOfMotifs(end+1, :) = mean(initialEllipsoid.finalCentroids(motifsInitial(end, :), :), 1);
             end
         end
-        if isempty(motifsReducted) == 0
-            [~, indices] = unique(motifsReducted(:, 1:2), 'rows');
-            ellipsoidInfo.motifsFound = motifsReducted(indices, :);
-
-            [~, indices] = unique(motifsInitial(:, 1:2), 'rows');
-            initialEllipsoid.motifsFound = motifsInitial(indices, :);
-            motifsFound = motifsInitial(indices, :);
-            centroidsOfMotifs = centroidsOfMotifs(indices, :);
-        end
+        
+        [~, indices] = unique(motifsReducted(:, 1:2), 'rows');
+        ellipsoidInfo.motifsFound = motifsReducted(indices, :);
+        
+        [~, indices] = unique(motifsInitial(:, 1:2), 'rows');
+        initialEllipsoid.motifsFound = motifsInitial(indices, :);
+        motifsFound = motifsInitial(indices, :);
+        centroidsOfMotifs = centroidsOfMotifs(indices, :);
         
         figure('Visible', 'off');
         clmap = hot(10);
@@ -84,44 +83,27 @@ function [ transitionsInfo, ellipsoidInfo, initialEllipsoid ] = paintHeatmapOfTr
         cellsAtYBorderLeft = initialEllipsoid.finalCentroids(:, 2) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.yRadius);
         cellsAtZBorderLeft = initialEllipsoid.finalCentroids(:, 3) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.zRadius);
 
+        transitionsAtXBorderRight = centroidsOfMotifs(:, 1) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.xRadius);
+        transitionsAtYBorderRight = centroidsOfMotifs(:, 2) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.yRadius);
+        transitionsAtZBorderRight = centroidsOfMotifs(:, 3) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.zRadius);
         
-        if isempty(centroidsOfMotifs) == 0
-            transitionsAtXBorderRight = centroidsOfMotifs(:, 1) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.xRadius);
-            transitionsAtYBorderRight = centroidsOfMotifs(:, 2) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.yRadius);
-            transitionsAtZBorderRight = centroidsOfMotifs(:, 3) < -(transitionsInfo.bordersSituatedAt * initialEllipsoid.zRadius);
+        transitionsAtXBorderLeft = centroidsOfMotifs(:, 1) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.xRadius);
+        transitionsAtYBorderLeft = centroidsOfMotifs(:, 2) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.yRadius);
+        transitionsAtZBorderLeft = centroidsOfMotifs(:, 3) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.zRadius);
         
-            transitionsAtXBorderLeft = centroidsOfMotifs(:, 1) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.xRadius);
-            transitionsAtYBorderLeft = centroidsOfMotifs(:, 2) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.yRadius);
-            transitionsAtZBorderLeft = centroidsOfMotifs(:, 3) > (transitionsInfo.bordersSituatedAt * initialEllipsoid.zRadius);
-       
-            transitionsInfo.percentageOftransitionsPerCell = size(motifsFound, 1) / size(transitionsPerCell, 1);
+        transitionsInfo.percentageOftransitionsPerCell = size(motifsFound, 1) / size(transitionsPerCell, 1);
         
-            transitionsInfo.percentageOftransitionsPerCellAtXBorderLeft = size(motifsFound(transitionsAtXBorderLeft), 1) / size(transitionsPerCell(cellsAtXBorderLeft), 1);
-            transitionsInfo.percentageOftransitionsPerCellAtXBorderRight = size(motifsFound(transitionsAtXBorderRight), 1) / size(transitionsPerCell(cellsAtXBorderRight), 1);
-            transitionsInfo.percentageOftransitionsPerCellAtXMiddle = size(motifsFound(transitionsAtXBorderRight == 0 & transitionsAtXBorderLeft == 0), 1) / size(transitionsPerCell(cellsAtXBorderRight == 0 & cellsAtXBorderLeft == 0), 1);
-
-            transitionsInfo.percentageOftransitionsPerCellAtYBorderLeft = size(motifsFound(transitionsAtYBorderLeft), 1) / size(transitionsPerCell(cellsAtYBorderLeft), 1);
-            transitionsInfo.percentageOftransitionsPerCellAtYBorderRight = size(motifsFound(transitionsAtYBorderRight), 1) / size(transitionsPerCell(cellsAtYBorderRight), 1);
-            transitionsInfo.percentageOftransitionsPerCellAtYMiddle = size(motifsFound(transitionsAtYBorderRight == 0 & transitionsAtYBorderLeft == 0), 1) / size(transitionsPerCell(cellsAtYBorderRight == 0 & cellsAtYBorderLeft == 0), 1);
-
-            transitionsInfo.percentageOftransitionsPerCellAtZBorderLeft = size(motifsFound(transitionsAtZBorderLeft), 1) / size(transitionsPerCell(cellsAtZBorderLeft), 1);
-            transitionsInfo.percentageOftransitionsPerCellAtZBorderRight = size(motifsFound(transitionsAtZBorderRight), 1) / size(transitionsPerCell(cellsAtZBorderRight), 1);
-            transitionsInfo.percentageOftransitionsPerCellAtZMiddle = size(motifsFound(transitionsAtZBorderRight == 0 & transitionsAtZBorderLeft == 0), 1) / size(transitionsPerCell(cellsAtZBorderRight == 0 & cellsAtZBorderLeft == 0), 1);
-        else
-            transitionsInfo.percentageOftransitionsPerCell = 0;
+        transitionsInfo.percentageOftransitionsPerCellAtXBorderLeft = size(motifsFound(transitionsAtXBorderLeft), 1) / size(transitionsPerCell(cellsAtXBorderLeft), 1);
+        transitionsInfo.percentageOftransitionsPerCellAtXBorderRight = size(motifsFound(transitionsAtXBorderRight), 1) / size(transitionsPerCell(cellsAtXBorderRight), 1);
+        transitionsInfo.percentageOftransitionsPerCellAtXMiddle = size(motifsFound(transitionsAtXBorderRight == 0 & transitionsAtXBorderLeft == 0), 1) / size(transitionsPerCell(cellsAtXBorderRight == 0 & cellsAtXBorderLeft == 0), 1);
         
-            transitionsInfo.percentageOftransitionsPerCellAtXBorderLeft = 0;
-            transitionsInfo.percentageOftransitionsPerCellAtXBorderRight = 0;
-            transitionsInfo.percentageOftransitionsPerCellAtXMiddle = 0;
-
-            transitionsInfo.percentageOftransitionsPerCellAtYBorderLeft = 0;
-            transitionsInfo.percentageOftransitionsPerCellAtYBorderRight = 0;
-            transitionsInfo.percentageOftransitionsPerCellAtYMiddle = 0;
-
-            transitionsInfo.percentageOftransitionsPerCellAtZBorderLeft = 0;
-            transitionsInfo.percentageOftransitionsPerCellAtZBorderRight = 0;
-            transitionsInfo.percentageOftransitionsPerCellAtZMiddle = 0;
-        end
+        transitionsInfo.percentageOftransitionsPerCellAtYBorderLeft = size(motifsFound(transitionsAtYBorderLeft), 1) / size(transitionsPerCell(cellsAtYBorderLeft), 1);
+        transitionsInfo.percentageOftransitionsPerCellAtYBorderRight = size(motifsFound(transitionsAtYBorderRight), 1) / size(transitionsPerCell(cellsAtYBorderRight), 1);
+        transitionsInfo.percentageOftransitionsPerCellAtYMiddle = size(motifsFound(transitionsAtYBorderRight == 0 & transitionsAtYBorderLeft == 0), 1) / size(transitionsPerCell(cellsAtYBorderRight == 0 & cellsAtYBorderLeft == 0), 1);
+        
+        transitionsInfo.percentageOftransitionsPerCellAtZBorderLeft = size(motifsFound(transitionsAtZBorderLeft), 1) / size(transitionsPerCell(cellsAtZBorderLeft), 1);
+        transitionsInfo.percentageOftransitionsPerCellAtZBorderRight = size(motifsFound(transitionsAtZBorderRight), 1) / size(transitionsPerCell(cellsAtZBorderRight), 1);
+        transitionsInfo.percentageOftransitionsPerCellAtZMiddle = size(motifsFound(transitionsAtZBorderRight == 0 & transitionsAtZBorderLeft == 0), 1) / size(transitionsPerCell(cellsAtZBorderRight == 0 & cellsAtZBorderLeft == 0), 1);
         
         transitionsInfo.numCellsAtXBorderLeft = size(transitionsPerCell(cellsAtXBorderLeft), 1);
         transitionsInfo.numCellsAtXBorderRight = size(transitionsPerCell(cellsAtXBorderRight), 1);
