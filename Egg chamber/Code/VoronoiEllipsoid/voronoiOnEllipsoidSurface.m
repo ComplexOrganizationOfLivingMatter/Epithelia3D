@@ -19,6 +19,8 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
     ellipsoidInfo.xRadius = ellipsoidDimensions(1);
     ellipsoidInfo.yRadius = ellipsoidDimensions(2);
     ellipsoidInfo.zRadius = ellipsoidDimensions(3);
+    
+    ellipsoidInfo.bordersSituatedAt = [2/3, 1/2];
 
     ellipsoidInfo.maxNumberOfCellsInVoronoi = maxNumberOfCellsInVoronoi;
     ellipsoidInfo.cellHeight = 0;

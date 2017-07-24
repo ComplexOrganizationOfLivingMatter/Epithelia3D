@@ -96,7 +96,7 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
             [~]=paintHeatmapOfTransitions( ellipsoidInfo, ellipsoidInfoReducted, '' );
             axis equal
 
-            endLimitRight=ellipsoidInfo.xRadius*2/3;
+            endLimitRight=ellipsoidInfo.xRadius*ellipsoidInfo.bordersSituatedAt;
             endLimitLeft=-endLimitRight;
 
             numAnglesEndRight=0;
