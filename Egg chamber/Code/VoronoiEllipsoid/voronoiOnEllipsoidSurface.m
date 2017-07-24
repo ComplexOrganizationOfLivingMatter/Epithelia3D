@@ -139,10 +139,10 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 newRowTable = paintHeatmapOfTransitions( ellipsoidInfo, initialEllipsoid, outputDir);
                 close
                 
-                cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood)>0);
+                cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood)>0, 1);
                 tableDataAngles=[];
                 if ~isempty(cellsTransition)
-                    [tableDataAngles, anglesPerRegion] = getAnglesOfEdgeTransition( initialEllipsoid, ellipsoidInfo, outputDir,cellsTransition );
+                    [tableDataAngles, anglesPerRegion] = getAnglesOfEdgeTransition( initialEllipsoid, ellipsoidInfo, outputDir);
                     close
                 end
                 

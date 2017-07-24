@@ -1,4 +1,4 @@
-function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoidInfo, ellipsoidInfoReducted, outputDir,cellsTransition )
+function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoidInfo, ellipsoidInfoReducted, outputDir )
 
     cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfoReducted.neighbourhood, ellipsoidInfo.neighbourhood)>0);
 
@@ -96,7 +96,7 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
             [~]=paintHeatmapOfTransitions( ellipsoidInfo, ellipsoidInfoReducted, '' );
             axis equal
 
-            endLimitRight=ellipsoidInfo.yRadius*2/3;
+            endLimitRight=ellipsoidInfo.xRadius*2/3;
             endLimitLeft=-endLimitRight;
 
             numAnglesEndRight=0;
@@ -118,11 +118,11 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
 
                 plot3([edgeTran(1,1);edgeTran(2,1)],[edgeTran(1,2);edgeTran(2,2)],[edgeTran(1,3);edgeTran(2,3)],'LineStyle','-','Color',col,'LineWidth',5)
 
-                if mean(edgeTran(:,2))>endLimitRight
+                if mean(edgeTran(:,1))>endLimitRight
                     numAnglesEndRight=numAnglesEndRight+1;
                     anglesEndRight(end+1)=angles(i);
 
-                else if mean(edgeTran(:,2))<endLimitLeft
+                else if mean(edgeTran(:,1))<endLimitLeft
                     numAnglesEndLeft=numAnglesEndLeft+1;
                     anglesEndLeft(end+1)=angles(i);
                     else
