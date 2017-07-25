@@ -150,13 +150,18 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 
                 if isempty(tableDataAngles)
                         tableDataAngles=NaN;
-                        anglesPerRegion=array2table(NaN(33,1)');
-                        anglesPerRegion.Properties.VariableNames = {'averageAnglesLess15EndRight','averageAnglesBetw15_30EndRight', 'averageAnglesBetw30_45EndRight', 'averageAnglesBetw45_60EndRight', 'averageAnglesBetw60_75EndRight', 'averageAnglesMore75EndRight' ...
+                        anglesPerRegion=array2table(NaN(6+(33-6)*size(initialEllipsoid.bordersSituatedAt, 2),1)');
+                        preffixName = {'averageAnglesLess15EndRight','averageAnglesBetw15_30EndRight', 'averageAnglesBetw30_45EndRight', 'averageAnglesBetw45_60EndRight', 'averageAnglesBetw60_75EndRight', 'averageAnglesMore75EndRight' ...
                         'averageAnglesLess15EndLeft','averageAnglesBetw15_30EndLeft', 'averageAnglesBetw30_45EndLeft', 'averageAnglesBetw45_60EndLeft', 'averageAnglesBetw60_75EndLeft', 'averageAnglesMore75EndLeft' ...
                         'averageAnglesLess15EndGlobal','averageAnglesBetw15_30EndGlobal', 'averageAnglesBetw30_45EndGlobal', 'averageAnglesBetw45_60EndGlobal', 'averageAnglesBetw60_75EndGlobal', 'averageAnglesMore75EndGlobal' ...
                         'averageAnglesLess15CentralRegion','averageAnglesBetw15_30CentralRegion', 'averageAnglesBetw30_45CentralRegion', 'averageAnglesBetw45_60CentralRegion', 'averageAnglesBetw60_75CentralRegion', 'averageAnglesMore75CentralRegion' ...
-                        'averageAnglesLess15Total','averageAnglesBetw15_30Total', 'averageAnglesBetw30_45Total', 'averageAnglesBetw45_60Total', 'averageAnglesBetw60_75Total', 'averageAnglesMore75Total' ...
                         'numAnglesEndLeft','numAnglesEndRight','numAnglesCentralRegion'};
+                        
+                        newVariableNames = cell(size(initialEllipsoid.bordersSituatedAt, 2), 1);
+                        for numBorders = 1:size(initialEllipsoid.bordersSituatedAt, 2)
+                            newVariableNames{numBorders} = cellfun(@(x) strcat(x, '_', num2str(round(ellipsoidInfo.bordersSituatedAt(numBorders)*100)), '_'), preffixName, 'UniformOutput', false);
+                        end
+                        anglesPerRegion.Properties.VariableNames = ['averageAnglesLess15Total','averageAnglesBetw15_30Total', 'averageAnglesBetw30_45Total', 'averageAnglesBetw45_60Total', 'averageAnglesBetw60_75Total', 'averageAnglesMore75Total', newVariableNames{:}];
                         anglesPerRegion=table2struct(anglesPerRegion);
                 end 
                 %Saving info
