@@ -18,7 +18,7 @@ allCombinations = {
 for numRandomization = 1:20
     outputDir = strcat('..\results\random_', num2str(numRandomization));
     mkdir(outputDir);
-    transitionByRadius = cell(size(allCombinations, 1));
+    transitionByRadius = cell(size(allCombinations, 1), 1);
     parfor numCombination = 1:size(allCombinations, 1)
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};
@@ -41,9 +41,9 @@ for numRandomization = 1:20
         end
     end
     writetable(vertcat(transitionByRadius{:}), strcat(outputDir, '\transitionsInfo_', date, '.csv'), 'Delimiter', ';');
-    transitionByRadiusAll(end+1, :) = vertcat(transitionByRadius{:});
+    transitionByRadiusAll{numRandomization} = vertcat(transitionByRadius{:});
 end
-writetable(transitionByRadiusAll, strcat('transitionsInfoAllRandomizations_', date, '.xls'), 'Delimiter', ';')
+writetable(vertcat(transitionByRadiusAll{:}), strcat('transitionsInfoAllRandomizations_', date, '.xls'), 'Delimiter', ';')
 %Calculate mean of all the transitions
 calculateMeanOfXls(strcat('transitionsInfoAllRandomizations_', date, '.xls'));
 
