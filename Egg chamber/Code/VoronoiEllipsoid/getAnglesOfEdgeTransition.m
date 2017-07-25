@@ -146,39 +146,59 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
             anglesPerRegion.averageAnglesBetw60_75Total=sum(angles>=60 & angles<75)/length(angles);
             anglesPerRegion.averageAnglesMore75Total=sum(angles>=75)/length(angles);
 
-            for numBorders = 1:size(ellipsoidInfo.bordersSituatedAt, 2)
-                anglesPerRegion.averageAnglesLess15EndRight=sum(anglesEndRight(numBorders, :)<15)/length(anglesEndRight(numBorders, :));
-                anglesPerRegion.averageAnglesBetw15_30EndRight=sum(anglesEndRight(numBorders, :)>=15 & anglesEndRight(numBorders, :)<30)/length(anglesEndRight(numBorders, :));
-                anglesPerRegion.averageAnglesBetw30_45EndRight=sum(anglesEndRight(numBorders, :)>=30 & anglesEndRight(numBorders, :)<45)/length(anglesEndRight(numBorders, :));
-                anglesPerRegion.averageAnglesBetw45_60EndRight=sum(anglesEndRight(numBorders, :)>=45 & anglesEndRight(numBorders, :)<60)/length(anglesEndRight(numBorders, :));
-                anglesPerRegion.averageAnglesBetw60_75EndRight=sum(anglesEndRight(numBorders, :)>=60 & anglesEndRight(numBorders, :)<75)/length(anglesEndRight(numBorders, :));
-                anglesPerRegion.averageAnglesMore75EndRight=sum(anglesEndRight(numBorders, :)>=75)/length(anglesEndRight(numBorders, :));
-
-                anglesPerRegion.averageAnglesLess15EndLeft=sum(anglesEndLeft(numBorders, :)<15)/length(anglesEndLeft(numBorders, :));
-                anglesPerRegion.averageAnglesBetw15_30EndLeft=sum(anglesEndLeft(numBorders, :)>=15 & anglesEndLeft(numBorders, :)<30)/length(anglesEndLeft(numBorders, :));
-                anglesPerRegion.averageAnglesBetw30_45EndLeft=sum(anglesEndLeft(numBorders, :)>=30 & anglesEndLeft(numBorders, :)<45)/length(anglesEndLeft(numBorders, :));
-                anglesPerRegion.averageAnglesBetw45_60EndLeft=sum(anglesEndLeft(numBorders, :)>=45 & anglesEndLeft(numBorders, :)<60)/length(anglesEndLeft(numBorders, :));
-                anglesPerRegion.averageAnglesBetw60_75EndLeft=sum(anglesEndLeft(numBorders, :)>=60 & anglesEndLeft(numBorders, :)<75)/length(anglesEndLeft(numBorders, :));
-                anglesPerRegion.averageAnglesMore75EndLeft=sum(anglesEndLeft(numBorders, :)>=75)/length(anglesEndLeft(numBorders, :));
-
-                anglesPerRegion.averageAnglesLess15EndGlobal=sum([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]<15)/length([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]);
-                anglesPerRegion.averageAnglesBetw15_30EndGlobal=sum([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]>=15 & [anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]<30)/length([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]);
-                anglesPerRegion.averageAnglesBetw30_45EndGlobal=sum([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]>=30 & [anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]<45)/length([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]);
-                anglesPerRegion.averageAnglesBetw45_60EndGlobal=sum([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]>=45 & [anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]<60)/length([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]);
-                anglesPerRegion.averageAnglesBetw60_75EndGlobal=sum([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]>=60 & [anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]<75)/length([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]);
-                anglesPerRegion.averageAnglesMore75EndGlobal=sum([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]>=75)/length([anglesEndLeft(numBorders, :),anglesEndRight(numBorders, :)]);
-
-                anglesPerRegion.averageAnglesLess15CentralRegion=sum(anglesCentralRegion(numBorders, :)<15)/length(anglesCentralRegion(numBorders, :));
-                anglesPerRegion.averageAnglesBetw15_30CentralRegion=sum(anglesCentralRegion(numBorders, :)>=15 & anglesCentralRegion(numBorders, :)<30)/length(anglesCentralRegion(numBorders, :));
-                anglesPerRegion.averageAnglesBetw30_45CentralRegion=sum(anglesCentralRegion(numBorders, :)>=30 & anglesCentralRegion(numBorders, :)<45)/length(anglesCentralRegion(numBorders, :));
-                anglesPerRegion.averageAnglesBetw45_60CentralRegion=sum(anglesCentralRegion(numBorders, :)>=45 & anglesCentralRegion(numBorders, :)<60)/length(anglesCentralRegion(numBorders, :));
-                anglesPerRegion.averageAnglesBetw60_75CentralRegion=sum(anglesCentralRegion(numBorders, :)>=60 & anglesCentralRegion(numBorders, :)<75)/length(anglesCentralRegion(numBorders, :));
-                anglesPerRegion.averageAnglesMore75CentralRegion=sum(anglesCentralRegion(numBorders, :)>=75)/length(anglesCentralRegion(numBorders, :));
-
-                anglesPerRegion.numAnglesEndLeft=length(anglesEndLeft(numBorders, :));
-                anglesPerRegion.numAnglesEndRight=length(anglesEndRight(numBorders, :));
-                anglesPerRegion.numAnglesCentralRegion=length(anglesCentralRegion(numBorders, :));
+            if isempty(anglesEndLeft)
+                anglesEndLeft(1:size(ellipsoidInfo.bordersSituatedAt, 2), :) = NaN;
+            end
+            
+            if isempty(anglesEndRight)
+                anglesEndRight(1:size(ellipsoidInfo.bordersSituatedAt, 2), :) = NaN;
+            end
+            
+            if isempty(anglesCentralRegion)
+                anglesCentralRegion(1:size(ellipsoidInfo.bordersSituatedAt, 2), :) = NaN;
+            end
+            
+            for numBorder = 1:size(ellipsoidInfo.bordersSituatedAt, 2)
+                anglesEndRightPerBorder = anglesEndRight(numBorder, :);
+                anglesEndRightPerBorder(anglesEndRightPerBorder == 0) = [];
+                anglesEndLeftPerBorder = anglesEndLeft(numBorder, :);
+                anglesEndLeftPerBorder(anglesEndLeftPerBorder == 0) = [];
+                anglesCentralRegionPerBorder = anglesCentralRegion(numBorder, :);
+                anglesCentralRegionPerBorder(anglesCentralRegionPerBorder == 0) = [];
                 
+                anglesPerRegion.averageAnglesLess15EndRight=sum(anglesEndRightPerBorder<15)/length(anglesEndRightPerBorder);
+                anglesPerRegion.averageAnglesBetw15_30EndRight=sum(anglesEndRightPerBorder>=15 & anglesEndRightPerBorder<30)/length(anglesEndRightPerBorder);
+                anglesPerRegion.averageAnglesBetw30_45EndRight=sum(anglesEndRightPerBorder>=30 & anglesEndRightPerBorder<45)/length(anglesEndRightPerBorder);
+                anglesPerRegion.averageAnglesBetw45_60EndRight=sum(anglesEndRightPerBorder>=45 & anglesEndRightPerBorder<60)/length(anglesEndRightPerBorder);
+                anglesPerRegion.averageAnglesBetw60_75EndRight=sum(anglesEndRightPerBorder>=60 & anglesEndRightPerBorder<75)/length(anglesEndRightPerBorder);
+                anglesPerRegion.averageAnglesMore75EndRight=sum(anglesEndRightPerBorder>=75)/length(anglesEndRightPerBorder);
+
+                anglesPerRegion.averageAnglesLess15EndLeft=sum(anglesEndLeftPerBorder<15)/length(anglesEndLeftPerBorder);
+                anglesPerRegion.averageAnglesBetw15_30EndLeft=sum(anglesEndLeftPerBorder>=15 & anglesEndLeftPerBorder<30)/length(anglesEndLeftPerBorder);
+                anglesPerRegion.averageAnglesBetw30_45EndLeft=sum(anglesEndLeftPerBorder>=30 & anglesEndLeftPerBorder<45)/length(anglesEndLeftPerBorder);
+                anglesPerRegion.averageAnglesBetw45_60EndLeft=sum(anglesEndLeftPerBorder>=45 & anglesEndLeftPerBorder<60)/length(anglesEndLeftPerBorder);
+                anglesPerRegion.averageAnglesBetw60_75EndLeft=sum(anglesEndLeftPerBorder>=60 & anglesEndLeftPerBorder<75)/length(anglesEndLeftPerBorder);
+                anglesPerRegion.averageAnglesMore75EndLeft=sum(anglesEndLeftPerBorder>=75)/length(anglesEndLeftPerBorder);
+
+                anglesPerRegion.averageAnglesLess15EndGlobal=sum([anglesEndLeftPerBorder,anglesEndRightPerBorder]<15)/length([anglesEndLeftPerBorder,anglesEndRightPerBorder]);
+                anglesPerRegion.averageAnglesBetw15_30EndGlobal=sum([anglesEndLeftPerBorder,anglesEndRightPerBorder]>=15 & [anglesEndLeftPerBorder,anglesEndRightPerBorder]<30)/length([anglesEndLeftPerBorder,anglesEndRightPerBorder]);
+                anglesPerRegion.averageAnglesBetw30_45EndGlobal=sum([anglesEndLeftPerBorder,anglesEndRightPerBorder]>=30 & [anglesEndLeftPerBorder,anglesEndRightPerBorder]<45)/length([anglesEndLeftPerBorder,anglesEndRightPerBorder]);
+                anglesPerRegion.averageAnglesBetw45_60EndGlobal=sum([anglesEndLeftPerBorder,anglesEndRightPerBorder]>=45 & [anglesEndLeftPerBorder,anglesEndRightPerBorder]<60)/length([anglesEndLeftPerBorder,anglesEndRightPerBorder]);
+                anglesPerRegion.averageAnglesBetw60_75EndGlobal=sum([anglesEndLeftPerBorder,anglesEndRightPerBorder]>=60 & [anglesEndLeftPerBorder,anglesEndRightPerBorder]<75)/length([anglesEndLeftPerBorder,anglesEndRightPerBorder]);
+                anglesPerRegion.averageAnglesMore75EndGlobal=sum([anglesEndLeftPerBorder,anglesEndRightPerBorder]>=75)/length([anglesEndLeftPerBorder,anglesEndRightPerBorder]);
+
+                anglesPerRegion.averageAnglesLess15CentralRegion=sum(anglesCentralRegionPerBorder<15)/length(anglesCentralRegionPerBorder);
+                anglesPerRegion.averageAnglesBetw15_30CentralRegion=sum(anglesCentralRegionPerBorder>=15 & anglesCentralRegionPerBorder<30)/length(anglesCentralRegionPerBorder);
+                anglesPerRegion.averageAnglesBetw30_45CentralRegion=sum(anglesCentralRegionPerBorder>=30 & anglesCentralRegionPerBorder<45)/length(anglesCentralRegionPerBorder);
+                anglesPerRegion.averageAnglesBetw45_60CentralRegion=sum(anglesCentralRegionPerBorder>=45 & anglesCentralRegionPerBorder<60)/length(anglesCentralRegionPerBorder);
+                anglesPerRegion.averageAnglesBetw60_75CentralRegion=sum(anglesCentralRegionPerBorder>=60 & anglesCentralRegionPerBorder<75)/length(anglesCentralRegionPerBorder);
+                anglesPerRegion.averageAnglesMore75CentralRegion=sum(anglesCentralRegionPerBorder>=75)/length(anglesCentralRegionPerBorder);
+
+                anglesPerRegion.numAnglesEndLeft=length(anglesEndLeftPerBorder);
+                anglesPerRegion.numAnglesEndRight=length(anglesEndRightPerBorder);
+                anglesPerRegion.numAnglesCentralRegion=length(anglesCentralRegionPerBorder);
+                
+                anglesPerRegion = renameVariablesOfStructAddingSuffix(anglesPerRegion, num2str(round(ellipsoidInfo.bordersSituatedAt(numBorder)*100)), {'End', 'Central'});
             end
 
         else
