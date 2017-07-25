@@ -101,6 +101,7 @@ function [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo )
             VertCell = ellipsoidInfo.verticesPerCell{cellIndexCrossHead};
             KVert = convhulln([VertCell; ellipsoidInfo.finalCentroids(cellIndexCrossHead, :)]);
             patch('Vertices',[VertCell; ellipsoidInfo.finalCentroids(cellIndexCrossHead, :)],'Faces', KVert,'FaceColor', cl ,'FaceAlpha', 1, 'EdgeColor', 'none')
+            [~, ellipsoidInfo.cellArea(cellIndexCrossHead)] = boundary(VertCell(:, 1), VertCell(:, 2), VertCell(:, 3));
             hold on;
         end
 %         plot3(removedVertices(:, 1), removedVertices(:, 2), removedVertices(:, 3),'Marker','.','MarkerEdgeColor','r','MarkerSize',10, 'LineStyle', 'none')
