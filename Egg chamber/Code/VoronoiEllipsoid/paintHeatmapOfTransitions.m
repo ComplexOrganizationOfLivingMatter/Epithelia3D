@@ -101,10 +101,22 @@ function [ exchangeNeighboursInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, 
             exchangeNeighboursInfo.areaOfYBorderLeft = sum(ellipsoidInfo.cellArea(cellsAtYBorderLeft));
             exchangeNeighboursInfo.areaOfYBorderRight = sum(ellipsoidInfo.cellArea(cellsAtYBorderRight));
             exchangeNeighboursInfo.areaOfYMiddle = sum(ellipsoidInfo.cellArea(cellsAtYBorderRight == 0 & cellsAtYBorderLeft == 0));
-
+            
             exchangeNeighboursInfo.areaOfZBorderLeft = sum(ellipsoidInfo.cellArea(cellsAtZBorderLeft));
             exchangeNeighboursInfo.areaOfZBorderRight = sum(ellipsoidInfo.cellArea(cellsAtZBorderRight));
             exchangeNeighboursInfo.areaOfZMiddle = sum(ellipsoidInfo.cellArea(cellsAtZBorderRight == 0 & cellsAtZBorderLeft == 0));
+
+            exchangeNeighboursInfo.surfaceReductionOfXBorderLeft = sum(ellipsoidInfo.cellArea(cellsAtXBorderLeft)) / sum(initialEllipsoid.cellArea(cellsAtXBorderLeft));
+            exchangeNeighboursInfo.surfaceReductionOfXBorderRight = sum(ellipsoidInfo.cellArea(cellsAtXBorderRight)) / sum(initialEllipsoid.cellArea(cellsAtXBorderRight));
+            exchangeNeighboursInfo.surfaceReductionOfXMiddle = sum(ellipsoidInfo.cellArea(cellsAtXBorderRight == 0 & cellsAtXBorderLeft == 0)) / sum(initialEllipsoid.cellArea(cellsAtXBorderRight == 0 & cellsAtXBorderLeft == 0));
+
+            exchangeNeighboursInfo.surfaceReductionOfYBorderLeft = sum(ellipsoidInfo.cellArea(cellsAtYBorderLeft)) / sum(initialEllipsoid.cellArea(cellsAtYBorderLeft));
+            exchangeNeighboursInfo.surfaceReductionOfYBorderRight = sum(ellipsoidInfo.cellArea(cellsAtYBorderRight)) / sum(initialEllipsoid.cellArea(cellsAtYBorderRight));
+            exchangeNeighboursInfo.surfaceReductionOfYMiddle = sum(ellipsoidInfo.cellArea(cellsAtYBorderRight == 0 & cellsAtYBorderLeft == 0)) / sum(initialEllipsoid.cellArea(cellsAtYBorderRight == 0 & cellsAtYBorderLeft == 0));
+            
+            exchangeNeighboursInfo.surfaceReductionOfZBorderLeft = sum(ellipsoidInfo.cellArea(cellsAtZBorderLeft)) / sum(initialEllipsoid.cellArea(cellsAtZBorderLeft));
+            exchangeNeighboursInfo.surfaceReductionOfZBorderRight = sum(ellipsoidInfo.cellArea(cellsAtZBorderRight)) / sum(initialEllipsoid.cellArea(cellsAtZBorderRight));
+            exchangeNeighboursInfo.surfaceReductionOfZMiddle = sum(ellipsoidInfo.cellArea(cellsAtZBorderRight == 0 & cellsAtZBorderLeft == 0)) / sum(initialEllipsoid.cellArea(cellsAtZBorderRight == 0 & cellsAtZBorderLeft == 0));
             
             exchangeNeighboursInfo = renameVariablesOfStructAddingSuffix(exchangeNeighboursInfo, num2str(round(exchangeNeighboursInfo.bordersSituatedAt*100)), {'Border', 'Middle'});
         end
