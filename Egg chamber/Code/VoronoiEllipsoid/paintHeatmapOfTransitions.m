@@ -56,6 +56,7 @@ function [ exchangeNeighboursInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, 
         
         exchangeNeighboursInfo.percentageOfexchangeNeighboursPerCell = sum(exchangeNeighboursPerCell) / size(exchangeNeighboursPerCell, 1);
         
+        for numBorders = 1:size(ellipsoidInfo.bordersSituatedAt, 2)
             
             exchangeNeighboursInfo.bordersSituatedAt = ellipsoidInfo.bordersSituatedAt(numBorders);
             %We get select the cells at the borders from the initial ellipsoid.
@@ -105,6 +106,7 @@ function [ exchangeNeighboursInfo ] = paintHeatmapOfTransitions( ellipsoidInfo, 
             exchangeNeighboursInfo.areaOfZBorderRight = sum(ellipsoidInfo.cellArea(cellsAtZBorderRight));
             exchangeNeighboursInfo.areaOfZMiddle = sum(ellipsoidInfo.cellArea(cellsAtZBorderRight == 0 & cellsAtZBorderLeft == 0));
             
+            exchangeNeighboursInfo = renameVariablesOfStructAddingSuffix(exchangeNeighboursInfo, num2str(round(exchangeNeighboursInfo.bordersSituatedAt*100)), {'Border', 'Middle'});
         end
         
         axis equal
