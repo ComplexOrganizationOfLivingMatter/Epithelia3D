@@ -13,6 +13,7 @@ function pipelineProjectionApicalSurface (numSeeds)
 
     acumListTransitionByCurv=zeros(length(listOfCurvature),size(pathV5data,1)*3);
     acumListDataAngles=cell(size(pathV5data,1),1);
+    totalAngles=cell(length(listOfCurvature),size(pathV5data,1));
     for i=1:size(pathV5data,1)
 
         listTransitionsByCurvature=[];
@@ -50,10 +51,10 @@ function pipelineProjectionApicalSurface (numSeeds)
             name2save=pathV5data(i).name;
             name2save=name2save(1:end-16);
 
-            if j==1
-                representAndSaveFigureWithColourfulCells(L_original,numCells,seeds_values_before(:,2:3),[directory2save nameOfFolder], name2save,'_basal')
-            end
-            representAndSaveFigureWithColourfulCells(L_originalApical,numCells,seedsApical(:,2:3),[directory2save nameOfFolder],name2save, ['_apicalReduction' num2str(1-curvature)])
+%             if j==1
+%                 representAndSaveFigureWithColourfulCells(L_original,numCells,seeds_values_before(:,2:3),[directory2save nameOfFolder], name2save,'_basal')
+%             end
+%             representAndSaveFigureWithColourfulCells(L_originalApical,numCells,seedsApical(:,2:3),[directory2save nameOfFolder],name2save, ['_apicalReduction' num2str(1-curvature)])
 
             %% Testing neighs exchanges
             [numberOfTransitionsBasApi,nWinBasApi,nLossBasApi] = testingNeighsExchange(L_original,L_originalApical);
@@ -63,6 +64,7 @@ function pipelineProjectionApicalSurface (numSeeds)
             if nWinBasApi>0
                 [dataAngles]=measureAnglesAndLengthOfEdgesTransition(L_original,L_originalApical);
                 listDataAngles(end+1,:)=[dataAngles.numOfEdgesOfTransition,dataAngles.proportionAnglesLess15deg,dataAngles.proportionAnglesBetween15_30deg,dataAngles.proportionAnglesBetween30_45deg,dataAngles.proportionAnglesBetween45_60deg,dataAngles.proportionAnglesBetween60_75deg,dataAngles.proportionAnglesBetween75_90deg];
+                totalAngles{j,i}=dataAngles.angles;
             else
                 dataAngles=[];
                 listDataAngles(end+1,:)=[0 0 0 0 0 0 0];
@@ -114,6 +116,10 @@ function pipelineProjectionApicalSurface (numSeeds)
     meanListDataAngles.Properties.VariableNames ={'numOfEdgesOfTransition','proportionAnglesLess15deg','proportionAnglesBetween15_30deg','proportionAnglesBetween30_45deg','proportionAnglesBetween45_60deg','proportionAnglesBetween60_75deg','proportionAnglesBetween75_90deg'};
     stdListDataAngles.Properties.VariableNames ={'numOfEdgesOfTransition','proportionAnglesLess15deg','proportionAnglesBetween15_30deg','proportionAnglesBetween30_45deg','proportionAnglesBetween45_60deg','proportionAnglesBetween60_75deg','proportionAnglesBetween75_90deg'};
 
-    save([directory2save nameOfFolder 'summaryAverageTransitions.mat'],'listAcumTransitions','meanListDataAngles','stdListDataAngles')
+    acumAngles=cell(length(listOfCurvature),1);
+    for i=1:length(listOfCurvature)
+        acumAngles{i}=cat(1,totalAngles{i,:});
+    end
+    save([directory2save nameOfFolder 'summaryAverageTransitions.mat'],'listAcumTransitions','meanListDataAngles','stdListDataAngles','acumAngles')
 
 end
