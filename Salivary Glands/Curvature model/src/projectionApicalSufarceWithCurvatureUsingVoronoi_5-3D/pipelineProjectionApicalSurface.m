@@ -14,6 +14,7 @@ function pipelineProjectionApicalSurface (numSeeds)
     acumListTransitionByCurv=zeros(length(listOfCurvature),size(pathV5data,1)*3);
     acumListDataAngles=cell(size(pathV5data,1),1);
     totalAngles=cell(length(listOfCurvature),size(pathV5data,1));
+    totalEdgesTransition=cell(length(listOfCurvature),size(pathV5data,1));
     for i=1:size(pathV5data,1)
 
         listTransitionsByCurvature=[];
@@ -65,6 +66,7 @@ function pipelineProjectionApicalSurface (numSeeds)
                 [dataAngles]=measureAnglesAndLengthOfEdgesTransition(L_original,L_originalApical);
                 listDataAngles(end+1,:)=[dataAngles.numOfEdgesOfTransition,dataAngles.proportionAnglesLess15deg,dataAngles.proportionAnglesBetween15_30deg,dataAngles.proportionAnglesBetween30_45deg,dataAngles.proportionAnglesBetween45_60deg,dataAngles.proportionAnglesBetween60_75deg,dataAngles.proportionAnglesBetween75_90deg];
                 totalAngles{j,i}=dataAngles.angles;
+                totalEdgesTransition{j,i}=dataAngles.edgeLength;
             else
                 dataAngles=[];
                 listDataAngles(end+1,:)=[0 0 0 0 0 0 0];
@@ -117,9 +119,11 @@ function pipelineProjectionApicalSurface (numSeeds)
     stdListDataAngles.Properties.VariableNames ={'numOfEdgesOfTransition','proportionAnglesLess15deg','proportionAnglesBetween15_30deg','proportionAnglesBetween30_45deg','proportionAnglesBetween45_60deg','proportionAnglesBetween60_75deg','proportionAnglesBetween75_90deg'};
 
     acumAngles=cell(length(listOfCurvature),1);
+    acumEdgesTransition=cell(length(listOfCurvature),1);
     for i=1:length(listOfCurvature)
         acumAngles{i}=cat(1,totalAngles{i,:});
+        acumEdgesTransition{i}=cat(1,totalEdgesTransition{i,:});
     end
-    save([directory2save nameOfFolder 'summaryAverageTransitions.mat'],'listAcumTransitions','meanListDataAngles','stdListDataAngles','acumAngles')
+    save([directory2save nameOfFolder 'summaryAverageTransitions.mat'],'listAcumTransitions','meanListDataAngles','stdListDataAngles','acumAngles','acumEdgesTransition')
 
 end
