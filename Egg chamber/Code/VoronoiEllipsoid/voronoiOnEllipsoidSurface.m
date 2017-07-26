@@ -150,12 +150,13 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                 
                 if isempty(tableDataAngles)
                         tableDataAngles=NaN;
-                        anglesPerRegion=array2table(NaN(6+(33-6)*size(initialEllipsoid.bordersSituatedAt, 2),1)');
                         preffixName = {'averageAnglesLess15EndRight','averageAnglesBetw15_30EndRight', 'averageAnglesBetw30_45EndRight', 'averageAnglesBetw45_60EndRight', 'averageAnglesBetw60_75EndRight', 'averageAnglesMore75EndRight' ...
                         'averageAnglesLess15EndLeft','averageAnglesBetw15_30EndLeft', 'averageAnglesBetw30_45EndLeft', 'averageAnglesBetw45_60EndLeft', 'averageAnglesBetw60_75EndLeft', 'averageAnglesMore75EndLeft' ...
                         'averageAnglesLess15EndGlobal','averageAnglesBetw15_30EndGlobal', 'averageAnglesBetw30_45EndGlobal', 'averageAnglesBetw45_60EndGlobal', 'averageAnglesBetw60_75EndGlobal', 'averageAnglesMore75EndGlobal' ...
                         'averageAnglesLess15CentralRegion','averageAnglesBetw15_30CentralRegion', 'averageAnglesBetw30_45CentralRegion', 'averageAnglesBetw45_60CentralRegion', 'averageAnglesBetw60_75CentralRegion', 'averageAnglesMore75CentralRegion' ...
-                        'numAnglesEndLeft','numAnglesEndRight','numAnglesCentralRegion'};
+                        'numAnglesEndLeft','numAnglesEndRight','numAnglesCentralRegion', 'percentageTransitionsEndLeft','percentageTransitionsEndRight','percentageTransitionsCentralRegion'};
+                        
+                        anglesPerRegion=array2table(NaN(6+(size(preffixName, 2)-6)*size(initialEllipsoid.bordersSituatedAt, 2),1)');
                         
                         newVariableNames = cell(size(initialEllipsoid.bordersSituatedAt, 2), 1);
                         for numBorders = 1:size(initialEllipsoid.bordersSituatedAt, 2)

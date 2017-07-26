@@ -198,6 +198,10 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
                 anglesPerRegion.numAnglesEndRight=length(anglesEndRightPerBorder);
                 anglesPerRegion.numAnglesCentralRegion=length(anglesCentralRegionPerBorder);
                 
+                anglesPerRegion.percentageTransitionsEndLeft=length(anglesEndLeftPerBorder)/size(ellipsoidInfo.finalCentroids, 1);
+                anglesPerRegion.percentageTransitionsEndRight=length(anglesEndRightPerBorder)/size(ellipsoidInfo.finalCentroids, 1);
+                anglesPerRegion.percentageTransitionsCentralRegion=length(anglesCentralRegionPerBorder)/size(ellipsoidInfo.finalCentroids, 1);
+                
                 anglesPerRegion = renameVariablesOfStructAddingSuffix(anglesPerRegion, num2str(round(ellipsoidInfo.bordersSituatedAt(numBorder)*100)), {'End', 'Central'});
             end
 
