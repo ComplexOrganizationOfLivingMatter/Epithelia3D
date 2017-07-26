@@ -5,13 +5,13 @@ addpath(genpath('lib'));
 % - Zeppelin
 % - Filled donut
 % - Sphere
-% - Stage 4
 % - Stage 8
+% - Stage 4
 allCombinations = {
     15 10 10 [0.5, 1, 2]
     10 15 15 [0.5, 1, 2]
     10 10 10 [0.5, 1, 2]
-    100 50 50 6
+    97.46 50.75 50.75 6.25
     38.57277778	31.61605556 31.61605556	5.506047536
     };
 
@@ -19,7 +19,7 @@ for numRandomization = 1:20
     outputDir = strcat('..\results\random_', num2str(numRandomization));
     mkdir(outputDir);
     transitionByRadius = cell(size(allCombinations, 1), 1);
-    parfor numCombination = 1:size(allCombinations, 1)
+    for numCombination = 1:size(allCombinations, 1)
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};
         radiusZ = allCombinations{numCombination, 3};
@@ -43,7 +43,7 @@ for numRandomization = 1:20
     writetable(vertcat(transitionByRadius{:}), strcat(outputDir, '\transitionsInfo_', date, '.csv'), 'Delimiter', ';');
     transitionByRadiusAll{numRandomization} = vertcat(transitionByRadius{:});
 end
-writetable(vertcat(transitionByRadiusAll{:}), strcat('transitionsInfoAllRandomizations_', date, '.xls'), 'Delimiter', ';')
+writetable(vertcat(transitionByRadiusAll{:}), strcat('..\results\transitionsInfoAllRandomizations_', date, '.xls'))
 %Calculate mean of all the transitions
-calculateMeanOfXls(strcat('transitionsInfoAllRandomizations_', date, '.xls'));
+calculateMeanOfXls(strcat('..\results\transitionsInfoAllRandomizations_', date, '.xls'));
 
