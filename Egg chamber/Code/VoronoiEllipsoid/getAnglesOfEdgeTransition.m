@@ -1,4 +1,4 @@
-function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoidInfo, ellipsoidInfoReducted, outputDir )
+function [tableDataAngles,anglesPerRegion, ellipsoidInfoReducted] = getAnglesOfEdgeTransition( ellipsoidInfo, ellipsoidInfoReducted, outputDir )
 
     cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfoReducted.neighbourhood, ellipsoidInfo.neighbourhood)>0);
 
@@ -29,8 +29,8 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
             end
 
         end
-
     end
+    
     neighReducted=unique([min(neighReducted,[],2),max(neighReducted,[],2)],'rows');
     neighInitial=unique([min(neighInitial,[],2),max(neighInitial,[],2)],'rows');
 
@@ -140,6 +140,9 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
                     angles(i)=180-angles(i);
                 end
             end
+            
+            ellipsoidInfoReducted.anglesOfTransitions = angles;
+            ellipsoidInfoReducted.edgesLengthOfTransitions = edgesLength;
 
             tableAngle=array2table(angles);
             tableAngle.Properties.VariableNames = {'angleEdgeTransition'};
@@ -159,6 +162,10 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
             anglesEndLeft=[];
             anglesEndRight=[];
             anglesCentralRegion=[];
+            
+            edgesLengthEndLeft=[];
+            edgesLengthEndRight=[];
+            edgesLengthCentralRegion=[];
             for i=1:length(angles)
                 edgeTran=tableDataAngles.verticesOfEdge{i};
                 if (angles(i)<30)
@@ -175,19 +182,22 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
                 isRightCentroid = mean(edgeTran(:,1))>endLimitRight;
                 if any(isRightCentroid)
                     numAnglesEndRight(isRightCentroid) = numAnglesEndRight(isRightCentroid) + 1;
-                    anglesEndRight(isRightCentroid, end+1)=angles(i);
+                    anglesEndRight(isRightCentroid, end+1) = angles(i);
+                    edgesLengthEndRight(isRightCentroid, end+1) = edgesLength(i);
                 end
                 
                 isLeftCentroid = mean(edgeTran(:,1))<endLimitLeft;
                 if any(isLeftCentroid)
                     numAnglesEndLeft(isLeftCentroid) = numAnglesEndLeft(isLeftCentroid) + 1;
                     anglesEndLeft(isLeftCentroid, end+1) = angles(i);
+                    edgesLengthEndLeft(isLeftCentroid, end+1)= edgesLength(i);
                 end
                 
                 isCentralCentroid = mean(edgeTran(:,1)) >= endLimitLeft & mean(edgeTran(:,1)) <= endLimitRight;
                 if any(isCentralCentroid)
                     numAnglesCentralRegion(isCentralCentroid) = numAnglesCentralRegion(isCentralCentroid) + 1;
                     anglesCentralRegion(isCentralCentroid, end+1) = angles(i);
+                    edgesLengthCentralRegion(isCentralCentroid, end+1) = edgesLength(i);
                 end
             end
 
@@ -202,16 +212,22 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
             
            	anglesPerRegion.percentageTransitionsPerCell=length(angles)/size(ellipsoidInfo.finalCentroids, 1);
 
+            anglesPerRegion.meanEdgeLength = mean(edgesLength);
+            anglesPerRegion.stdEdgeLength = std(edgesLength);
+            
             if isempty(anglesEndLeft)
                 anglesEndLeft(1:size(ellipsoidInfo.bordersSituatedAt, 2), :) = NaN;
+                edgesLengthEndLeft(1:size(ellipsoidInfo.bordersSituatedAt, 2), :) = NaN;
             end
             
             if isempty(anglesEndRight)
                 anglesEndRight(1:size(ellipsoidInfo.bordersSituatedAt, 2), :) = NaN;
+                edgesLengthEndRight(1:size(ellipsoidInfo.bordersSituatedAt, 2), :) = NaN;
             end
             
             if isempty(anglesCentralRegion)
                 anglesCentralRegion(1:size(ellipsoidInfo.bordersSituatedAt, 2), :) = NaN;
+                edgesLengthCentralRegion(1:size(ellipsoidInfo.bordersSituatedAt, 2), :) = NaN;
             end
             
             for numBorder = 1:size(ellipsoidInfo.bordersSituatedAt, 2)
@@ -258,6 +274,21 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
                 anglesPerRegion.percentageTransitionsEndRight=length(anglesEndRightPerBorder)/size(ellipsoidInfo.finalCentroids, 1);
                 anglesPerRegion.percentageTransitionsCentralRegion=length(anglesCentralRegionPerBorder)/size(ellipsoidInfo.finalCentroids, 1);
                 
+                edgesLengthEndRightPerBorder = edgesLengthEndRight(numBorder, :);
+                edgesLengthEndRightPerBorder(edgesLengthEndRightPerBorder == 0) = [];
+                edgesLengthEndLeftPerBorder = edgesLengthEndLeft(numBorder, :);
+                edgesLengthEndLeftPerBorder(edgesLengthEndLeftPerBorder == 0) = [];
+                edgesLengthCentralRegionPerBorder = edgesLengthCentralRegion(numBorder, :);
+                edgesLengthCentralRegionPerBorder(edgesLengthCentralRegionPerBorder == 0) = [];
+
+                anglesPerRegion.meanEdgeLengthEndLeft = mean(edgesLengthEndLeftPerBorder);
+                anglesPerRegion.meanEdgeLengthEndRight = mean(edgesLengthEndRightPerBorder);
+                anglesPerRegion.meanEdgeLengthCentralRegion = mean(edgesLengthCentralRegionPerBorder);
+
+                anglesPerRegion.stdEdgeLengthEndLeft = std(edgesLengthEndLeftPerBorder);
+                anglesPerRegion.stdEdgeLengthEndRight = std(edgesLengthEndRightPerBorder);
+                anglesPerRegion.stdEdgeLengthCentralRegion = std(edgesLengthCentralRegionPerBorder);
+                
                 anglesPerRegion = renameVariablesOfStructAddingSuffix(anglesPerRegion, num2str(round(ellipsoidInfo.bordersSituatedAt(numBorder)*100)), {'End', 'Central'});
             end
 
@@ -270,5 +301,3 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
         anglesPerRegion=[];
     end
 end
-
-
