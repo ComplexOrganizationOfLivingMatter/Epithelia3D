@@ -135,7 +135,7 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
 
                 %Calculate angle between vectors
                 angles(i)=rad2deg(atan2(norm(cross(directorMeridianVector,directorEdgeTransitionVector)),dot(directorMeridianVector,directorEdgeTransitionVector)));
-                edgesLength(i) = pdist2;
+                edgesLength(i) = pdist2(vertEdge(1, :), vertEdge(2, :));
                 if angles(i)>90
                     angles(i)=180-angles(i);
                 end
