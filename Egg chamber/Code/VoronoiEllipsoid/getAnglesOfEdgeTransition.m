@@ -43,12 +43,64 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
         if size(cellsFormingEdgeTransition{i,2}, 2) == 2
             cellsFormingEdgeTransition{i,3}=intersect(ellipsoidInfo.verticesPerCell{cellsFormingEdgeTransition{i,2}},'rows');
         else %2 transitios have ocurred
-            disp('2 transitions have ocurred within the same motif')
-%             cellsIntervining = [cellsFormingEdgeTransition{i, 1:2}];
-%             intersection1 = intersect(ellipsoidInfo.verticesPerCell{cellsIntervining(1)}, ellipsoidInfo.verticesPerCell{cellsIntervining(3)}, 'rows');
-%             intersection2 = intersect(ellipsoidInfo.verticesPerCell{cellsIntervining(2)}, ellipsoidInfo.verticesPerCell{cellsIntervining(3)}, 'rows');
-%             neighboursBasal = ellipsoidInfo.neighbourhood{cellsFormingEdgeTransition{i, 2}};
-%             neighboursApical = ellipsoidInfoReducted.neighbourhood{cellsFormingEdgeTransition{i, 2}};
+            %% transforming 2 transitions into two edge length
+            neighbourhood1 = ellipsoidInfo.neighbourhood{neighReducted(i,1)};
+            neighbourhood2 = ellipsoidInfo.neighbourhood{neighReducted(i,2)};
+            neighbourhood3 = ellipsoidInfo.neighbourhood{cellsFormingEdgeTransition{i,2}};
+            
+            
+            neighbourhood1Red = ellipsoidInfoReducted.neighbourhood{neighReducted(i,1)};
+            neighbourhood2Red = ellipsoidInfoReducted.neighbourhood{neighReducted(i,2)};
+            neighbourhood3Red = ellipsoidInfoReducted.neighbourhood{cellsFormingEdgeTransition{i,2}};
+            
+            %changingNeigh3 = intersect(neighbourhood3, neighbourhood3Red);
+            try
+                commonNeigh = intersect(neighbourhood2Red, neighbourhood1Red);
+                commonNeigh = commonNeigh(commonNeigh ~= cellsFormingEdgeTransition{i, 2});
+                commonNeigh2 = intersect(ellipsoidInfo.neighbourhood{commonNeigh},ellipsoidInfo.neighbourhood{cellsFormingEdgeTransition{i, 2}})';
+                doubleTransitionCells = setdiff([commonNeigh,commonNeigh2],[cellsFormingEdgeTransition{i,1}]);
+
+                motif1 = [neighReducted(i,1), cellsFormingEdgeTransition{i,2}, doubleTransitionCells];
+                motif2 = [neighReducted(i,2), cellsFormingEdgeTransition{i,2}, doubleTransitionCells];
+                
+                
+                intersectionOfMotif = zeros(size(motif1, 2), 1);
+                for numCell1 = 1:size(motif1, 2)
+                	intersectionOfMotif(numCell1) = size(intersect(motif1, ellipsoidInfo.neighbourhood{motif1(numCell1)}), 1);
+                end
+                
+                %First transition
+                cellsFormingEdgeTransition{i,1} = motif1(intersectionOfMotif == 2);
+                cellsFormingEdgeTransition{i,2} = motif1(intersectionOfMotif == 3);
+                cellsFormingEdgeTransition{i,3} = intersect(ellipsoidInfo.verticesPerCell{motif1(intersectionOfMotif == 3)}, 'rows');
+                
+                intersectionOfMotif = zeros(size(motif2, 2), 1);
+                for numCell1 = 1:size(motif2, 2)
+                	intersectionOfMotif(numCell1) = size(intersect(motif2, ellipsoidInfo.neighbourhood{motif2(numCell1)}), 1);
+                end
+                
+                %Second transition
+                cellsFormingEdgeTransition{end+1,1} = motif1(intersectionOfMotif == 2);
+                cellsFormingEdgeTransition{end,2} = motif1(intersectionOfMotif == 3);
+                cellsFormingEdgeTransition{end,3} = intersect(ellipsoidInfo.verticesPerCell{motif2(intersectionOfMotif == 3)}, 'rows');
+            catch mexception
+                disp('Weird transition. Probably a crosslink initially.');
+            end
+            
+            %%Showing the motifs
+%             clmap = colorcube();
+%             vertices = unique([cellsFormingEdgeTransition{i,1}; cellsFormingEdgeTransition{i,2}; doubleTransitionCells']);
+%             figure
+%             for numVertex = 1:size(vertices, 1)
+%                 KVert = convhulln([ellipsoidInfoReducted.verticesPerCell{vertices(numVertex)}]);
+%                 patch('Vertices',[ellipsoidInfoReducted.verticesPerCell{vertices(numVertex)}],'Faces', KVert,'FaceColor', clmap(numVertex, :) ,'FaceAlpha', 1, 'EdgeColor', 'none')
+%             end
+%             
+%             figure
+%             for numVertex = 1:size(vertices, 1)
+%                 KVert = convhulln([ellipsoidInfo.verticesPerCell{vertices(numVertex)}]);
+%                 patch('Vertices',[ellipsoidInfo.verticesPerCell{vertices(numVertex)}],'Faces', KVert,'FaceColor', clmap(numVertex, :) ,'FaceAlpha', 1, 'EdgeColor', 'none')
+%             end
         end
     end
     %Removing empty cells
@@ -63,6 +115,7 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
         [~,verGrid,~] = surf2patch(xVerGrid,yVerGrid,zVerGrid);
 
         angles=zeros(size(tableDataAngles.verticesOfEdge,1),1);
+        edgesLength=zeros(size(tableDataAngles.verticesOfEdge,1),1);
 
         if ~isempty(tableDataAngles.verticesOfEdge)
             for i=1:size(tableDataAngles.verticesOfEdge,1)
@@ -82,6 +135,7 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
 
                 %Calculate angle between vectors
                 angles(i)=rad2deg(atan2(norm(cross(directorMeridianVector,directorEdgeTransitionVector)),dot(directorMeridianVector,directorEdgeTransitionVector)));
+                edgesLength(i) = pdist2;
                 if angles(i)>90
                     angles(i)=180-angles(i);
                 end

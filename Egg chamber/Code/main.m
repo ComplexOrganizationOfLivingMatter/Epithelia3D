@@ -5,10 +5,10 @@ addpath(genpath('lib'));
 % - Zeppelin
 % - Filled donut
 % - Sphere
-% - Stage 4
 % - Stage 8
+% - Stage 4
 allCombinations = {
-    15 10 10 [0.5, 1, 2]
+    15 10 10 [3, 3.5, 4, 0.5, 1, 2]
     10 15 15 [0.5, 1, 2]
     10 10 10 [0.5, 1, 2]
     97.46 50.75 50.75 6.25
@@ -19,7 +19,7 @@ for numRandomization = 1:20
     outputDir = strcat('..\results\random_', num2str(numRandomization));
     mkdir(outputDir);
     transitionByRadius = cell(size(allCombinations, 1), 1);
-    parfor numCombination = 1:size(allCombinations, 1)
+    for numCombination = 1:size(allCombinations, 1)
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};
         radiusZ = allCombinations{numCombination, 3};
