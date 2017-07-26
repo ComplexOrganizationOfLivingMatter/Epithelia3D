@@ -19,7 +19,7 @@ for numRandomization = 1:20
     outputDir = strcat('..\results\random_', num2str(numRandomization));
     mkdir(outputDir);
     transitionByRadius = cell(size(allCombinations, 1), 1);
-    for numCombination = 1:size(allCombinations, 1)
+    parfor numCombination = 1:size(allCombinations, 1)
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};
         radiusZ = allCombinations{numCombination, 3};

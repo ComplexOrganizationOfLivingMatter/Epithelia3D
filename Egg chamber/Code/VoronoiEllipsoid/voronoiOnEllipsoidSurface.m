@@ -156,13 +156,14 @@ function [ transitionsCSVInfo ] = voronoiOnEllipsoidSurface( centerOfEllipsoid, 
                         'averageAnglesLess15CentralRegion','averageAnglesBetw15_30CentralRegion', 'averageAnglesBetw30_45CentralRegion', 'averageAnglesBetw45_60CentralRegion', 'averageAnglesBetw60_75CentralRegion', 'averageAnglesMore75CentralRegion' ...
                         'numAnglesEndLeft','numAnglesEndRight','numAnglesCentralRegion', 'percentageTransitionsEndLeft','percentageTransitionsEndRight','percentageTransitionsCentralRegion', 'meanEdgeLengthEndLeft', 'meanEdgeLengthEndRight', 'meanEdgeLengthCentralRegion', 'stdEdgeLengthEndLeft', 'stdEdgeLengthEndRight', 'stdEdgeLengthCentralRegion'};
                         
-                        anglesPerRegion=array2table(NaN(7+(size(preffixName, 2)-7)*size(initialEllipsoid.bordersSituatedAt, 2),1)');
+                        totalVariables = {'averageAnglesLess15Total','averageAnglesBetw15_30Total', 'averageAnglesBetw30_45Total', 'averageAnglesBetw45_60Total', 'averageAnglesBetw60_75Total', 'averageAnglesMore75Total', 'percentageTransitionsPerCell', 'meanEdgeLength', 'stdEdgeLength'};
+                        anglesPerRegion=array2table(NaN(size(totalVariables, 2) + (size(preffixName, 2))*size(initialEllipsoid.bordersSituatedAt, 2),1)');
                         
                         newVariableNames = cell(size(initialEllipsoid.bordersSituatedAt, 2), 1);
                         for numBorders = 1:size(initialEllipsoid.bordersSituatedAt, 2)
                             newVariableNames{numBorders} = cellfun(@(x) strcat(x, '_', num2str(round(ellipsoidInfo.bordersSituatedAt(numBorders)*100)), '_'), preffixName, 'UniformOutput', false);
                         end
-                        anglesPerRegion.Properties.VariableNames = ['averageAnglesLess15Total','averageAnglesBetw15_30Total', 'averageAnglesBetw30_45Total', 'averageAnglesBetw45_60Total', 'averageAnglesBetw60_75Total', 'averageAnglesMore75Total', 'percentageTransitionsTotal', 'meanEdgeLength', 'stdEdgeLength', newVariableNames{:}];
+                        anglesPerRegion.Properties.VariableNames = [totalVariables{:}, newVariableNames{:}];
                         anglesPerRegion=table2struct(anglesPerRegion);
                 end 
                 %Saving info
