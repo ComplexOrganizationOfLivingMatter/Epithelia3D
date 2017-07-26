@@ -145,6 +145,8 @@ function [tableDataAngles,anglesPerRegion] = getAnglesOfEdgeTransition( ellipsoi
             anglesPerRegion.averageAnglesBetw45_60Total=sum(angles>=45 & angles<60)/length(angles);
             anglesPerRegion.averageAnglesBetw60_75Total=sum(angles>=60 & angles<75)/length(angles);
             anglesPerRegion.averageAnglesMore75Total=sum(angles>=75)/length(angles);
+            
+           	anglesPerRegion.percentageTransitionsPerCell=length(angles)/size(ellipsoidInfo.finalCentroids, 1);
 
             if isempty(anglesEndLeft)
                 anglesEndLeft(1:size(ellipsoidInfo.bordersSituatedAt, 2), :) = NaN;
