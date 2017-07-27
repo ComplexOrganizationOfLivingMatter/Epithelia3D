@@ -234,9 +234,9 @@ function [tableDataAngles,anglesPerRegion, ellipsoidInfoReducted] = getAnglesOfE
             
             for numBorder = 1:size(ellipsoidInfo.bordersSituatedAt, 2)
                 
-                numCellsAtXBorderRight = sum(initialEllipsoid.finalCentroids(:, 1) < -(ellipsoidInfo.bordersSituatedAt(numBorder) * initialEllipsoid.xRadius));
-                numCellsAtXBorderLeft = sum(initialEllipsoid.finalCentroids(:, 1) > (ellipsoidInfo.bordersSituatedAt(numBorder) * initialEllipsoid.xRadius));
-                numCellsAtXCentral = size(initialEllipsoid.finalCentroids(:, 1), 1) - numCellsAtXBorderRight - numCellsAtXBorderLeft;
+                numCellsAtXBorderRight = sum(ellipsoidInfo.finalCentroids(:, 1) < -(ellipsoidInfo.bordersSituatedAt(numBorder) * ellipsoidInfo.xRadius));
+                numCellsAtXBorderLeft = sum(ellipsoidInfo.finalCentroids(:, 1) > (ellipsoidInfo.bordersSituatedAt(numBorder) * ellipsoidInfo.xRadius));
+                numCellsAtXCentral = size(ellipsoidInfo.finalCentroids(:, 1), 1) - numCellsAtXBorderRight - numCellsAtXBorderLeft;
                 
                 anglesEndRightPerBorder = anglesEndRight(numBorder, :);
                 anglesEndRightPerBorder(anglesEndRightPerBorder == 0) = [];
@@ -273,12 +273,13 @@ function [tableDataAngles,anglesPerRegion, ellipsoidInfoReducted] = getAnglesOfE
                 anglesPerRegion.averageAnglesBetw60_75CentralRegion=sum(anglesCentralRegionPerBorder>=60 & anglesCentralRegionPerBorder<75)/length(anglesCentralRegionPerBorder);
                 anglesPerRegion.averageAnglesMore75CentralRegion=sum(anglesCentralRegionPerBorder>=75)/length(anglesCentralRegionPerBorder);
 
-                anglesPerRegion.numAnglesEndLeft=length(anglesEndLeftPerBorder);
-                anglesPerRegion.numAnglesEndRight=length(anglesEndRightPerBorder);
-                anglesPerRegion.numAnglesCentralRegion=length(anglesCentralRegionPerBorder);
-                
+%                 anglesPerRegion.numAnglesEndLeft=length(anglesEndLeftPerBorder);
+%                 anglesPerRegion.numAnglesEndRight=length(anglesEndRightPerBorder);
+%                 anglesPerRegion.numAnglesCentralRegion=length(anglesCentralRegionPerBorder);
+%                 
                 anglesPerRegion.percentageTransitionsEndLeft=length(anglesEndLeftPerBorder)/numCellsAtXBorderLeft;
                 anglesPerRegion.percentageTransitionsEndRight=length(anglesEndRightPerBorder)/numCellsAtXBorderRight;
+                anglesPerRegion.percentageTransitionsEndGlobal=(length(anglesEndRightPerBorder)+length(anglesEndLeftPerBorder))/(numCellsAtXBorderRight + numCellsAtXBorderLeft);
                 anglesPerRegion.percentageTransitionsCentralRegion=length(anglesCentralRegionPerBorder)/numCellsAtXCentral;
                 
                 edgesLengthEndRightPerBorder = edgesLengthEndRight(numBorder, :);
@@ -290,10 +291,12 @@ function [tableDataAngles,anglesPerRegion, ellipsoidInfoReducted] = getAnglesOfE
 
                 anglesPerRegion.meanEdgeLengthEndLeft = mean(edgesLengthEndLeftPerBorder);
                 anglesPerRegion.meanEdgeLengthEndRight = mean(edgesLengthEndRightPerBorder);
+                anglesPerRegion.meanEdgeLengthEndGlobal = mean([edgesLengthEndRightPerBorder, edgesLengthEndLeftPerBorder]);
                 anglesPerRegion.meanEdgeLengthCentralRegion = mean(edgesLengthCentralRegionPerBorder);
 
                 anglesPerRegion.stdEdgeLengthEndLeft = std(edgesLengthEndLeftPerBorder);
                 anglesPerRegion.stdEdgeLengthEndRight = std(edgesLengthEndRightPerBorder);
+                anglesPerRegion.stdEdgeLengthEndGlobal = std([edgesLengthEndRightPerBorder, edgesLengthEndLeftPerBorder]);
                 anglesPerRegion.stdEdgeLengthCentralRegion = std(edgesLengthCentralRegionPerBorder);
                 
                 anglesPerRegion = renameVariablesOfStructAddingSuffix(anglesPerRegion, num2str(round(ellipsoidInfo.bordersSituatedAt(numBorder)*100)), {'End', 'Central'});
