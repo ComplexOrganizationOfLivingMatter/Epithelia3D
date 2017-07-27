@@ -233,6 +233,11 @@ function [tableDataAngles,anglesPerRegion, ellipsoidInfoReducted] = getAnglesOfE
             end
             
             for numBorder = 1:size(ellipsoidInfo.bordersSituatedAt, 2)
+                
+                numCellsAtXBorderRight = sum(initialEllipsoid.finalCentroids(:, 1) < -(ellipsoidInfo.bordersSituatedAt(numBorder) * initialEllipsoid.xRadius));
+                numCellsAtXBorderLeft = sum(initialEllipsoid.finalCentroids(:, 1) > (ellipsoidInfo.bordersSituatedAt(numBorder) * initialEllipsoid.xRadius));
+                numCellsAtXCentral = size(initialEllipsoid.finalCentroids(:, 1), 1) - numCellsAtXBorderRight - numCellsAtXBorderLeft;
+                
                 anglesEndRightPerBorder = anglesEndRight(numBorder, :);
                 anglesEndRightPerBorder(anglesEndRightPerBorder == 0) = [];
                 anglesEndLeftPerBorder = anglesEndLeft(numBorder, :);
@@ -272,9 +277,9 @@ function [tableDataAngles,anglesPerRegion, ellipsoidInfoReducted] = getAnglesOfE
                 anglesPerRegion.numAnglesEndRight=length(anglesEndRightPerBorder);
                 anglesPerRegion.numAnglesCentralRegion=length(anglesCentralRegionPerBorder);
                 
-                anglesPerRegion.percentageTransitionsEndLeft=length(anglesEndLeftPerBorder)/size(ellipsoidInfo.finalCentroids, 1);
-                anglesPerRegion.percentageTransitionsEndRight=length(anglesEndRightPerBorder)/size(ellipsoidInfo.finalCentroids, 1);
-                anglesPerRegion.percentageTransitionsCentralRegion=length(anglesCentralRegionPerBorder)/size(ellipsoidInfo.finalCentroids, 1);
+                anglesPerRegion.percentageTransitionsEndLeft=length(anglesEndLeftPerBorder)/numCellsAtXBorderLeft;
+                anglesPerRegion.percentageTransitionsEndRight=length(anglesEndRightPerBorder)/numCellsAtXBorderRight;
+                anglesPerRegion.percentageTransitionsCentralRegion=length(anglesCentralRegionPerBorder)/numCellsAtXMiddle;
                 
                 edgesLengthEndRightPerBorder = edgesLengthEndRight(numBorder, :);
                 edgesLengthEndRightPerBorder(edgesLengthEndRightPerBorder == 0) = [];
