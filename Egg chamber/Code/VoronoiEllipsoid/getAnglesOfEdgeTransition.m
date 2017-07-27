@@ -279,7 +279,7 @@ function [tableDataAngles,anglesPerRegion, ellipsoidInfoReducted] = getAnglesOfE
                 
                 anglesPerRegion.percentageTransitionsEndLeft=length(anglesEndLeftPerBorder)/numCellsAtXBorderLeft;
                 anglesPerRegion.percentageTransitionsEndRight=length(anglesEndRightPerBorder)/numCellsAtXBorderRight;
-                anglesPerRegion.percentageTransitionsCentralRegion=length(anglesCentralRegionPerBorder)/numCellsAtXMiddle;
+                anglesPerRegion.percentageTransitionsCentralRegion=length(anglesCentralRegionPerBorder)/numCellsAtXCentral;
                 
                 edgesLengthEndRightPerBorder = edgesLengthEndRight(numBorder, :);
                 edgesLengthEndRightPerBorder(edgesLengthEndRightPerBorder == 0) = [];
