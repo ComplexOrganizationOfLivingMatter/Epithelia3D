@@ -57,8 +57,8 @@ function [tableDataAngles,anglesPerRegion, ellipsoidInfoReducted] = getAnglesOfE
             try
                 commonNeigh = intersect(neighbourhood2Red, neighbourhood1Red);
                 commonNeigh = commonNeigh(commonNeigh ~= cellsFormingEdgeTransition{i, 2});
-                commonNeigh2 = intersect(ellipsoidInfo.neighbourhood{commonNeigh},ellipsoidInfo.neighbourhood{cellsFormingEdgeTransition{i, 2}})';
-                doubleTransitionCells = setdiff([commonNeigh,commonNeigh2],[cellsFormingEdgeTransition{i,1}]);
+                commonNeigh2 = intersect(vertcat(ellipsoidInfo.neighbourhood{commonNeigh})', vertcat(ellipsoidInfo.neighbourhood{cellsFormingEdgeTransition{i, 2}})')';
+                doubleTransitionCells = setdiff(vertcat(commonNeigh,commonNeigh2)',[cellsFormingEdgeTransition{i,1}]);
 
                 motif1 = [neighReducted(i,1), cellsFormingEdgeTransition{i,2}, doubleTransitionCells];
                 motif2 = [neighReducted(i,2), cellsFormingEdgeTransition{i,2}, doubleTransitionCells];
@@ -85,11 +85,13 @@ function [tableDataAngles,anglesPerRegion, ellipsoidInfoReducted] = getAnglesOfE
                 cellsFormingEdgeTransition{end,3} = intersect(ellipsoidInfo.verticesPerCell{motif2(intersectionOfMotif == 3)}, 'rows');
             catch mexception
                 disp('Weird transition. Probably a crosslink initially.');
+                disp(mexception.getReport);
+                disp('--------------------------');
             end
             
             %%Showing the motifs
 %             clmap = colorcube();
-%             vertices = unique([cellsFormingEdgeTransition{i,1}; cellsFormingEdgeTransition{i,2}; doubleTransitionCells']);
+%             vertices = unique([cellsFormingEdgeTransition{i,1}'; cellsFormingEdgeTransition{i,2}'; doubleTransitionCells']);
 %             figure
 %             for numVertex = 1:size(vertices, 1)
 %                 KVert = convhulln([ellipsoidInfoReducted.verticesPerCell{vertices(numVertex)}]);
