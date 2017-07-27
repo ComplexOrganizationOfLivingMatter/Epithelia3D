@@ -15,8 +15,10 @@ function [ ] = calculateMeanOfXls( nameXlsFile )
                 tableActualX_YAndHeight = tableActualXAndY(tableActualXAndY.cellHeight == uniqueCellHeight(numHeight), :);
                 tableActualAux = [tableActualX_YAndHeight{:, :}];
                 meanTable(end+1, :) = mean(isfinite(tableActualX_YAndHeight{:, :}), 1);
+                meanTable(end+1, :) = std(isfinite(tableActualX_YAndHeight{:, :}), 1);
                 for numCol = 1:size(tableActualAux, 2)
-                    meanTable(end, numCol) = mean(tableActualAux(isfinite(tableActualAux(:, numCol)), numCol));
+                    meanTable(end-1, numCol) = mean(tableActualAux(isfinite(tableActualAux(:, numCol)), numCol));
+                    meanTable(end, numCol) = std(tableActualAux(isfinite(tableActualAux(:, numCol)), numCol));
                 end
             end
         end
