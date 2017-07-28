@@ -3,7 +3,9 @@ function [ ] = calculateMeanOfXls( nameXlsFile )
 %   Detailed explanation goes here
 
     transitionsTable = readtable(nameXlsFile);
-    uniqueXRadius = unique(transitionsTable.xRadius);
+    %uniqueXRadius = unique(transitionsTable.xRadius);
+    [~ I] = unique(transitionsTable.xRadius, 'first');
+    uniqueXRadius = transitionsTable.xRadius(sort(I));
     meanTable = [];
     for numX = 1:size(uniqueXRadius, 1)
         tableActualX = transitionsTable(transitionsTable.xRadius == uniqueXRadius(numX), :);
