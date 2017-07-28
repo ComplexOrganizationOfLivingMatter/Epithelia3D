@@ -17,13 +17,16 @@ allCombinations = {
 
 for numRandomization = 1:20
     outputDir = strcat('..\results\random_', num2str(numRandomization));
-    mkdir(outputDir);
     transitionByRadius = cell(size(allCombinations, 1), 1);
     parfor numCombination = 1:size(allCombinations, 1)
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};
         radiusZ = allCombinations{numCombination, 3};
         hCell = allCombinations{numCombination, 4};
+        fileName = allCombinations{numCombination, 5};
+        
+        outputDirActual = strcat(outputDir, '\', fileName);
+        mkdir(outputDirActual);
         
         if min([radiusX, radiusY, radiusZ]) ~= 10
             radiusInModelY = 10;
@@ -33,7 +36,7 @@ for numRandomization = 1:20
             radiusY = radiusInModelY;
         end
         
-        a = voronoiOnEllipsoidSurface([0 0 0], [radiusX radiusY radiusZ], 500, outputDir, hCell);
+        a = voronoiOnEllipsoidSurface([0 0 0], [radiusX radiusY radiusZ], 500, outputDirActual, hCell);
         if isempty(a)
             transitionByRadius(numCombination) = {[]};
         else
