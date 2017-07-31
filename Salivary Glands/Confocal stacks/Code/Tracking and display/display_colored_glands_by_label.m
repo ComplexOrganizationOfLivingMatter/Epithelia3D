@@ -8,7 +8,7 @@ load(['..\..\Segmented images data\' folder '\' name '\Label_sequence.mat'],'Seq
         %% Display images with visible label
             s=regionprops(Seq_Img_L{i,1},'Centroid');
            
-            fig=figure;
+            fig=figure('visible', 'off');
             
             mask=Seq_Img_L{i,1};
             mask(mask==0)=150;
