@@ -20,8 +20,14 @@ function [ ] = calculateMeanOfXls( nameXlsFile )
                 meanTable(end+1, :) = mean(isfinite(tableActualX_YAndHeight{:, :}), 1);
                 meanTable(end+1, :) = std(isfinite(tableActualX_YAndHeight{:, :}), 1);
                 for numCol = 1:size(tableActualAux, 2)
+                    actualColName = transitionsTable.Properties.VariableNames{numCol};
+                    if isempty(strfind(actualColName, 'percentage')) == 0
+                       tableActualAux(isnan(tableActualAux(:, numCol)), numCol) = 0;
+                    end
+                    
                     meanTable(end-1, numCol) = mean(tableActualAux(isfinite(tableActualAux(:, numCol)), numCol));
                     meanTable(end, numCol) = std(tableActualAux(isfinite(tableActualAux(:, numCol)), numCol));
+                    
                 end
             end
             cont = cont+1;
