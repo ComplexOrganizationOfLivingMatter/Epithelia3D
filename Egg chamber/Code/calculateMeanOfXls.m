@@ -4,9 +4,10 @@ function [ ] = calculateMeanOfXls( nameXlsFile )
 
     transitionsTable = readtable(nameXlsFile);
     %uniqueXRadius = unique(transitionsTable.xRadius);
-    [~ I] = unique(transitionsTable.xRadius, 'first');
+    [~, I] = unique(transitionsTable.xRadius, 'first');
     uniqueXRadius = transitionsTable.xRadius(sort(I));
     meanTable = [];
+    cont = 0;
     for numX = 1:size(uniqueXRadius, 1)
         tableActualX = transitionsTable(transitionsTable.xRadius == uniqueXRadius(numX), :);
         uniqueYRadius = unique(tableActualX.yRadius);
@@ -23,9 +24,10 @@ function [ ] = calculateMeanOfXls( nameXlsFile )
                     meanTable(end, numCol) = std(tableActualAux(isfinite(tableActualAux(:, numCol)), numCol));
                 end
             end
+            cont = cont+1;
+            writetable(tableActualXAndY, strcat('..\results\meanTransitionsInfo_', num2str(cont), '_', date, '.xlsx'))
         end
     end
     writetable(array2table(meanTable, 'VariableNames', transitionsTable.Properties.VariableNames), strcat('..\results\meanTransitionsInfo_', date, '.xlsx'))
-
 end
 
