@@ -21,7 +21,7 @@ load(['..\..\Segmented images data\' folder '\' name '\Label_sequence.mat'],'Seq
             end
             
 
-            print('-f1','-dbmp',['..\..\Segmented images data\' folder '\' name '\Skel_Labelled_' num2str(i) '.bmp'])
+            print('-f1', '-r300','-dpdf',['..\..\Segmented images data\' folder '\' name '\Skel_Labelled_' num2str(i) '.pdf'])
             
             close all
     end
