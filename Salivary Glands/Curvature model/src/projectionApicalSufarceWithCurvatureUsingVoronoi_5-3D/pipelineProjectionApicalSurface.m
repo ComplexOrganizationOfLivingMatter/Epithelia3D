@@ -1,5 +1,5 @@
 %pipeline
-function pipelineProjectionApicalSurface (numSeeds)
+function pipelineProjectionApicalSurface (numSeeds,kindProjection)
 
     nameOfFolder=['512x1024_' num2str(numSeeds) 'seeds\'];
 
@@ -9,7 +9,13 @@ function pipelineProjectionApicalSurface (numSeeds)
 
     pathV5data=dir([path3dVoronoi '*m_5*']);
 
-    listOfCurvature=0.1:0.1:1;
+    switch kindProjection
+        case {'expansion'}
+            listOfCurvature=1:10;
+        case {'reduction'}
+            listOfCurvature=0.1:0.1:1;
+    end
+    
 
     acumListTransitionByCurv=zeros(length(listOfCurvature),size(pathV5data,1)*3);
     acumListDataAngles=cell(size(pathV5data,1),1);
@@ -45,6 +51,14 @@ function pipelineProjectionApicalSurface (numSeeds)
 
             L_originalApical=generateCylindricalVoronoi(seedsApical,H,round(W*curvature));
 
+            %define apical reduction
+            switch kindProjection
+                case {'expansion'}
+                    apicalReduction=1-curvature/10;
+                case {'reduction'}
+                    apicalReduction=1-curvature;
+            end
+            
             %% Representations
             seeds_values_before=sortrows(seeds_values_before,1);
             numCells=size(seeds_values_before,1);
@@ -53,9 +67,9 @@ function pipelineProjectionApicalSurface (numSeeds)
             name2save=name2save(1:end-16);
 
 %             if j==1
-%                 representAndSaveFigureWithColourfulCells(L_original,numCells,seeds_values_before(:,2:3),[directory2save nameOfFolder], name2save,'_basal')
+%                 representAndSaveFigureWithColourfulCells(L_original,numCells,seeds_values_before(:,2:3),[directory2save kindProjection '\' nameOfFolder], name2save,'_basal')
 %             end
-%             representAndSaveFigureWithColourfulCells(L_originalApical,numCells,seedsApical(:,2:3),[directory2save nameOfFolder],name2save, ['_apicalReduction' num2str(1-curvature)])
+            representAndSaveFigureWithColourfulCells(L_originalApical,numCells,seedsApical(:,2:3),[directory2save kindProjection '\' nameOfFolder],name2save, ['_apicalReduction' num2str(apicalReduction)])
 
             %% Testing neighs exchanges
             [numberOfTransitionsBasApi,nWinBasApi,nLossBasApi] = testingNeighsExchange(L_original,L_originalApical);
@@ -74,7 +88,7 @@ function pipelineProjectionApicalSurface (numSeeds)
             
             
             
-            apicalReduction=1-curvature;
+            
             listTransitionsByCurvature(end+1,:)=[apicalReduction,nWinBasApi,nLossBasApi,numberOfTransitionsBasApi];
             listSeedsApical{end+1,1}=apicalReduction;listSeedsApical{end,2}=seedsApical;
             listLOriginalApical{end+1,1}=apicalReduction;listLOriginalApical{end,2}=L_originalApical;
@@ -99,7 +113,7 @@ function pipelineProjectionApicalSurface (numSeeds)
         listLOriginalApical=cell2table(listLOriginalApical);
         listLOriginalApical.Properties.VariableNames= {'apicalReduction','L_originalApical'};
         
-        save([directory2save nameOfFolder name2save '\'  name2save '.mat'],'listLOriginalApical','listSeedsApical','listTransitionsByCurvature','listDataAngles')
+        save([directory2save kindProjection '\' nameOfFolder name2save '\'  name2save '.mat'],'listLOriginalApical','listSeedsApical','listTransitionsByCurvature','listDataAngles')
 
 
 
@@ -118,12 +132,24 @@ function pipelineProjectionApicalSurface (numSeeds)
     meanListDataAngles.Properties.VariableNames ={'numOfEdgesOfTransition','proportionAnglesLess15deg','proportionAnglesBetween15_30deg','proportionAnglesBetween30_45deg','proportionAnglesBetween45_60deg','proportionAnglesBetween60_75deg','proportionAnglesBetween75_90deg'};
     stdListDataAngles.Properties.VariableNames ={'numOfEdgesOfTransition','proportionAnglesLess15deg','proportionAnglesBetween15_30deg','proportionAnglesBetween30_45deg','proportionAnglesBetween45_60deg','proportionAnglesBetween60_75deg','proportionAnglesBetween75_90deg'};
 
+    boxTreshLength=round(max(vertcat(totalEdgesTransition{:,:}))/5)-1;
+    proportionEdges=cellfun(@(x) [sum(x<=boxTreshLength),sum(x<=2*boxTreshLength & x>boxTreshLength),sum(x<=3*boxTreshLength & x>2*boxTreshLength),sum(x<=4*boxTreshLength & x>3*boxTreshLength),sum(x>4*boxTreshLength)]/length(x),totalEdgesTransition,'UniformOutput',false);
+    
+    meanListLengthEdges=zeros(length(listOfCurvature),5);
+    stdListLengthEdges=zeros(length(listOfCurvature),5);
     acumAngles=cell(length(listOfCurvature),1);
     acumEdgesTransition=cell(length(listOfCurvature),1);
     for i=1:length(listOfCurvature)
         acumAngles{i}=cat(1,totalAngles{i,:});
         acumEdgesTransition{i}=cat(1,totalEdgesTransition{i,:});
+        meanListLengthEdges(i,:)=mean(cat(1,proportionEdges{i,:}));
+        stdListLengthEdges(i,:)=std(cat(1,proportionEdges{i,:}));
     end
-    save([directory2save nameOfFolder 'summaryAverageTransitions.mat'],'listAcumTransitions','meanListDataAngles','stdListDataAngles','acumAngles','acumEdgesTransition')
+    meanListLengthEdges=array2table(meanListLengthEdges);
+    stdListLengthEdges=array2table(stdListLengthEdges);
+    meanListLengthEdges.Properties.VariableNames ={['XlowerOrEqual' num2str(boxTreshLength)],['between' num2str(boxTreshLength) 'and' num2str(2*boxTreshLength) ],['between' num2str(2*boxTreshLength) 'and' num2str(3*boxTreshLength) ],['between' num2str(3*boxTreshLength) 'and' num2str(4*boxTreshLength) ],['Xupper' num2str(4*boxTreshLength) ]};
+    stdListLengthEdges.Properties.VariableNames ={['XlowerOrEqual' num2str(boxTreshLength)],['between' num2str(boxTreshLength) 'and' num2str(2*boxTreshLength) ],['between' num2str(2*boxTreshLength) 'and' num2str(3*boxTreshLength) ],['between' num2str(3*boxTreshLength) 'and' num2str(4*boxTreshLength) ],['Xupper' num2str(4*boxTreshLength) ]};
+    
+    save([directory2save kindProjection '\' nameOfFolder 'summaryAverageTransitions.mat'],'listAcumTransitions','meanListDataAngles','stdListDataAngles','acumAngles','acumEdgesTransition','totalAngles','totalEdgesTransition','boxTreshLength','meanListLengthEdges','stdListLengthEdges')
 
 end
