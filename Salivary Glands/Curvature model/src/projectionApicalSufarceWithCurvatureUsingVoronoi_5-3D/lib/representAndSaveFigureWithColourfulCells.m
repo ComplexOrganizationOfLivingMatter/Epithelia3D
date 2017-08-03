@@ -19,5 +19,6 @@ function representAndSaveFigureWithColourfulCells( L_original,numCells,seeds,dir
 %     print('-f1','-dpdf','-r300',[directory name2save '\' name2save extension '.pdf'])
     close all
     
+    
 end
 
