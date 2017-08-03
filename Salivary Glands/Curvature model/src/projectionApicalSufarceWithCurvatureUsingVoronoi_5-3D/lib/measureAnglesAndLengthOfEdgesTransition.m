@@ -1,7 +1,7 @@
-function [dataAngles] = measureAnglesAndLengthOfEdgesTransition(L_original,L_originalApical)
+function [dataAngles] = measureAnglesAndLengthOfEdgesTransition(L_basal,L_originalApical)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-        [neighs_basal,~]=calculate_neighbours(L_original);
+        [neighs_basal,~]=calculate_neighbours(L_basal);
         [neighs_apical,~]=calculate_neighbours(L_originalApical);
         
         
@@ -39,12 +39,12 @@ function [dataAngles] = measureAnglesAndLengthOfEdgesTransition(L_original,L_ori
         angles=[];
         edgesLength=[];
         for i=1:size(pairOfLostNeigh,1)
-            [H,W]=size(L_original);            
+            [H,W]=size(L_basal);            
             BW1=zeros(H,W);BW2=BW1;BW3=BW1;BW4=BW1;borderImg=zeros(H,W);
-            BW1(L_original==pairOfLostNeigh(i,1))=1;BW2(L_original==pairOfLostNeigh(i,2))=1;% 1 and 2 are neighs in apical, but not in basal
-            BW3(L_original==pairOfLostNeigh(i,3))=1;BW4(L_original==pairOfLostNeigh(i,4))=1;
+            BW1(L_basal==pairOfLostNeigh(i,1))=1;BW2(L_basal==pairOfLostNeigh(i,2))=1;% 1 and 2 are neighs in apical, but not in basal
+            BW3(L_basal==pairOfLostNeigh(i,3))=1;BW4(L_basal==pairOfLostNeigh(i,4))=1;
             BW1_dilate=imdilate(BW1,se);BW2_dilate=imdilate(BW2,se);BW3_dilate=imdilate(BW3,se);BW4_dilate=imdilate(BW4,se); %dilated mask
-            borderImg(L_original==0)=1; 
+            borderImg(L_basal==0)=1; 
             [row1,col1]=find((BW1_dilate.*BW2_dilate.*BW3_dilate.*borderImg)==1);
             [row2,col2]=find((BW1_dilate.*BW2_dilate.*BW4_dilate.*borderImg)==1);
             
@@ -85,12 +85,12 @@ function [dataAngles] = measureAnglesAndLengthOfEdgesTransition(L_original,L_ori
         dataAngles.verticesEdges=vertices;
         dataAngles.edgeLength=edgesLength;
         dataAngles.numOfEdgesOfTransition=size(edgesLength,1);
-        dataAngles.proportionAnglesLess15deg=sum(angles<15)/length(angles);
-        dataAngles.proportionAnglesBetween15_30deg=sum(angles>=15 & angles < 30)/length(angles);
-        dataAngles.proportionAnglesBetween30_45deg=sum(angles>=30 & angles < 45)/length(angles);
-        dataAngles.proportionAnglesBetween45_60deg=sum(angles>=45 & angles < 60)/length(angles);
-        dataAngles.proportionAnglesBetween60_75deg=sum(angles>=60 & angles < 75)/length(angles);
-        dataAngles.proportionAnglesBetween75_90deg=sum(angles>=75 & angles <= 90)/length(angles);
+        dataAngles.proportionAnglesLess15deg=sum(angles<=15)/length(angles);
+        dataAngles.proportionAnglesBetween15_30deg=sum(angles>15 & angles <= 30)/length(angles);
+        dataAngles.proportionAnglesBetween30_45deg=sum(angles>30 & angles <= 45)/length(angles);
+        dataAngles.proportionAnglesBetween45_60deg=sum(angles>45 & angles <= 60)/length(angles);
+        dataAngles.proportionAnglesBetween60_75deg=sum(angles>60 & angles <= 75)/length(angles);
+        dataAngles.proportionAnglesBetween75_90deg=sum(angles>75 & angles <= 90)/length(angles);
         
 end
 
