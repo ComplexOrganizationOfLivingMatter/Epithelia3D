@@ -35,7 +35,7 @@ function [ ] = plotFigure3DFromCellBoundaries( pixelsPerCell, colours)
         yReal = y * (HCylinder/HImg);
         
         k = boundary([xReal yReal zReal], 0);
-        trisurf(k, xReal, yReal, zReal, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.5, 'FaceAlpha', 0.8);
+        trisurf(k, xReal, yReal, zReal, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
         hold on;
     end
     camlight left;
