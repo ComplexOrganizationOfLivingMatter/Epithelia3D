@@ -7,9 +7,9 @@ motifAngle = 7.81;
 for numStack = Zs
     numStack
     actualImg = imread(strcat(inputDir, num2str(numStack), '.tif'));
-    actualImg = imrotate(actualImg, motifAngle);
+    %actualImg = imrotate(actualImg, motifAngle);
     imgBorder1 = watershed(actualImg > 0);
-    pixels = regionprops(imgBorder1 > 1, 'PixelList');
+    pixels = regionprops(imgBorder1 > 1, {'PixelList', 'Centroid'});
     
     for numCell = 1:size(pixels, 1)
         pixelsCell = pixels(numCell).PixelList;
