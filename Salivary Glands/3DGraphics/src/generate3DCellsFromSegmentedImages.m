@@ -1,9 +1,13 @@
+%% Drawing a motif
+
 inputDir = 'D:\Pablo\Epithelia3D\Salivary Glands\data\25-04-17\Sqh 25-04-17 Phal GFP Dapi 40X 1a\Skel';
 pixelsPerCell = {};
 Zs = 4:28;
+motifAngle = 7.81;
 for numStack = Zs
     numStack
     actualImg = imread(strcat(inputDir, num2str(numStack), '.tif'));
+    actualImg = imrotate(actualImg, motifAngle);
     imgBorder1 = watershed(actualImg > 0);
     pixels = regionprops(imgBorder1 > 1, 'PixelList');
     
@@ -17,6 +21,10 @@ for numStack = Zs
         end
     end
 end
+
+
+
+
 
 %colours = [255 153 51; 102 153 255; 102 153 51; 204 0 102] / 255;
 colours = [255 255 51;  255 0 0; 102 153 51; 102 153 255] / 255;
