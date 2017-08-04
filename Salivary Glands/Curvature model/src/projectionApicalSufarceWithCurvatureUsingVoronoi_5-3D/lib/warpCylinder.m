@@ -26,12 +26,12 @@ for i=1:length(surfaceRatios)
     newFig.CameraViewAngleMode = refFig.CameraPositionMode;
     
     newFig.CameraPosition = refFig.CameraPosition;
-    newFig.CameraTarget = refFig.CameraTarget;
+    %newFig.CameraTarget = refFig.CameraTarget;
     newFig.CameraUpVector = refFig.CameraUpVector;
     newFig.CameraViewAngle = refFig.CameraViewAngle;
     
     newFig.Visible = 'off';
     set(get(0,'children'),'Color','w')
-    print(strcat('cylinder_', num2str(surfaceRatios(i))), '-dtiff', '-r600');
+    print(strcat('cylinder_Expansion_', num2str(listLOriginalProjection.surfaceRatio(surfaceRatios(i)))), '-dtiff', '-r600');
     %Edge in black
 end
