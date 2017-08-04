@@ -1,10 +1,10 @@
-function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjection,listDataAnglesMeasuredInBasal,listDataAnglesMeasuredInApical,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionByCurv,acumListDataAnglesInBasal,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical]=expansionOrReductionIterative(listOfSurfaceRatios,seedsOriginal,L_original,numCells,pathV5data,directory2save,kindProjection,nameOfFolder,i,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionByCurv,acumListDataAnglesInBasal,acumListDataAnglesInApical)
+function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjection,listDataAnglesMeasuredInBasal,listDataAnglesMeasuredInApical,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionByCurv,acumListDataAnglesInBasal,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical]=expansionOrReductionIterative(listOfSurfaceRatios,seedsOriginal,L_original,numCells,pathV5data,directory2save,kindProjection,nameOfFolder,i,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionByCurv,acumListDataAnglesInBasal,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical)
         
-    listTransitionsBySurfaceRatio=[];
-    listDataAnglesMeasuredInBasal=[];
-    listDataAnglesMeasuredInApical=[];
-    listSeedsProjected={};
-    listLOriginalProjection={};
+    listTransitionsBySurfaceRatio=zeros(length(listOfSurfaceRatios),4);
+    listDataAnglesMeasuredInBasal=zeros(length(listOfSurfaceRatios),7);
+    listDataAnglesMeasuredInApical=zeros(length(listOfSurfaceRatios),7);
+    listSeedsProjected=cell(length(listOfSurfaceRatios),1);
+    listLOriginalProjection=cell(length(listOfSurfaceRatios),1);
 
     for j=1:length(listOfSurfaceRatios)
             %% surface reduction implication - recalculate seeds and labelled images
@@ -35,23 +35,19 @@ function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjecti
             if nWinBasApi>0
                 [dataAnglesMeasuredInBasal]=measureAnglesAndLengthOfEdgesTransition(L_basal,L_apical);
                 [dataAnglesMeasuredInApical]=measureAnglesAndLengthOfEdgesTransition(L_apical,L_basal);
-                listDataAnglesMeasuredInBasal(end+1,:)=[dataAnglesMeasuredInBasal.numOfEdgesOfTransition,dataAnglesMeasuredInBasal.proportionAnglesLess15deg,dataAnglesMeasuredInBasal.proportionAnglesBetween15_30deg,dataAnglesMeasuredInBasal.proportionAnglesBetween30_45deg,dataAnglesMeasuredInBasal.proportionAnglesBetween45_60deg,dataAnglesMeasuredInBasal.proportionAnglesBetween60_75deg,dataAnglesMeasuredInBasal.proportionAnglesBetween75_90deg];
-                listDataAnglesMeasuredInApical(end+1,:)=[dataAnglesMeasuredInApical.numOfEdgesOfTransition,dataAnglesMeasuredInApical.proportionAnglesLess15deg,dataAnglesMeasuredInApical.proportionAnglesBetween15_30deg,dataAnglesMeasuredInApical.proportionAnglesBetween30_45deg,dataAnglesMeasuredInApical.proportionAnglesBetween45_60deg,dataAnglesMeasuredInApical.proportionAnglesBetween60_75deg,dataAnglesMeasuredInApical.proportionAnglesBetween75_90deg];
+                listDataAnglesMeasuredInBasal(j,:)=[dataAnglesMeasuredInBasal.numOfEdgesOfTransition,dataAnglesMeasuredInBasal.proportionAnglesLess15deg,dataAnglesMeasuredInBasal.proportionAnglesBetween15_30deg,dataAnglesMeasuredInBasal.proportionAnglesBetween30_45deg,dataAnglesMeasuredInBasal.proportionAnglesBetween45_60deg,dataAnglesMeasuredInBasal.proportionAnglesBetween60_75deg,dataAnglesMeasuredInBasal.proportionAnglesBetween75_90deg];
+                listDataAnglesMeasuredInApical(j,:)=[dataAnglesMeasuredInApical.numOfEdgesOfTransition,dataAnglesMeasuredInApical.proportionAnglesLess15deg,dataAnglesMeasuredInApical.proportionAnglesBetween15_30deg,dataAnglesMeasuredInApical.proportionAnglesBetween30_45deg,dataAnglesMeasuredInApical.proportionAnglesBetween45_60deg,dataAnglesMeasuredInApical.proportionAnglesBetween60_75deg,dataAnglesMeasuredInApical.proportionAnglesBetween75_90deg];
                 totalAnglesMeasuredInBasal{j,i}=dataAnglesMeasuredInBasal.angles;
                 totalAnglesMeasuredInApical{j,i}=dataAnglesMeasuredInApical.angles;
                 totalEdgesTransitionMeasuredInBasal{j,i}=dataAnglesMeasuredInBasal.edgeLength;
                 totalEdgesTransitionMeasuredInApical{j,i}=dataAnglesMeasuredInApical.edgeLength;                
-            else
-                dataAnglesMeasuredInBasal=[];
-                listDataAnglesMeasuredInBasal(end+1,:)=[0 0 0 0 0 0 0];
-                dataAnglesMeasuredInApical=[];
-                listDataAnglesMeasuredInApical(end+1,:)=[0 0 0 0 0 0 0];
             end
             
-            listTransitionsBySurfaceRatio(end+1,:)=[surfaceRatio,nWinBasApi,nLossBasApi,numberOfTransitionsBasApi];
-            listSeedsProjected{end+1,1}=surfaceRatio;listSeedsProjected{end,2}=seedsExpansion;
-            listLOriginalProjection{end+1,1}=surfaceRatio;
-            listLOriginalProjection{end,2}=L_originalProjection;
+            listTransitionsBySurfaceRatio(j,:)=[surfaceRatio,nWinBasApi,nLossBasApi,numberOfTransitionsBasApi];
+            listSeedsProjected{j,1}=surfaceRatio;
+            listSeedsProjected{j,2}=seedsExpansion;
+            listLOriginalProjection{j,1}=surfaceRatio;
+            listLOriginalProjection{j,2}=L_originalProjection;
             
             close all
 

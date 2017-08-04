@@ -1,7 +1,7 @@
-function summaryAndSaveFinalData(listOfSurfaceRatios,acumListTransitionByCurv,acumListDataAngles,totalEdgesTransition,totalAngles,directory2save,kindProjection,nameOfFolder,typeSurface)
+function summaryAndSaveFinalData(listOfSurfaceRatios,numSeeds,acumListTransitionBySurfaceRatio,acumListDataAngles,totalEdgesTransition,totalAngles,directory2save,kindProjection,nameOfFolder,typeSurface)
     
-    listAcumTransitions=sortrows([(listOfSurfaceRatios'),mean(acumListTransitionByCurv(:,1:20),2)/numSeeds,std(acumListTransitionByCurv(:,1:20),0,2)/numSeeds,mean(acumListTransitionByCurv(:,21:40),2)/numSeeds,...
-            std(acumListTransitionByCurv(:,21:40),0,2)/numSeeds,mean(acumListTransitionByCurv(:,41:end),2)/numSeeds,std(acumListTransitionByCurv(:,41:end),0,2)/numSeeds]);
+    listAcumTransitions=sortrows([(listOfSurfaceRatios'),mean(acumListTransitionBySurfaceRatio(:,1:20),2)/numSeeds,std(acumListTransitionBySurfaceRatio(:,1:20),0,2)/numSeeds,mean(acumListTransitionBySurfaceRatio(:,21:40),2)/numSeeds,...
+            std(acumListTransitionBySurfaceRatio(:,21:40),0,2)/numSeeds,mean(acumListTransitionBySurfaceRatio(:,41:end),2)/numSeeds,std(acumListTransitionBySurfaceRatio(:,41:end),0,2)/numSeeds]);
 
     listAcumTransitions=array2table(listAcumTransitions);
     listAcumTransitions.Properties.VariableNames = {'apicalReduction','meanWins','stdWins','meanLoss','stdLoss','meanTransitions' ,'stdTransitions'};    

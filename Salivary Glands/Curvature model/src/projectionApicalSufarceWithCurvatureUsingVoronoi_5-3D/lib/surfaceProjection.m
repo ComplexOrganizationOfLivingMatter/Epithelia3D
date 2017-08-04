@@ -27,9 +27,11 @@ function surfaceProjection( pathV5data,nameOfFolder,directory2save,path3dVoronoi
         numCells=size(seeds_values_before,1);
         
         %% We apply ratio of surface to get in iterative way new layers in apical or basal surface
-        [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjection,listDataAnglesMeasuredInBasal,listDataAnglesMeasuredInApical,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionBySurfaceRatio,acumListDataAnglesInBasal,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical]=expansionOrReductionIterative(listOfSurfaceRatios,seedsOriginal,L_original,numCells,pathV5data,directory2save,kindProjection,nameOfFolder,i,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionBySurfaceRatio,acumListDataAnglesInBasal,acumListDataAnglesInApical);
+        [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjection,listDataAnglesMeasuredInBasal,listDataAnglesMeasuredInApical,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionByCurv,acumListDataAnglesInBasal,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical]=expansionOrReductionIterative(listOfSurfaceRatios,seedsOriginal,L_original,numCells,pathV5data,directory2save,kindProjection,nameOfFolder,i,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionByCurv,acumListDataAnglesInBasal,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical);
         
         %save data for each random
+        name2save=pathV5data(i).name;
+        name2save=name2save(1:end-16);
         save([directory2save kindProjection '\' nameOfFolder name2save '\'  name2save '.mat'],'listLOriginalProjection','listSeedsProjected','listTransitionsBySurfaceRatio','listDataAnglesMeasuredInBasal','listDataAnglesMeasuredInApical')
 
 
@@ -37,8 +39,8 @@ function surfaceProjection( pathV5data,nameOfFolder,directory2save,path3dVoronoi
     end
 
     %save global data
-    summaryAndSaveFinalData(listOfSurfaceRatios,acumListTransitionBySurfaceRatio,acumListDataAnglesInBasal,totalEdgesTransitionMeasuredInBasal,totalAnglesMeasuredInBasal,directory2save,kindProjection,nameOfFolder,'basal')
-    summaryAndSaveFinalData(listOfSurfaceRatios,acumListTransitionBySurfaceRatio,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInApical,totalAnglesMeasuredInApical,directory2save,kindProjection,nameOfFolder,'apical')
+    summaryAndSaveFinalData(listOfSurfaceRatios,numSeeds,acumListTransitionBySurfaceRatio,acumListDataAnglesInBasal,totalEdgesTransitionMeasuredInBasal,totalAnglesMeasuredInBasal,directory2save,kindProjection,nameOfFolder,'basal')
+    summaryAndSaveFinalData(listOfSurfaceRatios,numSeeds,acumListTransitionBySurfaceRatio,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInApical,totalAnglesMeasuredInApical,directory2save,kindProjection,nameOfFolder,'apical')
     
 end
 
