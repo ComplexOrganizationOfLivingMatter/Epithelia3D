@@ -19,7 +19,7 @@ function pipelineProjectionApicalSurface (numSeeds,kindProjection)
             listOfSurfaceRatios=1:-0.1:0.1;
     end
     
-    surfaceProjection(pathV5data,nameOfFolder,directory2save,path3dVoronoi,kindProjection,listOfSurfaceRatios)
+    surfaceProjection(pathV5data,nameOfFolder,directory2save,path3dVoronoi,kindProjection,listOfSurfaceRatios,numSeeds)
 
 
     

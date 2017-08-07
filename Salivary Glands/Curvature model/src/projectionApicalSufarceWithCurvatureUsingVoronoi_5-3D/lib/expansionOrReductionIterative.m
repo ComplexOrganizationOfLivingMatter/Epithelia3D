@@ -1,12 +1,12 @@
-function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjection,listDataAnglesMeasuredInBasal,listDataAnglesMeasuredInApical,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionByCurv,acumListDataAnglesInBasal,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical]=expansionOrReductionIterative(listOfSurfaceRatios,seedsOriginal,L_original,numCells,pathV5data,directory2save,kindProjection,nameOfFolder,i,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionByCurv,acumListDataAnglesInBasal,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical)
+function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjection,listDataAnglesMeasuredInBasal,listDataAnglesMeasuredInApical,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionBySurfaceRatio,acumListDataAnglesInBasal,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical]=expansionOrReductionIterative(listOfSurfaceRatios,seedsOriginal,L_original,numCells,pathV5data,directory2save,kindProjection,nameOfFolder,i,totalAnglesMeasuredInBasal,totalAnglesMeasuredInApical,acumListTransitionBySurfaceRatio,acumListDataAnglesInBasal,acumListDataAnglesInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical)
         
     listTransitionsBySurfaceRatio=zeros(length(listOfSurfaceRatios),4);
     listDataAnglesMeasuredInBasal=zeros(length(listOfSurfaceRatios),7);
     listDataAnglesMeasuredInApical=zeros(length(listOfSurfaceRatios),7);
-    listSeedsProjected=cell(length(listOfSurfaceRatios),1);
-    listLOriginalProjection=cell(length(listOfSurfaceRatios),1);
+    listSeedsProjected=cell(length(listOfSurfaceRatios),2);
+    listLOriginalProjection=cell(length(listOfSurfaceRatios),2);
 
-    for j=1:length(listOfSurfaceRatios)
+    parfor j=1:length(listOfSurfaceRatios)
             %% surface reduction implication - recalculate seeds and labelled images
             surfaceRatio=listOfSurfaceRatios(j);
             
@@ -44,20 +44,17 @@ function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjecti
             end
             
             listTransitionsBySurfaceRatio(j,:)=[surfaceRatio,nWinBasApi,nLossBasApi,numberOfTransitionsBasApi];
-            listSeedsProjected{j,1}=surfaceRatio;
-            listSeedsProjected{j,2}=seedsExpansion;
-            listLOriginalProjection{j,1}=surfaceRatio;
-            listLOriginalProjection{j,2}=L_originalProjection;
-            
+            listSeedsProjected(j,:)=[{surfaceRatio},{seedsExpansion}];
+            listLOriginalProjection(j,:)=[{surfaceRatio},{L_originalProjection}];
             close all
 
             
     end
     
     %store data of applying surface ratios
-    acumListTransitionByCurv(:,i)=listTransitionsBySurfaceRatio(:,2);
-    acumListTransitionByCurv(:,i+20)=listTransitionsBySurfaceRatio(:,3);
-    acumListTransitionByCurv(:,i+40)=listTransitionsBySurfaceRatio(:,4);
+    acumListTransitionBySurfaceRatio(:,i)=listTransitionsBySurfaceRatio(:,2);
+    acumListTransitionBySurfaceRatio(:,i+20)=listTransitionsBySurfaceRatio(:,3);
+    acumListTransitionBySurfaceRatio(:,i+40)=listTransitionsBySurfaceRatio(:,4);
 
     acumListDataAnglesInBasal{i,1}=listDataAnglesMeasuredInBasal;
     acumListDataAnglesInApical{i,1}=listDataAnglesMeasuredInApical;
