@@ -2,7 +2,7 @@
 
 inputDir = 'D:\Pablo\Epithelia3D\Salivary Glands\data\25-04-17\Sqh 25-04-17 Phal GFP Dapi 40X 1a\Skel';
 pixelsPerCell = {};
-Zs = 4:28;
+Zs = 1:28;
 motifAngle = 7.81;
 for numStack = Zs
     numStack

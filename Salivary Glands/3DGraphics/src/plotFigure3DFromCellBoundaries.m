@@ -1,8 +1,7 @@
 function [ ] = plotFigure3DFromCellBoundaries( pixelsPerCell, colours)
 %PLOTFIGURE3DFROMCELLBOUNDARIES Summary of this function goes here
 %   Detailed explanation goes here
-
-    uiopen('D:\Pablo\Epithelia3D\Salivary Glands\3DGraphics\motifTransition_Curved_03_08_2017.fig',1);
+    uiopen('D:\Pablo\Epithelia3D\Salivary Glands\3DGraphics\motifTransition_CurvedGoodMeasurements_08_08_2017.fig',1)
     refFig = gca;
     figure;
     
@@ -13,7 +12,7 @@ function [ ] = plotFigure3DFromCellBoundaries( pixelsPerCell, colours)
     
     pxFirstCell = pixelsPerCell{1};
     
-    z = pxFirstCell(:, 3) + (stackSize - 4 - 28);
+    z = pxFirstCell(:, 3) + (stackSize - 28);
     z = diameterOfGland .* z ./ stackSize;
     uniqueZs = unique(z);
     hError = uniqueZs(2) - uniqueZs(1);
@@ -44,7 +43,7 @@ function [ ] = plotFigure3DFromCellBoundaries( pixelsPerCell, colours)
         % Taken from: 
         % https://stackoverflow.com/questions/7981815/projection-of-a-plane-onto-a-cylinder
         
-        z = pxCell(:, 3) + (70 - 4 - 28);
+        z = pxCell(:, 3) + (70 - 28);
         z = diameterOfGland .* z ./ stackSize;
         y = pxCell(:, 2);
         x = pxCell(:, 1) - mean([max(maxMins), min(maxMins)]);
@@ -76,7 +75,7 @@ function [ ] = plotFigure3DFromCellBoundaries( pixelsPerCell, colours)
     newFig.CameraUpVectorMode = 'manual';
     newFig.CameraViewAngleMode = 'manual';
     
-    %newFig.CameraPosition = refFig.CameraPosition;
+    newFig.CameraPosition = refFig.CameraPosition;
     newFig.CameraUpVector = refFig.CameraUpVector;
     newFig.CameraViewAngle = refFig.CameraViewAngle;
     
