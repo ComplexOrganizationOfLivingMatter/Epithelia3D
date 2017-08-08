@@ -34,8 +34,8 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     pairOfLostNeigh=cellfun(@(x, y) [y*ones(length(x),1),x],Lossing',num2cell(1:size(neighs_basal,2))','UniformOutput',false);
     pairOfLostNeigh=unique(vertcat(pairOfLostNeigh{:}),'rows');
     pairOfLostNeigh=unique([min(pairOfLostNeigh,[],2),max(pairOfLostNeigh,[],2)],'rows');
-    indexesEdgesTransition=ismember(uniquePairOfNeighBasal,pairOfLostNeigh);
-    indexesEdgesTransition=(sum(indexesEdgesTransition,2)==2);
+    indexesEdgesTransition=ismember(uniquePairOfNeighBasal,pairOfLostNeigh,'rows');
+    
     
     %define transition edge length and angle
     basalDataTransition=struct('edgeLength',zeros(sum(indexesEdgesTransition),1),'edgeAngle',zeros(sum(indexesEdgesTransition),1));
