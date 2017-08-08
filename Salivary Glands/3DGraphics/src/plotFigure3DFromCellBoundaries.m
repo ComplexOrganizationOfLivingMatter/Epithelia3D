@@ -39,8 +39,8 @@ function [ ] = plotFigure3DFromCellBoundaries( pixelsPerCell, colours)
         [XY, radiusOfCircle] = points2Circle([0 hError], [-xMax 0], [xMax 0]);
         
         %perimeterOfCircle = 2*pi * radiusOfCircle;
-        anglesHError = atan(x ./ radiusOfCircle);
-        zReal = z .* cos(anglesHError);
+        anglesHError = tan(x ./ (radiusOfCircle - hError));
+        zReal = z + z .* radiusOfCircle .* anglesHError;
         
         %zReal = cylRadius .* cos(x *(2*pi / lengthInImage));
         %xReal = cylRadius .* sin(x *(2*pi / lengthInImage));
