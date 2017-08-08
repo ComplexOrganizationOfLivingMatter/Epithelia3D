@@ -17,21 +17,34 @@ function [ ] = plotFigure3DFromCellBoundaries( pixelsPerCell, colours)
         %Let A (x,y) be a point in the picture,
         % Taken from: 
         % https://stackoverflow.com/questions/7981815/projection-of-a-plane-onto-a-cylinder
-        HCylinder = 100;
+        HCylinder = 320;
         HImg = 1024;
-        lengthInImage = 2*pi* 346 / (28/70);
+        %744 is the diameter of the gland
+        % 
+        diameterOfGland = 844;
+        lengthInImage = pi * diameterOfGland;
 
         
         
-        z = pxCell(:, 3);
+        z = pxCell(:, 3) + (70 - 4 - 28);
         y = pxCell(:, 2);
         x = pxCell(:, 1) - mean([max(maxMins), min(maxMins)]);
 
-        cylRadius = z + 5 + 35;
-
-        zReal = cylRadius .* cos(x *(2*pi / lengthInImage));
-        xReal = cylRadius .* sin(x *(2*pi / lengthInImage));
+        z = diameterOfGland .* z ./ 70;
+        uniqueZs = unique(z);
+        hError = uniqueZs(2) - uniqueZs(1);
         
+        xMax = max(maxMins - mean([max(maxMins), min(maxMins)]));
+        
+        [XY, radiusOfCircle] = points2Circle([0 hError], [-xMax 0], [xMax 0]);
+        
+        %perimeterOfCircle = 2*pi * radiusOfCircle;
+        anglesHError = atan(x ./ radiusOfCircle);
+        zReal = z .* cos(anglesHError);
+        
+        %zReal = cylRadius .* cos(x *(2*pi / lengthInImage));
+        %xReal = cylRadius .* sin(x *(2*pi / lengthInImage));
+        xReal = x * (HCylinder/HImg);
         yReal = y * (HCylinder/HImg);
         
         k = boundary([xReal yReal zReal], 0);
