@@ -53,46 +53,52 @@ for numFrame=initial:maxFrame %Variable que corresponde con el nº de imágenes (f
         
         xQuery{numFrame,1}=centroids{numFrame,1}(:, 1);
         yQuery{numFrame,1}=centroids{numFrame,1}(:, 2);
+        %bucle for que compare todos los centroides con todas las capas for
+        %numFrame de -1 a -1
         
-        [k{numFrame}]=boundary(xPixel{numFrame-1,1},yPixel{numFrame-1});
-        
-        [in{numFrame},on{numFrame}] = inpolygon(xQuery{numFrame,1},yQuery{numFrame,1},xPixel{numFrame-1,1}(k{numFrame}),yPixel{numFrame-1,1}(k{numFrame}));
-        
-        %             figure
-        %             imshow(photoPath{numFrame});
-        %             hold on
-        % %             plot(xPixel{numFrame-1,1}(k),yPixel{numFrame-1,1}(k),'LineWidth',2) % polygon
-        %             axis equal
-        % %             plot(xPixel{numFrame-1,1},yPixel{numFrame-1,1},'w*') % PostPoints
-        %             plot(xQuery{numFrame,1}(in{numFrame}), yQuery{numFrame,1}(in{numFrame}),'g+') % points inside
-        %             plot(xQuery{numFrame,1}(~in{numFrame}),yQuery{numFrame,1}(~in{numFrame}),'bo') % points outside
-        %             hold off
-        
-        oldCentroids = ismember(round(centroids{numFrame,1}),pixel{numFrame-1,1},'rows'); %Los centroides del nuevo frame que están en los pixeles del anterior
-        allCentroids = centroids{numFrame}; %Todos los centroides del nuevo frame
-        newCentroids = allCentroids(oldCentroids == 0, :); %De todos los centroides del nuevo frame, cógeme las filas que tenga como valor 0 según coincida con el anterior frame y todas las columnas
-        
-        for n=1:size(centroids{numFrame}(:, 1))
-            if oldCentroids(n)==0
-                if (in{numFrame,1}(n)==0) || ((in{numFrame,1}(n)==1) && (numFrame==initial+1))
-                    w=[xQuery{numFrame,1}(n), yQuery{numFrame,1}(n)];
-                    Layer{j,1} = vertcat(Layer{j},horzcat(numFrame, w)); %Todos los centroides que constituye esta capa
-                    
-                elseif (in{numFrame,1}(n)==1)
-%                     xQuery{numFrame,1}(n)
-%                     yQuery{numFrame,1}(n)
-                    [Layer, j, inNewLayer, onNewLayer] = newLayer (Layer, j, xQuery{numFrame,1}(n), yQuery{numFrame,1}(n), oldCentroids, numFrame, inNewLayer, onNewLayer);
-                    
+        for numLayer=1:size(in{numFrame-1,1})
+            
+            %[k{numFrame}]=boundary(xPixel{numFrame-1,1},yPixel{numFrame-1});       
+            %[in{numFrame},on{numFrame}] = inpolygon(xQuery{numFrame,1},yQuery{numFrame,1},xPixel{numFrame-1,1}(k{numFrame}),yPixel{numFrame-1,1}(k{numFrame}));
+            x=Layer{j,1}(:,2);
+            y=Layer{j,1}(:,3);
+            [kNewLayer{numFrame}]=boundary(x,y);
+            [inNewLayer{numFrame},onNewLayer{numFrame}] = inpolygon(xQuery{numFrame,1},yQuery{numFrame,1},x(kNewLayer{numFrame}),y(kNewLayer{numFrame})); %Debería ser con pixeles???
+            
+            %             figure
+            %             imshow(photoPath{numFrame});
+            %             hold on
+            % %             plot(xPixel{numFrame-1,1}(k),yPixel{numFrame-1,1}(k),'LineWidth',2) % polygon
+            %             axis equal
+            % %             plot(xPixel{numFrame-1,1},yPixel{numFrame-1,1},'w*') % PostPoints
+            %             plot(xQuery{numFrame,1}(in{numFrame}), yQuery{numFrame,1}(in{numFrame}),'g+') % points inside
+            %             plot(xQuery{numFrame,1}(~in{numFrame}),yQuery{numFrame,1}(~in{numFrame}),'bo') % points outside
+            %             hold off
+            
+            oldCentroids = ismember(round(centroids{numFrame,1}),pixel{numFrame-1,1},'rows'); %Los centroides del nuevo frame que están en los pixeles del anterior
+            allCentroids = centroids{numFrame}; %Todos los centroides del nuevo frame
+            newCentroids = allCentroids(oldCentroids == 0, :); %De todos los centroides del nuevo frame, cógeme las filas que tenga como valor 0 según coincida con el anterior frame y todas las columnas
+            
+            for n=1:size(centroids{numFrame}(:, 1))
+                if oldCentroids(n)==0
+                    if (in{numFrame,1}(n)==0) || ((in{numFrame,1}(n)==1) && (numFrame==initial+1))
+                        w=[xQuery{numFrame,1}(n), yQuery{numFrame,1}(n)];
+                        Layer{j,1} = vertcat(Layer{j},horzcat(numFrame, w)); %Todos los centroides que constituye esta capa
+                        
+                    elseif (in{numFrame,1}(n)==1)
+                        [Layer, j, inNewLayer, onNewLayer] = newLayer (Layer, j, xQuery{numFrame,1}(n), yQuery{numFrame,1}(n), oldCentroids, numFrame, inNewLayer, onNewLayer);
+                        
+                    end
                 end
             end
         end
+        %     figure
+        %     imshow(maskBW{numFrame-1});
+        %     hold on;
+        %     numLayer=size(Layer{j,1}(:,1));
+        %     Color=['b*', 'w+', 'g^'];
+        %     for numCentroidLayer=1:numLayer
+        %         plot(Layer{numCentroidLayer,1}(:,2), Layer{numCentroidLayer,1}(:, 3), 'Color', Color(numCentroidLayer));
+        %     end
     end
-%     figure
-%     imshow(maskBW{numFrame-1});
-%     hold on;
-%     numLayer=size(Layer{j,1}(:,1));
-%     Color=['b*', 'w+', 'g^'];
-%     for numCentroidLayer=1:numLayer
-%         plot(Layer{numCentroidLayer,1}(:,2), Layer{numCentroidLayer,1}(:, 3), 'Color', Color(numCentroidLayer));
-%     end
- end
+end

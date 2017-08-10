@@ -1,10 +1,10 @@
-function [Layer, j, inNewLayer, onNewLayer] = newLayer( Layer, j, xQuery, yQuery, oldCentroids, numFrame, inNewLayer, onNewLayer)
+function [Layer, index, inNewLayer, onNewLayer] = newLayer( Layer, j, xQuery, yQuery, oldCentroids, numFrame, inNewLayer, onNewLayer)
 
 %Inputs=se trabaja con esas variables
 %Outputs=se crea variables vacias y se almacenan...Si es la misma que en inputs se almacenaría
-
-m=size(Layer{j+1,1});
 index=j+1;
+m=size(Layer{j+1,1});
+
 kNewLayer=cell(numFrame,1);
 
 if (isempty(Layer{j+1,1})) || (m(1,1)<4)  
