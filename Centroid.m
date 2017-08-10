@@ -48,7 +48,7 @@ pixel = vertcat(centroids.PixelList);
 
 
 %%Show the created image along with the image of the centroids and Voronoi
-f=figure('Visible', 'on');
+f=figure('Visible', 'off');
 imshow(Img);
 hold on;
 

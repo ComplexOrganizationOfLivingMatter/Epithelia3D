@@ -1,8 +1,8 @@
 %%Variables
-photo_Path='C:\Users\tinaf\OneDrive\Documentos\Departamento\Epithelia3D\Prueba';
+photo_Path='C:\Users\tinaf\OneDrive\Documentos\Departamento\Epithelia3D\Prueba2';
 name='50epib_2_z0';
 initial=6;
-maxFrame=7;
+maxFrame=14;
 nameComplete=cell(maxFrame,1);
 photoPath=cell(maxFrame,1);
 nameNew=cell(maxFrame,1);
@@ -10,95 +10,83 @@ centroids=cell(maxFrame,1);
 pixel=cell(maxFrame,1);
 in=cell(maxFrame,1);
 on=cell(maxFrame,1);
-Layer=cell(80,1);
-
+% C=cell(maxFrame,1);
+% ia=cell(maxFrame,1);
+% ib=cell(maxFrame,1);
+Layer=cell(20,1);
+k=cell(maxFrame,1);
 j=1; %Variable que aumenta con el número de capas
 w=[];
 maskBW=cell(maxFrame,1);
 Label=cell(maxFrame,1);
+inNewLayer=cell(maxFrame,1);
+onNewLayer=cell(maxFrame,1);
 
-for i=initial:maxFrame %Variable que corresponde con el nº de imágenes (frame)
-   
-   %Lectura de las imágenes
-   nameComplete{i}= [name sprintf('%02d',i) '_c002.tif'];
-   photoPath{i}=[photo_Path '\' nameComplete{i}];
-   nameNew{i}=[photo_Path '\' name sprintf('%02d',i) 'centroid_c002'];
-   
-   
-   [centroids{i,1}, pixel{i,1}, maskBW{i,1}]=Centroid(photoPath{i}, nameNew{i});
-   Label{i}=bwlabel(maskBW{i,1},4);
-   
-   if i==initial
-    xPixel{i,1}=pixel{i,1}(:, 1);
-    yPixel{i,1}=pixel{i,1}(:, 2);
-    xCentroid{i,1}=centroids{i,1}(:, 1);
-    yCentroid{i,1}=centroids{i,1}(:, 2);
+for numFrame=initial:maxFrame %Variable que corresponde con el nº de imágenes (frame)
     
-    [k]=boundary(xPixel{i,1},yPixel{i,1});
+    %Lectura de las imágenes
+    nameComplete{numFrame}= [name sprintf('%02d',numFrame) '_c002.tif'];
+    photoPath{numFrame}=[photo_Path '\' nameComplete{numFrame}];
+    nameNew{numFrame}=[photo_Path '\' name sprintf('%02d',numFrame) 'centroid_c002'];
     
-    [in{i},on{i}] = inpolygon(xCentroid{i,1},yCentroid{i,1},xPixel{i,1}(k),yPixel{i,1}(k));
-    Layer{j}=[xPixel{i,1},yPixel{i,1}]; %FRAME 6
-   
-   
-   else
-       
-%     xPixel{i-1,1}=pixel{i-1,1}(:, 1);
-%     yPixel{i-1,1}=pixel{i-1,1}(:, 2);
-    xPixel{i,1}=pixel{i,1}(:, 1);
-    yPixel{i,1}=pixel{i,1}(:, 2);
-
-    xQuery{i,1}=centroids{i,1}(:, 1);
-    yQuery{i,1}=centroids{i,1}(:, 2);
     
-    [k]=boundary(xPixel{i-1,1},yPixel{i-1,1});
-   
-    [in{i},on{i}] = inpolygon(xQuery{i,1},yQuery{i,1},xPixel{i-1,1}(k),yPixel{i-1,1}(k));
+    [centroids{numFrame,1}, pixel{numFrame,1}, maskBW{numFrame,1}]=Centroid(photoPath{numFrame}, nameNew{numFrame});
+    Label{numFrame}=bwlabel(maskBW{numFrame,1},4);
+    %[C{numFrame,1},ia{numFrame,1},ib{numFrame,1}] = intersect(Label{numFrame},Label{numFrame-1}); %Hay que ignorar el 1º num porque son los ceros
     
-%    figure
-%    imshow(photoPath{i});
-%    hold on
-%    plot(xPixel{i-1,1}(k),yPixel{i-1,1}(k),'LineWidth',2) % polygon
-%    axis equal
-%    plot(xPixel{i-1,1},yPixel{i-1,1},'w*') % PostPoints 
-%    plot(xQuery{i,1}(in{i}), yQuery{i,1}(in{i}),'g+') % points inside
-%    plot(xQuery{i,1}(~in{i}),yQuery{i,1}(~in{i}),'bo') % points outside
-%    hold off
-   
-   k=size(centroids{i}(:, 1));
-   K=k(1,1); %El nº de centroides que hay, que es el mismo que filas tiene la variable 'in'
-   % x e y son las variables del tamaño de Label{i}
-    for x=1:1024
-        for y=1:1024
-            if Label{i}(x,y)~=Label{i-1}(x,y)
-                for n=1:K
-                    if in{i,1}(n)==0      
-                        w=[xPixel{i,1}(n), yPixel{i,1}(n)];
-                        Layer{j,1} = vertcat(Layer{j},w);
-%                         disp('DONT');
-                    elseif in{i,1}(n)==1 
-%                         j=j+1;
-%                         disp('NANAI');
-%                       xQuery{i}(in{i}), yQuery{i}(in{i})
-                    else
-%                         disp('WHY?T.T');
-                    end
+    if numFrame==initial
+        xPixel{numFrame,1}=pixel{numFrame,1}(:, 1);
+        yPixel{numFrame,1}=pixel{numFrame,1}(:, 2);
+        xQuery{numFrame,1}=centroids{numFrame,1}(:, 1);
+        yQuery{numFrame,1}=centroids{numFrame,1}(:, 2);
+        
+        [k{numFrame}]=boundary(xPixel{numFrame,1},yPixel{numFrame,1},1);
+        
+        [in{numFrame},on{numFrame}] = inpolygon(xQuery{numFrame,1},yQuery{numFrame,1},xPixel{numFrame,1}(k{numFrame}),yPixel{numFrame,1}(k{numFrame}));
+        Layer{j}=[ones(size(xQuery{numFrame}, 1), 1) * numFrame, xQuery{numFrame,1},yQuery{numFrame,1}]; %FRAME 6
+        
+        
+    else
+        
+        xPixel{numFrame,1}=pixel{numFrame,1}(:, 1);
+        yPixel{numFrame,1}=pixel{numFrame,1}(:, 2);
+        
+        xQuery{numFrame,1}=centroids{numFrame,1}(:, 1);
+        yQuery{numFrame,1}=centroids{numFrame,1}(:, 2);
+        
+        [k{numFrame}]=boundary(xPixel{numFrame-1,1},yPixel{numFrame-1});
+        
+        [in{numFrame},on{numFrame}] = inpolygon(xQuery{numFrame,1},yQuery{numFrame,1},xPixel{numFrame-1,1}(k{numFrame}),yPixel{numFrame-1,1}(k{numFrame}));
+        
+        %             figure
+        %             imshow(photoPath{numFrame});
+        %             hold on
+        % %             plot(xPixel{numFrame-1,1}(k),yPixel{numFrame-1,1}(k),'LineWidth',2) % polygon
+        %             axis equal
+        % %             plot(xPixel{numFrame-1,1},yPixel{numFrame-1,1},'w*') % PostPoints
+        %             plot(xQuery{numFrame,1}(in{numFrame}), yQuery{numFrame,1}(in{numFrame}),'g+') % points inside
+        %             plot(xQuery{numFrame,1}(~in{numFrame}),yQuery{numFrame,1}(~in{numFrame}),'bo') % points outside
+        %             hold off
+        
+        oldCentroids = ismember(round(centroids{numFrame,1}),pixel{numFrame-1,1},'rows'); %Los centroides del nuevo frame que están en los pixeles del anterior
+        allCentroids = centroids{numFrame}; %Todos los centroides del nuevo frame
+        newCentroids = allCentroids(oldCentroids == 0, :); %De todos los centroides del nuevo frame, cógeme las filas que tenga como valor 0 según coincida con el anterior frame y todas las columnas
+        
+        for n=1:size(centroids{numFrame}(:, 1))
+            if oldCentroids(n)==0
+                if (in{numFrame,1}(n)==0) || ((in{numFrame,1}(n)==1) && (numFrame==initial+1))
+                    w=[xQuery{numFrame,1}(n), yQuery{numFrame,1}(n)];
+                    Layer{j,1} = vertcat(Layer{j},horzcat(numFrame, w)); %Todos los centroides que constituye esta capa
+                    
+                elseif (in{numFrame,1}(n)==1)
+%                     xQuery{numFrame,1}(n)
+%                     yQuery{numFrame,1}(n)
+                    [Layer, j, inNewLayer, onNewLayer] = newLayer (Layer, j, xQuery{numFrame,1}(n), yQuery{numFrame,1}(n), oldCentroids, numFrame, inNewLayer, onNewLayer);
+                    
                 end
-%             else disp('Cest fini');   
             end
         end
-    end
-    cen = regionprops(Layer{j,1}, 'Centroid');
-    cenC = vertcat(cen.Centroid);
-    [m,o] = size(centroids);
+        
 
-    for b=1:m
-        plot(cenC(i,1), cenC(i, 2), 'b*');
     end
-  end
 end
-
-
-
-  
-   
- 
