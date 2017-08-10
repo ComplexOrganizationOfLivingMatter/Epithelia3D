@@ -8,7 +8,7 @@ function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjecti
     listSeedsProjected=cell(length(listOfSurfaceRatios),2);
     listLOriginalProjection=cell(length(listOfSurfaceRatios),2);
 
-    parfor j=1:length(listOfSurfaceRatios)
+    for j=1:length(listOfSurfaceRatios)
             %% surface reduction implication - recalculate seeds and labelled images
             surfaceRatio=listOfSurfaceRatios(j);
             
@@ -20,7 +20,7 @@ function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjecti
 
             name2save=pathV5data(i).name;
             name2save=name2save(1:end-16);
-            representAndSaveFigureWithColourfulCells(L_originalProjection,numCells,seedsExpansion(:,2:3),[directory2save kindProjection '\' nameOfFolder],name2save, ['_expansion' num2str(surfaceRatio)])
+%             representAndSaveFigureWithColourfulCells(L_originalProjection,numCells,seedsExpansion(:,2:3),[directory2save kindProjection '\' nameOfFolder],name2save, ['_expansion' num2str(surfaceRatio)])
 
             %% Testing neighs exchanges
             if strcmp(kindProjection,'expansion')

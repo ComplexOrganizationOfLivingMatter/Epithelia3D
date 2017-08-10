@@ -1,19 +1,19 @@
 %normalize measured edges in basal by expansion ratio
 
-load('D:\Pedro\Epithelia3D\Salivary Glands\Curvature model\data\expansion\512x1024_400seeds\summaryAverageTransitionsMeasuredInbasal.mat','totalEdgesTransition','listAcumTransitions')
 
 listOfSurfaceRatios=listAcumTransitions.apicalReduction;
-totalEdgesTransitionNormalized=cell(size(totalEdgesTransition,1),size(totalEdgesTransition,2));
-for i=1:size(totalEdgesTransition,1)
-    for j=1:size(totalEdgesTransition,2)
-        totalEdgesTransitionNormalized{i,j}=totalEdgesTransition{i,j}/listOfSurfaceRatios(i);
+totalEdgesNormalized=cell(size(totalEdges,1),size(totalEdges,2));
+for i=1:size(totalEdges,1)
+    for j=1:size(totalEdges,2)
+        totalEdgesNormalized{i,j}=totalEdges{i,j}/listOfSurfaceRatios(i);
     end
 end
 
+allEdges=vertcat(totalEdgesNormalized{:,:});
+allEdges=allEdges(allEdges<150);
 
-
-boxTreshLength=round(max(vertcat(totalEdgesTransitionNormalized{:,:}))/5)-1;
-proportionEdges=cellfun(@(x) [sum(x<=boxTreshLength),sum(x<=2*boxTreshLength & x>boxTreshLength),sum(x<=3*boxTreshLength & x>2*boxTreshLength),sum(x<=4*boxTreshLength & x>3*boxTreshLength),sum(x>4*boxTreshLength)]/length(x),totalEdgesTransitionNormalized,'UniformOutput',false);
+boxTreshLength=round(max(allEdges)/5)-1;
+proportionEdges=cellfun(@(x) [sum(x<=boxTreshLength),sum(x<=2*boxTreshLength & x>boxTreshLength),sum(x<=3*boxTreshLength & x>2*boxTreshLength),sum(x<=4*boxTreshLength & x>3*boxTreshLength),sum(x>4*boxTreshLength)]/length(x),totalEdgesNormalized,'UniformOutput',false);
     
 meanListLengthEdges=zeros(length(listOfSurfaceRatios),5);
 stdListLengthEdges=zeros(length(listOfSurfaceRatios),5);

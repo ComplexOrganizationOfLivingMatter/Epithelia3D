@@ -1,4 +1,4 @@
-function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12PostCurvature,L34PostCurvature,CoordA,CoordB,LEdgeTransition,Coord1,Coord2,Coord3,Coord4]=recalculateCentroidsGastrulationHeightTranPrediction(pathStructure,nMotif,hTransition,curvature,alpha,hCell,validCentroidCell)
+function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12PostCurvature,L34PostCurvature,CoordA,CoordB,LEdgeTransition,Coord1,Coord2,Coord3,Coord4]=recalculateCentroidsGastrulationHeightTranPrediction(pathStructure,nMotif,hTransition,curvature,alpha,hCell,validCentroidCell,conversionFactor)
 
 
     addpath lib
@@ -25,7 +25,7 @@ function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12
     D=(2*hCell)/(1-curvature);
     
     %Distance edge transition
-    LEdgeTransition=pdist([vertices{1,1};vertices{1,2}]);
+    LEdgeTransition=pdist([vertices{1,1};vertices{1,2}])*conversionFactor;
     %Real coordinates vertices in transition edges, from 0,0 imaginary coordinates
     Ax=-asin(mod((cos(alpha)*LEdgeTransition)/D,1))*(D/2);         Ay=(sin(alpha)*LEdgeTransition)/2;
     Bx=-Ax;     By=-Ay;
@@ -35,7 +35,7 @@ function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12
     %CENTROID ARE CORRECT IN 3 NEIGHS CELLS
     if (validCentroidCell==3)
         %Distance edge centroid
-        LCentroids=pdist([cent3neigh(1,:);cent3neigh(2,:)]);
+        LCentroids=pdist([cent3neigh(1,:);cent3neigh(2,:)])*conversionFactor;
         X1= asin(mod((sin(alpha)*LCentroids)/D,1))*(D/2); Y1=(cos(alpha)*LCentroids)/2;
         X2=-X1;    Y2=-Y1;
      
@@ -44,8 +44,8 @@ function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12
         Coord2=[X2,Y2];
         
         %get distances between vertices and centroids 
-        distX=mean([pdist([CoordA;Coord1]),pdist([CoordA;Coord2])]);
-        distY=mean([pdist([CoordB;Coord1]),pdist([CoordB;Coord2])]);
+        distX=mean([pdist([CoordA;Coord1])*conversionFactor,pdist([CoordA;Coord2])])*conversionFactor;
+        distY=mean([pdist([CoordB;Coord1])*conversionFactor,pdist([CoordB;Coord2])])*conversionFactor;
 
         L_03=distX+LEdgeTransition/2;
         L_04=distY+LEdgeTransition/2;
@@ -60,15 +60,15 @@ function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12
     %CENTROID ARE CORRECT IN 2 NEIGHS CELLS
     if (validCentroidCell==2)
         %Distance edge centroid
-        LCentroids=pdist([cent2neigh(1,:);cent2neigh(2,:)]);
+        LCentroids=pdist([cent2neigh(1,:);cent2neigh(2,:)])*conversionFactor;
         X3= -asin(mod((cos(alpha)*LCentroids)/D,1))*(D/2); Y3=(sin(alpha)*LCentroids)/2;
         X4=-X3;    Y4=-Y3;
         
         Coord3=[X3,Y3];
         Coord4=[X4,Y4];
         %get distances between vertices and centroids 
-        distX=pdist([CoordA;Coord3]);
-        distY=pdist([CoordB;Coord4]);
+        distX=pdist([CoordA;Coord3])*conversionFactor;
+        distY=pdist([CoordB;Coord4])*conversionFactor;
 
         angAux=acos((LEdgeTransition/2)/mean([distX,distY]));
         L_01=mean([distX,distY])*sin(angAux);
@@ -83,10 +83,10 @@ function [nMotif,hTransition,hTransitionPredict,hCell,beta,curvature,L12,L34,L12
     end
    
     
-    L34=pdist([Coord3;Coord4]);
-    L12=pdist([Coord1;Coord2]);
-    L12PostCurvature=pdist([[Coord1(1,1)*curvature Coord1(1,2)];[Coord2(1,1)*curvature Coord2(1,2)]]);
-    L34PostCurvature=pdist([[Coord3(1,1)*curvature Coord3(1,2)];[Coord4(1,1)*curvature Coord4(1,2)]]);
+    L34=pdist([Coord3;Coord4])*conversionFactor;
+    L12=pdist([Coord1;Coord2]).*conversionFactor;
+    L12PostCurvature=pdist([[Coord1(1,1)*curvature Coord1(1,2)];[Coord2(1,1)*curvature Coord2(1,2)]])*conversionFactor;
+    L34PostCurvature=pdist([[Coord3(1,1)*curvature Coord3(1,2)];[Coord4(1,1)*curvature Coord4(1,2)]])*conversionFactor;
 
 
     %Height transition. When L12 == L34
