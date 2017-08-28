@@ -50,5 +50,16 @@ function [ ] = create3DMotifFromVoronoi( )
         trisurf(k, xCell, yCell, zCell, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
         hold on;
     end
+    axis equal
+    camlight left;
+    camlight right;
+    lighting flat
+    newFig = gca;
+    newFig.Visible = 'off';
+    newFig.CameraPositionMode = 'manual';
+    newFig.CameraTargetMode = 'manual';
+    newFig.CameraUpVectorMode = 'manual';
+    newFig.CameraViewAngleMode = 'manual';
+    set(get(0,'children'),'Color','w')
 end
 
