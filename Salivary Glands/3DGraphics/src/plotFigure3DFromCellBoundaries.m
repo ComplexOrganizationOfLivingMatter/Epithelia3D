@@ -61,6 +61,8 @@ function [ ] = plotFigure3DFromCellBoundaries( pixelsPerCell, colours)
         yReal = y;
         
         k = boundary([xReal yReal zReal], 0);
+        %shp = alphaShape(xReal, yReal, zReal, 25);
+        %plot(shp, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
         trisurf(k, xReal, yReal, zReal, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
         hold on;
     end
