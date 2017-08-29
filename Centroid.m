@@ -60,7 +60,7 @@ end
 
 
 %Merge images to return
-saveas(f,[name '.tiff']);
+%saveas(f,[name '.tiff']);
  
 
 end
