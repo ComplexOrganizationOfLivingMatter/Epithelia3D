@@ -5,6 +5,7 @@ function pipelineProjectionApicalSurface (numSeeds,kindProjection)
 
     path3dVoronoi=['D:\Pedro\Epithelia3D\Salivary Glands\Tolerance model\Data\3D Voronoi model\Cylindrical voronoi\' nameOfFolder];
     directory2save='..\..\data\';
+    addpath('libExpansionOrReduction')
     addpath('lib')
 
     pathV5data=dir([path3dVoronoi '*m_5*']);

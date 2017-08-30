@@ -1,5 +1,6 @@
 %normalize measured edges in basal by expansion ratio
 
+load('D:\Pedro\Epithelia3D\Salivary Glands\Curvature model\data\expansion\512x1024_400seeds\summaryAverageTransitionsMeasuredInbasal_Transitions.mat','totalEdges','listAcumTransitions')
 
 listOfSurfaceRatios=listAcumTransitions.apicalReduction;
 totalEdgesNormalized=cell(size(totalEdges,1),size(totalEdges,2));
