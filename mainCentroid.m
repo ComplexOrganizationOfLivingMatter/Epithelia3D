@@ -55,7 +55,7 @@ for numFrame=initial:maxFrame %Variable que corresponde con el nº de imágenes (f
         yQuery{numFrame,1}=centroids{numFrame,1}(:, 2);
         
         for numLayer=1:size(LayerCentroid, 1)
-            
+
             %[k{numFrame}]=boundary(xPixel{numFrame-1,1},yPixel{numFrame-1});
             %[in{numFrame},on{numFrame}] = inpolygon(xQuery{numFrame,1},yQuery{numFrame,1},xPixel{numFrame-1,1}(k{numFrame}),yPixel{numFrame-1,1}(k{numFrame}));
             x=LayerPixel{numLayer,1}(:,2);
@@ -101,20 +101,12 @@ for numFrame=initial:maxFrame %Variable que corresponde con el nº de imágenes (f
                                 LayerPixel{numLayer+1} = vertcat(LayerPixel{numLayer+1},horzcat(numFrame, w));
                                 
                             end
-                         end
-                        
-                    %else %if numLayer~=1 %&& distinto valor que antes
-                        %oldLayers =
-                        %ismember(LayerCentroid{numLayer,1}(:,2),LayerCentroid{numLayer-1,1}(:,2));
-                        %Creo que no me sirve porque obviamente los de la
-                        %nueva capa no van a estar en la siguiente CREOOOO
-                        %Entra en la segunda capa que solo está los 5 centroides analizados por ahora del frame 10 
-                    
+                        end   
                 end
             end
         %LayerCentroid=unique(LayerCentroid{numLayer},'rows');
         end
-
+        
     
 %   Representación de los centroides de las diferentes capas      
         figure
@@ -127,8 +119,8 @@ for numFrame=initial:maxFrame %Variable que corresponde con el nº de imágenes (f
                 plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
             end
         end
-        
-    end
+  
+     end
 
 
 end
