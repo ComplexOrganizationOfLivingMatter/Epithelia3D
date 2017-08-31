@@ -5,14 +5,10 @@ function [ ] = create3DMotifFromVoronoi( )
     
     %selectedCells = 1:max(listLOriginalProjection.L_originalProjection{1});
     %Yellow, Red, Green, Blue
-    %selectedCells = [42, 30, 34, 25];
-    %selectedCells = [28, 15, 18, 5];
     selectedCells = [9, 40, 48, 39];
     addedCells = [8, 15, 27, 20, 30];
-    
     selectedCells = horzcat(selectedCells, addedCells);
-    %selectedCells = [, , , 29];
-    %% Rb/Ra = 2
+    %% Rb/Ra = 2.5
     pixelsPerCell = {};
     maxPlanes = 7;
     for selectedCell = 1:size(selectedCells, 2)
@@ -55,11 +51,15 @@ function [ ] = create3DMotifFromVoronoi( )
         yCell = actualCellPxs(:, 2);
         zCell = actualCellPxs(:, 3);
         actualCellPxs = [xCell, yCell, zCell];
-        k = boundary(actualCellPxs, 0);
+        %k = boundary(actualCellPxs, 0);
+        shp = alphaShape(xCell, yCell, zCell);
+        shp.Alpha = 100;
         if numCell > 4
-            trisurf(k, xCell, yCell, zCell, 'FaceColor', [204 204 204] / 255, 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
+            plot(shp, 'FaceColor', [204 204 204] / 255, 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
+            %trisurf(k, xCell, yCell, zCell, 'FaceColor', [204 204 204] / 255, 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
         else
-            trisurf(k, xCell, yCell, zCell, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
+            plot(shp, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
+            %trisurf(k, xCell, yCell, zCell, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
         end
         hold on;
     end
@@ -74,6 +74,6 @@ function [ ] = create3DMotifFromVoronoi( )
     newFig.CameraUpVectorMode = 'manual';
     newFig.CameraViewAngleMode = 'manual';
     set(get(0,'children'),'Color','w')
-    print(strcat('../motif_3DCells_4_', date), '-dtiff', '-r600');
+    %print(strcat('../motif_3DCells_4_', date), '-dtiff', '-r600');
 end
 
