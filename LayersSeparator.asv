@@ -105,15 +105,12 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
         hold on;
         Color=colorcube(10);
         
-        %if size(LayerCentroid(:, 1),1)>6
-        for numCentroidLayer=1:size(LayerCentroid, 1)
+        for numCentroidLayer=1:1%size(LayerCentroid, 1)
             mio=size(LayerCentroid{numCentroidLayer,1}(:, 1));
             for i=1:mio(1,1)
-                text(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3),sprintf('%d',numCentroidLayer),'HorizontalAlignment','center','VerticalAlignment','middle','Color',Color(numCentroidLayer,:),'FontSize',6);
-                %plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
+                plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
             end
         end
-        %end
         
         %Merge images to return
         nameLayer=[photo_Path '\Layers\' name sprintf('%02d',numFrame) 'centroid_layers'];
