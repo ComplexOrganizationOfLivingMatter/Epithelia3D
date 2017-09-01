@@ -18,6 +18,7 @@ LayerPixel=cell(1,1);
 k=cell(maxFrame,1);
 maskBW=cell(maxFrame,1);
 Label=cell(maxFrame,1);
+newLayer=false;
 
 for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágenes (frame)
     
@@ -101,7 +102,7 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
         nameCompleteLayer{numFrame}= [name sprintf('%02d',numFrame) '_c001.tif'];
         photoPathLayer{numFrame}=['C:\Users\tinaf\OneDrive\Documentos\Departamento\Epithelia3D\50epib_2' '\' nameCompleteLayer{numFrame}];
         imshow(photoPathLayer{numFrame});
-%         imshow(maskBW{numFrame-1});
+        %         imshow(maskBW{numFrame-1});
         hold on;
         Color=colorcube(10);
         
@@ -109,17 +110,34 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
         for numCentroidLayer=1:size(LayerCentroid, 1)
             mio=size(LayerCentroid{numCentroidLayer,1}(:, 1));
             for i=1:mio(1,1)
-                text(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3),sprintf('%d',numCentroidLayer),'HorizontalAlignment','center','VerticalAlignment','middle','Color',Color(numCentroidLayer,:),'FontSize',6);
-                %plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
+                %text(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3),sprintf('%d',numCentroidLayer),'HorizontalAlignment','center','VerticalAlignment','middle','Color',Color(numCentroidLayer,:),'FontSize',9);
+                plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
             end
         end
         %end
         
-        %Merge images to return
-        nameLayer=[photo_Path '\Layers\' name sprintf('%02d',numFrame) 'centroid_layers'];
-        saveas(f,[nameLayer '.tiff']);
+        % AQUÍ IRIA LA FUNCIÓN DE DISPLAY_LABELLED        
+        f = display_labelled(f, LayerCentroid);
         
-     end
+        % AQUÍ IRIA EL CÓDIGO DEL TRATAMIENTO
+        if numFrame > initialFrame+1 %Se necesita ésto pork no tenemos antes f ( por lo que aquí entra en Frame 8)
+            
+            % Display labels in screen
+            want_modify=input('666 (change labelling mode) \n 0 (Next frame) \n Otherwise (Continue labelling) : ');
+            switch want_modify
+                case 0
+                    disp('Next frame');
+                    
+                case 666
+                    [LayerCentroid, LayerPixel] = layer_write_mode(f,LayerCentroid, LayerPixel, numFrame);
+            end
+            
+            
+          %Merge images to return
+          %nameLayer=[photo_Path '\Layers\' name sprintf('%02d',numFrame) 'centroid_layers.tiff'];
+          %saveas(f,nameLayer);
+        
+        end
 
 
 end
