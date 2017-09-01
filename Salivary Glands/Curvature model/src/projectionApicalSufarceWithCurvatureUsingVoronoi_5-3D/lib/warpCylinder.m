@@ -7,8 +7,59 @@ uiopen('D:\Pablo\Epithelia3D\Salivary Glands\Curvature model\data\voronoiCylinde
 
 refFig = gca;
 surfaceRatios=[1,3,6,9];
-colours = colorcube(50);
-colours(1, :) = [0 0 0];
+colours = [0 0 0
+0.153846153846154    1    0.846153846153846
+0.769230769230769    1    0.230769230769231
+0.769230769230769    0    0
+0    0    0.615384615384615
+1    0.538461538461538    0
+1    0.230769230769231    0
+0    0.307692307692308    1
+0.923076923076923    1    0.0769230769230769
+1    0.692307692307692    0
+0.230769230769231    1    0.769230769230769
+0.692307692307692    0    0
+0.846153846153846    1    0.153846153846154
+0    0    0.846153846153846
+1    0.923076923076923    0
+0    0.923076923076923    1
+1    0    0
+0    0.230769230769231    1
+0    0.769230769230769    1
+0.846153846153846    0    0
+0.538461538461538    1    0.461538461538462
+0    0.615384615384615    1
+0.615384615384615    1    0.384615384615385
+1    0.307692307692308    0
+0.923076923076923    0    0
+0.692307692307692    1    0.307692307692308
+1    1    0
+1    0.0769230769230769    0
+0    0    0.769230769230769
+0.307692307692308    1    0.692307692307692
+0    0    0.538461538461538
+1    0.846153846153846    0
+0.0769230769230769    1    0.923076923076923
+0    0.0769230769230769    1
+1    0.461538461538462    0
+0    0.538461538461538    1
+0    0.461538461538462    1
+1    0.153846153846154    0
+1    0.615384615384615    0
+0    0.384615384615385    1
+0    0.846153846153846    1
+1    0.384615384615385    0
+1    0.769230769230769    0
+0    0.153846153846154    1
+0    1    1
+0    0    1
+0.384615384615385    1    0.615384615384615
+0    0    0.923076923076923
+0    0.692307692307692    1
+0    0    0.692307692307692];
+
+colours = repmat(colours, 8, 1);
+
 for i=1:length(surfaceRatios)
     h = figure;
     
@@ -20,9 +71,10 @@ for i=1:length(surfaceRatios)
     [imgRows,imgCols,imgPlanes] = size(imgRGB);
     [X,Y,Z] = cylinder(imgRows,imgCols);
     Z=Z*4000;
-    X=X*.2*listLOriginalProjection.surfaceRatio(surfaceRatios(i));Y=Y*0.2*listLOriginalProjection.surfaceRatio(surfaceRatios(i));
+    X=X*.2*listLOriginalProjection.surfaceRatio(surfaceRatios(i));
+    Y=Y*0.2*listLOriginalProjection.surfaceRatio(surfaceRatios(i));
     hRef = warp(X,Y,Z,imgRGB,colours);
-    %hRef.FaceAlpha = 0.9;
+    hRef.FaceAlpha = 0.9;
     axis equal
     newFig = gca;
     newFig.CameraPositionMode = refFig.CameraPositionMode;
@@ -37,6 +89,6 @@ for i=1:length(surfaceRatios)
     
     newFig.Visible = 'off';
     set(get(0,'children'),'Color','w')
-    print(strcat('cylinder_Expansion2_', num2str(listLOriginalProjection.surfaceRatio(surfaceRatios(i)))), '-dtiff', '-r600');
+    print(strcat('cylinder_With2Cylinders_Expansion_', num2str(listLOriginalProjection.surfaceRatio(surfaceRatios(i))), '_', date), '-dtiff', '-r600');
     hold off;
 end
