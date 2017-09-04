@@ -111,15 +111,17 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
             mio=size(LayerCentroid{numCentroidLayer,1}(:, 1));
             for i=1:mio(1,1)
                 %text(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3),sprintf('%d',numCentroidLayer),'HorizontalAlignment','center','VerticalAlignment','middle','Color',Color(numCentroidLayer,:),'FontSize',9);
-                plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
-            end
+                numLay(numCentroidLayer,:)=plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
+                end
+            numLay1{numCentroidLayer}=sprintf ('Layer%d', numCentroidLayer);
         end
         %end
+          
+        legend(numLay,numLay1);  
+               
         
-        % AQUÍ IRIA LA FUNCIÓN DE DISPLAY_LABELLED        
-        f = display_labelled(f, LayerCentroid);
         
-        % AQUÍ IRIA EL CÓDIGO DEL TRATAMIENTO
+        % EL CÓDIGO DEL TRATAMIENTO
         if numFrame > initialFrame+1 %Se necesita ésto pork no tenemos antes f ( por lo que aquí entra en Frame 8)
             
             % Display labels in screen
@@ -129,6 +131,7 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
                     disp('Next frame');
                     
                 case 666
+                    f = display_labelled(f, LayerCentroid);
                     [LayerCentroid, LayerPixel] = layer_write_mode(f,LayerCentroid, LayerPixel, numFrame);
             end
             
@@ -140,7 +143,10 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
         end
 
 
+    end
 end
-
+for numLayer=1:size(LayerCentroid,1)
+    hoja= sprintf ('Capa%d', numLayer);
+    xlswrite('LayersCentroids.xlsx',LayerCentroid{numLayer,1},hoja);
 end
-
+end

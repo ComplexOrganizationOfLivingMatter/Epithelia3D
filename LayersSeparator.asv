@@ -113,36 +113,42 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
                 %text(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3),sprintf('%d',numCentroidLayer),'HorizontalAlignment','center','VerticalAlignment','middle','Color',Color(numCentroidLayer,:),'FontSize',9);
                 plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
             end
+            numLay{numCentroidLayer}=sprintf ('Layer%d', numCentroidLayer);
+            numLay1{numCentroidLayer}= int2str (numLay2{numCentroidLayer});
         end
         %end
-        
-        % AQUÍ IRIA LA FUNCIÓN DE DISPLAY_LABELLED        
-        f = display_labelled(f, LayerCentroid);
-        
-        % AQUÍ IRIA EL CÓDIGO DEL TRATAMIENTO
-        if numFrame > initialFrame+1 %Se necesita ésto pork no tenemos antes f ( por lo que aquí entra en Frame 8)
            
+ %           LayerCentroid{numLayer+1, 1} = horzcat(numFrame, w);
+        legend(numLay,numLay1);  
+               
+        
+        
+        % EL CÓDIGO DEL TRATAMIENTO
+        if numFrame > initialFrame+1 %Se necesita ésto pork no tenemos antes f ( por lo que aquí entra en Frame 8)
+            
             % Display labels in screen
             want_modify=input('666 (change labelling mode) \n 0 (Next frame) \n Otherwise (Continue labelling) : ');
             switch want_modify
                 case 0
-%                     close all
-%                     next
                     disp('Next frame');
                     
                 case 666
+                    f = display_labelled(f, LayerCentroid);
                     [LayerCentroid, LayerPixel] = layer_write_mode(f,LayerCentroid, LayerPixel, numFrame);
-                    %[new_cell,photoPath{numFrame-1},mask] = layer_write_mode(f{numFrame,1},new_cell,f{numFrame-1,1},mask,H,W);
             end
             
             
           %Merge images to return
           %nameLayer=[photo_Path '\Layers\' name sprintf('%02d',numFrame) 'centroid_layers.tiff'];
-          %saveas(f{numFrame,1},nameLayer);
+          %saveas(f,nameLayer);
+        
         end
 
 
+    end
 end
-
+for numLayer=1:size(LayerCentroid,1)
+    hoja= sprintf ('Capa%d', numLayer);
+    xlswrite('LayersCentroids.xlsx',LayerCentroid{numLayer,1},hoja);
 end
-
+end

@@ -6,12 +6,6 @@ for numLayer=1:size(LayerCentroid,1)
     end
 end
 
-% for numLayer=1:size(LayerCentroid,1)
-%     for numCentroidLayer=1:size(LayerCentroid{numLayer,1})
-%         LayerCentroid{numLayer, 1} = horzcat(LayerCentroid{numLayer,1}(numCentroidLayer,:), numCentroidLayer);
-%     end
-% end
-
 end
 
 

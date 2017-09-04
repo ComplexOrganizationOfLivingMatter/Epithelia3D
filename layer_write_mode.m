@@ -3,11 +3,6 @@ function [LayerCentroid, LayerPixel] = layer_write_mode(fig,LayerCentroid, Layer
 newLayer1=false;
 
 label=input('Write the number of the wrongly marked label: ');
-%fprintf('Click on bad labelled cell (right gland) and pulse enter \n')
-
-% [x1,y1]=getpts(fig);
-% Pixel = [round(x1),round(y1)];%x1=round(x1);y1=round(y1);
-% Centroids=[x1,y1];
 
 labelOld=input('Write the old label: ');
 labelNew=input('Write the new label: ');
