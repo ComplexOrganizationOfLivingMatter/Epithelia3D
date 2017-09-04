@@ -97,8 +97,8 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
         end
         
     
-%   Representación de los centroides de las diferentes capas      
-        f=figure('Visible', 'on');
+        %%Representación de los centroides de las diferentes capas      
+        f1=figure('Visible', 'on');
         nameCompleteLayer{numFrame}= [name sprintf('%02d',numFrame) '_c001.tif'];
         photoPathLayer{numFrame}=['C:\Users\tinaf\OneDrive\Documentos\Departamento\Epithelia3D\50epib_2' '\' nameCompleteLayer{numFrame}];
         imshow(photoPathLayer{numFrame});
@@ -111,34 +111,39 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
             mio=size(LayerCentroid{numCentroidLayer,1}(:, 1));
             for i=1:mio(1,1)
                 %text(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3),sprintf('%d',numCentroidLayer),'HorizontalAlignment','center','VerticalAlignment','middle','Color',Color(numCentroidLayer,:),'FontSize',9);
-                plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
-            end
-            numLay{numCentroidLayer}=sprintf ('Layer%d', numCentroidLayer);
-            numLay1{numCentroidLayer}= int2str (numLay2{numCentroidLayer});
+                numLay(numCentroidLayer,:)=plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
+                end
+            numLay1{numCentroidLayer}=sprintf ('Layer%d', numCentroidLayer);
         end
         %end
-           
- %           LayerCentroid{numLayer+1, 1} = horzcat(numFrame, w);
+          
         legend(numLay,numLay1);  
                
         
         
-        % EL CÓDIGO DEL TRATAMIENTO
+        %%Tratamiento de las capas
         if numFrame > initialFrame+1 %Se necesita ésto pork no tenemos antes f ( por lo que aquí entra en Frame 8)
             
             % Display labels in screen
-            want_modify=input('666 (change labelling mode) \n 0 (Next frame) \n Otherwise (Continue labelling) : ');
-            switch want_modify
-                case 0
-                    disp('Next frame');
+            want_modify=input('1 (change labelling mode) \n 0 (Next frame): ');
+            want_modify_more =1;
+            variable=1;
+            while want_modify_more ==1
+                    switch want_modify
+                        case 0
+                            disp('Next frame');
+                            break
+                        case 1
+                            if variable
+                            f = display_labelled (f1, LayerCentroid);
+                            [LayerCentroid, LayerPixel] = layer_write_mode(f,LayerCentroid, LayerPixel, numFrame);
                     
-                case 666
-                    f = display_labelled(f, LayerCentroid);
-                    [LayerCentroid, LayerPixel] = layer_write_mode(f,LayerCentroid, LayerPixel, numFrame);
+                            end
+                    end
+                    want_modify_more=input('Do you want to make more changes? 1 (yes) \n 0 (no) \n:');
             end
             
-            
-          %Merge images to return
+          % Merge images to return
           %nameLayer=[photo_Path '\Layers\' name sprintf('%02d',numFrame) 'centroid_layers.tiff'];
           %saveas(f,nameLayer);
         
@@ -147,8 +152,13 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
 
     end
 end
-for numLayer=1:size(LayerCentroid,1)
-    hoja= sprintf ('Capa%d', numLayer);
-    xlswrite('LayersCentroids.xlsx',LayerCentroid{numLayer,1},hoja);
-end
+
+
+% for numLayer=1:size(LayerCentroid,1)
+%     hoja= sprintf ('Capa%d', numLayer);
+%     xlswrite('LayersCentroids.xlsx',LayerCentroid{numLayer,1},hoja);
+% end
+
+save('LayersCentroids.mat', 'LayerCentroid', 'LayerPixel')
+
 end
