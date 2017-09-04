@@ -11,8 +11,10 @@ function [ ] = createExcel()
 %   Then, that is a sheet in the excell. We have 20 randomizations, so 20
 %   sheets there are.
 
-    randomizationPath = '..\data\voronoiModel\expansion\512x1024_20seeds\';
-    outputFile = strcat('..\data\voronoiModel\cellInfo_Sides_Areas_', date ,'.xls');
+    randomizationPath = '..\data\voronoiModel\expansion\512x1024_50seeds\';
+    pathSplitted = strsplit(randomizationPath, '\');
+    lastDirSplitted = strsplit(pathSplitted{end-1}, '_');
+    outputFile = strcat('..\data\voronoiModel\cellInfo_Sides_Areas_', lastDirSplitted{end} , '_', date ,'.xls');
 
     addpath(genpath('projectionApicalSufarceWithCurvatureUsingVoronoi_5-3D'));
 
@@ -28,7 +30,7 @@ function [ ] = createExcel()
                 img = listLOriginalProjection.L_originalProjection{numSurfaceRatio};
                 [~,sides_cells] = calculate_neighbours(img);
                 rowInfo(:, (2*numSurfaceRatio)-1) = sides_cells';
-                areaSf = regionprops(img, 'Area');
+                areaSf = regionprops(img, img, {'Area', 'MeanIntensity'});
                 rowInfo(:, (2*numSurfaceRatio)) = vertcat(areaSf.Area);
                 
                 colNames{(2*numSurfaceRatio)-1} = strcat('numberOfNeighbours');
@@ -42,10 +44,11 @@ function [ ] = createExcel()
                 firstColumn{end+1} = numCell;
             end
             
-            xlswrite(outputFile, firstColumn, numRandom, 'B3');
-            xlswrite(outputFile, surfaceRatios, numRandom, 'C3');
-            xlswrite(outputFile, colNames, numRandom, 'C4');
-            xlswrite(outputFile, rowInfo, numRandom, 'C5');
+            numRandomName = strcat('random', num2str(numRandom));
+            xlswrite(outputFile, firstColumn, numRandomName, 'B3');
+            xlswrite(outputFile, surfaceRatios, numRandomName, 'C3');
+            xlswrite(outputFile, colNames, numRandomName, 'C4');
+            xlswrite(outputFile, rowInfo, numRandomName, 'C5');
         end
     end
 end
