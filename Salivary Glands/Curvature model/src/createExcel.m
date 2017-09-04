@@ -1,4 +1,4 @@
-function [ ] = createExcel()
+function [ ] = createExcel(numSeeds)
 %CREATEEXCEL Summary of this function goes here
 %   We export:
 %   - Number of neighbours in basal and apical
@@ -11,7 +11,7 @@ function [ ] = createExcel()
 %   Then, that is a sheet in the excell. We have 20 randomizations, so 20
 %   sheets there are.
 
-    randomizationPath = '..\data\voronoiModel\expansion\512x1024_50seeds\';
+    randomizationPath = strcat('..\data\voronoiModel\expansion\512x1024_', num2str(numSeeds),'seeds\');
     pathSplitted = strsplit(randomizationPath, '\');
     lastDirSplitted = strsplit(pathSplitted{end-1}, '_');
     outputFile = strcat('..\data\voronoiModel\cellInfo_Sides_Areas_', lastDirSplitted{end} , '_', date ,'.xls');
@@ -44,7 +44,8 @@ function [ ] = createExcel()
                 firstColumn{end+1} = numCell;
             end
             
-            numRandomName = strcat('random', num2str(numRandom));
+            randomNameSplitted = strsplit(randomDirs(numRandom).name, '_');
+            numRandomName = strcat('random', randomNameSplitted{2});
             xlswrite(outputFile, firstColumn, numRandomName, 'B3');
             xlswrite(outputFile, surfaceRatios, numRandomName, 'C3');
             xlswrite(outputFile, colNames, numRandomName, 'C4');
