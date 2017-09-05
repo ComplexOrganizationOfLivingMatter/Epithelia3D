@@ -8,9 +8,10 @@ newLayer=false;
 % maxFrame=48;
 % pathArchMat='C:\Users\tinaf\OneDrive\Documentos\GitHub\pseudostratifiedEpitheli\LayersCentroids.mat';
 
-
-if exist(pathArchMat)&& (initialFrame~=currentFrame)
-    load(pathArchMat);  
+load_data=input('Is this the first time you run the program?:1 (yes) \n 0 (no) \n:');           
+if load_data==0
+    load(pathArchMat);
+    load_data=1;
 end
 
 for numFrame=currentFrame:maxFrame %Variable that corresponds with the number of images (frame)
@@ -45,11 +46,8 @@ for numFrame=currentFrame:maxFrame %Variable that corresponds with the number of
         nameCompleteLayer{numFrame}= [name sprintf('%02d',numFrame) '_c001.tif'];
         photoPathLayer{numFrame}=['C:\Users\tinaf\OneDrive\Documentos\Departamento\Epithelia3D\50epib_2' '\' nameCompleteLayer{numFrame}];
         imshow(photoPathLayer{numFrame});
-       
         hold on;
         Color=colorcube(10);
-        
-        
         for numCentroidLayer=1:size(LayerCentroid, 1)
             mio=size(LayerCentroid{numCentroidLayer,1}(:, 1));
             for i=1:mio(1,1)
@@ -57,8 +55,6 @@ for numFrame=currentFrame:maxFrame %Variable that corresponds with the number of
             end
             numLay1{numCentroidLayer}=sprintf ('Layer%d', numCentroidLayer);
         end
-        
-          
         legend(numLay,numLay1);  
                
         % Merge images to return
@@ -80,16 +76,14 @@ for numFrame=currentFrame:maxFrame %Variable that corresponds with the number of
                         [LayerCentroid, LayerPixel] = layer_write_mode(f,LayerCentroid, LayerPixel, numFrame);                      
                 end
                 want_modify_more=input('Do you want to make more changes? 1 (yes) \n 0 (no) \n:');
-            end            
-          
-          close all;
-        
+            end                      
+          close all;        
         end
-
     end
     
     fprintf('Next frame:  \n %0d \n', numFrame+1)
-    save('LayersCentroids.mat', 'LayerCentroid', 'LayerPixel', 'centroids', 'pixel')
+    save('LayersCentroids.mat', 'LayerCentroid', 'LayerPixel', 'centroids', 'pixel', 'newLayer')
+
 end
 
 end

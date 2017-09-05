@@ -8,7 +8,8 @@ newLayer=false;
 % maxFrame=48;
 % pathArchMat='C:\Users\tinaf\OneDrive\Documentos\GitHub\pseudostratifiedEpitheli\LayersCentroids.mat';
 
-
+want_modify=input('Is this the first time you run the program?: ');
+            
 if exist(pathArchMat)&& (initialFrame~=currentFrame)
     load(pathArchMat);  
 end
@@ -40,7 +41,7 @@ for numFrame=currentFrame:maxFrame %Variable that corresponds with the number of
         %%Layer separator
         [LayerCentroid, LayerPixel, centroids, pixel, xQuery, yQuery, initialFrame, newLayer] = layersMarker( LayerCentroid, LayerPixel, centroids, pixel, numFrame, xQuery, yQuery, initialFrame, newLayer);
 
-        %%Representación de los centroides de las diferentes capas      
+        %%Representation of the centroids of the different layers      
         f=figure('Visible', 'on');
         nameCompleteLayer{numFrame}= [name sprintf('%02d',numFrame) '_c001.tif'];
         photoPathLayer{numFrame}=['C:\Users\tinaf\OneDrive\Documentos\Departamento\Epithelia3D\50epib_2' '\' nameCompleteLayer{numFrame}];
@@ -65,17 +66,15 @@ for numFrame=currentFrame:maxFrame %Variable that corresponds with the number of
           nameLayer=[photo_Path '\Layers\' name sprintf('%02d',numFrame) 'centroid_layers.jpg'];
           saveas(f,nameLayer);
         
-        %%Tratamiento de las capas
-        if numFrame > initialFrame+1 %Se necesita ésto pork no tenemos antes f ( por lo que aquí entra en Frame 8)
-            
+        %%Treatment of layers
+        if numFrame > initialFrame+1 %This is needed because we do not have a figure before (so here it enters Frame 8)
             % Display labels in screen
             want_modify=input('1 (change labelling mode) \n 0 (Next frame): ');
             want_modify_more =1;
             
             while want_modify_more ==1
                 switch want_modify
-                    case 0
-                        
+                    case 0   
                         break
                     case 1
                         f = display_labelled (f, LayerCentroid);
