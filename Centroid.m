@@ -13,7 +13,7 @@ se=strel('disk',2);
 BW2=imdilate(BW2,se);
 
 
-%Calculate area of objects
+%%Calculate area of objects
 Area_ob = regionprops(BW2, 'area');
 Area_ob = cat(1, Area_ob.Area);
 area_mean=mean(Area_ob);
@@ -36,15 +36,11 @@ for i=1:max(max(L))
 end
 
 maskBW=bwlabel(mask,8);
-% figure
-% imshow(maskBW);
 
 %%Specify the center of mass of the region
-%{'Centroid', 'Area'}
 centroids = regionprops(maskBW, 'all');
 centroidsC = vertcat(centroids.Centroid);
 pixel = vertcat(centroids.PixelList);
-
 
 
 %%Show the created image along with the image of the centroids and Voronoi
@@ -58,10 +54,6 @@ for i=1:m
    plot(centroidsC(i,1), centroidsC(i, 2), 'b*');
 end
 
-
-%Merge images to return
-%saveas(f,[name '.tiff']);
- 
 
 end
 

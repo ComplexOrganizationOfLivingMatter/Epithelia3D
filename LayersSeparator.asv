@@ -1,4 +1,4 @@
-function [ LayerCentroid, LayerPixel] = LayersSeparator( photo_Path,name, initialFrame, maxFrame )
+function [ LayerCentroid, LayerPixel] = LayersSeparator( photo_Path,name, initialFrame, maxFrame, currentFrame,  pathArchMat )
 
 %%Variables
 
@@ -6,21 +6,15 @@ function [ LayerCentroid, LayerPixel] = LayersSeparator( photo_Path,name, initia
 % name='50epib_2_z0';
 % initialFrame=6;
 % maxFrame=48;
-nameComplete=cell(maxFrame,1);
-photoPath=cell(maxFrame,1);
-nameNew=cell(maxFrame,1);
-centroids=cell(maxFrame,1);
-pixel=cell(maxFrame,1);
-in=cell(maxFrame,1);
-on=cell(maxFrame,1);
-LayerCentroid=cell(1,1);
-LayerPixel=cell(1,1);
-k=cell(maxFrame,1);
-maskBW=cell(maxFrame,1);
-Label=cell(maxFrame,1);
+%pathArchMat='C:\Users\tinaf\OneDrive\Documentos\GitHub\pseudostratifiedEpitheli\LayersCentroids.mat';
+
 newLayer=false;
 
-for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágenes (frame)
+if exist(pathArchMat)&& (initialFrame~=currentFrame)
+    load(pathArchMat);  
+end
+
+for numFrame=currentFrame:maxFrame %Variable que corresponde con el nº de imágenes (frame)
     
     %Lectura de las imágenes
     nameComplete{numFrame}= [name sprintf('%02d',numFrame) '_c002.tif'];
@@ -55,7 +49,7 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
                     oldCentroids(n) = 1; %Cuando solo cojo los centroides no repetidos (0) pongo ese numero a 1 para que no me lo vuelva a coger en la siguiente repetición
                     
                     if size(LayerCentroid{numLayer,1},1)<4 %Si hay menos de 3 centroides en la capa entonces
-                        [LayerCentroid, LayerPixel, numLayer] = addToLayer( xQuery, yQuery, numFrame, n, LayerCentroid, numLayer, LayerPixel);
+                        [LayerCentroid, LayerPixel] = addToLayer( xQuery, yQuery, numFrame, n, LayerCentroid, numLayer, LayerPixel);
                         
                     else
                         
@@ -64,11 +58,9 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
                         
                         if (inLayer{numLayer}(n)==0) || ((inLayer{numLayer}(n)==1) && (numFrame==initialFrame+1))
                             if(inLayer{1}(n)==1)
-                                [LayerCentroid, LayerPixel, numLayer] = addToLayer( xQuery, yQuery, numFrame, n, LayerCentroid, numLayer, LayerPixel);
+                                [LayerCentroid, LayerPixel] = addToLayer( xQuery, yQuery, numFrame, n, LayerCentroid, numLayer, LayerPixel);
                             elseif(inLayer{1}(n)==0)
-                                w=[xQuery{numFrame,1}(n), yQuery{numFrame,1}(n)];
-                                LayerCentroid{1} = vertcat(LayerCentroid{1},horzcat(numFrame, w));
-                                LayerPixel{1} = vertcat(LayerPixel{1},horzcat(numFrame, w));
+                                [LayerCentroid, LayerPixel] = addToLayer( xQuery, yQuery, numFrame, n, LayerCentroid, 1, LayerPixel);          
                             end
                         elseif (inLayer{numLayer}(n)==1)
                             if numLayer+1 > size(LayerCentroid, 1) %Si no hay capa creada
@@ -79,10 +71,12 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
                                 
                             elseif newLayer==true %Hay capa creada 
                                 if size(LayerCentroid{numLayer+1,1},1)<4
-                                    w=[xQuery{numFrame,1}(n), yQuery{numFrame,1}(n)];
-                                    LayerCentroid{numLayer+1} = vertcat(LayerCentroid{numLayer+1},horzcat(numFrame, w));
-                                    LayerPixel{numLayer+1} = vertcat(LayerPixel{numLayer+1},horzcat(numFrame, w));
-                               
+%                                     w=[xQuery{numFrame,1}(n), yQuery{numFrame,1}(n)];
+%                                     LayerCentroid{numLayer+1} = vertcat(LayerCentroid{numLayer+1},horzcat(numFrame, w));
+%                                     LayerPixel{numLayer+1} = vertcat(LayerPixel{numLayer+1},horzcat(numFrame, w));
+%                                
+                                    [LayerCentroid, LayerPixel] = addToLayer( xQuery, yQuery, numFrame, n, LayerCentroid, numLayer+1, LayerPixel);                              
+                                    
                                 else
                                     %Se deberia alacenar para cuando pase
                                     %de capa se analice y así sucesivamente
@@ -98,7 +92,7 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
         
     
         %%Representación de los centroides de las diferentes capas      
-        f1=figure('Visible', 'on');
+        f=figure('Visible', 'on');
         nameCompleteLayer{numFrame}= [name sprintf('%02d',numFrame) '_c001.tif'];
         photoPathLayer{numFrame}=['C:\Users\tinaf\OneDrive\Documentos\Departamento\Epithelia3D\50epib_2' '\' nameCompleteLayer{numFrame}];
         imshow(photoPathLayer{numFrame});
@@ -119,7 +113,9 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
           
         legend(numLay,numLay1);  
                
-        
+        % Merge images to return
+          nameLayer=[photo_Path '\Layers\' name sprintf('%02d',numFrame) 'centroid_layers.jpg'];
+          saveas(f,nameLayer);
         
         %%Tratamiento de las capas
         if numFrame > initialFrame+1 %Se necesita ésto pork no tenemos antes f ( por lo que aquí entra en Frame 8)
@@ -127,30 +123,28 @@ for numFrame=initialFrame:maxFrame %Variable que corresponde con el nº de imágen
             % Display labels in screen
             want_modify=input('1 (change labelling mode) \n 0 (Next frame): ');
             want_modify_more =1;
-            variable=1;
+            
             while want_modify_more ==1
-                    switch want_modify
-                        case 0
-                            disp('Next frame');
-                            break
-                        case 1
-                            if variable
-                            f = display_labelled (f1, LayerCentroid);
-                            [LayerCentroid, LayerPixel] = layer_write_mode(f,LayerCentroid, LayerPixel, numFrame);
-                    
-                            end
-                    end
-                    want_modify_more=input('Do you want to make more changes? 1 (yes) \n 0 (no) \n:');
+                switch want_modify
+                    case 0
+                        
+                        break
+                    case 1
+                        f = display_labelled (f, LayerCentroid);
+                        [LayerCentroid, LayerPixel] = layer_write_mode(f,LayerCentroid, LayerPixel, numFrame);                      
+                end
+                want_modify_more=input('Do you want to make more changes? 1 (yes) \n 0 (no) \n:');
             end
             
-          % Merge images to return
-          %nameLayer=[photo_Path '\Layers\' name sprintf('%02d',numFrame) 'centroid_layers.tiff'];
-          %saveas(f,nameLayer);
+          
+          close all;
         
         end
 
 
     end
+    fprintf('Next frame:  \n %0d \n', numFrame+1)
+    save('LayersCentroids.mat', 'LayerCentroid', 'LayerPixel', 'centroids', 'pixel')
 end
 
 
@@ -159,6 +153,6 @@ end
 %     xlswrite('LayersCentroids.xlsx',LayerCentroid{numLayer,1},hoja);
 % end
 
-save('LayersCentroids.mat', 'LayerCentroid', 'LayerPixel')
+
 
 end
