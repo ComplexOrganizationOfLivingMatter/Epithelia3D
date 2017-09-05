@@ -15,7 +15,7 @@ Centroids=[x1,y1];
 
 %The old layer is treated to remove the centroid from that layer
 for numCentroidLayer=1:size(LayerCentroid{layerOld,1},1)  
-    if LayerCentroid{layerOld,1}(numCentroidLayer,:)== horzcat(numFrame,Centroids)
+    if LayerCentroid{layerOld,1}(numCentroidLayer,2:3)== Centroids
         LayerCentroid{layerOld,1}(numCentroidLayer,:)=[];
         LayerPixel{layerOld,1}(numCentroidLayer,:)=[];
         break
