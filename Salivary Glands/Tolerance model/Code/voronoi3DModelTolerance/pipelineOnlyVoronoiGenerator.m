@@ -4,7 +4,7 @@ N_images=20;
 N_frames=20;
 H=1024;
 W=512;
-n_seeds=50;
+n_seeds=20;
 distanceBetwSeeds=5;
 
 

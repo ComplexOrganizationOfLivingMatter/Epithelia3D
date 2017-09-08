@@ -114,10 +114,18 @@ function [seeds,seeds_values_before,L_original,border_cells,valid_cells,pathToSa
         %% Saving
         
         FOLDER_1=['..\..\Images\3D Voronoi model\' folder2save];
+        if ~isdir(FOLDER_1)
+            mkdir(FOLDER_1)
+        end
         FOLDER_2=['..\..\Data\3D Voronoi model\Cylindrical voronoi\' folder2save];
-
+        
+        if ~isdir(FOLDER_2)
+            mkdir(FOLDER_2)
+        end
+        
         Name=['Image_',num2str(i),'_Diagram_',num2str(j)];
         pathToSaveData=[FOLDER_2 '\' Name '.mat'];
+        
         
         save(pathToSaveData,'L_original','seeds','new_seeds','seeds_values_before','new_seeds_values','border_cells','valid_cells','no_valid_cells')
         

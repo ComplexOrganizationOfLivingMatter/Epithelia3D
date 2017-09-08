@@ -56,7 +56,8 @@ function surfaceProjection( pathV5data,nameOfFolder,directory2save,path3dVoronoi
         
         %save data for each random
         name2save=pathV5data(i).name;
-        name2save=name2save(1:end-16);
+        name2save=strsplit(name2save,'.mat');
+        name2save=name2save{1};
         save([directory2save kindProjection '\' nameOfFolder name2save '\'  name2save '.mat'],'listLOriginalProjection','listSeedsProjected','listTransitionsBySurfaceRatio','listDataAnglesTransitionMeasuredInBasal','listDataAnglesTransitionMeasuredInApical','listDataAnglesNoTransitionMeasuredInBasal','listDataAnglesNoTransitionMeasuredInApical')
 
 
@@ -64,10 +65,10 @@ function surfaceProjection( pathV5data,nameOfFolder,directory2save,path3dVoronoi
     end
 
     %save global data
-    summaryAndSaveFinalData(listOfSurfaceRatios,numSeeds,acumListTransitionBySurfaceRatio,acumListDataAnglesTransitionInBasal,totalEdgesTransitionMeasuredInBasal,totalAnglesTransitionMeasuredInBasal,directory2save,kindProjection,nameOfFolder,'Basal_Transitions')
-    summaryAndSaveFinalData(listOfSurfaceRatios,numSeeds,acumListTransitionBySurfaceRatio,acumListDataAnglesNoTransitionInBasal,totalEdgesNoTransitionMeasuredInBasal,totalAnglesNoTransitionMeasuredInBasal,directory2save,kindProjection,nameOfFolder,'Basal_NoTransitions')
-    summaryAndSaveFinalData(listOfSurfaceRatios,numSeeds,acumListTransitionBySurfaceRatio,acumListDataAnglesTransitionInApical,totalEdgesTransitionMeasuredInApical,totalAnglesTransitionMeasuredInApical,directory2save,kindProjection,nameOfFolder,'Apical_Transitions')
-    summaryAndSaveFinalData(listOfSurfaceRatios,numSeeds,acumListTransitionBySurfaceRatio,acumListDataAnglesNoTransitionInApical,totalEdgesNoTransitionMeasuredInApical,totalAnglesNoTransitionMeasuredInApical,directory2save,kindProjection,nameOfFolder,'Apical_NoTransitions')
+    summaryAndSaveFinalData(listOfSurfaceRatios,numSeeds,acumListTransitionBySurfaceRatio,acumListDataAnglesTransitionInBasal,totalEdgesTransitionMeasuredInBasal,totalEdgesNoTransitionMeasuredInBasal,totalAnglesTransitionMeasuredInBasal,directory2save,kindProjection,nameOfFolder,'Basal_Transitions')
+    summaryAndSaveFinalData(listOfSurfaceRatios,numSeeds,acumListTransitionBySurfaceRatio,acumListDataAnglesNoTransitionInBasal,totalEdgesNoTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInBasal,totalAnglesNoTransitionMeasuredInBasal,directory2save,kindProjection,nameOfFolder,'Basal_NoTransitions')
+    summaryAndSaveFinalData(listOfSurfaceRatios,numSeeds,acumListTransitionBySurfaceRatio,acumListDataAnglesTransitionInApical,totalEdgesTransitionMeasuredInApical,totalEdgesNoTransitionMeasuredInApical,totalAnglesTransitionMeasuredInApical,directory2save,kindProjection,nameOfFolder,'Apical_Transitions')
+    summaryAndSaveFinalData(listOfSurfaceRatios,numSeeds,acumListTransitionBySurfaceRatio,acumListDataAnglesNoTransitionInApical,totalEdgesNoTransitionMeasuredInApical,totalEdgesTransitionMeasuredInApical,totalAnglesNoTransitionMeasuredInApical,directory2save,kindProjection,nameOfFolder,'Apical_NoTransitions')
     
    
 end

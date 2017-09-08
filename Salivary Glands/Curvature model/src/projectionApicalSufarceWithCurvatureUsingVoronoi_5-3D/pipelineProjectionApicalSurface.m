@@ -21,7 +21,9 @@ function pipelineProjectionApicalSurface (numSeeds,kindProjection)
     end
     
     surfaceProjection(pathV5data,nameOfFolder,directory2save,path3dVoronoi,kindProjection,listOfSurfaceRatios,numSeeds)
-
-
+    
+%     calculateNumberOfInvolvedCellsInTransitions(numSeeds)
+%     calculateNcellsAroundTrasversalSection(numSeeds)
+%     calculateNcellsAroundLongitudinalSection(numSeeds)
     
 end

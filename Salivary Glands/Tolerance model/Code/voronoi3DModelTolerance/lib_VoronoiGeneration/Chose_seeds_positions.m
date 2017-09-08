@@ -37,6 +37,10 @@ while (n<=n_seeds-1)
 end
 
 seeds = seeds(1:end,:);
+path2save=['..\..\Seeds\' num2str(n_seeds)  'seeds\'];
+if ~isdir(path2save)
+    mkdir(path2save)
+end
 
-save(['..\..\Seeds\' num2str(n_seeds)  'seeds\Salivary_Glande_' num2str(H) 'x' num2str(W) '_' num2str(n_seeds) '_seeds_' num2str(indexImage) '.mat'],'seeds')
+save([path2save 'Salivary_Glande_' num2str(H) 'x' num2str(W) '_' num2str(n_seeds) '_seeds_' num2str(indexImage) '.mat'],'seeds')
     
