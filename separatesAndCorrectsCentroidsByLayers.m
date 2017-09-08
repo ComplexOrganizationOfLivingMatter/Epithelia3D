@@ -38,29 +38,37 @@ for numFrame=currentFrame:maxFrame %Variable that corresponds with the number of
         LayerPixel{1}=[ones(size(xPixel{numFrame}, 1), 1) * numFrame, xPixel{numFrame,1},yPixel{numFrame,1}]; %FRAME 6
         
     else
+        
         %%Layer separator
         [LayerCentroid, LayerPixel, centroids, pixel, xQuery, yQuery, initialFrame, newLayer] = layersMarker( LayerCentroid, LayerPixel, centroids, pixel, numFrame, xQuery, yQuery, initialFrame, newLayer);
 
+        
         %%Representation of the centroids of the different layers      
         f=figure('Visible', 'on');
         nameCompleteLayer{numFrame}= [name sprintf('%02d',numFrame) '_c001.tif'];
-        photoPathLayer{numFrame}=['C:\Users\tinaf\OneDrive\Documentos\Departamento\Epithelia3D\50epib_2' '\' nameCompleteLayer{numFrame}];
+        photoPathLayer{numFrame}=['C:\Users\tinaf\OneDrive\Documentos\Departamento\Epithelia3D\50epib_3' '\' nameCompleteLayer{numFrame}];
         imshow(photoPathLayer{numFrame});
         hold on;
         Color=colorcube(10);
+        numLay = [];
+        numLay1 = [];
         for numCentroidLayer=1:size(LayerCentroid, 1)
             mio=size(LayerCentroid{numCentroidLayer,1}(:, 1));
             for i=1:mio(1,1)
-                numLay(numCentroidLayer,:)=plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
+                %if (LayerCentroid{numCentroidLayer,1}(i,1)==numFrame) || (LayerCentroid{numCentroidLayer,1}(i,1) == (numFrame-1)) || (LayerCentroid{numCentroidLayer,1}(i,1) == (numFrame-2))
+                    numLay(numCentroidLayer,:)=plot(LayerCentroid{numCentroidLayer,1}(i,2), LayerCentroid{numCentroidLayer,1}(i, 3), '*','MarkerEdgeColor', Color(numCentroidLayer,:), 'MarkerFaceColor', Color(numCentroidLayer,:));
+                %end
             end
             numLay1{numCentroidLayer}=sprintf ('Layer%d', numCentroidLayer);
+            
         end
-        legend(numLay,numLay1);  
-               
+        legend(numLay,numLay1);    
+        
         % Merge images to return
           nameLayer=[photo_Path '\Layers\' name sprintf('%02d',numFrame) 'centroid_layers.jpg'];
           saveas(f,nameLayer);
         
+          
         %%Treatment of layers
         if numFrame > initialFrame+1 %This is needed because we do not have a figure before (so here it enters Frame 8)
             % Display labels in screen
@@ -79,10 +87,21 @@ for numFrame=currentFrame:maxFrame %Variable that corresponds with the number of
             end                      
           close all;        
         end
+        
+        for numLayer=1:size(LayerCentroid,1)
+            if isempty(LayerCentroid{numLayer,1})==1
+                LayerCentroid(numLayer)=[];
+                LayerPixel(numLayer)=[];
+            end
+        end
+        
     end
     
-    fprintf('Next frame:  \n %0d \n', numFrame+1)
-    save('LayersCentroids.mat', 'LayerCentroid', 'LayerPixel', 'centroids', 'pixel', 'newLayer')
+    save('LayersCentroids3.mat', 'LayerCentroid', 'LayerPixel', 'centroids', 'pixel', 'newLayer')
+    
+    if numFrame+1 <= maxFrame
+        fprintf('Next frame:  \n %0d \n', numFrame+1)
+    end
 
 end
 
