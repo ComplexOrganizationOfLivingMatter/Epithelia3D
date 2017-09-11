@@ -1,10 +1,11 @@
-function calculateNumberOfInvolvedCellsInTransitionsHexagonsTessellation(numSeeds)
+function calculateNumberOfInvolvedCellsInTransitionsHexagonsTessellation(numSeeds,kindProjection)
 
     numOfSurfaceRatios=10;
     numberOfHistogramsCells=11;
     nameOfFolder=['512x1024_' num2str(numSeeds) 'seeds\'];
-    path3dVoronoi=['D:\Pedro\Epithelia3D\Salivary Glands\Curvature model\data\expansion\cylinderOfHexagons\512x1024_' num2str(numSeeds) 'seeds\'];
-    directory2save=['..\..\data\expansion\cylinderOfHexagons\512x1024_' num2str(numSeeds) 'seeds\'];
+    path3dVoronoi=['D:\Pedro\Epithelia3D\Salivary Glands\Curvature model\data\' kindProjection '\cylinderOfHexagons\512x1024_' num2str(numSeeds) 'seeds\'];
+    path3dVoronoi2Load=['D:\Pedro\Epithelia3D\Salivary Glands\Curvature model\data\expansion\cylinderOfHexagons\512x1024_' num2str(numSeeds) 'seeds\'];
+    directory2save=['..\..\data\' kindProjection '\cylinderOfHexagons\512x1024_' num2str(numSeeds) 'seeds\'];
     addpath('lib')   
     pathV5data=dir([path3dVoronoi '*m_5.mat*']);
 
@@ -18,7 +19,7 @@ function calculateNumberOfInvolvedCellsInTransitionsHexagonsTessellation(numSeed
 
    
     %load cylindrical Voronoi 5 data
-    load([path3dVoronoi pathV5data(1).name],'listLOriginalProjection')
+    load([path3dVoronoi2Load pathV5data(1).name],'listLOriginalProjection')
 
     numberOfCellsWinning=zeros(1,size(listLOriginalProjection,1));
     numberOfCellsLossing=zeros(1,size(listLOriginalProjection,1));

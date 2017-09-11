@@ -26,6 +26,10 @@ function surfaceProjectionHexagons(pathHexagonalImage,nameOfFolder,directory2sav
     %save data for each random
     name2save=pathHexagonalImage(1).name;
     
+    if ~exist([directory2save '512x1024_' num2str(numSeeds) 'seeds\'],'dir')
+        mkdir([directory2save '512x1024_' num2str(numSeeds) 'seeds\']);
+    end
+    
     save([directory2save '512x1024_' num2str(numSeeds) 'seeds\' name2save],'listLOriginalProjection','listSeedsProjected','listTransitionsBySurfaceRatio','listDataAnglesTransitionMeasuredInBasal','listDataAnglesTransitionMeasuredInApical','listDataAnglesNoTransitionMeasuredInBasal','listDataAnglesNoTransitionMeasuredInApical')
 
 
