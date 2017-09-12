@@ -38,21 +38,21 @@ end
 maskBW=bwlabel(mask,8);
 
 %%Specify the center of mass of the region
-centroids = regionprops(maskBW, 'all');
+centroids = regionprops(maskBW, 'Centroid', 'PixelList');
 centroidsC = vertcat(centroids.Centroid);
 pixel = vertcat(centroids.PixelList);
 
 
 %%Show the created image along with the image of the centroids and Voronoi
-f=figure('Visible', 'off');
-imshow(Img);
-hold on;
-
-[m,n] = size(centroids);
-
-for i=1:m
-   plot(centroidsC(i,1), centroidsC(i, 2), 'b*');
-end
+% f=figure('Visible', 'off');
+% imshow(Img);
+% hold on;
+% 
+% [m,n] = size(centroids);
+% 
+% for i=1:m
+%    plot(centroidsC(i,1), centroidsC(i, 2), 'b*');
+% end
 
 
 end
