@@ -16,7 +16,7 @@ for numLayer=1:size(LayerCentroid, 1)
                 
             else
                 
-                [kLayer{numLayer}]=boundary(x,y,0.8);
+                [kLayer{numLayer}]=boundary(x,y,0.7);
                 [inLayer{numLayer},onLayer{numLayer}] = inpolygon(xQuery{numFrame,1},yQuery{numFrame,1},x(kLayer{numLayer}),y(kLayer{numLayer}));
                 
                 if (inLayer{numLayer}(n)==0) || ((inLayer{numLayer}(n)==1) && (numFrame==initialFrame+1))

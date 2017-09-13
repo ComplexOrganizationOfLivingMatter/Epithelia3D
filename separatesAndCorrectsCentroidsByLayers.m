@@ -4,7 +4,7 @@ function [ LayerCentroid, LayerPixel] = separatesAndCorrectsCentroidsByLayers( p
 % Input/output specs
 % ------------------
 % photo_Path:   'C:\Users\tinaf\OneDrive\Documentos\Departamento\Epithelia3D\50epib_2';
-% name: '50epib_2_z0';
+% name: '50epib_2_z';
 % initialFrame:	6;
 % maxFrame: 48;
 % currentFrame: 30;
@@ -25,7 +25,7 @@ end
 for numFrame=currentFrame:maxFrame % Variable that corresponds with the number of images (frame)
     
     % Reading the images
-    channel2Name{numFrame}= [name sprintf('%02d',numFrame) '_c002.tif'];
+    channel2Name{numFrame}= [name sprintf('%03d',numFrame) '_c002.tif'];
     photoPath{numFrame}=[photo_Path '\' channel2Name{numFrame}];
     nameNew{numFrame}=[photo_Path '\' name sprintf('%02d',numFrame) 'centroid_c002'];
         
@@ -54,7 +54,7 @@ for numFrame=currentFrame:maxFrame % Variable that corresponds with the number o
         %%Representation of the centroids of the different layers      
         f=figure('Visible', 'on');        
         
-        channel1Name{numFrame}= [name sprintf('%02d',numFrame) '_c001.tif'];
+        channel1Name{numFrame}= [name sprintf('%03d',numFrame) '_c001.tif'];
         channel1PhotoPath{numFrame}=[photo_Path '\' channel1Name{numFrame}];
         
         imshow(channel1PhotoPath{numFrame});
@@ -72,13 +72,24 @@ for numFrame=currentFrame:maxFrame % Variable that corresponds with the number o
         legend(numLay,nameLay);    
         
         % Merge images to return
-          finalLayerPhoto=[photo_Path '\Layers\' name sprintf('%02d',numFrame) 'centroid_layers.jpg'];
+          finalLayerPhoto=[photo_Path '\Layers\' name sprintf('%03d',numFrame) 'centroid_layers.jpg'];
           saveas(f,finalLayerPhoto);
         
           
         %%Treatment of layers
         if numFrame > initialFrame+1 %This is needed because we don't have a figure before (so here it enters Frame 8)
             % Display labels in screen
+            want_add_centroid=input('Do you want to add centroid? 1 (yes) \n 0 (no) \n:');
+            want_add_more =1;
+            while want_add_more ==1
+                switch want_add_centroid
+                    case 0
+                        break
+                    case 1
+                        [LayerCentroid, LayerPixel ] = addNewCentroid( f, LayerCentroid, LayerPixel, numFrame );
+                end
+                want_add_more=input('Do you want to add more? 1 (yes) \n 0 (no) \n:');
+            end
             want_modify=input('1 (change labelling mode) \n 0 (Next frame): ');
             want_modify_more =1;
             

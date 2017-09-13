@@ -3,7 +3,8 @@ function [centroidsC, pixel, maskBW] = Centroid( photoPath,name )
 
 %%Load images
 Img=imread(photoPath);
-I=Img>80;  %Convert image to binary image, based on threshold(>80 in this case) 
+I=Img>70;  %Convert image to binary image, based on threshold
+           %(>80 in this case, but this will change according to the sample) 
 
 %%Deleting objects smaller than 5 pix
 BW2= bwareaopen(I,5);
@@ -44,15 +45,15 @@ pixel = vertcat(centroids.PixelList);
 
 
 %%Show the created image along with the image of the centroids and Voronoi
-% f=figure('Visible', 'off');
-% imshow(Img);
-% hold on;
-% 
-% [m,n] = size(centroids);
-% 
-% for i=1:m
-%    plot(centroidsC(i,1), centroidsC(i, 2), 'b*');
-% end
+f=figure('Visible', 'off');
+imshow(Img);
+hold on;
+
+[m,n] = size(centroids);
+
+for i=1:m
+   plot(centroidsC(i,1), centroidsC(i, 2), 'b*');
+end
 
 
 end
