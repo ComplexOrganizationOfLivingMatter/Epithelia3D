@@ -78,7 +78,7 @@ for numFrame=currentFrame:maxFrame % Variable that corresponds with the number o
           
         %%Treatment of layers
         if numFrame > initialFrame+1 %This is needed because we don't have a figure before (so here it enters Frame 8)
-            % Display labels in screen
+            % To add new centroids
             want_add_centroid=input('Do you want to add centroid? 1 (yes) \n 0 (no) \n:');
             want_add_more =1;
             while want_add_more ==1
@@ -93,6 +93,7 @@ for numFrame=currentFrame:maxFrame % Variable that corresponds with the number o
             want_modify=input('1 (change labelling mode) \n 0 (Next frame): ');
             want_modify_more =1;
             
+            % To change a centroid from a layer to other layer
             while want_modify_more ==1
                 switch want_modify
                     case 0   
