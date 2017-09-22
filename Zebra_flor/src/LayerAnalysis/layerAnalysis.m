@@ -9,13 +9,28 @@ for numSeed = 1:size(seeds, 1)
     img3D(actualSeed(1), actualSeed(2), actualSeed(3)) = 1;
 end
 
+regionOfCell = {};
 imgDist = bwdist(img3D);
+
+img3DActual = zeros(max(seeds) + 1);
+
+img3DLabelled = zeros(max(seeds) + 1);
+colours = colorcube(size(seeds, 1));
+figure;
+for numSeed = 1:size(seeds, 1)
+    numSeed
+    actualSeed = seeds(numSeed, :);
+    img3DActual(actualSeed(1), actualSeed(2), actualSeed(3)) = 1;
+    imgDistPerSeed = bwdist(img3DActual);
+    regionActual = imgDistPerSeed == imgDist;
+    regionOfCell(numSeed) = {(regionActual) * numSeed};
+    img3DLabelled(regionActual) = numSeed; 
+    img3DActual(actualSeed(1), actualSeed(2), actualSeed(3)) = 0;
+    
+    [x, y, z] = findND(img3DLabelled);
+    cellFigure = alphaShape(x, y , z);
+    plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
+    hold on;
+end
 % figure;
 % isosurface(imgDist, 10)
-
-seed1 = seeds(1, :);
-imgDist(seed1(1), seed1(2), seed1(3))
-
-imgWatersheded = watershed3D(imgDist, seeds);
-
-imgLabelled = bwlabeln(imgWatersheded);
