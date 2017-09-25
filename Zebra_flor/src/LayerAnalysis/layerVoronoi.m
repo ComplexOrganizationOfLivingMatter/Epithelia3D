@@ -25,11 +25,12 @@ function [ output_args ] = layerVoronoi( seedsInitial )
     imgDist = bwdist(img3D);
     
     %We create the shape in which the voronoi will be embedded
-    shapeOfSeeds = alphaShape(seeds(:, 1), seeds(:, 2), seeds(:, 3), 100);
+    shapeOfSeeds = alphaShape(seeds(:, 1), seeds(:, 2), seeds(:, 3), 120);
     %plot(shapeOfSeeds);
 
     img3DActual = zeros(max(seeds) + 1);
 
+    %Remove pixels outside the cells area
     [xPx, yPx, zPx] = findND(img3DActual == 0);
     badPxs = shapeOfSeeds.inShape(xPx, yPx, zPx);
 
@@ -38,12 +39,12 @@ function [ output_args ] = layerVoronoi( seedsInitial )
             imgDist(xPx(numBadPxs), yPx(numBadPxs), zPx(numBadPxs)) = 0;
         end
     end
-    imgDistDilated = imdilate(imgDist, strel('disk', 5));
-    imgDist(imgDistDilated == 0) = 0;
 
+    %Create voronoi 3D region and paint it
     img3DLabelled = zeros(max(seeds) + 1);
     colours = colorcube(size(seeds, 1));
     figure;
+    seedsInfo = [];
     for numSeed = 1:size(seeds, 1)
         numSeed
         actualSeed = seeds(numSeed, :);
