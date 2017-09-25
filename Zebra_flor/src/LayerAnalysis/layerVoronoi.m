@@ -25,7 +25,7 @@ function [ output_args ] = layerVoronoi( seedsInitial )
     imgDist = bwdist(img3D);
     
     %We create the shape in which the voronoi will be embedded
-    shapeOfSeeds = alphaShape(seeds(:, 1), seeds(:, 2), seeds(:, 3), 120);
+    shapeOfSeeds = alphaShape(seeds(:, 1), seeds(:, 2), seeds(:, 3), 500);
     %plot(shapeOfSeeds);
 
     img3DActual = zeros(max(seeds) + 1);
@@ -70,7 +70,7 @@ function [ output_args ] = layerVoronoi( seedsInitial )
     save(strcat('..\..\results\layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled', 'seedsInfo', '-v7.3');
 
     colorR = repmat(colorcube(255), 4, 1);
-
+    close all
     for numZ = 1:size(img3DLabelled, 3)
         img = double(img3DLabelled(:, :, numZ));
         fig=figure('Visible','off');
