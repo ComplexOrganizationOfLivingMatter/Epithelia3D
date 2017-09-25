@@ -34,5 +34,7 @@ for numSeed = 1:size(seeds, 1)
     plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
     hold on;
 end
+
+save(strcat('..\..\results\layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled', 'regionOfCell');
 % figure;
 % isosurface(imgDist, 10)
