@@ -58,6 +58,14 @@ for numSeed = 1:size(seeds, 1)
     seedsInfo(numSeed).cellHeight = max(z) - min(z);
 end
 
-save(strcat('..\..\results\layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled', 'seedsInfo');
+save(strcat('..\..\results\layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled', 'seedsInfo', '-v7.3');
 % figure;
 % isosurface(imgDist, 10)
+
+colorR = repmat(colorcube(255), 4, 1);
+
+for numZ = 1:size(img3DLabelled, 3)
+    img = double(img3DLabelled(:, :, numZ));
+    figure('visible', 'off');
+    imwrite(img, colorR(1:255, :), strcat('img_z_', num2str(numZ) , '.tiff'));
+end
