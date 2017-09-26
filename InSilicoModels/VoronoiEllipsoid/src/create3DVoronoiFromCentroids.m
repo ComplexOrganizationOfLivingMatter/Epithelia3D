@@ -18,9 +18,6 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
 
     centroids = round(centroids * resolutionFactor) + 1;
     augmentedCentroids = round(augmentedCentroids * resolutionFactor) + 1;
-    xOffset = xOffset * resolutionFactor;
-    yOffset = yOffset * resolutionFactor;
-    zOffset = zOffset * resolutionFactor;
     
     img3D = zeros(max(augmentedCentroids));
 
@@ -34,11 +31,11 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
     
     %Removing invalid areas
     upSide = (ellipsoidInfo.xRadius + cellHeight)^2 * (ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2;
-    downSide = ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * (allXs - xOffset).^2) + ((ellipsoidInfo.xRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * (allYs - yOffset).^2) + ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.xRadius + cellHeight)^2 * (allZs - zOffset).^2);
+    downSide = ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * ((allXs - xOffset) / resolutionFactor).^2) + ((ellipsoidInfo.xRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * ((allYs - yOffset) / resolutionFactor).^2) + ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.xRadius + cellHeight)^2 * ((allZs - zOffset) / resolutionFactor).^2);
     conversorFactorAugmented = sqrt(upSide./downSide);
 
     upSide = (ellipsoidInfo.xRadius)^2 * (ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.zRadius)^2;
-    downSide = ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.zRadius)^2 * (allXs - xOffset).^2) + ((ellipsoidInfo.xRadius)^2 * (ellipsoidInfo.zRadius)^2 * (allYs - yOffset).^2) + ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.xRadius)^2 * (allZs - zOffset).^2);
+    downSide = ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.zRadius)^2 * ((allXs - xOffset) / resolutionFactor).^2) + ((ellipsoidInfo.xRadius)^2 * (ellipsoidInfo.zRadius)^2 * ((allYs - yOffset) / resolutionFactor).^2) + ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.xRadius)^2 * ((allZs - zOffset)  / resolutionFactor).^2);
     conversorFactorNormal = sqrt(upSide./downSide);
 
     goodPxs = conversorFactorNormal > 0.9 & conversorFactorAugmented < 1.1;
