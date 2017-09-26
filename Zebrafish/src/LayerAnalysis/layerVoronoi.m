@@ -22,7 +22,7 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer )
 
     %We put the intial seeds on the voronoi 3D image
     img3D = zeros(max(seeds) + 1);
-    for numCell = 1:max(seeds(:, 3))
+    for numCell = 1:max(cellIds)
         seedsOfCell = seeds(cellIds == numCell, :);
         for numSeed = 1:size(seedsOfCell, 1)
             actualSeed = seedsOfCell(numSeed, :);
@@ -51,19 +51,18 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer )
     img3DLabelled = zeros(max(seeds) + 1);
     colours = colorcube(size(seeds, 1));
     figure;
-    seedsInfo = [];
-    for numSeed = 1:size(seeds, 1)
-        numSeed
-        actualSeed = seeds(numSeed, :);
-        img3DActual(actualSeed(1), actualSeed(2), actualSeed(3)) = 1;
+%    seedsInfo = [];
+    for numCell = 1:max(cellIds)
+        numCell
+        img3DActual(img3D == numCell) = 1;
         imgDistPerSeed = bwdist(img3DActual);
         regionActual = imgDistPerSeed == imgDist;
-        img3DLabelled(regionActual) = numSeed;
-        img3DActual(actualSeed(1), actualSeed(2), actualSeed(3)) = 0;
+        img3DLabelled(regionActual) = numCell;
+        img3DActual(img3D == numCell) = 0;
 
-        [x, y, z] = findND(img3DLabelled == numSeed);
+        [x, y, z] = findND(img3DLabelled == numCell);
         cellFigure = alphaShape(x, y, z, 2);
-        plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
+        plot(cellFigure, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
         hold on;
 
 %         seedsInfo(numSeed).ID = numSeed;
