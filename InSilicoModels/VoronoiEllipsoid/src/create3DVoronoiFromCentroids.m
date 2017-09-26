@@ -39,10 +39,11 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
 
     goodPxs = outsideFactorNormal > 0.9 & outsideFactorAugmented < 1.1;
     
-    for numPoint = 1:size(allXs)
-        if goodPxs(numPoint) == 0
-            imgWithDistances(allXs(numPoint), allYs(numPoint), allZs(numPoint)) = 0;
-        end
+    badXs = allXs(goodPxs == 0);
+    badYs = allYs(goodPxs == 0);
+    badZs = allZs(goodPxs == 0);
+    for numPoint = 1:size(badXs)
+        imgWithDistances(badXs(numPoint), badYs(numPoint), badZs(numPoint)) = 0;
     end
     
     %Reconstruct voronoiCells
