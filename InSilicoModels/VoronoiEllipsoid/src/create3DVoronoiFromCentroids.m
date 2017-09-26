@@ -1,4 +1,4 @@
-function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroids)
+function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroids, ellipsoidInfo)
 %CREATE3DVORONOIFROMCENTROIDS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -24,10 +24,17 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
     
     imgWithDistances = bwdist(img3D);
     
+    [allXs, allYs, allZs] = findND(img3D == 0);
     %Removing invalid areas
-    upSide = (ellipsoidInfo.xRadius - cellHeight)^2 * (ellipsoidInfo.yRadius - cellHeight)^2 * (ellipsoidInfo.zRadius - cellHeight)^2;
-    downSide = ((ellipsoidInfo.yRadius - cellHeight)^2 * (ellipsoidInfo.zRadius - cellHeight)^2 * finalCentroids(:, 1).^2) + ((ellipsoidInfo.xRadius - cellHeight)^2 * (ellipsoidInfo.zRadius - cellHeight)^2 * finalCentroids(:, 2).^2) + ((ellipsoidInfo.yRadius - cellHeight)^2 * (ellipsoidInfo.xRadius - cellHeight)^2 * finalCentroids(:, 3).^2);
-    conversorFactor = sqrt(upSide./downSide);
+    upSide = (ellipsoidInfo.xRadius + cellHeight)^2 * (ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2;
+    downSide = ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * allXs.^2) + ((ellipsoidInfo.xRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * allYs.^2) + ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.xRadius + cellHeight)^2 * allZs.^2);
+    conversorFactorAugmented = sqrt(upSide./downSide);
+
+    upSide = (ellipsoidInfo.xRadius)^2 * (ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.zRadius)^2;
+    downSide = ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.zRadius)^2 * allXs.^2) + ((ellipsoidInfo.xRadius)^2 * (ellipsoidInfo.zRadius)^2 * allYs.^2) + ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.xRadius)^2 * allZs.^2);
+    conversorFactorNormal = sqrt(upSide./downSide);
+
+    badPxs = conversorFactorNormal < 1 & conversorFactorAugmented > 1;
     
     %Reconstruct voronoiCells
     img3DLabelled = zeros(max(augmentedCentroids));
