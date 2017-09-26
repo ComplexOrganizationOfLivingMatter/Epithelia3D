@@ -2,6 +2,9 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
 %CREATE3DVORONOIFROMCENTROIDS Summary of this function goes here
 %   Detailed explanation goes here
 
+
+    outputDir = '';
+    
     resolutionFactor = 20;
 
     xOffset = abs(min(augmentedCentroids(:, 1)));
@@ -30,15 +33,11 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
     [allXs, allYs, allZs] = findND(img3D == 0);
     
     %Removing invalid areas
-    upSide = (ellipsoidInfo.xRadius + cellHeight)^2 * (ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2;
-    downSide = ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * ((allXs - xOffset) / resolutionFactor).^2) + ((ellipsoidInfo.xRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * ((allYs - yOffset) / resolutionFactor).^2) + ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.xRadius + cellHeight)^2 * ((allZs - zOffset) / resolutionFactor).^2);
-    conversorFactorAugmented = sqrt(upSide./downSide);
+    outsideFactorAugmented = ((((allXs / resolutionFactor) - xOffset).^2) / (ellipsoidInfo.xRadius + cellHeight)^2) + ((((allYs / resolutionFactor) - yOffset).^2) / (ellipsoidInfo.yRadius + cellHeight)^2) + ((((allZs / resolutionFactor) - zOffset).^2) / (ellipsoidInfo.zRadius + cellHeight)^2);
+    
+    outsideFactorNormal = ((((allXs / resolutionFactor) - xOffset).^2) / ellipsoidInfo.xRadius^2) + ((((allYs / resolutionFactor) - yOffset).^2) / ellipsoidInfo.yRadius^2) + ((((allZs / resolutionFactor) - zOffset).^2) / ellipsoidInfo.zRadius^2);
 
-    upSide = (ellipsoidInfo.xRadius)^2 * (ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.zRadius)^2;
-    downSide = ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.zRadius)^2 * ((allXs - xOffset) / resolutionFactor).^2) + ((ellipsoidInfo.xRadius)^2 * (ellipsoidInfo.zRadius)^2 * ((allYs - yOffset) / resolutionFactor).^2) + ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.xRadius)^2 * ((allZs - zOffset)  / resolutionFactor).^2);
-    conversorFactorNormal = sqrt(upSide./downSide);
-
-    goodPxs = conversorFactorNormal > 0.9 & conversorFactorAugmented < 1.1;
+    goodPxs = outsideFactorNormal > 0.9 & outsideFactorAugmented < 1.1;
     
     for numPoint = 1:size(allXs)
         if goodPxs(numPoint) == 0
@@ -72,5 +71,8 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
         seedsInfo(numSeed).pxCoordinates = [x, y, z];
         seedsInfo(numSeed).cellHeight = max(z) - min(z);
     end
+    
+    save(strcat(outputDir, 'voronoi', date, '.mat'), 'img3DLabelled', 'seedsInfo', '-v7.3');
+    savefig(strcat(outputDir, 'voronoi_', date, '.fig'));
 end
 
