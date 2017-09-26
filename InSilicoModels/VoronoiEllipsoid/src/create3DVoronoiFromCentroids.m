@@ -13,8 +13,8 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
     centroids(:, 3) = centroids(:, 3) + abs(min(augmentedCentroids(:, 3)));
     augmentedCentroids(:, 3) = augmentedCentroids(:, 3) + abs(min(augmentedCentroids(:, 3)));
 
-    centroids = round(centroids * resolutionFactor);
-    augmentedCentroids = round(augmentedCentroids * resolutionFactor);
+    centroids = round(centroids * resolutionFactor) + 1;
+    augmentedCentroids = round(augmentedCentroids * resolutionFactor) + 1;
     
     img3D = zeros(max(augmentedCentroids));
 
