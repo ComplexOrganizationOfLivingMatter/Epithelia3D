@@ -1,4 +1,4 @@
-function [ output_args ] = layerVoronoi( seedsInitial, numLayer )
+function [ output_args ] = layerVoronoi( infoCentroids, numLayer )
 %LAYERVORONOI Summary of this function goes here
 %   Detailed explanation goes here
     pxWidth = 0.6165279;
@@ -8,10 +8,11 @@ function [ output_args ] = layerVoronoi( seedsInitial, numLayer )
     mkdir(outputDir);
 
     seeds = [];
-
-    seeds(:, 1) = seedsInitial(:, 2) * pxWidth;
-    seeds(:, 2) = seedsInitial(:, 3) * pxWidth;
-    seeds(:, 3) = seedsInitial(:, 1) * pxDepth;
+    cellIds = vertcat(infoCentroids{:, 1});
+    seedsInitial = vertcat(infoCentroids{:, 2});
+    seeds(:, 1) = seedsInitial(:, 1) * pxWidth;
+    seeds(:, 2) = seedsInitial(:, 2) * pxWidth;
+    seeds(:, 3) = seedsInitial(:, 3) * pxDepth;
 
     seeds(:, 1) = seeds(:, 1) - min(seeds(:, 1)) + 1;
     seeds(:, 2) = seeds(:, 2) - min(seeds(:, 2)) + 1;
@@ -21,9 +22,12 @@ function [ output_args ] = layerVoronoi( seedsInitial, numLayer )
 
     %We put the intial seeds on the voronoi 3D image
     img3D = zeros(max(seeds) + 1);
-    for numSeed = 1:size(seeds, 1)
-        actualSeed = seeds(numSeed, :);
-        img3D(actualSeed(1), actualSeed(2), actualSeed(3)) = 1;
+    for numCell = 1:max(seeds(:, 3))
+        seedsOfCell = seeds(cellIds == numCell, :);
+        for numSeed = 1:size(seedsOfCell, 1)
+            actualSeed = seedsOfCell(numSeed, :);
+            img3D(actualSeed(1), actualSeed(2), actualSeed(3)) = numCell;
+        end
     end
     imgDist = bwdist(img3D);
     
@@ -62,15 +66,15 @@ function [ output_args ] = layerVoronoi( seedsInitial, numLayer )
         plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
         hold on;
 
-        seedsInfo(numSeed).ID = numSeed;
-        seedsInfo(numSeed).region = regionActual;
-        seedsInfo(numSeed).volume = cellFigure.volume;
-        seedsInfo(numSeed).colour = colours(numSeed, :);
-        seedsInfo(numSeed).pxCoordinates = [x, y, z];
-        seedsInfo(numSeed).cellHeight = max(z) - min(z);
+%         seedsInfo(numSeed).ID = numSeed;
+%         seedsInfo(numSeed).region = regionActual;
+%         seedsInfo(numSeed).volume = cellFigure.volume;
+%         seedsInfo(numSeed).colour = colours(numSeed, :);
+%         seedsInfo(numSeed).pxCoordinates = [x, y, z];
+%         seedsInfo(numSeed).cellHeight = max(z) - min(z);
     end
 
-    save(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled', 'seedsInfo', '-v7.3');
+    save(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled');
     savefig(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.fig'));
     colorR = repmat(colorcube(255), 10, 1);
     close all
