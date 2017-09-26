@@ -1,4 +1,4 @@
-addpath(genpath('VoronoiEllipsoid'));
+addpath(genpath('src'));
 addpath(genpath('lib'));
 
 %On this order:
@@ -18,7 +18,7 @@ allCombinations = {
 for numRandomization = 1:20
     outputDir = strcat('..\results\random_', num2str(numRandomization));
     transitionByRadius = cell(size(allCombinations, 1), 1);
-    parfor numCombination = 1:size(allCombinations, 1)
+    for numCombination = 1:size(allCombinations, 1)
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};
         radiusZ = allCombinations{numCombination, 3};
@@ -36,7 +36,7 @@ for numRandomization = 1:20
             radiusY = radiusInModelY;
         end
         
-        a = voronoiOnEllipsoidSurface([0 0 0], [radiusX radiusY radiusZ], 500, outputDirActual, hCell);
+        a = voronoi3DEllipsoid([0 0 0], [radiusX radiusY radiusZ], 500, outputDirActual, hCell);
         if isempty(a)
             transitionByRadius(numCombination) = {[]};
         else
