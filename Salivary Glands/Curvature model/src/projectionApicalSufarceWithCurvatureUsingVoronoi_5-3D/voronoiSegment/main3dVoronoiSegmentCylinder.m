@@ -1,6 +1,6 @@
 H_apical=1024;
 W_apical=512;
-numSeeds=50;
+numSeeds=20;
 numImage=1;
 surfaceRatio=2;
 load(['..\..\..\data\expansion\512x1024_' num2str(numSeeds) 'seeds\Image_' num2str(numImage) '_Diagram_5\Image_' num2str(numImage) '_Diagram_5.mat'],'listSeedsProjected')

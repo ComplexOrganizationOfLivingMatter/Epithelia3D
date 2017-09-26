@@ -1,6 +1,6 @@
 function rebuilding3dVoronoiCylinderFromSeedsExpansion( initialSeeds, H_apical, W_apical, surfaceRatio,name2save)
 
-addpath('findND')
+addpath('lib')
 
 % initialImg=listLOriginalProjection.L_originalProjection{1,1};
 % initialSeeds=listSeedsProjected.seedsApical{1,1};
