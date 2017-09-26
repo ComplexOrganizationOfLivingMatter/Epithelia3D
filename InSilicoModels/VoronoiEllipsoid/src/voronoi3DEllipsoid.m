@@ -36,6 +36,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
 
     totalNumberOfPossibleCentroids = size(x, 1) * size(x, 1);
 
+    %% Generate Random Centroids
     %The actual number of centroids that will be increased per iteration
     numberOfCentroids = 1;
     %First Centroid created
@@ -65,27 +66,15 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             finalCentroids(numberOfCentroids, :) = randomCentroid;
         end
     end
-
-    %totalNumberOfPossibleCentroids
-    %size(finalCentroids, 1)
     
     try
         transitionsCSVInfo = {};
         transitionsAngleCSV = {};
+        initialCentroids = finalCentroids;
+        [ finalCentroids] = getAugmentedCentroids( ellipsoidInfo, initialCentroids, max(hCellsPredefined));
         
         %Paint the ellipsoid voronoi
-        [ellipsoidInfo.verticesPerCell,ellipsoidInfo.verticesPerCellOutlayers]  = paintVoronoi(finalCentroids(:, 1), finalCentroids(:, 2), finalCentroids(:, 3), ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius);
-        ellipsoidInfo.finalCentroids = finalCentroids;
-        close
-        [ ellipsoidInfo ] = refineVerticesOfVoronoi( ellipsoidInfo );
-
-        [ ellipsoidInfo.polygonDistribution, ellipsoidInfo.neighbourhood ] = calculatePolygonDistributionFromVerticesInEllipsoid(finalCentroids, ellipsoidInfo.verticesPerCell);
-        savefig(strcat(outputDir, '\ellipsoid_x', num2str(ellipsoidInfo.xRadius), '_y', num2str(ellipsoidInfo.yRadius), '_z', num2str(ellipsoidInfo.zRadius), '.fig'));
-        
-        %Saving info
-        save(strcat(outputDir, '\ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids');
-        initialEllipsoid = ellipsoidInfo;
-        close
+        create3DVoronoiFromCentroids(initialCentroids, finalCentroids);
 
         numException = 0;
         for cellHeight = hCellsPredefined
@@ -105,21 +94,11 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
 %             zReducted = finalCentroids(:, 3) * (ellipsoidInfo.zRadius - cellHeight) / ellipsoidInfo.zRadius;
 
 
-            [xGridReducedEllip, yGridReducedEllip, zGridReducedEllip] = ellipsoid(ellipsoidInfo.xCenter, ellipsoidInfo.yCenter, ellipsoidInfo.zCenter, ellipsoidInfo.xRadius - cellHeight, ellipsoidInfo.yRadius - cellHeight, ellipsoidInfo.zRadius - cellHeight, ellipsoidInfo.resolutionEllipse);
-            
-            [nPoints,~]=size(xGridReducedEllip);
-            xGridReducedEllip=reshape(xGridReducedEllip,nPoints*nPoints,1);
-            yGridReducedEllip=reshape(yGridReducedEllip,nPoints*nPoints,1);
-            zGridReducedEllip=reshape(zGridReducedEllip,nPoints*nPoints,1);
-            
-            reducedGrid=unique([xGridReducedEllip, yGridReducedEllip, zGridReducedEllip],'rows');
-            finalCentroidsCell=mat2cell(finalCentroids,ones(size(finalCentroids,1),1));
-
-            finalCentroidsReducted=cell2mat(cellfun(@(x) reducedGrid(pdist2(x,reducedGrid)==min(pdist2(x,reducedGrid)),:),finalCentroidsCell,'UniformOutput',false));
             
 %             [D] = pdist2([1 0 0],[xGridReducedEllip, yGridReducedEllip, zGridReducedEllip],'euclidean','Smallest',K)
 %             find(D==min(D))
             
+            [ finalCentroids] = getAugmentedCentroids( ellipsoidInfo, initialCentroids, cellHeight);
             
 %             upSide = (ellipsoidInfo.xRadius - cellHeight)^2 * (ellipsoidInfo.yRadius - cellHeight)^2 * (ellipsoidInfo.zRadius - cellHeight)^2;
 %             downSide = ((ellipsoidInfo.yRadius - cellHeight)^2 * (ellipsoidInfo.zRadius - cellHeight)^2 * finalCentroids(:, 1).^2) + ((ellipsoidInfo.xRadius - cellHeight)^2 * (ellipsoidInfo.zRadius - cellHeight)^2 * finalCentroids(:, 2).^2) + ((ellipsoidInfo.yRadius - cellHeight)^2 * (ellipsoidInfo.xRadius - cellHeight)^2 * finalCentroids(:, 3).^2);
