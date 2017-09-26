@@ -1,4 +1,4 @@
-function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroids, cellHeight, ellipsoidInfo)
+function [ img3DLabelled ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroids, cellHeight, ellipsoidInfo)
 %CREATE3DVORONOIFROMCENTROIDS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -50,7 +50,7 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
     img3DLabelled = zeros(max(augmentedCentroids));
     img3DActual = zeros(max(augmentedCentroids));
     colours = colorcube(size(centroids, 1));
-    figure;
+%     figure;
     seedsInfo = [];
     for numSeed = 1:size(centroids, 1)
         numSeed
@@ -65,12 +65,12 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
         plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
         hold on;
 
-        seedsInfo(numSeed).ID = numSeed;
-        seedsInfo(numSeed).region = regionActual;
-        seedsInfo(numSeed).volume = cellFigure.volume;
-        seedsInfo(numSeed).colour = colours(numSeed, :);
-        seedsInfo(numSeed).pxCoordinates = [x, y, z];
-        seedsInfo(numSeed).cellHeight = max(z) - min(z);
+%         seedsInfo(numSeed).ID = numSeed;
+%         seedsInfo(numSeed).region = regionActual;
+%         %seedsInfo(numSeed).volume = cellFigure.volume;
+%         seedsInfo(numSeed).colour = colours(numSeed, :);
+%         seedsInfo(numSeed).pxCoordinates = [x, y, z];
+%         seedsInfo(numSeed).cellHeight = max(z) - min(z);
     end
     
     save(strcat(outputDir, 'voronoi', date, '.mat'), 'img3DLabelled', 'seedsInfo', '-v7.3');
