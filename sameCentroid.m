@@ -39,6 +39,7 @@ for numLayer=1:size(LayerCentroid)
         coord=[LayerCentroid{numLayer,1}(numCentroidLayer,2), LayerCentroid{numLayer,1}(numCentroidLayer,3), LayerCentroid{numLayer,1}(numCentroidLayer,1)];
         finalCentroid{n,1}=LayerCentroid{numLayer,1}(numCentroidLayer,4);
         finalCentroid{n,2}=coord;
+        finalCentroid{n,3}=numLayer;
         n=n+1;
     end
 end 
@@ -50,6 +51,7 @@ for numFrame=initialFrame+1:maxFrame
             if cen==1
                 finalCentroid{end+1,1}(1,1)=finalCentroid{index,1}(1,1);
                 finalCentroid{end,2}(1,1:3)=trackingCentroid{numFrame,1}(numCentroid,4:6);
+                finalCentroid{end,3}(1,1)=finalCentroid{index,3}(1,1);
             end
         end
     end
