@@ -18,6 +18,9 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
 
     centroids = round(centroids * resolutionFactor) + 1;
     augmentedCentroids = round(augmentedCentroids * resolutionFactor) + 1;
+    xOffset = xOffset * resolutionFactor;
+    yOffset = yOffset * resolutionFactor;
+    zOffset = zOffset * resolutionFactor;
     
     img3D = zeros(max(augmentedCentroids));
 
@@ -61,7 +64,7 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
         img3DActual(img3D == numSeed) = 0;
 
         [x, y, z] = findND(img3DLabelled == numSeed);
-        cellFigure = alphaShape(x, y, z, 2);
+        cellFigure = alphaShape(x, y, z);
         plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
         hold on;
 
