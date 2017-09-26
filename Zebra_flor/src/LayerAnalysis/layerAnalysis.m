@@ -5,8 +5,8 @@ addpath(genpath('findND'));
 
 
 for numLayer = 2:size(LayerCentroid, 1)
-    seedsWrongCoordinates = LayerCentroid{numLayer};
+    seedsWrongCoordinates = vertcat(LayerCentroid{numLayer-1 : numLayer});
     if isempty(seedsWrongCoordinates) == 0
-        layerVoronoi( seedsWrongCoordinates, numLayer )
+        layerVoronoi( seedsWrongCoordinates, strcat(num2str(numLayer), '_', num2str(numLayer - 1)))
     end
 end

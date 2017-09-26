@@ -4,7 +4,7 @@ function [ output_args ] = layerVoronoi( seedsInitial, numLayer )
     pxWidth = 0.6165279;
     pxDepth = 1.2098982;
 
-    outputDir = strcat('..\..\results\LayerAnalysis\Layer_', num2str(numLayer), '\');
+    outputDir = strcat('..\..\results\LayerAnalysis\Layer_', numLayer, '\');
     mkdir(outputDir);
 
     seeds = [];
@@ -72,7 +72,7 @@ function [ output_args ] = layerVoronoi( seedsInitial, numLayer )
 
     save(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled', 'seedsInfo', '-v7.3');
     savefig(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.fig'));
-    colorR = repmat(colorcube(255), 4, 1);
+    colorR = repmat(colorcube(255), 10, 1);
     close all
     for numZ = 1:size(img3DLabelled, 3)
         img = double(img3DLabelled(:, :, numZ));
