@@ -35,7 +35,7 @@ for numLayer=1:size(LayerCentroid,1)
                 Voronoi(xq(index,1), yq(index,1))=1;
             end
         end
-        %watershed
+        
         imshow(Voronoi);
         plot(y{numLayer,1}(k),x{numLayer,1}(k),'-k', 'LineWidth',0.3);
 %         numLay=sprintf('Layer%d', numLayer);

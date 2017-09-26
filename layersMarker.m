@@ -3,6 +3,7 @@ function [ LayerCentroid, LayerPixel, centroids, pixel, xQuery, yQuery, initialF
 numLayer=1;
 oldCentroids = ismember(round(centroids{numFrame,1}),pixel{numFrame-1,1},'rows'); %The centroids of the new frame that are in the pixels of the previous one
 
+
 while any (oldCentroids==0)
         x=LayerPixel{numLayer,1}(:,2);
         y=LayerPixel{numLayer,1}(:,3);
@@ -15,7 +16,7 @@ while any (oldCentroids==0)
                     [LayerCentroid, LayerPixel] = addToLayer( xQuery, yQuery, numFrame, n, LayerCentroid, numLayer, LayerPixel);
                     
                 else    
-                    [kLayer{numLayer}]=boundary(x,y,0.7);
+                    [kLayer{numLayer}]=boundary(x,y,1);
                     [inLayer{numLayer},onLayer{numLayer}] = inpolygon(xQuery{numFrame,1},yQuery{numFrame,1},x(kLayer{numLayer}),y(kLayer{numLayer}));
                     
                     if (inLayer{numLayer}(n)==0) || ((inLayer{numLayer}(n)==1) && (numFrame==initialFrame+1))
@@ -32,7 +33,7 @@ while any (oldCentroids==0)
                             newLayer=true;
                             
                         elseif newLayer==true %If there is layer created
-                            if size(LayerCentroid{numLayer+1,1},1)<4
+                            if size(LayerCentroid{numLayer+1,1},1)<101
                                 [LayerCentroid, LayerPixel] = addToLayer( xQuery, yQuery, numFrame, n, LayerCentroid, numLayer+1, LayerPixel);
                             else
                                 %It should be stored for when layer pass is analyzed and so on
