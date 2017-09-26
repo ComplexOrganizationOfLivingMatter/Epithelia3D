@@ -74,7 +74,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         [ finalCentroids] = getAugmentedCentroids( ellipsoidInfo, initialCentroids, max(hCellsPredefined));
         
         %Paint the ellipsoid voronoi
-        create3DVoronoiFromCentroids(initialCentroids, finalCentroids);
+        create3DVoronoiFromCentroids(initialCentroids, finalCentroids, max(hCellsPredefined), ellipsoidInfo);
 
         numException = 0;
         for cellHeight = hCellsPredefined

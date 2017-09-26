@@ -1,17 +1,20 @@
-function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroids, ellipsoidInfo)
+function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroids, cellHeight, ellipsoidInfo)
 %CREATE3DVORONOIFROMCENTROIDS Summary of this function goes here
 %   Detailed explanation goes here
 
     resolutionFactor = 20;
 
-    centroids(:, 1) = centroids(:, 1) + abs(min(augmentedCentroids(:, 1)));
-    augmentedCentroids(:, 1) = augmentedCentroids(:, 1) + abs(min(augmentedCentroids(:, 1)));
+    xOffset = abs(min(augmentedCentroids(:, 1)));
+    centroids(:, 1) = centroids(:, 1) + xOffset;
+    augmentedCentroids(:, 1) = augmentedCentroids(:, 1) + xOffset;
     
-    centroids(:, 2) = centroids(:, 2) + abs(min(augmentedCentroids(:, 2)));
-    augmentedCentroids(:, 2) = augmentedCentroids(:, 2) + abs(min(augmentedCentroids(:, 2)));
+    yOffset = abs(min(augmentedCentroids(:, 2)));
+    centroids(:, 2) = centroids(:, 2) + yOffset;
+    augmentedCentroids(:, 2) = augmentedCentroids(:, 2) + yOffset;
     
-    centroids(:, 3) = centroids(:, 3) + abs(min(augmentedCentroids(:, 3)));
-    augmentedCentroids(:, 3) = augmentedCentroids(:, 3) + abs(min(augmentedCentroids(:, 3)));
+    zOffset = abs(min(augmentedCentroids(:, 3)));
+    centroids(:, 3) = centroids(:, 3) + zOffset;
+    augmentedCentroids(:, 3) = augmentedCentroids(:, 3) + zOffset;
 
     centroids = round(centroids * resolutionFactor) + 1;
     augmentedCentroids = round(augmentedCentroids * resolutionFactor) + 1;
@@ -25,16 +28,23 @@ function [ img3D ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroid
     imgWithDistances = bwdist(img3D);
     
     [allXs, allYs, allZs] = findND(img3D == 0);
+    
     %Removing invalid areas
     upSide = (ellipsoidInfo.xRadius + cellHeight)^2 * (ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2;
-    downSide = ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * allXs.^2) + ((ellipsoidInfo.xRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * allYs.^2) + ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.xRadius + cellHeight)^2 * allZs.^2);
+    downSide = ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * (allXs - xOffset).^2) + ((ellipsoidInfo.xRadius + cellHeight)^2 * (ellipsoidInfo.zRadius + cellHeight)^2 * (allYs - yOffset).^2) + ((ellipsoidInfo.yRadius + cellHeight)^2 * (ellipsoidInfo.xRadius + cellHeight)^2 * (allZs - zOffset).^2);
     conversorFactorAugmented = sqrt(upSide./downSide);
 
     upSide = (ellipsoidInfo.xRadius)^2 * (ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.zRadius)^2;
-    downSide = ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.zRadius)^2 * allXs.^2) + ((ellipsoidInfo.xRadius)^2 * (ellipsoidInfo.zRadius)^2 * allYs.^2) + ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.xRadius)^2 * allZs.^2);
+    downSide = ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.zRadius)^2 * (allXs - xOffset).^2) + ((ellipsoidInfo.xRadius)^2 * (ellipsoidInfo.zRadius)^2 * (allYs - yOffset).^2) + ((ellipsoidInfo.yRadius)^2 * (ellipsoidInfo.xRadius)^2 * (allZs - zOffset).^2);
     conversorFactorNormal = sqrt(upSide./downSide);
 
-    badPxs = conversorFactorNormal < 1 & conversorFactorAugmented > 1;
+    goodPxs = conversorFactorNormal > 0.9 & conversorFactorAugmented < 1.1;
+    
+    for numPoint = 1:size(allXs)
+        if goodPxs(numPoint) == 0
+            imgWithDistances(allXs(numPoint), allYs(numPoint), allZs(numPoint)) = 0;
+        end
+    end
     
     %Reconstruct voronoiCells
     img3DLabelled = zeros(max(augmentedCentroids));
