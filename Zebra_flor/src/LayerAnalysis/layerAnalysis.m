@@ -1,8 +1,12 @@
-load('..\..\docs\LayersCentroids7.mat')
+load('..\..\data\LayersCentroids7.mat')
 
 addpath(genpath('findND'));
 
-seedsWrongCoordinates = vertcat(LayerCentroid{:});
-%seedsWrongCoordinates = LayerCentroid{1};
 
-layerVoronoi( seedsWrongCoordinates )
+
+for numLayer = 2:size(LayerCentroid, 1)
+    seedsWrongCoordinates = LayerCentroid{numLayer};
+    if isempty(seedsWrongCoordinates) == 0
+        layerVoronoi( seedsWrongCoordinates, numLayer )
+    end
+end

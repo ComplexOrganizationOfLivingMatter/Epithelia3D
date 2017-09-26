@@ -1,8 +1,11 @@
-function [ output_args ] = layerVoronoi( seedsInitial )
+function [ output_args ] = layerVoronoi( seedsInitial, numLayer )
 %LAYERVORONOI Summary of this function goes here
 %   Detailed explanation goes here
     pxWidth = 0.6165279;
     pxDepth = 1.2098982;
+
+    outputDir = strcat('..\..\results\LayerAnalysis\Layer_', num2str(numLayer), '\');
+    mkdir(outputDir);
 
     seeds = [];
 
@@ -67,15 +70,15 @@ function [ output_args ] = layerVoronoi( seedsInitial )
         seedsInfo(numSeed).cellHeight = max(z) - min(z);
     end
 
-    save(strcat('..\..\results\LayerAnalysis\layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled', 'seedsInfo', '-v7.3');
-    savefig(strcat('..\..\results\LayerAnalysis\layerAnalysisVoronoi_', date, '.fig'));
+    save(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled', 'seedsInfo', '-v7.3');
+    savefig(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.fig'));
     colorR = repmat(colorcube(255), 4, 1);
     close all
     for numZ = 1:size(img3DLabelled, 3)
         img = double(img3DLabelled(:, :, numZ));
         fig=figure('Visible','off');
         imshow(img,colorR)
-        print('-f1','-dbmp',['..\..\results\LayerAnalysis\img_z_' num2str(numZ)  '.bmp']);
+        print('-f1','-dbmp',[outputDir, 'img_z_' num2str(numZ)  '.bmp']);
         close all
     %     imwrite(img, colorR(1:255, :), strcat('img_z_', num2str(numZ) , '.tiff'));
     end
