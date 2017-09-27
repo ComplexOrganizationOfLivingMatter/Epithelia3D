@@ -1,9 +1,6 @@
-function [ img3DLabelled ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroids, cellHeight, ellipsoidInfo)
+function [ img3DLabelled ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroids, cellHeight, ellipsoidInfo, outputDir)
 %CREATE3DVORONOIFROMCENTROIDS Summary of this function goes here
 %   Detailed explanation goes here
-
-
-    outputDir = '';
     
     resolutionFactor = 20;
 
@@ -33,11 +30,12 @@ function [ img3DLabelled ] = create3DVoronoiFromCentroids( centroids,  augmented
     [allXs, allYs, allZs] = findND(img3D == 0);
     
     %Removing invalid areas
+    disp('Removing invalid areas')
     outsideFactorAugmented = ((((allXs / resolutionFactor) - xOffset).^2) / (ellipsoidInfo.xRadius + cellHeight)^2) + ((((allYs / resolutionFactor) - yOffset).^2) / (ellipsoidInfo.yRadius + cellHeight)^2) + ((((allZs / resolutionFactor) - zOffset).^2) / (ellipsoidInfo.zRadius + cellHeight)^2);
     
     outsideFactorNormal = ((((allXs / resolutionFactor) - xOffset).^2) / ellipsoidInfo.xRadius^2) + ((((allYs / resolutionFactor) - yOffset).^2) / ellipsoidInfo.yRadius^2) + ((((allZs / resolutionFactor) - zOffset).^2) / ellipsoidInfo.zRadius^2);
 
-    goodPxs = outsideFactorNormal > 0.9 & outsideFactorAugmented < 1.1;
+    goodPxs = outsideFactorNormal > 0.99 & outsideFactorAugmented < 1.01;
     
     badXs = allXs(goodPxs == 0);
     badYs = allYs(goodPxs == 0);
@@ -47,6 +45,7 @@ function [ img3DLabelled ] = create3DVoronoiFromCentroids( centroids,  augmented
     end
     
     %Reconstruct voronoiCells
+    disp('Reconstruct voronoi cells')
     img3DLabelled = zeros(max(augmentedCentroids));
     img3DActual = zeros(max(augmentedCentroids));
     colours = colorcube(size(centroids, 1));
@@ -60,7 +59,8 @@ function [ img3DLabelled ] = create3DVoronoiFromCentroids( centroids,  augmented
         img3DLabelled(regionActual) = numSeed;
         img3DActual(img3D == numSeed) = 0;
 
-        [x, y, z] = findND(img3DLabelled == numSeed);
+        perimRegionActual = bwperim(regionActual);
+        [x, y, z] = findND(perimRegionActual);
         cellFigure = alphaShape(x, y, z);
         plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
         hold on;
@@ -73,7 +73,7 @@ function [ img3DLabelled ] = create3DVoronoiFromCentroids( centroids,  augmented
 %         seedsInfo(numSeed).cellHeight = max(z) - min(z);
     end
     
-    save(strcat(outputDir, 'voronoi', date, '.mat'), 'img3DLabelled', 'seedsInfo', '-v7.3');
-    savefig(strcat(outputDir, 'voronoi_', date, '.fig'));
+    save(strcat(outputDir, '\voronoi', date, '.mat'), 'img3DLabelled', 'seedsInfo', '-v7.3');
+    savefig(strcat(outputDir, '\voronoi_', date, '.fig'));
 end
 
