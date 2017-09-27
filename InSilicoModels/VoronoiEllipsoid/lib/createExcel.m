@@ -1,4 +1,4 @@
-function [ rowInfo ] = createExcel( ellipsoidInfo, exchangeNeighboursPerCell )
+function [ rowInfo ] = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell )
 %CREATEEXCEL Summary of this function goes here
 %   Detailed explanation goes here
 	%%Creating row of excel
@@ -19,13 +19,13 @@ function [ rowInfo ] = createExcel( ellipsoidInfo, exchangeNeighboursPerCell )
         %We get select the cells at the borders from the initial ellipsoid.
         %Not from the reduced ellipsoid. Thus, we'll always get the same
         %centroids for all the different cell heights.
-        cellsAtXBorderRight = initialEllipsoid.finalCentroids(:, 1) < -(rowInfo.bordersSituatedAt * initialEllipsoid.xRadius);
-        cellsAtYBorderRight = initialEllipsoid.finalCentroids(:, 2) < -(rowInfo.bordersSituatedAt * initialEllipsoid.yRadius);
-        cellsAtZBorderRight = initialEllipsoid.finalCentroids(:, 3) < -(rowInfo.bordersSituatedAt * initialEllipsoid.zRadius);
+        cellsAtXBorderRight = initialEllipsoid.centroids(:, 1) < -(rowInfo.bordersSituatedAt * initialEllipsoid.xRadius);
+        cellsAtYBorderRight = initialEllipsoid.centroids(:, 2) < -(rowInfo.bordersSituatedAt * initialEllipsoid.yRadius);
+        cellsAtZBorderRight = initialEllipsoid.centroids(:, 3) < -(rowInfo.bordersSituatedAt * initialEllipsoid.zRadius);
 
-        cellsAtXBorderLeft = initialEllipsoid.finalCentroids(:, 1) > (rowInfo.bordersSituatedAt * initialEllipsoid.xRadius);
-        cellsAtYBorderLeft = initialEllipsoid.finalCentroids(:, 2) > (rowInfo.bordersSituatedAt * initialEllipsoid.yRadius);
-        cellsAtZBorderLeft = initialEllipsoid.finalCentroids(:, 3) > (rowInfo.bordersSituatedAt * initialEllipsoid.zRadius);
+        cellsAtXBorderLeft = initialEllipsoid.centroids(:, 1) > (rowInfo.bordersSituatedAt * initialEllipsoid.xRadius);
+        cellsAtYBorderLeft = initialEllipsoid.centroids(:, 2) > (rowInfo.bordersSituatedAt * initialEllipsoid.yRadius);
+        cellsAtZBorderLeft = initialEllipsoid.centroids(:, 3) > (rowInfo.bordersSituatedAt * initialEllipsoid.zRadius);
 
         rowInfo.percentageOfexchangeNeighboursPerCellAtXBorderLeft = sum(exchangeNeighboursPerCell(cellsAtXBorderLeft)) / size(exchangeNeighboursPerCell(cellsAtXBorderLeft), 1);
         rowInfo.percentageOfexchangeNeighboursPerCellAtXBorderRight = sum(exchangeNeighboursPerCell(cellsAtXBorderRight)) / size(exchangeNeighboursPerCell(cellsAtXBorderRight), 1);
