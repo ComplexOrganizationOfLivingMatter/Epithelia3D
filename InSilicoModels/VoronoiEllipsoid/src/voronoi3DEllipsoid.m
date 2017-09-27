@@ -107,9 +107,9 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
                     end
                 end
             end
-            [outterLayer.neighbourhood, outterLayer.sides_cells] = calculate_neighbours3D(img3DOutterLayer);
+            [outterLayer.neighbourhood] = calculate_neighbours3D(img3DOutterLayer);
             if isempty(innerLayer)
-                [innerLayer.neighbourhood, innerLayer.sides_cells] = calculate_neighbours3D(img3DInnerLayer);
+                [innerLayer.neighbourhood] = calculate_neighbours3D(img3DInnerLayer);
             end
         end
 %             ellipsoidInfo.cellHeight = cellHeight;
