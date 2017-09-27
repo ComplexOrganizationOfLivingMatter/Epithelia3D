@@ -81,12 +81,15 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         img3DLabelled = create3DVoronoiFromCentroids(initialCentroids, finalCentroids, max(hCellsPredefined), ellipsoidInfo, outputDir);
         disp('Random voronoi created')
         
+        img3DInnerLayer = zeros(size(img3DLabelled));
+        innerLayer = [];
+        
         [allXs, allYs, allZs] = findND(img3DLabelled > 0);
         numException = 0;
         for cellHeight = hCellsPredefined
             ellipsoidInfo.cellHeight = cellHeight;
             [ validPxs, innerLayerPxs, outterLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
-            img3DInnerLayer = zeros(size(img3DLabelled));
+            
             img3DOutterLayer = zeros(size(img3DLabelled));
             img3DLabelledActual = img3DLabelled;
             
@@ -103,6 +106,10 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
                         img3DInnerLayer(allXs(numPx), allYs(numPx), allZs(numPx)) = img3DLabelled(allXs(numPx), allYs(numPx), allZs(numPx));
                     end
                 end
+            end
+            [outterLayer.neighbourhood, outterLayer.sides_cells] = calculate_neighbours3D(img3DOutterLayer);
+            if isempty(innerLayer)
+                [innerLayer.neighbourhood, innerLayer.sides_cells] = calculate_neighbours3D(img3DInnerLayer);
             end
         end
 %             ellipsoidInfo.cellHeight = cellHeight;

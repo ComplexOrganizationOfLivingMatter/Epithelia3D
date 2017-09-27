@@ -8,15 +8,14 @@ function [neighs_real, sides_cells] = calculate_neighbours3D(L_img)
 
     [xgrid, ygrid, zgrid] = meshgrid(-ratio:ratio); 
     ball = (sqrt(xgrid.^2 + ygrid.^2 + zgrid.^2) <= ratio); 
-
-    for cel=1 : length(cells)
-        BW = bwperim(L_img==cells(cel));
-
-        BW_dilate = imdilate(gpuArray(BW), ball);
+    
+    for cell = 1 : length(cells)
+        cell
+        BW_dilate = imdilate(L_img==cells(cell), ball);
         pixels_neighs=find(BW_dilate==1);
         neighs=unique(L_img(pixels_neighs));
-        neighs_real{cells(cel)}=neighs(neighs ~= 0 & neighs ~= cells(cel));
-        sides_cells(cells(cel))=length(neighs_real{1,cells(cel)});
+        neighs_real{cells(cell)}=neighs(neighs ~= 0 & neighs ~= cells(cell));
+        sides_cells(cells(cell))=length(neighs_real{1,cells(cell)});
     end
 end
 
