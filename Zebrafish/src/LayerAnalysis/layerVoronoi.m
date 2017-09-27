@@ -49,7 +49,7 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer )
 
     %Create voronoi 3D region and paint it
     img3DLabelled = zeros(max(seeds) + 1);
-    colours = colorcube(size(seeds, 1));
+    colours = colorcube(size(cellIds, 1));
     figure;
 %    seedsInfo = [];
     for numCell = 1:max(cellIds)
