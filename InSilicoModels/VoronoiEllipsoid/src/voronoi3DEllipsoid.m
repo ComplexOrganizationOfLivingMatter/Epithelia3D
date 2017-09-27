@@ -81,8 +81,12 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         img3DLabelled = create3DVoronoiFromCentroids(initialCentroids, finalCentroids, max(hCellsPredefined), ellipsoidInfo, outputDir);
         disp('Random voronoi created')
         
-%         numException = 0;
-%         for cellHeight = hCellsPredefined
+        [allXs, allYs, allZs] = findND(img3DLabelled > 0);
+        numException = 0;
+        for cellHeight = hCellsPredefined
+            ellipsoidInfo.cellHeight = cellHeight;
+            [ validPxs,  innerLayerPxs, outterLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
+        end
 %             ellipsoidInfo.cellHeight = cellHeight;
 %             %Creating the reduted centroids form the previous ones and the apical
 %             %reduction
