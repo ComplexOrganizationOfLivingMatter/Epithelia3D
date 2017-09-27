@@ -85,7 +85,25 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         numException = 0;
         for cellHeight = hCellsPredefined
             ellipsoidInfo.cellHeight = cellHeight;
-            [ validPxs,  innerLayerPxs, outterLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
+            [ validPxs, innerLayerPxs, outterLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
+            img3DInnerLayer = zeros(size(img3DLabelled));
+            img3DOutterLayer = zeros(size(img3DLabelled));
+            img3DLabelledActual = img3DLabelled;
+            
+            for numPx = 1:size(validPxs, 1)
+                %Removing no valid pixels from the actual 3d voronoi
+                if validPxs(numPx) == 0
+                    img3DLabelledActual(allXs(numPx), allYs(numPx), allZs(numPx)) = 0;
+                else
+                    %if it is an outter layer and valid pixel we paint it
+                    if outterLayerPxs(numPx)
+                        img3DOutterLayer(allXs(numPx), allYs(numPx), allZs(numPx)) = img3DLabelled(allXs(numPx), allYs(numPx), allZs(numPx));
+                    %if it is an inner layer and valid pixel we paint it
+                    elseif innerLayerPxs(numPx)
+                        img3DInnerLayer(allXs(numPx), allYs(numPx), allZs(numPx)) = img3DLabelled(allXs(numPx), allYs(numPx), allZs(numPx));
+                    end
+                end
+            end
         end
 %             ellipsoidInfo.cellHeight = cellHeight;
 %             %Creating the reduted centroids form the previous ones and the apical
