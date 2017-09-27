@@ -19,7 +19,7 @@ for numImage=1:numTotalImages
     %load seeds in apical and the voronoi image in apical
     load(['..\..\..\data\expansion\512x1024_' num2str(numSeeds) 'seeds\Image_' num2str(numImage) '_Diagram_5\Image_' num2str(numImage) '_Diagram_5.mat'],'listSeedsProjected','listLOriginalProjection')
     imgApical= listLOriginalProjection.L_originalProjection{1};
-    imgBasal= listLOriginalProjection.L_originalProjection{9};
+    imgBasal= listLOriginalProjection.L_originalProjection{5};
     initialSeeds=listSeedsProjected.seedsApical{1};
     initialSeeds=initialSeeds(:,2:end);
     
@@ -29,7 +29,13 @@ for numImage=1:numTotalImages
     areaBasal=cat(1,areaBasal.Area);
     
     name2save= ['Image_' num2str(numImage) '_' num2str(numSeeds) 'seeds'];
+    
+    %tridimensional reconstruction info
     seedsInfo=rebuilding3dVoronoiCylinderFromSeedsExpansion( initialSeeds, H_apical, W_apical, surfaceRatio,imgApical,reductionFactor,name2save);
+    
+    
+    %neighbours in apical
+    [neighApical,~]=calculate_neighbours(imgApical);
     
     volume3DCells=[seedsInfo(:).volume];
     

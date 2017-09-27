@@ -49,7 +49,7 @@ function seedsInfo=rebuilding3dVoronoiCylinderFromSeedsExpansion( initialSeeds, 
 
     numTotalSeeds=size(initialSeeds, 1);
     seedsInfo=struct('ID',zeros(numTotalSeeds,1),'region',zeros(numTotalSeeds,1),'volume',zeros(numTotalSeeds,1),'colour',cell(numTotalSeeds,1),'pxCoordinates',cell(numTotalSeeds,1),'image3d',zeros(numTotalSeeds,1));
-    img3Dfinal= zeros(2*R_basal+1,2*R_basal+1,H_apical);
+    
     parfor numSeed = 1:numTotalSeeds
         
         %chose a seed to work
@@ -88,19 +88,18 @@ function seedsInfo=rebuilding3dVoronoiCylinderFromSeedsExpansion( initialSeeds, 
 %         hold on;
 %     end
 %     
-%     %%neighbours in apical
-% %     [neighApical,~]=calculate_neighbours(imgApical);
 %     
-%     %%Group pixels of 3d cells
-%     
-%     for numSeed=1:numTotalSeeds
-%         cell3d=seedsInfo(numSeed).image3d;
-%         img3Dfinal(img3Dfinal==0)=img3Dfinal(img3Dfinal==0)+cell3d(img3Dfinal==0);
-%     end
+
+    %%Group pixels of 3d cells
+    img3Dfinal= zeros(2*R_basal+1,2*R_basal+1,H_apical);
+    for numSeed=1:numTotalSeeds
+        cell3d=seedsInfo(numSeed).image3d;
+        img3Dfinal(img3Dfinal==0)=img3Dfinal(img3Dfinal==0)+cell3d(img3Dfinal==0);
+    end
     
-%     
-%     %%neighbours 3d
-%     [neigh3D,~]=calculate_neighbours3D(img3Dfinal);
+    
+    %%neighbours 3d
+    [neigh3D,~]=calculate_neighbours3D(img3Dfinal);
     
 %     save(['..\..\..\data\reconstructionVoronoiCylindricalSegment\' name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'img3D', 'seedsInfo','apicalCylinderSeedsPositions','basalCylinderSeedsPositions','-v7.3');
 %     savefig(f,['..\..\..\data\reconstructionVoronoiCylindricalSegment\' name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '_.fig'])
