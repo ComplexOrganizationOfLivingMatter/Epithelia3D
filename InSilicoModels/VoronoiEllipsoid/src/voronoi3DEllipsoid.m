@@ -73,16 +73,17 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
     try
         transitionsCSVInfo = {};
         transitionsAngleCSV = {};
-        initialCentroids = finalCentroids;
-        [ finalCentroids] = getAugmentedCentroids( ellipsoidInfo, initialCentroids, max(hCellsPredefined));
+        ellipsoidInfo.centroids = finalCentroids;
+        initialEllipsoid = ellipsoidInfo;
+        [ finalCentroids] = getAugmentedCentroids( ellipsoidInfo, finalCentroids, max(hCellsPredefined));
         
         %Paint the ellipsoid voronoi
         disp('Creating Random voronoi')
-        img3DLabelled = create3DVoronoiFromCentroids(initialCentroids, finalCentroids, max(hCellsPredefined), ellipsoidInfo, outputDir);
+        img3DLabelled = create3DVoronoiFromCentroids(ellipsoidInfo.centroids, finalCentroids, max(hCellsPredefined), ellipsoidInfo, outputDir);
         disp('Random voronoi created')
         
         img3DInnerLayer = zeros(size(img3DLabelled));
-        innerLayer = [];
+        initialEllipsoid.neighbourhood = [];
         
         [allXs, allYs, allZs] = findND(img3DLabelled > 0);
         numException = 0;
@@ -107,10 +108,52 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
                     end
                 end
             end
-            [outterLayer.neighbourhood] = calculate_neighbours3D(img3DOutterLayer);
-            if isempty(innerLayer)
-                [innerLayer.neighbourhood] = calculate_neighbours3D(img3DInnerLayer);
+            [ellipsoidInfo.neighbourhood] = calculate_neighbours3D(img3DOutterLayer);
+            if isempty(initialEllipsoid.neighbourhood)
+                [initialEllipsoid.neighbourhood] = calculate_neighbours3D(img3DInnerLayer);
             end
+            %     figure;
+            %     for i = 1:500
+            %         i
+            %         [x,y,z] = findND(img3DOutterLayer == i);
+            %         colours = colorcube(500);
+            %         plot3(x, y, z,'*', 'MarkerFaceColor', colours(i, :))
+            %         hold on;
+            %     end
+            exchangeNeighboursPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
+            
+            newRowTable = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell);
+            
+            cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood)>0, 1);
+            
+            tableDataAngles=[];
+            if ~isempty(cellsTransition)
+                [tableDataAngles, anglesPerRegion, ellipsoidInfo] = getAnglesOfEdgeTransition( initialEllipsoid, ellipsoidInfo, outputDir);
+                close
+            end
+            
+            if isempty(tableDataAngles)
+                tableDataAngles=NaN;
+                preffixName = {'averageAnglesLess15EndRight','averageAnglesBetw15_30EndRight', 'averageAnglesBetw30_45EndRight', 'averageAnglesBetw45_60EndRight', 'averageAnglesBetw60_75EndRight', 'averageAnglesMore75EndRight' ...
+                    'averageAnglesLess15EndLeft','averageAnglesBetw15_30EndLeft', 'averageAnglesBetw30_45EndLeft', 'averageAnglesBetw45_60EndLeft', 'averageAnglesBetw60_75EndLeft', 'averageAnglesMore75EndLeft' ...
+                    'averageAnglesLess15EndGlobal','averageAnglesBetw15_30EndGlobal', 'averageAnglesBetw30_45EndGlobal', 'averageAnglesBetw45_60EndGlobal', 'averageAnglesBetw60_75EndGlobal', 'averageAnglesMore75EndGlobal' ...
+                    'averageAnglesLess15CentralRegion','averageAnglesBetw15_30CentralRegion', 'averageAnglesBetw30_45CentralRegion', 'averageAnglesBetw45_60CentralRegion', 'averageAnglesBetw60_75CentralRegion', 'averageAnglesMore75CentralRegion' ...
+                    'percentageTransitionsEndLeft','percentageTransitionsEndRight','percentageTransitionsEndGlobal','percentageTransitionsCentralRegion', 'meanEdgeLengthEndLeft', 'meanEdgeLengthEndRight', 'meanEdgeLengthEndGlobal', 'meanEdgeLengthCentralRegion', 'stdEdgeLengthEndLeft', 'stdEdgeLengthEndRight', 'stdEdgeLengthEndGlobal', 'stdEdgeLengthCentralRegion'};
+                
+                totalVariables = {'averageAnglesLess15Total','averageAnglesBetw15_30Total', 'averageAnglesBetw30_45Total', 'averageAnglesBetw45_60Total', 'averageAnglesBetw60_75Total', 'averageAnglesMore75Total', 'percentageTransitionsPerCell', 'meanEdgeLength', 'stdEdgeLength'};
+                anglesPerRegion=array2table(NaN(size(totalVariables, 2) + (size(preffixName, 2))*size(initialEllipsoid.bordersSituatedAt, 2),1)');
+                
+                newVariableNames = cell(size(initialEllipsoid.bordersSituatedAt, 2), 1);
+                for numBorders = 1:size(initialEllipsoid.bordersSituatedAt, 2)
+                    newVariableNames{numBorders} = cellfun(@(x) strcat(x, '_', num2str(round(ellipsoidInfo.bordersSituatedAt(numBorders)*100)), '_'), preffixName, 'UniformOutput', false);
+                end
+                anglesPerRegion.Properties.VariableNames = [totalVariables{:}, newVariableNames{:}];
+                anglesPerRegion=table2struct(anglesPerRegion);
+            end
+            %Saving info
+            save(strcat(outputDir, '\ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids', 'tableDataAngles');
+            
+            transitionsCSVInfo(end+1) = {horzcat(struct2table(newRowTable), struct2table(anglesPerRegion))};
         end
 %             ellipsoidInfo.cellHeight = cellHeight;
 %             %Creating the reduted centroids form the previous ones and the apical
