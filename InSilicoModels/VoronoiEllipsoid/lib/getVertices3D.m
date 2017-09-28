@@ -1,47 +1,46 @@
-function [ vertices, neighboursVertices] = getVertices3D( L_img,neighs )
+function [ vertices, neighboursVertices] = getVertices3D( L_img, neighbours )
 % With a labelled image as input, the objective is get all vertex for each
 % cell
 
 ratio=3;
-se=strel('square',ratio);
+[xgrid, ygrid, zgrid] = meshgrid(-ratio:ratio); 
+ball = (sqrt(xgrid.^2 + ygrid.^2 + zgrid.^2) <= ratio); 
 
-[H,W,~]=size(L_img);
+neighboursVertices = buildTripletsOfNeighs( neighbours );%intersect dilatation of each cell of triplet
 
-
-cells=sort(unique(L_img));
-cells=cells(2:end);
-
-tripletsOfNeighs=buildTripletsOfNeighs( neighs );%intersect dilatation of each cell of triplet
-
-
-for i=1 : size(tripletsOfNeighs,1)
-    BW1=zeros(H,W);BW2=zeros(H,W);BW3=zeros(H,W);borderImg=zeros(H,W);
-    BW1(L_img==tripletsOfNeighs(i,1))=1;
-    BW2(L_img==tripletsOfNeighs(i,2))=1;
-    BW3(L_img==tripletsOfNeighs(i,3))=1;
-    BW1_dilate=imdilate(BW1,se);
-    BW2_dilate=imdilate(BW2,se);
-    BW3_dilate=imdilate(BW3,se);
-    borderImg(L_img==0)=1; 
-    [row,col]=find((BW1_dilate.*BW2_dilate.*BW3_dilate.*borderImg)==1);
-    if length(row)>1
-        vertices{i}=round(mean([row,col]));
-    else
-        vertices{i}=[row,col];
-    end
+vertices = zeros(size(neighboursVertices));
+for numTriplet = 1 : size(neighboursVertices,1)
+    BW1=zeros(size(L_img));
+    BW2=zeros(size(L_img));
+    BW3=zeros(size(L_img));
+    borderImg=zeros(size(L_img));
     
-    neighboursVertices{i} = tripletsOfNeighs(i,:);
-
+    BW1(L_img==neighboursVertices(numTriplet, 1))=1;
+    BW2(L_img==neighboursVertices(numTriplet, 2))=1;
+    BW3(L_img==neighboursVertices(numTriplet, 3))=1;
+    
+    BW1_dilate=imdilate(BW1, ball);
+    BW2_dilate=imdilate(BW2, ball);
+    BW3_dilate=imdilate(BW3, ball);
+    
+    borderImg(L_img==0) = 1;
+    
+    [xPx, yPx, zPx]=findND((BW1_dilate.*BW2_dilate.*BW3_dilate.*borderImg)==1);
+    
+    if length(xPx)>1
+        vertices(numTriplet) = round(mean([xPx, yPx, zPx]));
+    else
+        vertices(numTriplet) = [xPx, yPx , zPx];
+    end
 end
 
 
 %Correct false negative and positive
-%[vertices,neighboursVertices]=refineVertices(vertices,neighboursVertices);
 
 % imshow(L_img)
 % 
 % hold on
-% for i=1:size(vertices,2), a=vertices{1,i}; plot(a(2),a(1),'*r'), end
+% for i=1:size(vertices,1), a=vertices{1,i}; plot(a(2),a(1),'*r'), end
 % hold off
 
 end
