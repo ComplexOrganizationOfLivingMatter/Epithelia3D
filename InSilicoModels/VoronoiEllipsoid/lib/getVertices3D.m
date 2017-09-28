@@ -2,13 +2,13 @@ function [ vertices, neighboursVertices] = getVertices3D( L_img, neighbours )
 % With a labelled image as input, the objective is get all vertex for each
 % cell
 
-ratio=3;
+ratio=4;
 [xgrid, ygrid, zgrid] = meshgrid(-ratio:ratio); 
 ball = (sqrt(xgrid.^2 + ygrid.^2 + zgrid.^2) <= ratio); 
 
 neighboursVertices = buildTripletsOfNeighs( neighbours );%intersect dilatation of each cell of triplet
+vertices = cell(size(neighboursVertices, 1), 1);
 
-vertices = zeros(size(neighboursVertices));
 for numTriplet = 1 : size(neighboursVertices,1)
     BW1=zeros(size(L_img));
     BW2=zeros(size(L_img));
@@ -28,9 +28,9 @@ for numTriplet = 1 : size(neighboursVertices,1)
     [xPx, yPx, zPx]=findND((BW1_dilate.*BW2_dilate.*BW3_dilate.*borderImg)==1);
     
     if length(xPx)>1
-        vertices(numTriplet, :) = round(mean([xPx, yPx, zPx]));
+        vertices{numTriplet} = round(mean([xPx, yPx, zPx]));
     else
-        vertices(numTriplet, :) = [xPx, yPx , zPx];
+        vertices{numTriplet} = [xPx, yPx , zPx];
     end
 end
 
@@ -40,7 +40,7 @@ end
 % imshow(L_img)
 % 
 % hold on
-% for i=1:size(vertices,1), a=vertices{1,i}; plot(a(2),a(1),'*r'), end
+% for i=1:size(vertices,1), plot3(vertices(i,1),vertices(i,2), vertices(i,3),'*r'), end
 % hold off
 
 end
