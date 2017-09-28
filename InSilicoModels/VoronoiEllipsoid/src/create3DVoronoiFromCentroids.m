@@ -72,7 +72,7 @@ function [ img3DLabelled, ellipsoidInfo ] = create3DVoronoiFromCentroids( centro
 %         seedsInfo(numSeed).cellHeight = max(z) - min(z);
     end
     
-    save(strcat(outputDir, '\voronoi', date, '.mat'), 'img3DLabelled', 'seedsInfo', '-v7.3');
+    save(strcat(outputDir, '\voronoi', date, '.mat'), 'img3DLabelled', 'seedsInfo', 'ellipsoidInfo', '-v7.3');
     savefig(strcat(outputDir, '\voronoi_', date, '.fig'));
 end
 

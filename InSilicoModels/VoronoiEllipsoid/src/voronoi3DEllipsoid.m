@@ -70,7 +70,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
     
     disp('End Random centroids')
     
-    try
+%     try
         transitionsCSVInfo = {};
         transitionsAngleCSV = {};
         ellipsoidInfo.centroids = finalCentroids;
@@ -79,7 +79,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         
         %Paint the ellipsoid voronoi
         disp('Creating Random voronoi')
-        img3DLabelled = create3DVoronoiFromCentroids(ellipsoidInfo.centroids, finalCentroids, max(hCellsPredefined), ellipsoidInfo, outputDir);
+        [ img3DLabelled, ellipsoidInfo ] = create3DVoronoiFromCentroids(ellipsoidInfo.centroids, finalCentroids, max(hCellsPredefined), ellipsoidInfo, outputDir);
         disp('Random voronoi created')
         
         img3DInnerLayer = zeros(size(img3DLabelled));
@@ -236,12 +236,12 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
 %                 end
 %             end
 %         end
-    catch mexception
-        disp(strcat('Error in creating initial ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius)));
-        disp(strcat('Number of centroids = ', num2str(size(finalCentroids, 1))));
-        disp(mexception.getReport);
-        disp('--------------------------');
-    end
+%     catch mexception
+%         disp(strcat('Error in creating initial ellipsoid xRadius=', num2str(ellipsoidInfo.xRadius), ', yRadius=', num2str(ellipsoidInfo.yRadius), ', zRadius=', num2str(ellipsoidInfo.zRadius)));
+%         disp(strcat('Number of centroids = ', num2str(size(finalCentroids, 1))));
+%         disp(mexception.getReport);
+%         disp('--------------------------');
+%     end
         %You can see the figures:
         %set(get(0,'children'),'visible','on')
     close all
