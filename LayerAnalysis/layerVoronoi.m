@@ -1,9 +1,10 @@
-function [ output_args ] = layerVoronoi( infoCentroids, numLayer )
+function [ output_args ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
 %LAYERVORONOI Summary of this function goes here
 %   Detailed explanation goes here
     pxWidth = 0.6165279;
-    pxDepth = 1.2098982;
-
+    %pxDepth = 1.2098982;
+%     pxWidth = 0.2;
+    
     outputDir = strcat('..\..\results\LayerAnalysis\Layer_', numLayer, '\');
     mkdir(outputDir);
 
@@ -12,7 +13,9 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer )
     seedsInitial = vertcat(infoCentroids{:, 2});
     seeds(:, 1) = seedsInitial(:, 1) * pxWidth;
     seeds(:, 2) = seedsInitial(:, 2) * pxWidth;
-    seeds(:, 3) = seedsInitial(:, 3) * pxDepth;
+    
+    widthMax=max(max(seeds(:, 1:2)));
+    seeds(:, 3) = seedsInitial(:, 3) * (widthMax/maxFrame);
 
     seeds(:, 1) = seeds(:, 1) - min(seeds(:, 1)) + 1;
     seeds(:, 2) = seeds(:, 2) - min(seeds(:, 2)) + 1;
@@ -36,20 +39,22 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer )
     %plot(shapeOfSeeds);
 
     img3DActual = zeros(max(seeds) + 1);
-
     %Remove pixels outside the cells area
-    [xPx, yPx, zPx] = findND(img3DActual == 0);
-    badPxs = shapeOfSeeds.inShape(xPx, yPx, zPx);
-
-    for numBadPxs = 1:size(badPxs, 1)
-        if badPxs(numBadPxs) == 0
-            imgDist(xPx(numBadPxs), yPx(numBadPxs), zPx(numBadPxs)) = 0;
-        end
-    end
+    [xPx, yPx, zPx] = findND(img3DActual==0);
+    validPxs = shapeOfSeeds.inShape(xPx, yPx, zPx);
+    imgDist(validPxs==0)=0;
+%     
+%     [xPxs, yPxs, zPxs] = findND(validPxs == 1);
+%     for numBadPxs = size(validPxs, 1):-1:1
+%         if validPxs(numBadPxs) == 0
+%             numBadPxs
+%             imgDist(xPx(numBadPxs), yPx(numBadPxs), zPx(numBadPxs)) = 0;
+%         end
+%     end
 
     %Create voronoi 3D region and paint it
     img3DLabelled = zeros(max(seeds) + 1);
-    colours = colorcube(size(cellIds, 1));
+    colours = colorcube(max(cellIds));
     figure;
 %    seedsInfo = [];
     for numCell = 1:max(cellIds)
@@ -60,8 +65,8 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer )
         img3DLabelled(regionActual) = numCell;
         img3DActual(img3D == numCell) = 0;
 
-        [x, y, z] = findND(img3DLabelled == numCell);
-        cellFigure = alphaShape(x, y, z, 2);
+        [x, y, z] = findND(bwperim(img3DLabelled == numCell));
+        cellFigure = alphaShape(x, y, z, 10);
         plot(cellFigure, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
         hold on;
 
