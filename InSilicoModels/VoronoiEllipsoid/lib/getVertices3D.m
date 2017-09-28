@@ -28,9 +28,9 @@ for numTriplet = 1 : size(neighboursVertices,1)
     [xPx, yPx, zPx]=findND((BW1_dilate.*BW2_dilate.*BW3_dilate.*borderImg)==1);
     
     if length(xPx)>1
-        vertices(numTriplet) = round(mean([xPx, yPx, zPx]));
+        vertices(numTriplet, :) = round(mean([xPx, yPx, zPx]));
     else
-        vertices(numTriplet) = [xPx, yPx , zPx];
+        vertices(numTriplet, :) = [xPx, yPx , zPx];
     end
 end
 
