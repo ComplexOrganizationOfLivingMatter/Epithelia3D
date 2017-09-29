@@ -96,10 +96,10 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             
             [ validPxs, innerLayerPxs, outterLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
             img3DLabelledActual = img3DLabelled;
-            validIndices = sub2ind(size(image3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
+            validIndices = sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
             img3DLabelledActual(validIndices) = 0;
             img3DOutterLayer = zeros(size(img3DLabelled));
-            outterLayerIndices = sub2ind(size(image3DLabelled), allXs(outterLayerPxs), allYs(outterLayerPxs), allZs(outterLayerPxs));
+            outterLayerIndices = sub2ind(size(img3DLabelled), allXs(outterLayerPxs), allYs(outterLayerPxs), allZs(outterLayerPxs));
             img3DOutterLayer(outterLayerIndices) = img3DLabelledActual(outterLayerIndices);
             
             disp('Getting info of vertices and neighbours: outter layer');
@@ -112,7 +112,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
                 disp('Getting info of vertices and neighbours: inner layer');
                 
                 img3DInnerLayer = zeros(size(img3DLabelled));
-                innerLayerIndices = sub2ind(size(image3DLabelled), allXs(innerLayerPxs), allYs(innerLayerPxs), allZs(innerLayerPxs));
+                innerLayerIndices = sub2ind(size(img3DLabelled), allXs(innerLayerPxs), allYs(innerLayerPxs), allZs(innerLayerPxs));
                 img3DInnerLayer(innerLayerIndices) = img3DLabelledActual(innerLayerIndices);
                 initialEllipsoid.img3DLayer = img3DInnerLayer;
                 [initialEllipsoid.neighbourhood] = calculate_neighbours3D(img3DInnerLayer);
@@ -159,7 +159,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
                 anglesPerRegion=table2struct(anglesPerRegion);
             end
             %Saving info
-            save(strcat(outputDir, '\ellipsoidReducted_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'minDistanceBetweenCentroids', 'tableDataAngles');
+            save(strcat(outputDir, '\ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'initialEllipsoid', 'tableDataAngles');
             
             transitionsCSVInfo(end+1) = {horzcat(struct2table(newRowTable), struct2table(anglesPerRegion))};
         end
