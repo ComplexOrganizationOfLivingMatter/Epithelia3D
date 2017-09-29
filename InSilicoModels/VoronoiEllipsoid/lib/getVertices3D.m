@@ -15,7 +15,7 @@ initBW2 = zeros(size(L_img));
 
 initBW3 = zeros(size(L_img));
 
-initBorderImg = zeros(size(L_img));
+initBorderImg = L_img==0;
 
 % We first calculate the perimeter of the cell to improve efficiency
 % If the image is small, is better not to use bwperim
@@ -25,7 +25,6 @@ L_imgPerim = bwperim(L_img).* L_img;
 for numTriplet = 1 : size(neighboursVertices,1)
     
     %Reset variables
-    borderImg = initBorderImg;
     BW3 = initBW3;
     BW2 = initBW2;
     BW1 = initBW1;
@@ -43,9 +42,8 @@ for numTriplet = 1 : size(neighboursVertices,1)
     BW2_dilate = imdilate(BW2, ball);
     BW3_dilate = imdilate(BW3, ball);
 
-    borderImg(L_img==0) = 1;
-    
-    [xPx, yPx, zPx] = findND((BW1_dilate .* BW2_dilate .* BW3_dilate .* borderImg) == 1);
+    %It is better use '&' than '.*' in this function
+    [xPx, yPx, zPx] = findND(BW1_dilate & BW2_dilate & BW3_dilate & initBorderImg);
     
     if length(xPx)>1
         vertices{numTriplet} = round(mean([xPx, yPx, zPx]));
