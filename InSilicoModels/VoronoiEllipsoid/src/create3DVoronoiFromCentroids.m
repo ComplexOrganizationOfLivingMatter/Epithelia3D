@@ -44,18 +44,17 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
 
     colours = colorcube(size(centroids, 1));
     newOrderOfCentroids = zeros(size(centroids, 1), 1);
-%     figure;
+    figure('visible', 'off');
     for numSeed = 1:size(centroids, 1)
         newOrderOfCentroids(numSeed, 1) = img3DLabelled(augmentedCentroids(numSeed, 1), augmentedCentroids(numSeed, 2), augmentedCentroids(numSeed, 3));
-%         perimRegionActual = bwperim(regionActual);
-%         [x, y, z] = findND(perimRegionActual);
-%         cellFigure = alphaShape(x, y, z);
-%         plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
-%         hold on;
+        [x, y, z] = findND(regionActual);
+        cellFigure = alphaShape(x, y, z);
+        plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
+        hold on;
     end
     
     ellipsoidInfo.centroids = augmentedCentroids(newOrderOfCentroids, :);
     save(strcat(outputDir, '\voronoi', date, '.mat'), 'img3DLabelled', 'ellipsoidInfo', '-v7.3');
-    %savefig(strcat(outputDir, '\voronoi_', date, '.fig'));
+    savefig(strcat(outputDir, '\voronoi_', date, '.fig'));
 end
 
