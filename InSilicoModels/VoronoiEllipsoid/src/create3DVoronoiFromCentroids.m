@@ -34,7 +34,6 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
         img3D = Drawline3D(img3D, centroids(numCentroid, 1), centroids(numCentroid, 2), centroids(numCentroid, 3), augmentedCentroids(numCentroid, 1), augmentedCentroids(numCentroid, 2), augmentedCentroids(numCentroid, 3), numCentroid);
     end
     
-    
     imgWithDistances = bwdist(img3D);
 
     disp('Reconstruct voronoi cells')
@@ -47,7 +46,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     newOrderOfCentroids = zeros(size(centroids, 1), 1);
 %     figure;
     for numSeed = 1:size(centroids, 1)
-        newOrderOfCentroids(numSeed) = img3DLabelled(centroids(numSeed, 1), centroids(numSeed, 2), centroids(numSeed, 3));
+        newOrderOfCentroids(numSeed, 1) = img3DLabelled(augmentedCentroids(numSeed, 1), augmentedCentroids(numSeed, 2), augmentedCentroids(numSeed, 3));
 %         perimRegionActual = bwperim(regionActual);
 %         [x, y, z] = findND(perimRegionActual);
 %         cellFigure = alphaShape(x, y, z);
@@ -56,8 +55,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     end
     
     ellipsoidInfo.centroids = augmentedCentroids(newOrderOfCentroids, :);
-    toc
-    save(strcat(outputDir, '\voronoi', date, '.mat'), 'img3DLabelled', 'seedsInfo', 'ellipsoidInfo', '-v7.3');
+    save(strcat(outputDir, '\voronoi', date, '.mat'), 'img3DLabelled', 'ellipsoidInfo', '-v7.3');
     %savefig(strcat(outputDir, '\voronoi_', date, '.fig'));
 end
 
