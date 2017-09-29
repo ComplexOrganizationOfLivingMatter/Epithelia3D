@@ -75,11 +75,12 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         transitionsAngleCSV = {};
         ellipsoidInfo.centroids = finalCentroids;
         initialEllipsoid = ellipsoidInfo;
-        [ finalCentroids] = getAugmentedCentroids( ellipsoidInfo, finalCentroids, max(hCellsPredefined));
+        [ ellipsoidInfo.centroids ] = getAugmentedCentroids( ellipsoidInfo, finalCentroids, max(hCellsPredefined));
         
         %Paint the ellipsoid voronoi
         disp('Creating Random voronoi')
-        [ img3DLabelled, ellipsoidInfo ] = create3DVoronoiFromCentroids(ellipsoidInfo.centroids, finalCentroids, max(hCellsPredefined), ellipsoidInfo, outputDir);
+        [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoiFromCentroids(initialEllipsoid.centroids, ellipsoidInfo.centroids, max(hCellsPredefined), ellipsoidInfo, outputDir);
+        initialEllipsoid.centroids = initialEllipsoid.centroids(newOrderOfCentroids, :);
         disp('Random voronoi created')
         
         img3DInnerLayer = zeros(size(img3DLabelled));
@@ -87,7 +88,9 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         
         [allXs, allYs, allZs] = findND(img3DLabelled > 0);
         numException = 0;
+        
         for cellHeight = hCellsPredefined
+            cellHeight
             ellipsoidInfo.cellHeight = cellHeight;
             [ validPxs, innerLayerPxs, outterLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
             
@@ -108,12 +111,15 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
                     end
                 end
             end
+            
+            disp('Getting info of vertices and neighbours: outter layer');
             ellipsoidInfo.img3DLayer = img3DOutterLayer;
             [ellipsoidInfo.neighbourhood] = calculate_neighbours3D(img3DOutterLayer);
             [ellipsoidInfo.verticesPerCell, ellipsoidInfo.verticesConnectCells] = getVertices3D(img3DOutterLayer, ellipsoidInfo.neighbourhood);
             ellipsoidInfo.cellArea = calculate_volumeOrArea(img3DOutterLayer);
             ellipsoidInfo.cellVolume = calculate_volumeOrArea(img3DLabelled);
             if isempty(initialEllipsoid.neighbourhood)
+                disp('Getting info of vertices and neighbours: inner layer');
                 initialEllipsoid.img3DLayer = img3DInnerLayer;
                 [initialEllipsoid.neighbourhood] = calculate_neighbours3D(img3DInnerLayer);
                 initialEllipsoid.cellArea = calculate_volumeOrArea(img3DInnerLayer);
@@ -127,6 +133,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             %         plot3(x, y, z,'*', 'MarkerFaceColor', colours(i, :))
             %         hold on;
             %     end
+            
             exchangeNeighboursPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
             
             newRowTable = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell);

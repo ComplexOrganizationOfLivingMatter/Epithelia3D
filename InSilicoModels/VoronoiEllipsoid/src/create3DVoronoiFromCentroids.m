@@ -1,4 +1,4 @@
-function [ img3DLabelled, ellipsoidInfo ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroids, cellHeight, ellipsoidInfo, outputDir)
+function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroids, cellHeight, ellipsoidInfo, outputDir)
 %CREATE3DVORONOIFROMCENTROIDS Summary of this function goes here
 %   Detailed explanation goes here
     
@@ -24,55 +24,40 @@ function [ img3DLabelled, ellipsoidInfo ] = create3DVoronoiFromCentroids( centro
     
     img3D = zeros(max(augmentedCentroids));
 
-    for numCentroid = 1:size(centroids, 1)
-        img3D = Drawline3D(img3D, centroids(numCentroid, 1), centroids(numCentroid, 2), centroids(numCentroid, 3), augmentedCentroids(numCentroid, 1), augmentedCentroids(numCentroid, 2), augmentedCentroids(numCentroid, 3), numCentroid);
-    end
-    
-    imgWithDistances = bwdist(img3D);
-    
     [allXs, allYs, allZs] = findND(img3D == 0);
     
     %Removing invalid areas
     disp('Removing invalid areas')
     [ validPxs, ~, ~ ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
     
-    badXs = allXs(validPxs == 0);
-    badYs = allYs(validPxs == 0);
-    badZs = allZs(validPxs == 0);
-    for numPoint = 1:size(badXs)
-        imgWithDistances(badXs(numPoint), badYs(numPoint), badZs(numPoint)) = 0;
+    for numCentroid = 1:size(centroids, 1)
+        img3D = Drawline3D(img3D, centroids(numCentroid, 1), centroids(numCentroid, 2), centroids(numCentroid, 3), augmentedCentroids(numCentroid, 1), augmentedCentroids(numCentroid, 2), augmentedCentroids(numCentroid, 3), numCentroid);
     end
     
-    %Reconstruct voronoiCells
+    
+    imgWithDistances = bwdist(img3D);
+
     disp('Reconstruct voronoi cells')
-    img3DLabelled = zeros(max(augmentedCentroids));
-    img3DActual = zeros(max(augmentedCentroids));
+    img3DLabelled = watershed(imgWithDistances, 26);
+    
+    %Removing invalid regions of img3DLabelled
+    img3DLabelled(validPxs == 0) = 0;
+
     colours = colorcube(size(centroids, 1));
+    newOrderOfCentroids = zeros(size(centroids, 1), 1);
 %     figure;
-    seedsInfo = [];
     for numSeed = 1:size(centroids, 1)
-        numSeed
-        img3DActual(img3D == numSeed) = 1;
-        imgDistPerSeed = bwdist(img3DActual);
-        regionActual = imgDistPerSeed == imgWithDistances;
-        img3DLabelled(regionActual) = numSeed;
-        img3DActual(img3D == numSeed) = 0;
-
-        perimRegionActual = bwperim(regionActual);
-        [x, y, z] = findND(perimRegionActual);
-        cellFigure = alphaShape(x, y, z);
-        plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
-        hold on;
-
-%         seedsInfo(numSeed).ID = numSeed;
-%         seedsInfo(numSeed).region = regionActual;
-%         %seedsInfo(numSeed).volume = cellFigure.volume;
-%         seedsInfo(numSeed).colour = colours(numSeed, :);
-%         seedsInfo(numSeed).pxCoordinates = [x, y, z];
-%         seedsInfo(numSeed).cellHeight = max(z) - min(z);
+        newOrderOfCentroids(numSeed) = img3DLabelled(centroids(numSeed, 1), centroids(numSeed, 2), centroids(numSeed, 3));
+%         perimRegionActual = bwperim(regionActual);
+%         [x, y, z] = findND(perimRegionActual);
+%         cellFigure = alphaShape(x, y, z);
+%         plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
+%         hold on;
     end
     
+    ellipsoidInfo.centroids = augmentedCentroids(newOrderOfCentroids, :);
+    toc
     save(strcat(outputDir, '\voronoi', date, '.mat'), 'img3DLabelled', 'seedsInfo', 'ellipsoidInfo', '-v7.3');
-    savefig(strcat(outputDir, '\voronoi_', date, '.fig'));
+    %savefig(strcat(outputDir, '\voronoi_', date, '.fig'));
 end
 
