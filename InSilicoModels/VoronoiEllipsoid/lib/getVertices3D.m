@@ -17,6 +17,10 @@ initBW3 = zeros(size(L_img));
 
 initBorderImg = zeros(size(L_img));
 
+% We first calculate the perimeter of the cell to improve efficiency
+% If the image is small, is better not to use bwperim
+% For larger images it improves a lot the efficiency
+L_imgPerim = bwperim(L_img).* L_img;
 
 for numTriplet = 1 : size(neighboursVertices,1)
     
@@ -26,26 +30,18 @@ for numTriplet = 1 : size(neighboursVertices,1)
     BW2 = initBW2;
     BW1 = initBW1;
 
-    imgNeighs1 = L_img==neighboursVertices(numTriplet, 1);
+    imgNeighs1 = L_imgPerim==neighboursVertices(numTriplet, 1);
     BW1(imgNeighs1)=1;
     
-    imgNeighs2 = L_img==neighboursVertices(numTriplet, 2);
+    imgNeighs2 = L_imgPerim==neighboursVertices(numTriplet, 2);
     BW2(imgNeighs2)=1;
     
-    imgNeighs3 = L_img==neighboursVertices(numTriplet, 3);
+    imgNeighs3 = L_imgPerim==neighboursVertices(numTriplet, 3);
     BW3(imgNeighs3)=1;
     
-    % We first calculate the perimeter of the cell to improve efficiency
-    % If the image is small, is better not to use bwperim
-    % For larger images it improves a lot the efficiency
-    bw1Perim = bwperim(BW1);
-    BW1_dilate = imdilate(bw1Perim, ball);
-    
-    bw2Perim = bwperim(BW2);
-    BW2_dilate = imdilate(bw2Perim, ball);
-    
-    bw3Perim = bwperim(BW3);
-    BW3_dilate = imdilate(bw3Perim, ball);
+    BW1_dilate = imdilate(BW1, ball);
+    BW2_dilate = imdilate(BW2, ball);
+    BW3_dilate = imdilate(BW3, ball);
 
     borderImg(L_img==0) = 1;
     
