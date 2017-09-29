@@ -47,7 +47,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     figure('visible', 'off');
     for numSeed = 1:size(centroids, 1)
         newOrderOfCentroids(numSeed, 1) = img3DLabelled(augmentedCentroids(numSeed, 1), augmentedCentroids(numSeed, 2), augmentedCentroids(numSeed, 3));
-        [x, y, z] = findND(regionActual);
+        [x, y, z] = findND(img3DLabelled == numSeed);
         cellFigure = alphaShape(x, y, z);
         plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
         hold on;
