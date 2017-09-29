@@ -9,12 +9,6 @@ ball = (sqrt(xgrid.^2 + ygrid.^2 + zgrid.^2) <= ratio);
 neighboursVertices = buildTripletsOfNeighs( neighbours );%intersect dilatation of each cell of triplet
 vertices = cell(size(neighboursVertices, 1), 1);
 
-initBW1 =zeros(size(L_img));
-
-initBW2 = zeros(size(L_img));
-
-initBW3 = zeros(size(L_img));
-
 initBorderImg = L_img==0;
 
 % We first calculate the perimeter of the cell to improve efficiency
@@ -22,25 +16,17 @@ initBorderImg = L_img==0;
 % For larger images it improves a lot the efficiency
 L_imgPerim = bwperim(L_img).* L_img;
 
-for numTriplet = 1 : size(neighboursVertices,1)
-    
-    %Reset variables
-    BW3 = initBW3;
-    BW2 = initBW2;
-    BW1 = initBW1;
+cellDilated = cell(size(neighbours, 1), 1);
+for numCell = 1:size(neighbours, 1)
+    numCell
+    cellPerim = L_imgPerim == numCell;
+    cellDilated{numCell} = imdilate(cellPerim, ball);
+end
 
-    imgNeighs1 = L_imgPerim==neighboursVertices(numTriplet, 1);
-    BW1(imgNeighs1)=1;
-    
-    imgNeighs2 = L_imgPerim==neighboursVertices(numTriplet, 2);
-    BW2(imgNeighs2)=1;
-    
-    imgNeighs3 = L_imgPerim==neighboursVertices(numTriplet, 3);
-    BW3(imgNeighs3)=1;
-    
-    BW1_dilate = imdilate(BW1, ball);
-    BW2_dilate = imdilate(BW2, ball);
-    BW3_dilate = imdilate(BW3, ball);
+for numTriplet = 1 : size(neighboursVertices,1)
+    BW1_dilate = cellDilated{neighboursVertices(numTriplet, 1)};
+    BW2_dilate = cellDilated{neighboursVertices(numTriplet, 2)};
+    BW3_dilate = cellDilated{neighboursVertices(numTriplet, 3)};
 
     %It is better use '&' than '.*' in this function
     [xPx, yPx, zPx] = findND(BW1_dilate & BW2_dilate & BW3_dilate & initBorderImg);
