@@ -81,22 +81,26 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         disp('Creating Random voronoi')
         [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoiFromCentroids(initialEllipsoid.centroids, ellipsoidInfo.centroids, max(hCellsPredefined), ellipsoidInfo, outputDir);
         initialEllipsoid.centroids = initialEllipsoid.centroids(newOrderOfCentroids, :);
+        close
         disp('Random voronoi created')
         
         initialEllipsoid.neighbourhood = [];
         
-        [allXs, allYs, allZs] = findND(img3DLabelled);
+        % Get all the pixels of the image
+        [allXs, allYs, allZs] = findND(img3DLabelled > 0);
         numException = 0;
         
         for cellHeight = hCellsPredefined
             cellHeight
             ellipsoidInfo.cellHeight = cellHeight;
-                                 
+            
             [ validPxs, innerLayerPxs, outterLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
             img3DLabelledActual = img3DLabelled;
-            img3DLabelledActual(validPxs == 0) = 0;
+            validIndices = sub2ind(size(image3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
+            img3DLabelledActual(validIndices) = 0;
             img3DOutterLayer = zeros(size(img3DLabelled));
-            img3DOutterLayer(outterLayerPxs) = img3DLabelledActual(outterLayerPxs);
+            outterLayerIndices = sub2ind(size(image3DLabelled), allXs(outterLayerPxs), allYs(outterLayerPxs), allZs(outterLayerPxs));
+            img3DOutterLayer(outterLayerIndices) = img3DLabelledActual(outterLayerIndices);
             
             disp('Getting info of vertices and neighbours: outter layer');
             ellipsoidInfo.img3DLayer = img3DOutterLayer;
@@ -108,7 +112,8 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
                 disp('Getting info of vertices and neighbours: inner layer');
                 
                 img3DInnerLayer = zeros(size(img3DLabelled));
-                img3DInnerLayer(innerLayerPxs) = img3DLabelledActual(innerLayerPxs);
+                innerLayerIndices = sub2ind(size(image3DLabelled), allXs(innerLayerPxs), allYs(innerLayerPxs), allZs(innerLayerPxs));
+                img3DInnerLayer(innerLayerIndices) = img3DLabelledActual(innerLayerIndices);
                 initialEllipsoid.img3DLayer = img3DInnerLayer;
                 [initialEllipsoid.neighbourhood] = calculate_neighbours3D(img3DInnerLayer);
                 initialEllipsoid.cellArea = calculate_volumeOrArea(img3DInnerLayer);
@@ -247,6 +252,5 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
 %     end
         %You can see the figures:
         %set(get(0,'children'),'visible','on')
-    close all
 end
 
