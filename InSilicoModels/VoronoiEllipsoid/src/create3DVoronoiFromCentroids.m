@@ -51,12 +51,13 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     colours = colorcube(size(centroids, 1));
     newOrderOfCentroids = zeros(size(centroids, 1), 1);
     figure('visible', 'off');
+    img3DLabelledPerim = bwperim(img3DLabelled) .* img3DLabelled;
     for numSeed = 1:size(centroids, 1)
         % Getting the new order of the seeds
         newOrderOfCentroids(numSeed, 1) = img3DLabelled(augmentedCentroids(numSeed, 1), augmentedCentroids(numSeed, 2), augmentedCentroids(numSeed, 3));
         
         % Painting each cell
-        [x, y, z] = findND(img3DLabelled == numSeed);
+        [x, y, z] = findND(img3DLabelledPerim == numSeed);
         cellFigure = alphaShape(x, y, z);
         plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
         hold on;
