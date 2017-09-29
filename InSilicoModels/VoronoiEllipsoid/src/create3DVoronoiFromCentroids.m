@@ -1,9 +1,15 @@
 function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoiFromCentroids( centroids,  augmentedCentroids, cellHeight, ellipsoidInfo, outputDir)
 %CREATE3DVORONOIFROMCENTROIDS Summary of this function goes here
 %   Detailed explanation goes here
-    
+
+    % This will be used to increase the resolution of the pixel location
+    % Because a pixel location has multiple decimals, when we round it 
+    % we are simplifying it. This is done to avoid that.
     ellipsoidInfo.resolutionFactor = 20;
 
+    % Put the centroids starting at 0. Initially, we have the center of the Ellipsoid
+    % at [0, 0, 0], so part of the centroids will be negative. This can't be possible
+    % when dealing with images.
     xOffset = abs(min(augmentedCentroids(:, 1)));
     ellipsoidInfo.xOffset = xOffset;
     centroids(:, 1) = centroids(:, 1) + xOffset;
@@ -26,7 +32,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
 
     [allXs, allYs, allZs] = findND(img3D == 0);
     
-    %Removing invalid areas
+    % Removing invalid areas
     disp('Removing invalid areas')
     [ validPxs, ~, ~ ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
     
@@ -46,7 +52,10 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     newOrderOfCentroids = zeros(size(centroids, 1), 1);
     figure('visible', 'off');
     for numSeed = 1:size(centroids, 1)
+        % Getting the new order of the seeds
         newOrderOfCentroids(numSeed, 1) = img3DLabelled(augmentedCentroids(numSeed, 1), augmentedCentroids(numSeed, 2), augmentedCentroids(numSeed, 3));
+        
+        % Painting each cell
         [x, y, z] = findND(img3DLabelled == numSeed);
         cellFigure = alphaShape(x, y, z);
         plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
