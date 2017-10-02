@@ -5,7 +5,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     % This will be used to increase the resolution of the pixel location
     % Because a pixel location has multiple decimals, when we round it 
     % we are simplifying it. This is done to avoid that.
-    ellipsoidInfo.resolutionFactor = 20;
+    ellipsoidInfo.resolutionFactor = 100;
 
     % Put the centroids starting at 0. Initially, we have the center of the Ellipsoid
     % at [0, 0, 0], so part of the centroids will be negative. This can't be possible
@@ -28,7 +28,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     centroids = round(centroids * ellipsoidInfo.resolutionFactor) + 1;
     augmentedCentroids = round(augmentedCentroids * ellipsoidInfo.resolutionFactor) + 1;
     
-    img3D = zeros(max(augmentedCentroids));
+    img3D = zeros(max(augmentedCentroids) + 1);
 
     [allXs, allYs, allZs] = findND(img3D == 0);
     
@@ -44,10 +44,10 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
 
     disp('Reconstruct voronoi cells')
     img3DLabelled = double(watershed(imgWithDistances, 26));
-    novalidIndices = sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
+    %novalidIndices = sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
             
     %Removing invalid regions of img3DLabelled
-    img3DLabelled(novalidIndices) = 0;
+    img3DLabelled(validPxs == 0) = 0;
 
     colours = colorcube(size(centroids, 1));
     newOrderOfCentroids = zeros(size(centroids, 1), 1);
@@ -55,7 +55,10 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     img3DLabelledPerim = bwperim(img3DLabelled) .* img3DLabelled;
     for numSeed = 1:size(centroids, 1)
         % Getting the new order of the seeds
-        newOrderOfCentroids(numSeed, 1) = img3DLabelled(augmentedCentroids(numSeed, 1), augmentedCentroids(numSeed, 2), augmentedCentroids(numSeed, 3));
+        newOrderOfCentroids(numSeed, 1) = img3DLabelled(centroids(numSeed, 1), centroids(numSeed, 2), centroids(numSeed, 3));
+        if newOrderOfCentroids(numSeed, 1) == 0
+            newOrderOfCentroids(numSeed, 1) = img3DLabelled(augmentedCentroids(numSeed, 1), augmentedCentroids(numSeed, 2), augmentedCentroids(numSeed, 3));
+        end
         
         % Painting each cell
         [x, y, z] = findND(img3DLabelledPerim == numSeed);
