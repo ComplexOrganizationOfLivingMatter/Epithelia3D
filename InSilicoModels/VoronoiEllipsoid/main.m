@@ -8,12 +8,12 @@ addpath(genpath('lib'));
 % - Stage 8
 % - Stage 4
 allCombinations = {
-    15 10 10 [0.5, 1, 2] 'Zepellin'
-    10 15 15 [0.5, 1, 2] 'FilledDonnut'
-    10 10 10 [0.5, 1, 2] 'Sphere'
-    97.46 50.75 50.75 6.25 'Stage 8'
-    38.57277778	31.61605556 31.61605556	5.506047536 'Stage 4'
-    };
+    38.57277778-5.506047536	31.61605556-5.506047536 31.61605556-5.506047536	5.506047536 'Stage 4'
+    15 10 10 [30] 'Zepellin'
+    10 15 15 [50] 'FilledDonnut'
+    10 10 10 [30] 'Sphere'
+    97.46-6.25 50.75-6.25 50.75-6.25 6.25 'Stage 8'
+ };
 
 for numRandomization = 1:20
     outputDir = strcat('results\random_', num2str(numRandomization));
@@ -28,15 +28,15 @@ for numRandomization = 1:20
         outputDirActual = strcat(outputDir, '\', fileName);
         mkdir(outputDirActual);
         
-        if min([radiusX, radiusY, radiusZ]) ~= 10
-            radiusInModelY = 10;
+        if min([radiusX, radiusY, radiusZ]) ~= 1
+            radiusInModelY = 1;
             radiusZ = (radiusZ * radiusInModelY)/radiusY;
             radiusX = (radiusX * radiusInModelY)/radiusY;
             hCell = (hCell * radiusInModelY)/radiusY;
             radiusY = radiusInModelY;
         end
         
-        a = voronoi3DEllipsoid([0 0 0], [radiusX radiusY radiusZ], 500, outputDirActual, hCell);
+        a = voronoi3DEllipsoid([0 0 0], [radiusX radiusY radiusZ], 200, outputDirActual, hCell);
         if isempty(a)
             transitionByRadius(numCombination) = {[]};
         else
