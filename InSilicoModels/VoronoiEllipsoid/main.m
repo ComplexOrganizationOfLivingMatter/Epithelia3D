@@ -45,8 +45,9 @@ for numRandomization = 1:20
     end
     writetable(vertcat(transitionByRadius{:}), strcat(outputDir, '\transitionsInfo_', date, '.csv'), 'Delimiter', ';');
     transitionByRadiusAll{numRandomization} = vertcat(transitionByRadius{:});
+    close all
 end
-writetable(vertcat(transitionByRadiusAll{:}), strcat('..\results\transitionsInfoAllRandomizations_', date, '.xls'))
+writetable(vertcat(transitionByRadiusAll{:}), strcat('results\transitionsInfoAllRandomizations_', date, '.xls'))
 %Calculate mean of all the transitions
-calculateMeanOfXls(strcat('..\results\transitionsInfoAllRandomizations_', date, '.xls'));
+calculateMeanOfXls(strcat('results\transitionsInfoAllRandomizations_', date, '.xls'));
 
