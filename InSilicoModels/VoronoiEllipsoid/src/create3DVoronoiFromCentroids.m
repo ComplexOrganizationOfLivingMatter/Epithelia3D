@@ -43,10 +43,11 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     imgWithDistances = bwdist(img3D);
 
     disp('Reconstruct voronoi cells')
-    img3DLabelled = watershed(imgWithDistances, 26);
-    
+    img3DLabelled = double(watershed(imgWithDistances, 26));
+    novalidIndices = sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
+            
     %Removing invalid regions of img3DLabelled
-    img3DLabelled(validPxs == 0) = 0;
+    img3DLabelled(novalidIndices) = 0;
 
     colours = colorcube(size(centroids, 1));
     newOrderOfCentroids = zeros(size(centroids, 1), 1);

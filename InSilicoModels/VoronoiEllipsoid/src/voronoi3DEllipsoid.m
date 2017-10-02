@@ -96,8 +96,8 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             
             [ validPxs, innerLayerPxs, outterLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
             img3DLabelledActual = img3DLabelled;
-            validIndices = sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
-            img3DLabelledActual(validIndices) = 0;
+            novalidIndices = sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
+            img3DLabelledActual(novalidIndices) = 0;
             img3DOutterLayer = zeros(size(img3DLabelled));
             outterLayerIndices = sub2ind(size(img3DLabelled), allXs(outterLayerPxs), allYs(outterLayerPxs), allZs(outterLayerPxs));
             img3DOutterLayer(outterLayerIndices) = img3DLabelledActual(outterLayerIndices);
