@@ -2,7 +2,6 @@ function [neighs_real,sides_cells]=calculate_neighbours3D(L_img)
 
 %% Generate neighbours
     ratio=4;
-%     se = strel('ball',ratio,ratio,0);
     neighs_real={};
     cells=sort(unique(L_img));
     cells=cells(cells~=0);                  %% Deleting cell 0 from range
@@ -13,9 +12,8 @@ function [neighs_real,sides_cells]=calculate_neighbours3D(L_img)
     
 
     for cel=1 : length(cells)
-        BW = bwperim(L_img==cells(cel));
-        [pi,pj]=find(BW==1);
-
+        
+        BW = L_img==cells(cel);
         BW_dilate=imdilate(BW,ball);
         pixels_neighs=find(BW_dilate==1);
         neighs=unique(L_img(pixels_neighs));
