@@ -138,7 +138,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             
             tableDataAngles=[];
             if ~isempty(cellsTransition)
-                [tableDataAngles, anglesPerRegion, ellipsoidInfo] = getAnglesOfEdgeTransition( initialEllipsoid, ellipsoidInfo, outputDir);
+                [tableDataAngles, anglesPerRegion, ellipsoidInfo] = getAnglesLengthAndTranstionFromTheEdges( initialEllipsoid, ellipsoidInfo);
                 close
             end
             

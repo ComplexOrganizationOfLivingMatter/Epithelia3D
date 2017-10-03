@@ -1,4 +1,4 @@
-function [outerSurfaceDataTransition,outerSurfaceDataNoTransition, outerEllipsoidInfo] = getAnglesOfEdgeTransition( innerEllipsoidInfo, outerEllipsoidInfo, outputDir )
+function [outerSurfaceDataTransition,outerSurfaceDataNoTransition, outerEllipsoidInfo] = getAnglesLengthAndTranstionFromTheEdges( innerEllipsoidInfo, outerEllipsoidInfo )
 
     
     pairOfNeighsOuterSurface=(cellfun(@(x, y) [y*ones(length(x),1),x],outerEllipsoidInfo.neighbourhood,num2cell(1:size(outerEllipsoidInfo.neighbourhood,1))','UniformOutput',false));
