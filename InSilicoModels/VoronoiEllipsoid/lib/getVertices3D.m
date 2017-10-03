@@ -1,4 +1,4 @@
-function [ vertices, neighboursVertices] = getVertices3D( L_img, neighbours )
+function [ vertices, neighboursVertices] = getVertices3D( L_img, neighbours, ellipsoidInfo )
 % With a labelled image as input, the objective is get all vertex for each
 % cell
 
@@ -16,17 +16,17 @@ initBorderImg = L_img==0;
 % For larger images it improves a lot the efficiency
 L_imgPerim = bwperim(L_img).* L_img;
 
-cellDilated = cell(size(neighbours, 1), 1);
+ellipsoidInfo.cellDilated = cell(size(neighbours, 1), 1);
 for numCell = 1:size(neighbours, 1)
     numCell
     cellPerim = L_imgPerim == numCell;
-    cellDilated{numCell} = imdilate(cellPerim, ball);
+    ellipsoidInfo.cellDilated{numCell} = imdilate(cellPerim, ball);
 end
 
 for numTriplet = 1 : size(neighboursVertices,1)
-    BW1_dilate = cellDilated{neighboursVertices(numTriplet, 1)};
-    BW2_dilate = cellDilated{neighboursVertices(numTriplet, 2)};
-    BW3_dilate = cellDilated{neighboursVertices(numTriplet, 3)};
+    BW1_dilate = ellipsoidInfo.cellDilated{neighboursVertices(numTriplet, 1)};
+    BW2_dilate = ellipsoidInfo.cellDilated{neighboursVertices(numTriplet, 2)};
+    BW3_dilate = ellipsoidInfo.cellDilated{neighboursVertices(numTriplet, 3)};
 
     %It is better use '&' than '.*' in this function
     [xPx, yPx, zPx] = findND(BW1_dilate & BW2_dilate & BW3_dilate & initBorderImg);

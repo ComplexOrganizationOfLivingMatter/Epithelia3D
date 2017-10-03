@@ -107,7 +107,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             disp('Getting info of vertices and neighbours: outter layer');
             ellipsoidInfo.img3DLayer = img3DOutterLayer;
             [ellipsoidInfo.neighbourhood] = calculate_neighbours3D(img3DOutterLayer);
-            [ellipsoidInfo.verticesPerCell, ellipsoidInfo.verticesConnectCells] = getVertices3D(img3DOutterLayer, ellipsoidInfo.neighbourhood);
+            [ellipsoidInfo.verticesPerCell, ellipsoidInfo.verticesConnectCells] = getVertices3D(img3DOutterLayer, ellipsoidInfo.neighbourhood, ellipsoidInfo);
             ellipsoidInfo.cellArea = calculate_volumeOrArea(img3DOutterLayer);
             ellipsoidInfo.cellVolume = calculate_volumeOrArea(img3DLabelled);
             if isempty(initialEllipsoid.neighbourhood)
@@ -119,7 +119,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
                 initialEllipsoid.img3DLayer = img3DInnerLayer;
                 [initialEllipsoid.neighbourhood] = calculate_neighbours3D(img3DInnerLayer);
                 initialEllipsoid.cellArea = calculate_volumeOrArea(img3DInnerLayer);
-                [initialEllipsoid.verticesPerCell, initialEllipsoid.verticesConnectCells] = getVertices3D(img3DInnerLayer, initialEllipsoid.neighbourhood);
+                [initialEllipsoid.verticesPerCell, initialEllipsoid.verticesConnectCells] = getVertices3D(img3DInnerLayer, initialEllipsoid.neighbourhood, initialEllipsoid);
             end
             %     figure;
             %     for i = 1:500
