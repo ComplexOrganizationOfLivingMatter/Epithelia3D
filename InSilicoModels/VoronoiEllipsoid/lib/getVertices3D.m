@@ -1,4 +1,4 @@
-function [ vertices, neighboursVertices] = getVertices3D( L_img, neighbours, ellipsoidInfo )
+function [ ellipsoidInfo] = getVertices3D( L_img, neighbours, ellipsoidInfo )
 % With a labelled image as input, the objective is get all vertex for each
 % cell
 
@@ -38,7 +38,8 @@ for numTriplet = 1 : size(neighboursVertices,1)
     end
 end
 
-
+ellipsoidInfo.verticesPerCell = vertices;
+ellipsoidInfo.verticesConnectCells = neighboursVertices;
 
 %Correct false negative and positive
 
