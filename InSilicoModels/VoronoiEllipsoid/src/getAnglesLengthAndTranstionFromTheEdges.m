@@ -2,10 +2,11 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition, outerEllipsoi
 
     
     pairOfNeighsOuterSurface=(cellfun(@(x, y) [y*ones(length(x),1),x],outerEllipsoidInfo.neighbourhood,num2cell(1:size(outerEllipsoidInfo.neighbourhood,1))','UniformOutput',false));
-    outerEllipsoidInfo.neighbourhood=unique(vertcat(pairOfNeighsOuterSurface{:}),'rows');
-    outerEllipsoidInfo.neighbourhood=unique([min(outerEllipsoidInfo.neighbourhood,[],2),max(outerEllipsoidInfo.neighbourhood,[],2)],'rows');
+    uniquePairOfNeighsOuterSurface=unique(vertcat(pairOfNeighsOuterSurface{:}),'rows');
+    uniquePairOfNeighsOuterSurface=unique([min(uniquePairOfNeighsOuterSurface,[],2),max(uniquePairOfNeighsOuterSurface,[],2)],'rows');
 
-    outerSurfaceTotalData=struct('edgeLength',zeros(size(outerEllipsoidInfo.neighbourhood,1),1),'edgeAngle',zeros(size(outerEllipsoidInfo.neighbourhood,1),1),'edgeVertices',zeros(size(outerEllipsoidInfo.neighbourhood,1),1));
+    numOfEdges=size(uniquePairOfNeighsOuterSurface,1);
+    outerSurfaceTotalData=struct('edgeLength',zeros(numOfEdges,1),'edgeAngle',zeros(numOfEdges,1),'edgeVertices',zeros(numOfEdges,1));
     
     %define the morphological shape to calculate the intercellular edge
     ratio=4;
@@ -27,9 +28,9 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition, outerEllipsoi
     
 %     outerEllipsoidInfo.cellDilated{i}
     %capture the length and the angle from the pair of neighbours    
-    for i=1:size(outerEllipsoidInfo.neighbourhood,1)
+    for i=1:numOfEdges
         
-        mask=dilatedCell{outerEllipsoidInfo.neighbourhood(i,1)}.*dilatedCell{outerEllipsoidInfo.neighbourhood(i,2)};
+        mask=dilatedCell{uniquePairOfNeighsOuterSurface(i,1)}.*dilatedCell{uniquePairOfNeighsOuterSurface(i,2)};
         [x,y,z]=findND(mask);
         edgeCoordinates=[x,y,z];
         [rowIndex,colIndex]=find(squareform(pdist([x,y,z]))==max(max(squareform(pdist([x,y,z])))));
@@ -42,6 +43,8 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition, outerEllipsoi
     end
     
     %get edges of transitions
+    disp('VA A PETAR AQUÍ');
+    disp('Input #2 expected to be a cell array, was double instead.');
     Lossing=cellfun(@(x,y) setdiff(x,y),outerEllipsoidInfo.neighbourhood,innerEllipsoidInfo.neighbourhood,'UniformOutput',false);
     
     pairOfLostNeigh=cellfun(@(x, y) [y*ones(length(x),1),x],Lossing,num2cell(1:size(outerEllipsoidInfo.neighbourhood,1))','UniformOutput',false);
@@ -56,6 +59,13 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition, outerEllipsoi
     outerDataVertices=struct2cell(outerSurfaceTotalData);
     outerDataVertices=outerDataVertices(3,:);
     meanEdgeVertices=cell2mat(cellfun(@(x) mean(x),outerDataVertices,'UniformOutput',false)');
+    
+    isRightEdgeTransition=zeros(numOfEdges,length(endLimitRight));
+    isLeftEdgeTransition=zeros(numOfEdges,length(endLimitRight));
+    isCentralEdgeTransition=zeros(numOfEdges,length(endLimitRight));
+    isRightEdgeNoTransition=zeros(numOfEdges,length(endLimitRight));
+    isLeftEdgeNoTransition=zeros(numOfEdges,length(endLimitRight));
+    isCentralEdgeNoTransition=zeros(numOfEdges,length(endLimitRight));
     for i=1:length(endLimitRight)
         isRightEdgeTransition(:,i) = (meanEdgeVertices(:,1) > endLimitRight(i)).*logical(indexesEdgesTransition);
         isLeftEdgeTransition(:,i)= (meanEdgeVertices(:,1) < endLimitLeft(i)).*logical(indexesEdgesTransition);
@@ -66,10 +76,10 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition, outerEllipsoi
     end
     
     %organize transitions per region
-    [outerSurfaceDataTransition.TotalRegion,outerSurfaceDataNoTransition.TotalRegion]=classifyEdgeDataPerZone(outerEllipsoidInfo,outerSurfaceTotalData,indexesEdgesTransition,indexesEdgesNoTransition);
-    [outerSurfaceDataTransition.RightRegion,outerSurfaceDataNoTransition.RightRegion]=classifyEdgeDataPerZone(outerEllipsoidInfo,outerSurfaceTotalData,isRightEdgeTransition,isRightEdgeNoTransition);
-    [outerSurfaceDataTransition.LeftRegion,outerSurfaceDataNoTransition.LeftRegion]=classifyEdgeDataPerZone(outerEllipsoidInfo,outerSurfaceTotalData,isLeftEdgeTransition,isLeftEdgeNoTransition);
-    [outerSurfaceDataTransition.CentralRegion,outerSurfaceDataNoTransition.CentralRegion]=classifyEdgeDataPerZone(outerEllipsoidInfo,outerSurfaceTotalData,isCentralEdgeTransition,isCentralEdgeNoTransition);
+    [outerSurfaceDataTransition.TotalRegion,outerSurfaceDataNoTransition.TotalRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,indexesEdgesTransition,indexesEdgesNoTransition);
+    [outerSurfaceDataTransition.RightRegion,outerSurfaceDataNoTransition.RightRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,isRightEdgeTransition,isRightEdgeNoTransition);
+    [outerSurfaceDataTransition.LeftRegion,outerSurfaceDataNoTransition.LeftRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,isLeftEdgeTransition,isLeftEdgeNoTransition);
+    [outerSurfaceDataTransition.CentralRegion,outerSurfaceDataNoTransition.CentralRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,isCentralEdgeTransition,isCentralEdgeNoTransition);
 
     
     numCellsAtXBorderRight = sum(outerEllipsoidInfo.finalCentroids(:, 1) < -(outerEllipsoidInfo.bordersSituatedAt(numBorder) * outerEllipsoidInfo.xRadius));

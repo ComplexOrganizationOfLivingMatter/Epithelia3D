@@ -1,4 +1,4 @@
-function [outerSurfaceDataTransition,outerSurfaceDataNoTransition]=classifyEdgeDataPerZone(outerEllipsoidInfo,outerSurfaceTotalData,indexesEdgesTransition,indexesEdgesNoTransition,numCells)  
+function [outerSurfaceDataTransition,outerSurfaceDataNoTransition]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,indexesEdgesTransition,indexesEdgesNoTransition,numCells)  
 
     for i=1:size(indexesEdgesTransition,2)
         %define transition edge length, angle and vertices
@@ -12,7 +12,7 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition]=classifyEdgeD
         outerSurfaceDataNoTransition(:,i).edgeVertices=cat(1,{outerSurfaceTotalData(indexesEdgesNoTransition(:,i)).edgeVertices});
 
         %outerSurfaceDataTransition
-        outerSurfaceDataTransition(:,i).cellularMotifs=outerEllipsoidInfo(indexesEdgesTransition(:,i)).neighbourhood;
+        outerSurfaceDataTransition(:,i).cellularMotifs=uniquePairOfNeighsOuterSurface(indexesEdgesTransition(i,:));
         outerSurfaceDataTransition(:,i).numOfEdges=size(outerSurfaceDataTransition.edgeAngle,1);
         outerSurfaceDataTransition(:,i).numOfEdgesPerCell=outerSurfaceDataTransition(:,i).numOfEdges/numCells;
         if size(outerSurfaceDataTransition.edgeAngle,1)>0
@@ -24,7 +24,7 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition]=classifyEdgeD
             outerSurfaceDataTransition(:,i).proportionAnglesBetween75_90deg=sum(anglesTransition>75 & anglesTransition <= 90)/length(outerSurfaceDataTransition.numOfEdges);
         end
         %outerSurfaceDataNoTransition
-        outerSurfaceDataNoTransition(:,i).cellularMotifs=outerEllipsoidInfo(indexesEdgesNoTransition(:,i)).neighbourhood;
+        outerSurfaceDataNoTransition(:,i).cellularMotifs=uniquePairOfNeighsOuterSurface(indexesEdgesNoTransition(i,:));
         outerSurfaceDataNoTransition(:,i).numOfEdges=size(outerSurfaceDataNoTransition.edgeAngle,1);
         outerSurfaceDataNoTransition(:,i).numOfEdgesPerCell=outerSurfaceDataNoTransition(:,i).numOfEdges/numCells;
         outerSurfaceDataNoTransition(:,i).proportionAnglesLess15deg=sum(anglesNoTransition<=15)/length(outerSurfaceDataNoTransition.numOfEdges);
