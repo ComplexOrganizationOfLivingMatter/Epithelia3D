@@ -1,4 +1,4 @@
-function [neighs_real] = calculate_neighbours3D(L_img)
+function [ellipsoidInfo] = calculate_neighbours3D(L_img, ellipsoidInfo)
 
 %% Generate neighbours
     ratio=4;
@@ -13,8 +13,10 @@ function [neighs_real] = calculate_neighbours3D(L_img)
     
     for cell = 1 : length(cells)
         BW_dilate = imdilate(imgPerim==cells(cell), ball);
+        ellipsoidInfo.cellDilated{numCell} = BW_dilate;
         neighs=unique(L_img(BW_dilate));
         neighs_real{cells(cell), 1} = neighs(neighs ~= 0 & neighs ~= cells(cell));
     end
+    ellipsoidInfo.neighbourhood = neighs_real;
 end
 

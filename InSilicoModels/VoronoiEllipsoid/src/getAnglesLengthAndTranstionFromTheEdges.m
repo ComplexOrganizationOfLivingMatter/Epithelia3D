@@ -11,7 +11,7 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
     outerSurfaceTotalData=struct('edgeLength',zeros(numOfEdges,1),'edgeAngle',zeros(numOfEdges,1),'edgeVertices',zeros(numOfEdges,1));
     
     %define the vertices in the ellipsoid grid
-    [xVerGrid,yVerGrid,zVerGrid]=ellipsoid((outerEllipsoidInfo.xCenter+outerEllipsoidInfo.xOffset)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.yCenter+outerEllipsoidInfo.yOffset)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.zCenter+outerEllipsoidInfo.zOffset)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.yRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.zRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, outerEllipsoidInfo.resolutionEllipse);
+    [xVerGrid,yVerGrid,zVerGrid]=ellipsoid((outerEllipsoidInfo.xCenter+outerEllipsoidInfo.xCenter)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.yCenter+outerEllipsoidInfo.yCenter)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.zCenter+outerEllipsoidInfo.zCenter)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.yRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.zRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, outerEllipsoidInfo.resolutionEllipse);
     [~,verGrid,~] = surf2patch(xVerGrid,yVerGrid,zVerGrid);
     
     %surf(xVerGrid,yVerGrid,zVerGrid)
@@ -56,8 +56,8 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
     indexesEdgesTransition=ismember(uniquePairOfNeighsOuterSurface,pairOfLostNeigh,'rows');
     
     %classify data per zone
-    endLimitRight=((outerEllipsoidInfo.xOffset+(outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.bordersSituatedAt)*outerEllipsoidInfo.resolutionFactor);   
-    endLimitLeft=((outerEllipsoidInfo.xOffset-(outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.bordersSituatedAt)*outerEllipsoidInfo.resolutionFactor);
+    endLimitRight=((outerEllipsoidInfo.xCenter+(outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.bordersSituatedAt)*outerEllipsoidInfo.resolutionFactor);   
+    endLimitLeft=((outerEllipsoidInfo.xCenter-(outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.bordersSituatedAt)*outerEllipsoidInfo.resolutionFactor);
     
     outerDataVertices=struct2cell(outerSurfaceTotalData);
     outerDataVertices=outerDataVertices(3,:);

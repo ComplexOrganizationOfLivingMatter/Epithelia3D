@@ -7,28 +7,10 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     % we are simplifying it. This is done to avoid that.
     ellipsoidInfo.resolutionFactor = 50;
 
-    % Put the centroids starting at 0. Initially, we have the center of the Ellipsoid
-    % at [0, 0, 0], so part of the centroids will be negative. This can't be possible
-    % when dealing with images.
-    xOffset = abs(min(augmentedCentroids(:, 1)));
-    ellipsoidInfo.xOffset = xOffset;
-    centroids(:, 1) = centroids(:, 1) + xOffset;
-    augmentedCentroids(:, 1) = augmentedCentroids(:, 1) + xOffset;
-    
-    yOffset = abs(min(augmentedCentroids(:, 2)));
-    ellipsoidInfo.yOffset = yOffset;
-    centroids(:, 2) = centroids(:, 2) + yOffset;
-    augmentedCentroids(:, 2) = augmentedCentroids(:, 2) + yOffset;
-    
-    zOffset = abs(min(augmentedCentroids(:, 3)));
-    ellipsoidInfo.zOffset = zOffset;
-    centroids(:, 3) = centroids(:, 3) + zOffset;
-    augmentedCentroids(:, 3) = augmentedCentroids(:, 3) + zOffset;
-
     centroids = round(centroids * ellipsoidInfo.resolutionFactor) + 1;
     augmentedCentroids = round(augmentedCentroids * ellipsoidInfo.resolutionFactor) + 1;
     
-    img3D = zeros(max(augmentedCentroids) + 1);
+    img3D = zeros(max(augmentedCentroids)+1);
 
     [allXs, allYs, allZs] = findND(img3D == 0);
     
