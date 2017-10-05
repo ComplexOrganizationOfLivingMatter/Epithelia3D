@@ -14,14 +14,15 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
     [xVerGrid,yVerGrid,zVerGrid]=ellipsoid((outerEllipsoidInfo.xCenter+outerEllipsoidInfo.xCenter)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.yCenter+outerEllipsoidInfo.yCenter)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.zCenter+outerEllipsoidInfo.zCenter)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.yRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.zRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, outerEllipsoidInfo.resolutionEllipse);
     [~,verGrid,~] = surf2patch(xVerGrid,yVerGrid,zVerGrid);
     
-    %surf(xVerGrid,yVerGrid,zVerGrid)
+    surf(xVerGrid,yVerGrid,zVerGrid)
 
 %     uiopen('D:\Pedro\Epithelia3D\InSilicoModels\VoronoiEllipsoid\results\random_1\Stage 4\voronoi_04-Oct-2017.fig',1)
 %     set(get(0,'children'),'visible','on')
     %capture the length and the angle from the pair of neighbours    
     for i=1:numOfEdges
         
-        mask=outerEllipsoidInfo.cellDilated{uniquePairOfNeighsOuterSurface(i,1),1}.*outerEllipsoidInfo.cellDilated{uniquePairOfNeighsOuterSurface(i,2),1};
+        mask=outerEllipsoidInfo.cellDilated{uniquePairOfNeighsOuterSurface(i,1)}.*outerEllipsoidInfo.cellDilated{uniquePairOfNeighsOuterSurface(i,2)};
+        mask(~outerEllipsoidInfo.surfaceIndices)=0;
         mask(outerEllipsoidInfo.img3DLayer~=0)=0;
         %%%incluir la condicion de que la dilatación no contenga pixels en
         %%%invalidZone. Que venga ya la imagen limpia o limpiarla aquí
@@ -34,8 +35,8 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
         outerSurfaceTotalData(i).edgeAngle=edgeAngle;
         outerSurfaceTotalData(i).edgeVertices=vertsEdge;
         
-        %plot3(x,y,z,'*')
-        plot3(vertsEdge(:,1),vertsEdge(:,2),vertsEdge(:,3))
+        plot3(x,y,z,'*')
+        %plot3(vertsEdge(:,1),vertsEdge(:,2),vertsEdge(:,3))
         hold on
 
         

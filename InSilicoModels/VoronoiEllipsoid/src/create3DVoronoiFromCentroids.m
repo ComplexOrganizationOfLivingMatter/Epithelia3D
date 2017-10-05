@@ -26,6 +26,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
 
     disp('Reconstruct voronoi cells')
     img3DLabelled = double(watershed(imgWithDistances, 26));
+    img3DLabelledWithoutFilter=img3DLabelled;
     %novalidIndices = sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
             
     %Removing invalid regions of img3DLabelled
@@ -37,9 +38,9 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     img3DLabelledPerim = bwperim(img3DLabelled) .* img3DLabelled;
     for numSeed = 1:size(centroids, 1)
         % Getting the new order of the seeds
-        newOrderOfCentroids(numSeed, 1) = img3DLabelled(centroids(numSeed, 1), centroids(numSeed, 2), centroids(numSeed, 3));
+        newOrderOfCentroids(numSeed, 1) = img3DLabelledWithoutFilter(centroids(numSeed, 1), centroids(numSeed, 2), centroids(numSeed, 3));
         if newOrderOfCentroids(numSeed, 1) == 0
-            newOrderOfCentroids(numSeed, 1) = img3DLabelled(augmentedCentroids(numSeed, 1), augmentedCentroids(numSeed, 2), augmentedCentroids(numSeed, 3));
+            newOrderOfCentroids(numSeed, 1) = img3DLabelledWithoutFilter(augmentedCentroids(numSeed, 1), augmentedCentroids(numSeed, 2), augmentedCentroids(numSeed, 3));
         end
         
         % Painting each cell

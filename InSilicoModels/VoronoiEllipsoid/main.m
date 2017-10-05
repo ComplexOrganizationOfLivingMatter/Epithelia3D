@@ -37,7 +37,7 @@ for numRandomization = 1:20
             radiusY = radiusInModelY;
         end
         
-        a = voronoi3DEllipsoid([radiusX radiusY radiusZ], [radiusX radiusY radiusZ], 100, outputDirActual, hCell);
+        a = voronoi3DEllipsoid([radiusX+hCell radiusY+hCell radiusZ+hCell], [radiusX radiusY radiusZ], 100, outputDirActual, hCell);
         if isempty(a)
             transitionByRadius(numCombination) = {[]};
         else

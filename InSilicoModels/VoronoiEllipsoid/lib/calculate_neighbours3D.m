@@ -13,7 +13,7 @@ function [ellipsoidInfo] = calculate_neighbours3D(L_img, ellipsoidInfo)
     
     for cell = 1 : length(cells)
         BW_dilate = imdilate(imgPerim==cells(cell), ball);
-        ellipsoidInfo.cellDilated{numCell} = BW_dilate;
+        ellipsoidInfo.cellDilated{cell} = BW_dilate;
         neighs=unique(L_img(BW_dilate));
         neighs_real{cells(cell), 1} = neighs(neighs ~= 0 & neighs ~= cells(cell));
     end
