@@ -7,8 +7,8 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     % we are simplifying it. This is done to avoid that.
     ellipsoidInfo.resolutionFactor = 50;
 
-    centroids = round(centroids * ellipsoidInfo.resolutionFactor) + 1;
-    augmentedCentroids = round(augmentedCentroids * ellipsoidInfo.resolutionFactor) + 1;
+    centroids = round(centroids * ellipsoidInfo.resolutionFactor) + 2;
+    augmentedCentroids = round(augmentedCentroids * ellipsoidInfo.resolutionFactor) + 2;
     
     img3D = zeros(max(augmentedCentroids)+1);
 
