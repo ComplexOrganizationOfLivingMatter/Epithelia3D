@@ -1,7 +1,7 @@
 function [ edgeLength, edgeAngle ] = comparisonEdgeOrietationWithMeridianOfEllipsoidGrid( verGrid, vertEdge,outerEllipsoidInfo)
 
 
-        distVert=pdist2(vertEdge(1,:),verGrid);
+        distVert=pdist2(mean(vertEdge),verGrid);
         [~,gridVertIndex]=min(distVert);
 
         if mod(gridVertIndex,outerEllipsoidInfo.resolutionEllipse+1)==0
@@ -13,7 +13,8 @@ function [ edgeLength, edgeAngle ] = comparisonEdgeOrietationWithMeridianOfEllip
         directorMeridianVector= verGrid(indexSuperiorVertex,:)-verGrid(gridVertIndex,:);
         directorEdgeTransitionVector=vertEdge(2,:)-vertEdge(1,:);
 
-        %Calculate angle between vectors
+        %Calculate angle between vectors. We don't calculate the angle in
+        %a specific Axis, we capture 
         edgeAngle =rad2deg(atan2(norm(cross(directorMeridianVector,directorEdgeTransitionVector)),dot(directorMeridianVector,directorEdgeTransitionVector)));
         edgeLength = pdist2(vertEdge(1, :), vertEdge(2, :));
         if edgeAngle>90

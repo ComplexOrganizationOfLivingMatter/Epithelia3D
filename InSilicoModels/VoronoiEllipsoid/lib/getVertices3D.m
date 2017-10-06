@@ -14,14 +14,6 @@ initBorderImg = L_img==0;
 % We first calculate the perimeter of the cell to improve efficiency
 % If the image is small, is better not to use bwperim
 % For larger images it improves a lot the efficiency
-L_imgPerim = bwperim(L_img).* L_img;
-
-ellipsoidInfo.cellDilated = cell(size(neighbours, 1), 1);
-for numCell = 1:size(neighbours, 1)
-    numCell
-    cellPerim = L_imgPerim == numCell;
-    ellipsoidInfo.cellDilated{numCell} = imdilate(cellPerim, ball);
-end
 
 for numTriplet = 1 : size(neighboursVertices,1)
     BW1_dilate = ellipsoidInfo.cellDilated{neighboursVertices(numTriplet, 1)};
