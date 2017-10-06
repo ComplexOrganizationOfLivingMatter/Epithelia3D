@@ -27,9 +27,7 @@ for numFrame=initialFrame+1:maxFrame
         if oldCentroid(numCentroid)==1
             matDis = pdist2(centroids{numFrame,1}(numCentroid, :), centroids{numFrame-1,1});  
             Ind=find(matDis==min(matDis));
-            trackingCentroid{numFrame,1}(numCentroid,:)=[  centroids{numFrame-1,1}(Ind,:), numFrame-1, centroids{numFrame,1}(numCentroid, :), numFrame];
-        
-            
+            trackingCentroid{numFrame,1}(numCentroid,:)=[centroids{numFrame-1,1}(Ind,:), numFrame-1, centroids{numFrame,1}(numCentroid, :), numFrame];
         end
     end
 end

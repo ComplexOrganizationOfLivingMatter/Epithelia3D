@@ -1,4 +1,4 @@
-function layerVoronoi( pathArchMat, photoPath, photoName)
+function layerVoronoi2D( pathArchMat, photoPath, photoName)
 
 close all;
 load(pathArchMat);

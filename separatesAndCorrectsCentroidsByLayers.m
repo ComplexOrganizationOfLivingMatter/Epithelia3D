@@ -111,7 +111,7 @@ for numFrame=currentFrame:maxFrame % Variable that corresponds with the number o
 %     
     % Save the result to a .mat file
     finalFileName=['LayersCentroids' sprintf('%d',folderNumber) '.mat'];
-    save(finalFileName, 'LayerCentroid', 'LayerPixel', 'centroids', 'pixel', 'newLayer','sameCentroid')
+    save(finalFileName, 'LayerCentroid', 'LayerPixel', 'centroids', 'pixel', 'newLayer')
     
     % Display the next frame number in screen
     if numFrame+1 <= maxFrame
