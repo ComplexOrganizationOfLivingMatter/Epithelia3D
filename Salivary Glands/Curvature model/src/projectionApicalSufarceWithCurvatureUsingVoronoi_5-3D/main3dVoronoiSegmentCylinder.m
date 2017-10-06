@@ -9,7 +9,7 @@ numSeeds=100;
 numTotalImages=20;
 %That is a factor of conversion to reduce the coordinates of the original
 %cylinder
-reductionFactor=1;
+reductionFactor=4;
 %surface ratio
 rBasal=1;
 rApical=0.7;
@@ -52,6 +52,10 @@ for numImage=1:numTotalImages
     neighBySurfaceRatio3D=cell2table(neighBySurfaceRatio3D,'VariableNames',{'surfaceRatio','neighs'});
     
     %% measuring edges
+    [ basalDataTransition,apicalDataNoTransition ] = measureAnglesAndLengthOfEdges3Dcylinder( img3DBasalSurface,img3DApicalSurface);
+
+    disp 'a'
+    
     toc
 end
 

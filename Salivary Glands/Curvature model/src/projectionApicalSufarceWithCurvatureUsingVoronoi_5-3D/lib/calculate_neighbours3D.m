@@ -9,8 +9,6 @@ function [neighs_real,sides_cells]=calculate_neighbours3D(L_img)
     [xgrid, ygrid, zgrid] = meshgrid(-ratio:ratio); 
     ball = (sqrt(xgrid.^2 + ygrid.^2 + zgrid.^2) <= ratio); 
     
-    
-
     for cel=1 : length(cells)
         
         BW = L_img==cells(cel);

@@ -14,31 +14,47 @@ function [ outerDataTransition,outerDataNoTransition ] = measureAnglesAndLengthO
 
     outerData=struct('edgeLength',zeros(size(uniquePairOfNeighOuter,1),1),'edgeAngle',zeros(size(uniquePairOfNeighOuter,1),1));
     
-    %loop to get edge length and angle for each pair of neighborings
+    %calculate vertices of cells
+    [ verticesInfo] = getVertices3D( outerSurface, neighs_outer);
+    
+    % capture the length and the angle from the pair of neighbours
+    acum=1;
+    indToDelete=zeros(size(uniquePairOfNeighOuter,1),1);    
     for i=1:size(uniquePairOfNeighOuter,1)
-        mask1=zeros(size(outerSurface));
-        mask2=zeros(size(outerSurface));
-        mask1(outerSurface==uniquePairOfNeighOuter(i,1))=1;
-        mask2(outerSurface==uniquePairOfNeighOuter(i,2))=1;
+                
+        %get vertices of neigh cells edge 
+        indexVert=sum(ismember(verticesInfo.verticesConnectCells,uniquePairOfNeighOuter(i,:)),2);
+        indexVert=find(indexVert==2);
+        vertsEdge=vertcat(verticesInfo.verticesPerCell{indexVert(:)});
+       	vertsEdge=unique(vertsEdge,'rows');
         
-        %dilate neigh cells in 3D
-        ratio=2;
-        [xgrid, ygrid, zgrid] = meshgrid(-ratio:ratio); 
-        ball = (sqrt(xgrid.^2 + ygrid.^2 + zgrid.^2) <= ratio); 
-        mask3=imdilate(mask1,ball).*imdilate(mask2,ball);
-        
-        %%Regionprops3 to get data in 3-Dimensions. USE matlab2017b or
-        %%later
-        
-%         edge1=regionprops(mask3,'MajorAxisLength','Orientation');
-%         if edge1.MajorAxisLength > Wbasal/2
-%             mask4=[mask3(:,round(Wbasal/2)+1:end) mask3(:,1:round(Wbasal/2))];
-%             edge1=regionprops(mask4,'MajorAxisLength','Orientation');
-%         end
-
-        outerData(i).edgeLength=edge1(1).MajorAxisLength;
-        outerData(i).edgeAngle=edge1(1).Orientation;
+        if size(vertsEdge,1)>1
+            
+            if size(vertsEdge,1)>2
+                   [rowIndex,colIndex]=find(squareform(pdist(vertsEdge))==max(max(squareform(pdist(vertsEdge)))));
+                    vertsEdge=vertsEdge([rowIndex(1),colIndex(1)],:);
+            end
+            %angle calculation
+            [edgeLength, edgeAngle] = comparisonEdgeOrientationWithTrasverseCylinderPlane( vertsEdge);
+            outerData(acum).edgeLength=edgeLength;
+            outerData(acum).edgeAngle=edgeAngle;
+            outerData(acum).edgeVertices=vertsEdge;
+            
+            hold on
+            plot3(vertsEdge(:,1),vertsEdge(:,2),vertsEdge(:,3))
+            
+            
+            acum=acum+1;
+        else
+            indToDelete(i)=1;
+            
+        end     
     end
+    
+    %deleting pair of neighbours with no vertices
+    uniquePairOfNeighOuter=uniquePairOfNeighOuter(logical(1-indToDelete),:);
+
+    
     
     %get edges of transitions
     newInOuter=cellfun(@(x,y) setdiff(x,y),neighs_outer,neighs_inner,'UniformOutput',false);
@@ -53,10 +69,13 @@ function [ outerDataTransition,outerDataNoTransition ] = measureAnglesAndLengthO
     outerDataTransition=struct('edgeLength',zeros(sum(indexesOuterEdgesTransition),1),'edgeAngle',zeros(sum(indexesOuterEdgesTransition),1));
     outerDataTransition.edgeLength=cat(1,outerData(indexesOuterEdgesTransition).edgeLength);
     outerDataTransition.edgeAngle=abs(cat(1,outerData(indexesOuterEdgesTransition).edgeAngle));
+    outerDataTransition.edgeVertices=cat(1,{outerData(indexesOuterEdgesTransition).edgeVertices});
+
     
     %define no transition transition edge length and angle
     outerDataNoTransition.edgeLength=cat(1,outerData(logical(1-indexesOuterEdgesTransition)).edgeLength);
     outerDataNoTransition.edgeAngle=abs(cat(1,outerData(logical(1-indexesOuterEdgesTransition)).edgeAngle));
+    outerDataNoTransition.edgeVertices=cat(1,{outerData(logical(1-indexesOuterEdgesTransition)).edgeVertices});
 
     %basalDataTransition
     anglesTransition=cat(1,outerDataTransition(:).edgeAngle);

@@ -1,6 +1,6 @@
 function [ distanceMatrixLocal, adjacencyMatrix, distanceMatrixGlobal] = calculateDistanceMatrixInVoronoi3D( new_seeds_values,L_original,W )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+    
+    %How cells are connected to calculated 'width' and n of cells
 
     centroids=sortrows(new_seeds_values,1);
     centroids=centroids(:,2:3);
