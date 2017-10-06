@@ -84,23 +84,21 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
     numCellsAtXBorderLeft=zeros(length(endLimitRight),1);
     numCellsAtXCentral=zeros(length(endLimitRight),1);
    
-    try
-        for i=1:length(endLimitRight)
-            isRightEdgeTransition(:,i) = (meanEdgeVertices(:,1) > endLimitRight(i)).*logical(indexesPairCellsTransition);
-            isLeftEdgeTransition(:,i)= (meanEdgeVertices(:,1) < endLimitLeft(i)).*logical(indexesPairCellsTransition);
-            isCentralEdgeTransition(:,i) = (meanEdgeVertices(:,1) >= endLimitLeft(i) & meanEdgeVertices(:,1) <= endLimitRight(i)).*logical(indexesPairCellsTransition);
-            isRightEdgeNoTransition(:,i) = (meanEdgeVertices(:,1) > endLimitRight(i)).*logical(1-indexesPairCellsTransition);
-            isLeftEdgeNoTransition(:,i) = (meanEdgeVertices(:,1) < endLimitLeft(i)).*logical(1-indexesPairCellsTransition);
-            isCentralEdgeNoTransition(:,i) = (meanEdgeVertices(:,1) >= endLimitLeft(i) & meanEdgeVertices(:,1) <= endLimitRight(i)).*logical(1-indexesPairCellsTransition);
+    
+    for i=1:length(endLimitRight)
+        isRightEdgeTransition(:,i) = (meanEdgeVertices(:,1) > endLimitRight(i)).*logical(indexesPairCellsTransition);
+        isLeftEdgeTransition(:,i)= (meanEdgeVertices(:,1) < endLimitLeft(i)).*logical(indexesPairCellsTransition);
+        isCentralEdgeTransition(:,i) = (meanEdgeVertices(:,1) >= endLimitLeft(i) & meanEdgeVertices(:,1) <= endLimitRight(i)).*logical(indexesPairCellsTransition);
+        isRightEdgeNoTransition(:,i) = (meanEdgeVertices(:,1) > endLimitRight(i)).*logical(1-indexesPairCellsTransition);
+        isLeftEdgeNoTransition(:,i) = (meanEdgeVertices(:,1) < endLimitLeft(i)).*logical(1-indexesPairCellsTransition);
+        isCentralEdgeNoTransition(:,i) = (meanEdgeVertices(:,1) >= endLimitLeft(i) & meanEdgeVertices(:,1) <= endLimitRight(i)).*logical(1-indexesPairCellsTransition);
 
-            numCellsAtXBorderRight(i) = sum(outerEllipsoidInfo.centroids(:, 1) > endLimitRight(i));
-            numCellsAtXBorderLeft(i) = sum(outerEllipsoidInfo.centroids(:, 1) < endLimitLeft(i));
-            numCellsAtXCentral(i) = numberOfTotalCell - numCellsAtXBorderRight(i) - numCellsAtXBorderLeft(i);
+        numCellsAtXBorderRight(i) = sum(outerEllipsoidInfo.centroids(:, 1) > endLimitRight(i));
+        numCellsAtXBorderLeft(i) = sum(outerEllipsoidInfo.centroids(:, 1) < endLimitLeft(i));
+        numCellsAtXCentral(i) = numberOfTotalCell - numCellsAtXBorderRight(i) - numCellsAtXBorderLeft(i);
 
-        end
-    catch
-        disp 'joder bro'
     end
+    
     
     %organize transitions per region
     [outerSurfaceDataTransition.TotalRegion,outerSurfaceDataNoTransition.TotalRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(indexesPairCellsTransition),logical(1-indexesPairCellsTransition),numberOfTotalCell);
