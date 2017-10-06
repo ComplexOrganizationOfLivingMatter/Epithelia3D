@@ -8,12 +8,11 @@ addpath(genpath('lib'));
 % - Stage 8
 % - Stage 4
 allCombinations = {
-    38.57277778-5.506047536	31.61605556-5.506047536 31.61605556-5.506047536	5.506047536 'Stage 4'
     15 10 10 [30] 'Zepellin'
     10 15 15 [50] 'FilledDonnut'
     10 10 10 [30] 'Sphere'
     97.46-6.25 50.75-6.25 50.75-6.25 6.25 'Stage 8'
-    
+    38.57277778-5.506047536	31.61605556-5.506047536 31.61605556-5.506047536	5.506047536 'Stage 4'
  };
 
 for numRandomization = 1:20
@@ -37,7 +36,7 @@ for numRandomization = 1:20
             radiusY = radiusInModelY;
         end
         
-        a = voronoi3DEllipsoid([radiusX+hCell+0.5 radiusY+hCell+0.5 radiusZ+hCell+0.5], [radiusX radiusY radiusZ], 100, outputDirActual, hCell);
+        a = voronoi3DEllipsoid([radiusX+hCell+0.5 radiusY+hCell+0.5 radiusZ+hCell+0.5], [radiusX radiusY radiusZ], 200, outputDirActual, hCell);
         if isempty(a)
             transitionByRadius(numCombination) = {[]};
         else
