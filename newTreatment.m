@@ -44,7 +44,6 @@ for searchNews=1:size(newList,1)
         finalCentroid{end,2}=coordinates;
         finalCentroid{end,3}=layer;
         
-        varTracking{6,1}=frameAnalysis;
         varTracking{photo,1}=frameAnalysis+(photo-6);
         
     end

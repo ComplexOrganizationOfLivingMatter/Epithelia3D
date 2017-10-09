@@ -14,7 +14,7 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
     seeds(:, 2) = seedsInitial(:, 2) * pxWidth;
     
     widthMax=max(max(seeds(:, 1:2)));
-    seeds(:, 3) = seedsInitial(:, 3) * (widthMax/maxFrame);
+    seeds(:, 3) = seedsInitial(:, 3) * ((widthMax/maxFrame)/2);
 
     seeds(:, 1) = seeds(:, 1) - min(seeds(:, 1)) + 1;
     seeds(:, 2) = seeds(:, 2) - min(seeds(:, 2)) + 1;
