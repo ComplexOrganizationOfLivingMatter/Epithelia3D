@@ -3,6 +3,5 @@ function [ ] = extractInfoTrackedCells(imgInitialWts, imgEndWts, trackingInfo)
 %   Detailed explanation goes here
     
     
-
 end
 

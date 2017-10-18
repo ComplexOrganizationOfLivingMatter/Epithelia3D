@@ -10,6 +10,9 @@ function [ trackingInfo ] = trackingCells(imgInitial, imgEnd)
 
     imgInitialWts = double(watershed(imgInitial));
     imgEndWts = double(watershed(imgEnd));
+    
+%     initialFrameNeighbours = calculateNeighbours(imgInitialWts);
+%     endFrameNeighbours = calculateNeighbours(imgEndWts);
 
     fig = figure;
     axInitial = subplot(1,2,1); imshow(imgInitialWts), title ('Initial Image')
@@ -19,10 +22,10 @@ function [ trackingInfo ] = trackingCells(imgInitial, imgEnd)
     
 %     load('..\results\NoFolds\Scribgfp_Emb4_gast_AP\trackingCells\trackingInfo_16_10_2017.mat')
 %     uiopen('..\results\NoFolds\Scribgfp_Emb4_gast_AP\trackingCells\trackingInfo.fig',1)
-    fig = gcf;
-    allAxis = get(gcf, 'Children');
-    axInitial = allAxis(2);
-    axEnd = allAxis(1);
+%     fig = gcf;
+%     allAxis = get(gcf, 'Children');
+%     axInitial = allAxis(2);
+%     axEnd = allAxis(1);
     
     colours = colorcube(max(imgInitialWts(:)));
     finished = false;
