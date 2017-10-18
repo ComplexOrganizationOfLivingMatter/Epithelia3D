@@ -16,7 +16,15 @@ function [ trackingInfo ] = trackingCells(imgInitial, imgEnd)
     axEnd = subplot(1,2,2); imshow(imgEndWts), title('End Image')
 
     trackingInfo = {};
-
+    
+%     load('..\results\NoFolds\Scribgfp_Emb4_gast_AP\trackingCells\trackingInfo_16_10_2017.mat')
+%     uiopen('..\results\NoFolds\Scribgfp_Emb4_gast_AP\trackingCells\trackingInfo.fig',1)
+    fig = gcf;
+    allAxis = get(gcf, 'Children');
+    axInitial = allAxis(2);
+    axEnd = allAxis(1);
+    
+    colours = colorcube(max(imgInitialWts(:)));
     finished = false;
     while finished == false
         disp('Select cell at Initial image');
@@ -25,7 +33,7 @@ function [ trackingInfo ] = trackingCells(imgInitial, imgEnd)
         [xCentroid, yCentroid] = find(imgInitialWts == idCellInit);
         centroidCell = round(mean([xCentroid, yCentroid]));
         hold on;
-        hPlot = plot(axInitial, centroidCell(2), centroidCell(1), '*');
+        hPlot = plot(axInitial, centroidCell(2), centroidCell(1), '*', 'Color', colours(idCellInit, :));
 
         pixelsInit = [xCentroid, yCentroid];
 
@@ -38,9 +46,12 @@ function [ trackingInfo ] = trackingCells(imgInitial, imgEnd)
         hPlot2 = plot(axEnd, centroidCell(2), centroidCell(1), '*', 'Color', hPlot.Color);
 
         pixelsEnd = [xCentroid, yCentroid];
-        trackingInfo{end+1} = table(idCellInit, pixelsInit, idCellEnd, pixelsEnd);
+        trackingInfo{end+1, 1} = table(idCellInit, {pixelsInit}, idCellEnd, {pixelsEnd});
 
+        
         finished = input('Did you finish? (0/1)');
+        savefig(fig, '..\results\NoFolds\Scribgfp_Emb4_gast_AP\trackingCells\trackingInfo.fig');
+        save('..\results\NoFolds\Scribgfp_Emb4_gast_AP\trackingCells\trackingInfo_16_10_2017.mat', 'trackingInfo');
     end
 end
 
