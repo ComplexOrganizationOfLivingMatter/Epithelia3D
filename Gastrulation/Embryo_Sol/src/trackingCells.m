@@ -53,8 +53,9 @@ function [ trackingInfo ] = trackingCells(imgInitial, imgEnd)
 
         
         finished = input('Did you finish? (0/1)');
-        savefig(fig, '..\results\NoFolds\Scribgfp_Emb4_gast_AP\trackingCells\trackingInfo.fig');
-        save('..\results\NoFolds\Scribgfp_Emb4_gast_AP\trackingCells\trackingInfo_16_10_2017.mat', 'trackingInfo');
+        mkdir('..\results\NoFolds\OR_Emb4 BC AP\trackingCells\');
+        savefig(fig, '..\results\NoFolds\OR_Emb4 BC AP\trackingCells\trackingInfo.fig');
+        save('..\results\NoFolds\OR_Emb4 BC AP\trackingCells\trackingInfo_18_10_2017.mat', 'trackingInfo');
     end
 end
 
