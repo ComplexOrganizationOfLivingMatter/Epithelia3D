@@ -1,7 +1,7 @@
-function [finalCentroid, varTracking] = newTreatment( FileName, photo, frameAnalysis, x,y, finalCentroid, varTracking, errors, errorCent )
+function [finalCentroid, varTracking] = newTreatment( FileName, photo, frameAnalysis, x,y, finalCentroid, varTracking, errors, errorCent,umbral )
 
 Img=imread(FileName{photo,1});
-I=Img>70; %Se aumena el umbral para que pueda capar más información
+I=Img>umbral; %The threshold is raised so you can accept more information
 BW2= bwareaopen(I,5);
 se=strel('disk',2);
 BW2=imdilate(BW2,se);
@@ -13,7 +13,7 @@ mask=zeros(size(BW2));
 for i=1:max(max(L))
     M=zeros(size(BW2));
     M(L==i)=1;
-    if Area_ob(i)> area_mean*2 %Se erosiona si es 2 veces mas grande que la media.
+    if Area_ob(i)> area_mean*2 %It erodes if it is 2 times bigger than the average.
         se = strel('disk',3);
         BWM = imerode(M,se);
     else
@@ -44,7 +44,7 @@ for searchNews=1:size(newList,1)
         finalCentroid{end,2}=coordinates;
         finalCentroid{end,3}=layer;
         
-        varTracking{photo,1}=frameAnalysis+(photo-6);
+        varTracking{errorCent,1}(photo,1)=frameAnalysis+(photo-6);
         
     end
 end

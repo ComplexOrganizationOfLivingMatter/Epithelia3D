@@ -4,8 +4,8 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
     pxWidth = 0.6165279;
     %pxDepth = 1.2098982;
     
-%     outputDir = strcat('..\..\results\LayerAnalysis\Layer_', numLayer, '\');
-%     mkdir(outputDir);
+    outputDir = strcat('..\..\results\LayerAnalysis\Layer_', numLayer, '\');
+    mkdir(outputDir);
 
     seeds = [];
     cellIds = vertcat(infoCentroids{:, 1});
@@ -61,35 +61,55 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
 
     %Create voronoi 3D region and paint it
     img3DLabelled = zeros(max(seeds) + 1);
-%     colours = colorcube(max(cellIds));
-%     figure;
+    colours = colorcube(max(cellIds));
+    figure;
 
-    for numCell = 1:max(cellIds)
-        numCell
-        seedsOfCell = seeds(cellIds == numCell, :);
-        labelToBeRelabelled=water3DImage(seedsOfCell(1,1),seedsOfCell(1,2),seedsOfCell(1,3))
-        regionActual = water3DImage == labelToBeRelabelled;
+    for numCell=1:max(cellIds)
         
-        img3DLabelled(regionActual) = numCell;
-%         [x, y, z] = findND(bwperim(img3DLabelled == numCell));
-%         cellFigure = alphaShape(x, y, z, 10);
-%         plot(cellFigure, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
-%         hold on;
-
+            numCell
+            seedsOfCell = seeds(cellIds == numCell, :);
+            labelToBeRelabelled=water3DImage(seedsOfCell(1,1),seedsOfCell(1,2),seedsOfCell(1,3));
+            regionActual = water3DImage == labelToBeRelabelled;
+            
+            img3DLabelled(regionActual) = numCell;
+            [x, y, z] = findND(bwperim(img3DLabelled == numCell));
+            cellFigure = alphaShape(x, y, z, 10);
+            plot(cellFigure, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
+            hold on;
+        
     end
-save(strcat('layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled');
-%     save(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled');
-%     savefig(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.fig'));
-%     colorR = repmat(colorcube(255), 10, 1);
-%     close all
-%     for numZ = 1:size(img3DLabelled, 3)
-%         img = double(img3DLabelled(:, :, numZ));
-%         fig=figure('Visible','off');
-%         imshow(img,colorR)
-%         print('-f1','-dbmp',[outputDir, 'img_z_' num2str(numZ)  '.bmp']);
-%         close all
-%     %     imwrite(img, colorR(1:255, :), strcat('img_z_', num2str(numZ) , '.tiff'));
-%     end
-
+    
+    save(strcat('layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled');
+    save(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled');
+    savefig(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.fig'));
+    colorR = repmat(colorcube(255), 10, 1);
+    close all
+    
+    for numZ = 1:size(img3DLabelled, 3)
+        
+        img = double(img3DLabelled(:, :, numZ));
+        se=strel('disk',3);
+        mask=imdilate(img, se);
+        mask=imerode(mask,se);
+        imgTreatment= watershed(1-img, 8);
+        imgTreatment(mask==0)=0;
+        cent=regionprops(imgTreatment, 'Centroid');
+        centroids=vertcat(cent.Centroid);
+        maskImg=zeros(size(imgTreatment));
+        
+        for numCent=1:size(centroids)
+            if isnan(centroids(numCent,1)) == 0
+                maskImg(imgTreatment == imgTreatment(round(centroids(numCent,2)), round(centroids(numCent,1)))) = img(round(centroids(numCent,2)), round(centroids(numCent,1)));      
+            end
+        end
+        Img{numZ} = maskImg;
+        
+        fig=figure('Visible','off');
+        imshow(Img{numZ},colorR)
+        print('-f1','-dbmp',[outputDir, 'img_z_' num2str(numZ)  '.bmp']);
+        close all
+    %     imwrite(img, colorR(1:255, :), strcat('img_z_', num2str(numZ) , '.tiff'));
+    end
+    save(strcat('imgVoronoi2D_', date, '.mat'), 'Img');
 end
 

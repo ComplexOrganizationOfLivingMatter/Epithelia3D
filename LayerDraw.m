@@ -4,21 +4,16 @@ function [LayerCentroid, LayerPixel] = LayerDraw( LayerCentroid, LayerPixel, Col
 channel1Name{numFrame}= [name sprintf('%03d',numFrame) '_c001.tif'];
 channel1PhotoPath{numFrame}=[photo_Path '\' channel1Name{numFrame}];
 
-
-% while var>=size(LayerCentroid, 1)
 for numLayer=2:size(LayerCentroid, 1)
     
     f=figure('Visible', 'on');
     imshow(channel1PhotoPath{numFrame});
-    hold on;
-    %     if var+1 <= size(LayerCentroid, 1)
-    
-    
+    hold on;   
     for numLayer2to2=numLayer-1:numLayer
         
         for numCentroidLayer=1:size(LayerCentroid{numLayer2to2,1}(:, 1),1)
             plot(LayerCentroid{numLayer2to2,1}(numCentroidLayer,2), LayerCentroid{numLayer2to2,1}(numCentroidLayer, 3), '*','MarkerEdgeColor', Color(numLayer2to2,:), 'MarkerFaceColor', Color(numLayer2to2,:));
-%             numLay(numLayer,:)=
+%              numLay(numLayer,:)=plot(LayerCentroid{numLayer,1}(numCentroidLayer,2), LayerCentroid{numLayer,1}(numCentroidLayer, 3), '*','MarkerEdgeColor', Color(numLayer,:), 'MarkerFaceColor', Color(numLayer,:));
         end
 %         nameLay{numLayer}=sprintf ('Layer%d', numLayer);
         
@@ -56,10 +51,7 @@ for numLayer=2:size(LayerCentroid, 1)
                 end
                 want_modify_more=input('Do you want to make more changes? 1 (yes) \n 0 (no) \n:');
             end
-            
         end
-        
-        %         end
     end
     
     close all;
