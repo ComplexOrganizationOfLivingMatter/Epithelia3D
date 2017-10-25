@@ -27,6 +27,14 @@ function [ ] = processTrackingInfoData( pathToData )
     
     trackingInfo.newLabel = (1:size(trackingInfo, 1))';
     
+    figure; imshow(imgInitialNewLabels)
+    figure; imshow(ismember(imgInitialNewLabels, trackingInfo.newLabel(logical(trackingInfo.validCell))))
+    
+    figure; imshow(imgEndNewLabels)
+    figure; imshow(ismember(imgEndNewLabels, trackingInfo.newLabel(logical(trackingInfo.validCell))))
+
+    input('Correct?');
+    
     trackingInfo.neighboursInitial = calculateNeighbours(imgInitialNewLabels)';
     trackingInfo.neighboursEnd = calculateNeighbours(imgEndNewLabels)';
     
