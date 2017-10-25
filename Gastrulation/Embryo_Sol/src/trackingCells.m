@@ -14,18 +14,20 @@ function [ trackingInfo ] = trackingCells(imgInitial, imgEnd)
 %     initialFrameNeighbours = calculateNeighbours(imgInitialWts);
 %     endFrameNeighbours = calculateNeighbours(imgEndWts);
 
-    fig = figure;
-    axInitial = subplot(1,2,1); imshow(imgInitialWts), title ('Initial Image')
-    axEnd = subplot(1,2,2); imshow(imgEndWts), title('End Image')
-
-    trackingInfo = {};
+%     fig = figure;
+%     axInitial = subplot(1,2,1); imshow(imgInitialWts), title ('Initial Image')
+%     axEnd = subplot(1,2,2); imshow(imgEndWts), title('End Image')
+% 
+%     trackingInfo = {};
     
-%     load('..\results\NoFolds\Scribgfp_Emb4_gast_AP\trackingCells\trackingInfo_16_10_2017.mat')
-%     uiopen('..\results\NoFolds\Scribgfp_Emb4_gast_AP\trackingCells\trackingInfo.fig',1)
-%     fig = gcf;
-%     allAxis = get(gcf, 'Children');
-%     axInitial = allAxis(2);
-%     axEnd = allAxis(1);
+    actualPath = '..\results\NoFolds\Scribgfp_Emb3_gast_AP\trackingCells\';
+    mkdir(actualPath);
+    load(strcat(actualPath, 'trackingInfo_24_10_2017.mat'))
+    uiopen(strcat(actualPath, 'trackingInfo.fig'),1)
+    fig = gcf;
+    allAxis = get(gcf, 'Children');
+    axInitial = allAxis(2);
+    axEnd = allAxis(1);
     
     colours = colorcube(max(imgInitialWts(:)));
     finished = false;
@@ -53,9 +55,9 @@ function [ trackingInfo ] = trackingCells(imgInitial, imgEnd)
 
         
         finished = input('Did you finish? (0/1)');
-        mkdir('..\results\NoFolds\OR_Emb4 BC AP\trackingCells\');
-        savefig(fig, '..\results\NoFolds\OR_Emb4 BC AP\trackingCells\trackingInfo.fig');
-        save('..\results\NoFolds\OR_Emb4 BC AP\trackingCells\trackingInfo_18_10_2017.mat', 'trackingInfo');
+        
+        savefig(fig, strcat(actualPath, 'trackingInfo.fig'));
+        save(strcat(actualPath, 'trackingInfo_24_10_2017.mat'), 'trackingInfo');
     end
 end
 
