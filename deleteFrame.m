@@ -11,13 +11,13 @@ function deleteFrame( pathArchMat, frameToDelete, folderNumber )
 load(pathArchMat);
 
 LayerCentroid=cellfun(@(x) x(x(:,1)~=frameToDelete,:),LayerCentroid,'UniformOutput', false);
-LayerPixel=cellfun(@(x) x(x(:,1)~=frameToDelete,:),LayerPixel,'UniformOutput', false);
+%LayerPixel=cellfun(@(x) x(x(:,1)~=frameToDelete,:),LayerPixel,'UniformOutput', false);
 
 centroids{frameToDelete,1}={};
 pixel{frameToDelete,1}={};
 
 finalFileName=['LayersCentroids' sprintf('%d',folderNumber) '.mat'];
-save(finalFileName, 'LayerCentroid', 'LayerPixel', 'centroids', 'pixel', 'newLayer');
+save(finalFileName, 'LayerCentroid', 'centroids', 'pixel', 'newLayer');
 
 end
 

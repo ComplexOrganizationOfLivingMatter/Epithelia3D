@@ -43,19 +43,19 @@ for numFrame=currentFrame:maxFrame % Variable that corresponds with the number o
         
         [in{numFrame},on{numFrame}] = inpolygon(xQuery{numFrame,1},yQuery{numFrame,1},xPixel{numFrame,1}(k{numFrame}),yPixel{numFrame,1}(k{numFrame}));
         LayerCentroid{1}=[ones(size(xQuery{numFrame}, 1), 1) * numFrame, xQuery{numFrame,1},yQuery{numFrame,1}]; %FRAME 6
-        LayerPixel{1}=[ones(size(xPixel{numFrame}, 1), 1) * numFrame, xPixel{numFrame,1},yPixel{numFrame,1}]; %FRAME 6
+        %LayerPixel{1}=[ones(size(xPixel{numFrame}, 1), 1) * numFrame, xPixel{numFrame,1},yPixel{numFrame,1}]; %FRAME 6
         
     else
         
         %%Layer separator
-        [LayerCentroid, LayerPixel, centroids, pixel, xQuery, yQuery, initialFrame, newLayer] = layersMarker( LayerCentroid, LayerPixel, centroids, pixel, numFrame, xQuery, yQuery, initialFrame, newLayer);
+        [LayerCentroid, centroids, pixel, xQuery, yQuery, initialFrame, newLayer] = layersMarker( LayerCentroid, centroids, pixel, numFrame, xQuery, yQuery, initialFrame, newLayer);
     
         %%Representation of the centroids of the different layers      
-        [LayerCentroid, LayerPixel] = LayerDraw( LayerCentroid, LayerPixel, Color, numFrame, initialFrame, photo_Path, name);
+        [LayerCentroid] = LayerDraw( LayerCentroid, Color, numFrame, initialFrame, photo_Path, name, pixel);
 
     % Save the result to a .mat file
-    finalFileName=['LayersCentroids' sprintf('%d',folderNumber) '.mat'];
-    save(finalFileName, 'LayerCentroid', 'LayerPixel', 'centroids', 'pixel', 'newLayer')
+    finalFileName=['LayersCentroidsPrueba' sprintf('%d',folderNumber) '.mat'];
+    save(finalFileName, 'LayerCentroid', 'centroids', 'pixel', 'newLayer')
     
     % Display the next frame number in screen
     if numFrame+1 <= maxFrame

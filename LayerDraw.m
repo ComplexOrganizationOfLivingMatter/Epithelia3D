@@ -1,26 +1,35 @@
-function [LayerCentroid, LayerPixel] = LayerDraw( LayerCentroid, LayerPixel, Color, numFrame, initialFrame, photo_Path, name)
+
+function [LayerCentroid] = LayerDraw( LayerCentroid, Color, numFrame, initialFrame, photo_Path, name, pixel)
 
 %%Representation of the centroids of the different layers
 channel1Name{numFrame}= [name sprintf('%03d',numFrame) '_c001.tif'];
 channel1PhotoPath{numFrame}=[photo_Path '\' channel1Name{numFrame}];
 
-for numLayer=2:size(LayerCentroid, 1)
+%for numLayer=2:size(LayerCentroid, 1)
     
     f=figure('Visible', 'on');
     imshow(channel1PhotoPath{numFrame});
     hold on;   
-    for numLayer2to2=numLayer-1:numLayer
-        
-        for numCentroidLayer=1:size(LayerCentroid{numLayer2to2,1}(:, 1),1)
-            plot(LayerCentroid{numLayer2to2,1}(numCentroidLayer,2), LayerCentroid{numLayer2to2,1}(numCentroidLayer, 3), '*','MarkerEdgeColor', Color(numLayer2to2,:), 'MarkerFaceColor', Color(numLayer2to2,:));
-%              numLay(numLayer,:)=plot(LayerCentroid{numLayer,1}(numCentroidLayer,2), LayerCentroid{numLayer,1}(numCentroidLayer, 3), '*','MarkerEdgeColor', Color(numLayer,:), 'MarkerFaceColor', Color(numLayer,:));
+    
+    for numLayer=1:size(LayerCentroid, 1)
+        for numCentroidLayer=1:size(LayerCentroid{numLayer,1}(:, 1),1)
+            if ismember(round(LayerCentroid{numLayer,1}(numCentroidLayer,2:3)),pixel{numFrame,1},'rows') == 1
+                plot(LayerCentroid{numLayer,1}(numCentroidLayer,2), LayerCentroid{numLayer,1}(numCentroidLayer, 3), '*','MarkerEdgeColor', Color(numLayer,:), 'MarkerFaceColor', Color(numLayer,:));
+            end
         end
+    end
+    %for numLayer2to2=numLayer-1:numLayer 
+        %for numCentroidLayer=1:size(LayerCentroid{numLayer2to2,1}(:, 1),1)
+            %plot(LayerCentroid{numLayer2to2,1}(numCentroidLayer,2), LayerCentroid{numLayer2to2,1}(numCentroidLayer, 3), '*','MarkerEdgeColor', Color(numLayer2to2,:), 'MarkerFaceColor', Color(numLayer2to2,:));
+%              numLay(numLayer,:)=plot(LayerCentroid{numLayer,1}(numCentroidLayer,2), LayerCentroid{numLayer,1}(numCentroidLayer, 3), '*','MarkerEdgeColor', Color(numLayer,:), 'MarkerFaceColor', Color(numLayer,:));
+        %end
 %         nameLay{numLayer}=sprintf ('Layer%d', numLayer);
         
 %         legend(numLay,nameLay,'Location','best');
         
         % Merge images to return
-        finalLayerPhoto=[photo_Path '\Layers\' name sprintf('%03d',numFrame) 'centroid_layers' sprintf('%d', numLayer) '.jpg'];
+        %finalLayerPhoto=[photo_Path '\Layers\' name sprintf('%03d',numFrame) 'centroid_layers' sprintf('%d', numLayer) '.bmp'];
+        finalLayerPhoto=[photo_Path '\Layers\' name sprintf('%03d',numFrame) 'centroid_layers.bmp'];
         saveas(f,finalLayerPhoto);
         
         %%Treatment of layers
@@ -33,7 +42,7 @@ for numLayer=2:size(LayerCentroid, 1)
                     case 0
                         break
                     case 1
-                        [LayerCentroid, LayerPixel ] = addNewCentroid( f, LayerCentroid, LayerPixel, numFrame );
+                        [LayerCentroid] = addNewCentroid( f, LayerCentroid,numFrame );
                 end
                 want_add_more=input('Do you want to add more? 1 (yes) \n 0 (no) \n:');
             end
@@ -47,15 +56,14 @@ for numLayer=2:size(LayerCentroid, 1)
                         break
                     case 1
                         f = display_labelled (f, LayerCentroid);
-                        [LayerCentroid, LayerPixel] = layer_write_mode(f,LayerCentroid, LayerPixel, numFrame);
+                        [LayerCentroid] = layer_write_mode(f,LayerCentroid, numFrame);
                 end
                 want_modify_more=input('Do you want to make more changes? 1 (yes) \n 0 (no) \n:');
             end
         end
-    end
-    
-    close all;
-end
+%     end
+    %close all
+% end
 
 end
 

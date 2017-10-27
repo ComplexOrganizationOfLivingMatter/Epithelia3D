@@ -1,4 +1,4 @@
-function [LayerCentroid, LayerPixel] = layer_write_mode(fig,LayerCentroid, LayerPixel, numFrame)
+function [LayerCentroid] = layer_write_mode(fig,LayerCentroid, numFrame)
 
 newLayer1=false;
 
@@ -17,7 +17,7 @@ Centroids=[x1,y1];
 for numCentroidLayer=1:size(LayerCentroid{layerOld,1},1)  
     if LayerCentroid{layerOld,1}(numCentroidLayer,2:3)== Centroids
         LayerCentroid{layerOld,1}(numCentroidLayer,:)=[];
-        LayerPixel{layerOld,1}(numCentroidLayer,:)=[];
+        %LayerPixel{layerOld,1}(numCentroidLayer,:)=[];
         break
     end
 end
@@ -26,12 +26,12 @@ end
 %The new layer is treated to include that centroid in that layer
 if layerNew > size(LayerCentroid, 1) %If there is no layer created
     LayerCentroid{layerNew, 1} = horzcat(numFrame, Centroids);
-    LayerPixel{layerNew, 1} = horzcat(numFrame, Pixel);
+    %LayerPixel{layerNew, 1} = horzcat(numFrame, Pixel);
     newLayer1=true;
     
 else %If there is layer created
     LayerCentroid{layerNew,1}= vertcat(LayerCentroid{layerNew,1}, horzcat(numFrame,Centroids));
-    LayerPixel{layerNew,1}= vertcat(LayerPixel{layerNew,1}, horzcat(numFrame,Pixel));
+    %LayerPixel{layerNew,1}= vertcat(LayerPixel{layerNew,1}, horzcat(numFrame,Pixel));
 end
 
 end
