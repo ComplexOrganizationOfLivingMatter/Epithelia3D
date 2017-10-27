@@ -25,5 +25,9 @@ for numFile = 1:size(trackingFiles, 1)
     % - STD of every column
     xlsTable = vertcat(trackingInfo.Properties.VariableNames(7:12) , table2cell(trackingInfo(logical(trackingInfo.validCell), 7:12)), mat2cell(mean(table2array(trackingInfo(logical(trackingInfo.validCell), 7:12))), 1, ones(6, 1)), mat2cell(std(table2array(trackingInfo(logical(trackingInfo.validCell), 7:12))), 1, ones(6, 1)));
     
-    xlswrite(strcat(resultsPath, 'noFolds_Cells_', date), xlsTable, actualFileSplitted{4}, 'C5');
+    if isequal(actualFileSplitted{end-1}, 'top') || isequal(actualFileSplitted{end-1}, 'bottom')
+        xlswrite(strcat(resultsPath, 'noFolds_Cells_', date), xlsTable, strcat(actualFileSplitted{4}, '_' ,actualFileSplitted{end-1}), 'C5');
+    else
+        xlswrite(strcat(resultsPath, 'noFolds_Cells_', date), xlsTable, actualFileSplitted{4}, 'C5');
+    end
 end
