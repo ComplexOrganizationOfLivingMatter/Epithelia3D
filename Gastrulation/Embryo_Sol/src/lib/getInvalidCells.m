@@ -10,7 +10,7 @@ function [ invalidCells ] = getInvalidCells( img )
     
     noValidRegion = [];
     if isequal(answer, 1)
-        imshow(img)
+        figure; imshow(img)
         [x,y] = getpts(gca);
         for numCell = 1:size(y, 1)
             noValidRegion = vertcat(noValidRegion, img(round(y(numCell)), round(x(numCell))));
