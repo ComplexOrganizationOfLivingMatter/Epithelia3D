@@ -10,8 +10,17 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
     numOfPairs=size(uniquePairOfNeighsOuterSurface,1);
     outerSurfaceTotalData=struct('edgeLength',zeros(numOfPairs,1),'edgeAngle',zeros(numOfPairs,1),'edgeVertices',zeros(numOfPairs,1));
     
+    
+    if outerEllipsoidInfo.cellHeight==0
+        resolutionFactor=innerEllipsoidInfo.resolutionFactor;
+        centroidsRefactor=resolutionFactor;
+    else
+        resolutionFactor=outerEllipsoidInfo.resolutionFactor;
+        centroidsRefactor=1;
+    end
+    
     %define the vertices in the ellipsoid grid
-    [xVerGrid,yVerGrid,zVerGrid]=ellipsoid((outerEllipsoidInfo.xCenter)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.yCenter)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.zCenter)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.yRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, (outerEllipsoidInfo.zRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.resolutionFactor, outerEllipsoidInfo.resolutionEllipse);
+    [xVerGrid,yVerGrid,zVerGrid]=ellipsoid((outerEllipsoidInfo.xCenter)*resolutionFactor, (outerEllipsoidInfo.yCenter)*resolutionFactor, (outerEllipsoidInfo.zCenter)*resolutionFactor, (outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*resolutionFactor, (outerEllipsoidInfo.yRadius+outerEllipsoidInfo.cellHeight)*resolutionFactor, (outerEllipsoidInfo.zRadius+outerEllipsoidInfo.cellHeight)*resolutionFactor, outerEllipsoidInfo.resolutionEllipse);
     [~,verGrid,~] = surf2patch(xVerGrid,yVerGrid,zVerGrid);
 
 
@@ -66,8 +75,8 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
     
     
     %classify data per zone
-    endLimitRight=((outerEllipsoidInfo.xCenter+(outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.bordersSituatedAt)*outerEllipsoidInfo.resolutionFactor);   
-    endLimitLeft=((outerEllipsoidInfo.xCenter-(outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.bordersSituatedAt)*outerEllipsoidInfo.resolutionFactor);
+    endLimitRight=((outerEllipsoidInfo.xCenter+(outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.bordersSituatedAt)*resolutionFactor);   
+    endLimitLeft=((outerEllipsoidInfo.xCenter-(outerEllipsoidInfo.xRadius+outerEllipsoidInfo.cellHeight)*outerEllipsoidInfo.bordersSituatedAt)*resolutionFactor);
     
     outerDataVertices=struct2cell(outerSurfaceTotalData);
     outerDataVertices=outerDataVertices(3,:);
@@ -93,17 +102,18 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
         isLeftEdgeNoTransition(:,i) = (meanEdgeVertices(:,1) < endLimitLeft(i)).*logical(1-indexesPairCellsTransition);
         isCentralEdgeNoTransition(:,i) = (meanEdgeVertices(:,1) >= endLimitLeft(i) & meanEdgeVertices(:,1) <= endLimitRight(i)).*logical(1-indexesPairCellsTransition);
 
-        numCellsAtXBorderRight(i) = sum(outerEllipsoidInfo.centroids(:, 1) > endLimitRight(i));
-        numCellsAtXBorderLeft(i) = sum(outerEllipsoidInfo.centroids(:, 1) < endLimitLeft(i));
+        
+        numCellsAtXBorderRight(i) = sum(outerEllipsoidInfo.centroids(:, 1)*centroidsRefactor > endLimitRight(i));
+        numCellsAtXBorderLeft(i) = sum(outerEllipsoidInfo.centroids(:, 1)*centroidsRefactor < endLimitLeft(i));
         numCellsAtXCentral(i) = numberOfTotalCell - numCellsAtXBorderRight(i) - numCellsAtXBorderLeft(i);
 
     end
     
     
     %organize transitions per region
-    [outerSurfaceDataTransition.TotalRegion,outerSurfaceDataNoTransition.TotalRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(indexesPairCellsTransition),logical(1-indexesPairCellsTransition),numberOfTotalCell);
-    [outerSurfaceDataTransition.RightRegion,outerSurfaceDataNoTransition.RightRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isRightEdgeTransition),logical(isRightEdgeNoTransition),numCellsAtXBorderRight);
-    [outerSurfaceDataTransition.LeftRegion,outerSurfaceDataNoTransition.LeftRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isLeftEdgeTransition),logical(isLeftEdgeNoTransition),numCellsAtXBorderLeft);
-    [outerSurfaceDataTransition.CentralRegion,outerSurfaceDataNoTransition.CentralRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isCentralEdgeTransition),logical(isCentralEdgeNoTransition),numCellsAtXCentral);               
+    [outerSurfaceDataTransition.TotalRegion,outerSurfaceDataNoTransition.TotalRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(indexesPairCellsTransition),logical(1-indexesPairCellsTransition),numberOfTotalCell,'Total');
+    [outerSurfaceDataTransition.RightRegion,outerSurfaceDataNoTransition.RightRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isRightEdgeTransition),logical(isRightEdgeNoTransition),numCellsAtXBorderRight,'Right');
+    [outerSurfaceDataTransition.LeftRegion,outerSurfaceDataNoTransition.LeftRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isLeftEdgeTransition),logical(isLeftEdgeNoTransition),numCellsAtXBorderLeft,'Left');
+    [outerSurfaceDataTransition.CentralRegion,outerSurfaceDataNoTransition.CentralRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isCentralEdgeTransition),logical(isCentralEdgeNoTransition),numCellsAtXCentral,'Central');               
         
 end

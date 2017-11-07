@@ -1,31 +1,39 @@
-function [ rowInfo ] = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell )
+function [ rowInfoPerBorder ] = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell )
 %CREATEEXCEL Summary of this function goes here
 %   Detailed explanation goes here
 	%%Creating row of excel
-	rowInfo.xRadius = ellipsoidInfo.xRadius;
-	rowInfo.yRadius = ellipsoidInfo.yRadius;
-	rowInfo.zRadius = ellipsoidInfo.zRadius;
-	rowInfo.totalCells = size(exchangeNeighboursPerCell, 1);
-	rowInfo.cellHeight = ellipsoidInfo.cellHeight;
+    
+    rowInfoPerBorder=cell(size(ellipsoidInfo.bordersSituatedAt));
+    rowInfo=struct();
+    
+    for numBorders = 1:size(ellipsoidInfo.bordersSituatedAt, 2)
+        rowInfo.xRadius = ellipsoidInfo.xRadius;
+        rowInfo.yRadius = ellipsoidInfo.yRadius;
+        rowInfo.zRadius = ellipsoidInfo.zRadius;
+        rowInfo.totalCells = size(exchangeNeighboursPerCell, 1);
+		rowInfo.cellHeight = ellipsoidInfo.cellHeight;
 	
-	rowInfo.meanCellArea = mean(ellipsoidInfo.cellArea);
-	rowInfo.stdCellArea = std(ellipsoidInfo.cellArea);
+        rowInfo.meanCellArea = mean(ellipsoidInfo.cellArea);
+        rowInfo.stdCellArea = std(ellipsoidInfo.cellArea);
 	
-	rowInfo.percentageOfexchangeNeighboursPerCell = sum(exchangeNeighboursPerCell) / size(exchangeNeighboursPerCell, 1);
-	
-	for numBorders = 1:size(ellipsoidInfo.bordersSituatedAt, 2)
-		
+        rowInfo.percentageOfexchangeNeighboursPerCell = sum(exchangeNeighboursPerCell) / size(exchangeNeighboursPerCell, 1);
+			
 		rowInfo.bordersSituatedAt = ellipsoidInfo.bordersSituatedAt(numBorders);
-        %We get select the cells at the borders from the initial ellipsoid.
-        %Not from the reduced ellipsoid. Thus, we'll always get the same
-        %centroids for all the different cell heights.
-        cellsAtXBorderRight = initialEllipsoid.centroids(:, 1) < -(rowInfo.bordersSituatedAt * initialEllipsoid.xRadius);
-        cellsAtYBorderRight = initialEllipsoid.centroids(:, 2) < -(rowInfo.bordersSituatedAt * initialEllipsoid.yRadius);
-        cellsAtZBorderRight = initialEllipsoid.centroids(:, 3) < -(rowInfo.bordersSituatedAt * initialEllipsoid.zRadius);
+        %data are measured from ellipsoidInfo
+        
+        if rowInfo.cellHeight == 0
+            resolutionFactor=1;
+        else
+            resolutionFactor=ellipsoidInfo.resolutionFactor;
+        end
+        
+        cellsAtXBorderLeft = ellipsoidInfo.centroids(:, 1)/resolutionFactor < ellipsoidInfo.xCenter-(rowInfo.bordersSituatedAt * ellipsoidInfo.xRadius);
+        cellsAtYBorderLeft = ellipsoidInfo.centroids(:, 2)/resolutionFactor < ellipsoidInfo.yCenter-(rowInfo.bordersSituatedAt * ellipsoidInfo.yRadius);
+        cellsAtZBorderLeft = ellipsoidInfo.centroids(:, 3)/resolutionFactor < ellipsoidInfo.zCenter-(rowInfo.bordersSituatedAt * ellipsoidInfo.zRadius);
 
-        cellsAtXBorderLeft = initialEllipsoid.centroids(:, 1) > (rowInfo.bordersSituatedAt * initialEllipsoid.xRadius);
-        cellsAtYBorderLeft = initialEllipsoid.centroids(:, 2) > (rowInfo.bordersSituatedAt * initialEllipsoid.yRadius);
-        cellsAtZBorderLeft = initialEllipsoid.centroids(:, 3) > (rowInfo.bordersSituatedAt * initialEllipsoid.zRadius);
+        cellsAtXBorderRight = ellipsoidInfo.centroids(:, 1)/resolutionFactor > ellipsoidInfo.xCenter+(rowInfo.bordersSituatedAt * ellipsoidInfo.xRadius);
+        cellsAtYBorderRight = ellipsoidInfo.centroids(:, 2)/resolutionFactor > ellipsoidInfo.yCenter+(rowInfo.bordersSituatedAt * ellipsoidInfo.yRadius);
+        cellsAtZBorderRight = ellipsoidInfo.centroids(:, 3)/resolutionFactor > ellipsoidInfo.zCenter+(rowInfo.bordersSituatedAt * ellipsoidInfo.zRadius);
 
         rowInfo.percentageOfexchangeNeighboursPerCellAtXBorderLeft = sum(exchangeNeighboursPerCell(cellsAtXBorderLeft)) / size(exchangeNeighboursPerCell(cellsAtXBorderLeft), 1);
         rowInfo.percentageOfexchangeNeighboursPerCellAtXBorderRight = sum(exchangeNeighboursPerCell(cellsAtXBorderRight)) / size(exchangeNeighboursPerCell(cellsAtXBorderRight), 1);
@@ -75,7 +83,7 @@ function [ rowInfo ] = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNei
         rowInfo.surfaceReductionOfZBorderRight = sum(ellipsoidInfo.cellArea(cellsAtZBorderRight)) / sum(initialEllipsoid.cellArea(cellsAtZBorderRight));
         rowInfo.surfaceReductionOfZMiddle = sum(ellipsoidInfo.cellArea(cellsAtZBorderRight == 0 & cellsAtZBorderLeft == 0)) / sum(initialEllipsoid.cellArea(cellsAtZBorderRight == 0 & cellsAtZBorderLeft == 0));
         
-        rowInfo = renameVariablesOfStructAddingSuffix(rowInfo, num2str(round(rowInfo.bordersSituatedAt*100)), {'Border', 'Middle'});
-
+        rowInfoPerBorder{numBorders}=rowInfo;
+    end
 end
 

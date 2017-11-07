@@ -73,8 +73,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
     disp('End Random centroids')
     
 %     try
-        transitionsCSVInfo = {};
-        transitionsAngleCSV = {};
+        transitionsCSVInfo = struct();
         ellipsoidInfo.centroids = finalCentroids;
         initialEllipsoid = ellipsoidInfo;
         [ ellipsoidInfo.centroids ] = getAugmentedCentroids( ellipsoidInfo, finalCentroids, max(hCellsPredefined));
@@ -91,6 +90,14 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         % Get all the pixels of the image
         [allXs, allYs, allZs] = findND(img3DLabelled > 0);
         numException = 0;
+        
+        
+        %Predefining parameters to save
+        transitionsCSVInfoTransitionsMeasuredOuter=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
+        transitionsCSVInfoTransitionsMeasuredInner=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
+        transitionsCSVInfoNoTransitionsMeasuredOuter=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
+        transitionsCSVInfoNoTransitionsMeasuredInner=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
+        countOfHeights=1;
         
         for cellHeight = hCellsPredefined
             cellHeight
@@ -132,39 +139,44 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             
             exchangeNeighboursPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
             
-            newRowTable = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell);
+            newRowTableMeasuredOuter = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell);
+            newRowTableMeasuredInner = createExcel( initialEllipsoid, ellipsoidInfo, exchangeNeighboursPerCell);
             
             cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood)>0, 1);
             
-            tableDataAngles=[];
+            tableDataAnglesTransitionsEdgesOuter=[];
+            tableDataAnglesNoTransitionsEdgesOuter=[];
+            tableDataAnglesTransitionsEdgesInner=[];
+            tableDataAnglesNoTransitionsEdgesInner=[];
             if ~isempty(cellsTransition)
-                [tableDataAngles, anglesPerRegion] = getAnglesLengthAndTranstionFromTheEdges( initialEllipsoid, ellipsoidInfo);
+                [tableDataAnglesTransitionsEdgesOuter, tableDataAnglesNoTransitionsEdgesOuter] = getAnglesLengthAndTranstionFromTheEdges( initialEllipsoid, ellipsoidInfo);
+                close
+                [tableDataAnglesTransitionsEdgesInner, tableDataAnglesNoTransitionsEdgesInner] = getAnglesLengthAndTranstionFromTheEdges( ellipsoidInfo,initialEllipsoid);
                 close
             end
             
-            if isempty(tableDataAngles)
-                tableDataAngles=NaN;
-                preffixName = {'averageAnglesLess15EndRight','averageAnglesBetw15_30EndRight', 'averageAnglesBetw30_45EndRight', 'averageAnglesBetw45_60EndRight', 'averageAnglesBetw60_75EndRight', 'averageAnglesMore75EndRight' ...
-                    'averageAnglesLess15EndLeft','averageAnglesBetw15_30EndLeft', 'averageAnglesBetw30_45EndLeft', 'averageAnglesBetw45_60EndLeft', 'averageAnglesBetw60_75EndLeft', 'averageAnglesMore75EndLeft' ...
-                    'averageAnglesLess15EndGlobal','averageAnglesBetw15_30EndGlobal', 'averageAnglesBetw30_45EndGlobal', 'averageAnglesBetw45_60EndGlobal', 'averageAnglesBetw60_75EndGlobal', 'averageAnglesMore75EndGlobal' ...
-                    'averageAnglesLess15CentralRegion','averageAnglesBetw15_30CentralRegion', 'averageAnglesBetw30_45CentralRegion', 'averageAnglesBetw45_60CentralRegion', 'averageAnglesBetw60_75CentralRegion', 'averageAnglesMore75CentralRegion' ...
-                    'percentageTransitionsEndLeft','percentageTransitionsEndRight','percentageTransitionsEndGlobal','percentageTransitionsCentralRegion', 'meanEdgeLengthEndLeft', 'meanEdgeLengthEndRight', 'meanEdgeLengthEndGlobal', 'meanEdgeLengthCentralRegion', 'stdEdgeLengthEndLeft', 'stdEdgeLengthEndRight', 'stdEdgeLengthEndGlobal', 'stdEdgeLengthCentralRegion'};
-                
-                totalVariables = {'averageAnglesLess15Total','averageAnglesBetw15_30Total', 'averageAnglesBetw30_45Total', 'averageAnglesBetw45_60Total', 'averageAnglesBetw60_75Total', 'averageAnglesMore75Total', 'percentageTransitionsPerCell', 'meanEdgeLength', 'stdEdgeLength'};
-                anglesPerRegion=array2table(NaN(size(totalVariables, 2) + (size(preffixName, 2))*size(initialEllipsoid.bordersSituatedAt, 2),1)');
-                
-                newVariableNames = cell(size(initialEllipsoid.bordersSituatedAt, 2), 1);
-                for numBorders = 1:size(initialEllipsoid.bordersSituatedAt, 2)
-                    newVariableNames{numBorders} = cellfun(@(x) strcat(x, '_', num2str(round(ellipsoidInfo.bordersSituatedAt(numBorders)*100)), '_'), preffixName, 'UniformOutput', false);
-                end
-                anglesPerRegion.Properties.VariableNames = [totalVariables{:}, newVariableNames{:}];
-                anglesPerRegion=table2struct(anglesPerRegion);
-            end
+           
             %Saving info
-            save(strcat(outputDir, '\ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'initialEllipsoid', 'tableDataAngles');
+            save(strcat(outputDir, '\ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'initialEllipsoid', 'tableDataAnglesTransitionsEdgesOuter','tableDataAnglesNoTransitionsEdgesOuter','tableDataAnglesTransitionsEdgesInner','tableDataAnglesNoTransitionsEdgesInner');
             
-            transitionsCSVInfo(end+1) = {horzcat(struct2table(newRowTable), struct2table(anglesPerRegion))};
+            
+            fieldsNoSavedInCSV={'edgeLength','edgeAngle','edgeVertices','cellularMotifs'};
+            for numBorders=1:length(newRowTableMeasuredOuter)
+                
+                transitionsCSVInfoTransitionsMeasuredOuter(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredOuter{numBorders}), struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
+                transitionsCSVInfoTransitionsMeasuredInner(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredInner{numBorders}), struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
+                transitionsCSVInfoNoTransitionsMeasuredOuter(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredOuter{numBorders}), struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
+                transitionsCSVInfoNoTransitionsMeasuredInner(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredInner{numBorders}), struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
+                
+            end
+            countOfHeights=countOfHeights+1;
+           
         end
+        transitionsCSVInfo.edgeTransitionMeasuredOuter=transitionsCSVInfoTransitionsMeasuredOuter;
+        transitionsCSVInfo.edgeTransitionMeasuredInner=transitionsCSVInfoTransitionsMeasuredInner;
+        transitionsCSVInfo.edgeNoTransitionMeasuredOuter=transitionsCSVInfoNoTransitionsMeasuredOuter;
+        transitionsCSVInfo.edgeNoTransitionMeasuredInner=transitionsCSVInfoNoTransitionsMeasuredInner;
+        
         %You can see the figures:
         %set(get(0,'children'),'visible','on')
 end
