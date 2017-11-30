@@ -8,24 +8,26 @@ addpath(genpath('lib'));
 % - Stage 8
 % - Stage 4
 allCombinations = {
-    15 10 10 [1] 'Zepellin' %%[30] pero lo he puesto en 10 para que salga mas rapido y que a la vez haya transiciones
+    15 10 10 [30] 'Zepellin'
     10 15 15 [50] 'FilledDonnut'
     10 10 10 [30] 'Sphere'
     97.46-6.25 50.75-6.25 50.75-6.25 6.25 'Stage 8'
     38.57277778-5.506047536	31.61605556-5.506047536 31.61605556-5.506047536	5.506047536 'Stage 4'
- };
+    };
+
+maxRandoms = 20;
+parpool(5)
 
 for numCombination = 1:size(allCombinations, 1)
     
     
     fileName = allCombinations{numCombination, 5};
     outputDirGlobal= ['results\' fileName];
-%     rowTransitionOuter=cell(4,2);
-%     rowNoTransitionOuter=cell(4,2);
-%     rowTransitionInner=cell(4,2);
-%     rowNoTransitionInner=cell(4,2); INSERT HERE THE NUMBER OF BORDERS
     
-    for numRandomization = 1:20 %%parfor
+    
+    randomizationsInfo = cell(maxRandoms, 1);
+    
+    parfor numRandomization = 1:maxRandoms %%parfor
         
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};
@@ -43,24 +45,37 @@ for numCombination = 1:size(allCombinations, 1)
             radiusY = radiusInModelY;
         end
         
-        a = voronoi3DEllipsoid([radiusX+hCell+0.5 radiusY+hCell+0.5 radiusZ+hCell+0.5], [radiusX radiusY radiusZ], 200, outputDirActual, hCell);
+        randomEllipsoidInfo = voronoi3DEllipsoid([radiusX+hCell+0.5 radiusY+hCell+0.5 radiusZ+hCell+0.5], [radiusX radiusY radiusZ], 200, outputDirActual, hCell);
         
-        for numBorders=1:length(a.edgeTransitionMeasuredOuter)
-                rowTransitionOuter{numRandomization,numBorders}=a.edgeTransitionMeasuredOuter{numBorders};
-                rowNoTransitionOuter{numRandomization,numBorders}=a.edgeNoTransitionMeasuredOuter{numBorders};
-                rowTransitionInner{numRandomization,numBorders}=a.edgeTransitionMeasuredInner{numBorders};
-                rowNoTransitionInner{numRandomization,numBorders}=a.edgeNoTransitionMeasuredInner{numBorders};
-        end
+        randomizationsInfo(numRandomization) = {randomEllipsoidInfo};
+        
         ['randomization ' num2str(numRandomization) ' - finished']
     end
     
+    
+    rowTransitionOuter=cell(maxRandoms,2);
+    rowNoTransitionOuter=cell(maxRandoms,2);
+    rowTransitionInner=cell(maxRandoms,2);
+    rowNoTransitionInner=cell(maxRandoms,2);
+    
+    for numEllipsoid = 1:maxRandoms
+        randomEllipsoidInfo = randomizationsInfo{numEllipsoid};
+        for numBorders=1:length(randomEllipsoidInfo.edgeTransitionMeasuredOuter)
+            rowTransitionOuter{numEllipsoid,numBorders}=randomEllipsoidInfo.edgeTransitionMeasuredOuter{numBorders};
+            rowNoTransitionOuter{numEllipsoid,numBorders}=randomEllipsoidInfo.edgeNoTransitionMeasuredOuter{numBorders};
+            rowTransitionInner{numEllipsoid,numBorders}=randomEllipsoidInfo.edgeTransitionMeasuredInner{numBorders};
+            rowNoTransitionInner{numEllipsoid,numBorders}=randomEllipsoidInfo.edgeNoTransitionMeasuredInner{numBorders};
+        end
+    end
+    
     for numBorders=1:size(rowTransitionOuter,2)
-        borderLimit=rowTransitionOuter{numBorders}.bordersSituatedAt(1);
+        borderLimit=rowTransitionOuter{1,numBorders}.bordersSituatedAt(1);
         writetable(vertcat(rowTransitionOuter{:,numBorders}), [outputDirGlobal '\transitionsOuterBorder' num2str(borderLimit) '_' fileName '_' date '.xls']);
         writetable(vertcat(rowNoTransitionOuter{:,numBorders}), [outputDirGlobal '\noTransitionsOuterBorder' num2str(borderLimit) '_' fileName '_' date '.xls']);
         writetable(vertcat(rowTransitionInner{:,numBorders}), [outputDirGlobal  '\transitionsInnerBorder' num2str(borderLimit) '_' fileName '_' date '.xls']);
         writetable(vertcat(rowNoTransitionInner{:,numBorders}), [outputDirGlobal '\noTransitionsInnerBorder' num2str(borderLimit) '_' fileName '_' date '.xls']);
     end
+    save(strcat(outputDirGlobal, '\randomizationsInfo_', date), 'randomizationsInfo');
     close all
 end
 %writetable(vertcat(transitionByRadiusAll{:}), strcat('results\transitionsInfoAllRandomizations_', date, '.xls'))
