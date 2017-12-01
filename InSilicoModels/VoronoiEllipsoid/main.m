@@ -2,9 +2,9 @@ addpath(genpath('src'));
 addpath(genpath('lib'));
 
 allCombinations = {
-    15 10 10 [10, 30] 'Zepellin'
-    10 15 15 [50] 'FilledDonnut'
-    10 10 10 [30] 'Sphere'
+    15 10 10 [15, 20, 30] 'Zepellin'
+    10 15 15 [15, 20, 30] 'FilledDonnut'
+    10 10 10 [15, 20] 'Sphere'
     97.46-6.25 50.75-6.25 50.75-6.25 6.25 'Stage 8'
     38.57277778-5.506047536	31.61605556-5.506047536 31.61605556-5.506047536	5.506047536 'Stage 4'
     };

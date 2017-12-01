@@ -34,7 +34,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
 
     colours = colorcube(size(centroids, 1));
     newOrderOfCentroids = zeros(size(centroids, 1), 1);
-    figure('visible', 'on');
+    figure('visible', 'off');
     img3DLabelledPerim = bwperim(img3DLabelled) .* img3DLabelled;
     for numSeed = 1:size(centroids, 1)
         % Getting the new order of the seeds
