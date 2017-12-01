@@ -157,7 +157,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             
            
             %Saving info
-            save(strcat(outputDir, '\ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'initialEllipsoid', 'tableDataAnglesTransitionsEdgesOuter','tableDataAnglesNoTransitionsEdgesOuter','tableDataAnglesTransitionsEdgesInner','tableDataAnglesNoTransitionsEdgesInner');
+            save(strcat(outputDir, '\ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'initialEllipsoid', 'tableDataAnglesTransitionsEdgesOuter','tableDataAnglesNoTransitionsEdgesOuter','tableDataAnglesTransitionsEdgesInner','tableDataAnglesNoTransitionsEdgesInner', '-v7.3');
             
             
             fieldsNoSavedInCSV={'edgeLength','edgeAngle','edgeVertices','cellularMotifs'};
