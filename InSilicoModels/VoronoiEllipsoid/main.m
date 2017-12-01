@@ -45,7 +45,7 @@ for numCombination = 1:size(allCombinations, 1)
             radiusY = radiusInModelY;
         end
         
-        randomEllipsoidInfo = voronoi3DEllipsoid([radiusX+hCell+0.5 radiusY+hCell+0.5 radiusZ+hCell+0.5], [radiusX radiusY radiusZ], 200, outputDirActual, hCell);
+        randomEllipsoidInfo = voronoi3DEllipsoid([radiusX+max(hCell)+0.5 radiusY+max(hCell)+0.5 radiusZ+max(hCell)+0.5], [radiusX radiusY radiusZ], 200, outputDirActual, hCell);
         
         randomizationsInfo(numRandomization) = {randomEllipsoidInfo};
         
