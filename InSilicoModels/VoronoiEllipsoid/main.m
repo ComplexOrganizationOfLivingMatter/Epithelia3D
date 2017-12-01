@@ -1,14 +1,8 @@
 addpath(genpath('src'));
 addpath(genpath('lib'));
 
-%On this order:
-% - Zeppelin
-% - Filled donut
-% - Sphere
-% - Stage 8
-% - Stage 4
 allCombinations = {
-    15 10 10 [30] 'Zepellin'
+    15 10 10 [10, 30] 'Zepellin'
     10 15 15 [50] 'FilledDonnut'
     10 10 10 [30] 'Sphere'
     97.46-6.25 50.75-6.25 50.75-6.25 6.25 'Stage 8'
@@ -16,7 +10,8 @@ allCombinations = {
     };
 
 maxRandoms = 20;
-parpool(5)
+delete(gcp);
+parpool(2);
 
 for numCombination = 1:size(allCombinations, 1)
     
