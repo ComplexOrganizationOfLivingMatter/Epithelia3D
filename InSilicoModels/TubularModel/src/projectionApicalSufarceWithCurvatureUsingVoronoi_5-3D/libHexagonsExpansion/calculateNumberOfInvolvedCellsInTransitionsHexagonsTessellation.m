@@ -3,8 +3,8 @@ function calculateNumberOfInvolvedCellsInTransitionsHexagonsTessellation(numSeed
     numOfSurfaceRatios=10;
     numberOfHistogramsCells=11;
     nameOfFolder=['512x1024_' num2str(numSeeds) 'seeds\'];
-    path3dVoronoi=['D:\Pedro\Epithelia3D\Salivary Glands\Curvature model\data\' kindProjection '\cylinderOfHexagons\512x1024_' num2str(numSeeds) 'seeds\'];
-    path3dVoronoi2Load=['D:\Pedro\Epithelia3D\Salivary Glands\Curvature model\data\expansion\cylinderOfHexagons\512x1024_' num2str(numSeeds) 'seeds\'];
+    path3dVoronoi=['D:\Pedro\Epithelia3D\InSilicoModels\TubularModel\data\' kindProjection '\cylinderOfHexagons\512x1024_' num2str(numSeeds) 'seeds\'];
+    path3dVoronoi2Load=['D:\Pedro\Epithelia3D\InSilicoModels\TubularModel\data\expansion\cylinderOfHexagons\512x1024_' num2str(numSeeds) 'seeds\'];
     directory2save=['..\..\data\' kindProjection '\cylinderOfHexagons\512x1024_' num2str(numSeeds) 'seeds\'];
     addpath('lib')   
     pathV5data=dir([path3dVoronoi '*m_5.mat*']);

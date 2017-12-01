@@ -2,7 +2,7 @@ listSeeds=[9,34,132,520,2064];
 kindProjection='reduction';
 for i=1:length(listSeeds)
     nameOfFolder=['512x1024_' num2str(listSeeds(i)) 'seeds\'];
-    path3dVoronoi=['D:\Pedro\Epithelia3D\Salivary Glands\Tolerance model\Data\3D Voronoi model\Cylindrical voronoi\cylinderOfHexagons\' nameOfFolder];
+    path3dVoronoi=['D:\Pedro\Epithelia3D\InSilicoModels\ToleranceModel\Data\3D Voronoi model\Cylindrical voronoi\cylinderOfHexagons\' nameOfFolder];
     directory2save=['..\..\data\' kindProjection '\cylinderOfHexagons\'];
     addpath('lib')
     addpath('libExpansionOrReduction')

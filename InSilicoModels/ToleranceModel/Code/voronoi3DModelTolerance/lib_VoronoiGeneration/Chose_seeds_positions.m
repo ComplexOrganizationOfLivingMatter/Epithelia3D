@@ -42,5 +42,5 @@ if ~isdir(path2save)
     mkdir(path2save)
 end
 
-save([path2save 'Salivary_Glande_' num2str(H) 'x' num2str(W) '_' num2str(n_seeds) '_seeds_' num2str(indexImage) '.mat'],'seeds')
+save([path2save 'Salivary_Gland_' num2str(H) 'x' num2str(W) '_' num2str(n_seeds) '_seeds_' num2str(indexImage) '.mat'],'seeds')
     

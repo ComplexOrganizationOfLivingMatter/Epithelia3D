@@ -1,7 +1,7 @@
 function [ ] = create3DMotifFromVoronoi( )
 %CREATE3DMOTIFFROMVORONOI Summary of this function goes here
 %   Detailed explanation goes here
-    load('D:\Pablo\Epithelia3D\Salivary Glands\Curvature model\data\Image_10.mat')
+    load('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\Image_10.mat')
     
     %selectedCells = 1:max(listLOriginalProjection.L_originalProjection{1});
     %Yellow, Red, Green, Blue

@@ -13,7 +13,7 @@ M=jet(numSeeds);
 cOrder3=M(order3,:);
 cOrder3=[0 0 0;cOrder3];
 
-load(['D:\Pedro\Epithelia3D\Salivary Glands\Curvature model\data\expansion\512x1024_' num2str(numSeeds) 'seeds\Image_10_Diagram_5\Image_10_Diagram_5.mat'],'listLOriginalProjection')
+load(['D:\Pedro\Epithelia3D\InSilicoModels\TubularModel\data\expansion\512x1024_' num2str(numSeeds) 'seeds\Image_10_Diagram_5\Image_10_Diagram_5.mat'],'listLOriginalProjection')
 for i=1:length(steps)
 
     Img=cell2mat(listLOriginalProjection.L_originalProjection(steps(i)));

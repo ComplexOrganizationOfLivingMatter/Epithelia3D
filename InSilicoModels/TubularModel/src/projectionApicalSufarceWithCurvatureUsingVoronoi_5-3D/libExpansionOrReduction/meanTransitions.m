@@ -6,7 +6,7 @@ listNwin=[];
 listNtransitions=[];
 
 for i=1:nImages
-    name2load=['D:\Pedro\Epithelia3D\Salivary Glands\Curvature model\data\Image_' num2str(i) '_Diagram_5\Image_' num2str(i) '_Diagram_5.mat'];
+    name2load=['D:\Pedro\Epithelia3D\InSilicoModels\TubularModel\data\Image_' num2str(i) '_Diagram_5\Image_' num2str(i) '_Diagram_5.mat'];
     load(name2load,'listTransitionsByCurvature')
     
     listNloss(:,end+1)=listTransitionsByCurvature.nLoss;

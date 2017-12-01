@@ -2,7 +2,7 @@
 
 addpath lib
 
-pathData='D:\Pedro\Epithelia3D\Salivary Glands\Tolerance model\Data\3D Voronoi model\';
+pathData='D:\Pedro\Epithelia3D\InSilicoModels\ToleranceModel\Data\3D Voronoi model\';
 
 nImages=20;
 nFrames=20;
@@ -92,4 +92,4 @@ for i=1:size(listTypeStr,1)
     
 end
 
-xlswrite(['D:\Pedro\Ephitelia 3D\Salivary Glands\Tolerance model\BrokenTolerance_Angles_' date '.xlsx'],excelClass)
+xlswrite(['D:\Pedro\Ephitelia 3D\InSilicoModels\ToleranceModel\BrokenTolerance_Angles_' date '.xlsx'],excelClass)

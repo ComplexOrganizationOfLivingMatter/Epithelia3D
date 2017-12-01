@@ -99,3 +99,5 @@ Temporary Items
 *.fig
 *.pdf
 *.mat
+*.stl
+*.jpg

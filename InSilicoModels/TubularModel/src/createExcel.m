@@ -11,10 +11,10 @@ function [ ] = createExcel(numSeeds)
 %   Then, that is a sheet in the excell. We have 20 randomizations, so 20
 %   sheets there are.
 
-    randomizationPath = strcat('..\data\voronoiModel\expansion\512x1024_', num2str(numSeeds),'seeds\');
+    randomizationPath = strcat('..\data\expansion\512x1024_', num2str(numSeeds),'seeds\');
     pathSplitted = strsplit(randomizationPath, '\');
     lastDirSplitted = strsplit(pathSplitted{end-1}, '_');
-    outputFile = strcat('..\data\voronoiModel\cellInfo_Sides_Areas_', lastDirSplitted{end} , '_', date ,'.xls');
+    outputFile = strcat('..\data\cellInfo_Sides_Areas_', lastDirSplitted{end} , '_', date ,'.xls');
 
     addpath(genpath('projectionApicalSufarceWithCurvatureUsingVoronoi_5-3D'));
 

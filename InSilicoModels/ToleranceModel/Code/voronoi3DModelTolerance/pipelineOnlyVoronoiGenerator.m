@@ -13,7 +13,7 @@ addpath lib_VoronoiGeneration
 
 
 Folder2save=['512x1024_' num2str(n_seeds) 'seeds'];
-FOLDER1='D:\Pedro\Epithelia3D\Salivary Glands\Tolerance model\Data\3D Voronoi model\';
+FOLDER1='D:\Pedro\Epithelia3D\InSilicoModels\ToleranceModel\Data\3D Voronoi model\';
     
 parfor i=1:N_images
         %Generate random seeds

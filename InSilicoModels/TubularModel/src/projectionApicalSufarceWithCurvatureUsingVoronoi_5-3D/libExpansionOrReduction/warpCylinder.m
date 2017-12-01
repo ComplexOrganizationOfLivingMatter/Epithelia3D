@@ -1,9 +1,9 @@
 %warp cylinder
 clear all
-load('D:\Pablo\Epithelia3D\Salivary Glands\Curvature model\data\Image_10.mat')
+load('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\Image_10.mat')
 close all
-uiopen('D:\Pablo\Epithelia3D\Salivary Glands\Curvature model\data\voronoiCylinderSR1_ZoomOut.fig',1)
-%uiopen('D:\Pablo\Epithelia3D\Salivary Glands\Curvature model\data\voronoiCylinderSR5.fig',1)
+uiopen('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiCylinderSR1_ZoomOut.fig',1)
+%uiopen('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiCylinderSR5.fig',1)
 
 refFig = gca;
 surfaceRatios=[1,3,6,9];

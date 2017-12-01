@@ -2,7 +2,7 @@
 
 rootPath='D:\Pedro\Epithelia3D\';
 
-data2SavedPath=[rootPath 'Salivary Glands\Tolerance model\Data\localHeightTransitionPrediction\'];
+data2SavedPath=[rootPath 'InSilicoModels\TubularModel\Data\localHeightTransitionPrediction\'];
 
 salivaryGlandFolder='Salivary Glands\Confocal stacks\Segmented images data\';
 

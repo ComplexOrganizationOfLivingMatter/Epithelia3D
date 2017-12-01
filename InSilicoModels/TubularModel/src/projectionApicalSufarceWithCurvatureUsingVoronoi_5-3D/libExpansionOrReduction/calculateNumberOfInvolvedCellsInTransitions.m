@@ -3,7 +3,7 @@ function calculateNumberOfInvolvedCellsInTransitions(numSeeds)
     numOfSurfaceRatios=10;
     numberOfHistogramsCells=11;
     nameOfFolder=['512x1024_' num2str(numSeeds) 'seeds\'];
-    path3dVoronoi=['D:\Pedro\Epithelia3D\Salivary Glands\Curvature model\data\expansion\512x1024_' num2str(numSeeds) 'seeds\'];
+    path3dVoronoi=['D:\Pedro\Epithelia3D\InSilicoModels\TubularModel\data\expansion\512x1024_' num2str(numSeeds) 'seeds\'];
     directory2save=['..\..\data\expansion\512x1024_' num2str(numSeeds) 'seeds\'];
     addpath('lib')   
     pathV5data=dir([path3dVoronoi '*m_5*']);
