@@ -1,4 +1,4 @@
-function [img3DApicalSurface,img3DBasalSurface,img3DIntermediateSurface]=get3dImageAndSurfaces(R,H,equalBasalRadius,equalApicalRadius,equalIntermediateRadius,intermediateSurfaceRatios,img3Dfinal)
+function [img3DApicalSurface,img3DBasalSurface,img3DIntermediateSurface] = get3dImageAndSurfaces(R,H,equalBasalRadius,equalApicalRadius,equalIntermediateRadius,intermediateSurfaceRatios,img3Dfinal)
 
 %get 3d image with correct labels and the asked surfaces: apical, basal and intermediates 
 
