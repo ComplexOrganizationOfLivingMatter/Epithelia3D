@@ -8,9 +8,6 @@ se=strel('square',ratio);
 [H,W,~]=size(L_img);
 
 
-cells=sort(unique(L_img));
-cells=cells(2:end);
-
 tripletsOfNeighs=buildTripletsOfNeighs( neighs );%intersect dilatation of each cell of triplet
 
 
