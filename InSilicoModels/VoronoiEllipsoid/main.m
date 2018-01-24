@@ -4,7 +4,7 @@ addpath(genpath('lib'));
 allCombinations = {
     15 10 10 [15, 20, 30] 'Zepellin'
     10 15 15 [15, 20, 30] 'FilledDonnut'
-    10 10 10 [15, 20] 'Sphere'
+    10 10 10 [15, 30] 'Sphere'
     97.46-6.25 50.75-6.25 50.75-6.25 6.25 'Stage 8'
     38.57277778-5.506047536	31.61605556-5.506047536 31.61605556-5.506047536	5.506047536 'Stage 4'
     };
@@ -48,18 +48,21 @@ for numCombination = 1:size(allCombinations, 1)
     end
     
     
-    rowTransitionOuter=cell(maxRandoms,2);
-    rowNoTransitionOuter=cell(maxRandoms,2);
-    rowTransitionInner=cell(maxRandoms,2);
-    rowNoTransitionInner=cell(maxRandoms,2);
+    rowTransitionOuter=cell(maxRandoms*length(allCombinations{numCombination, 4}),2);
+    rowNoTransitionOuter=cell(maxRandoms*length(allCombinations{numCombination, 4}),2);
+    rowTransitionInner=cell(maxRandoms*length(allCombinations{numCombination, 4}),2);
+    rowNoTransitionInner=cell(maxRandoms*length(allCombinations{numCombination, 4}),2);
     
     for numEllipsoid = 1:maxRandoms
         randomEllipsoidInfo = randomizationsInfo{numEllipsoid};
-        for numBorders=1:length(randomEllipsoidInfo.edgeTransitionMeasuredOuter)
-            rowTransitionOuter{numEllipsoid,numBorders}=randomEllipsoidInfo.edgeTransitionMeasuredOuter{numBorders};
-            rowNoTransitionOuter{numEllipsoid,numBorders}=randomEllipsoidInfo.edgeNoTransitionMeasuredOuter{numBorders};
-            rowTransitionInner{numEllipsoid,numBorders}=randomEllipsoidInfo.edgeTransitionMeasuredInner{numBorders};
-            rowNoTransitionInner{numEllipsoid,numBorders}=randomEllipsoidInfo.edgeNoTransitionMeasuredInner{numBorders};
+        for numHeight = 1:length(allCombinations{numCombination, 4})
+            for numBorders=1:length(randomEllipsoidInfo.edgeTransitionMeasuredOuter)
+                numRow = (length(allCombinations{numCombination, 4}) * (numEllipsoid - 1)) + numHeight;
+                rowTransitionOuter{numRow,numBorders}=randomEllipsoidInfo.edgeTransitionMeasuredOuter{numHeight, numBorders};
+                rowNoTransitionOuter{numRow,numBorders}=randomEllipsoidInfo.edgeNoTransitionMeasuredOuter{numHeight, numBorders};
+                rowTransitionInner{numRow,numBorders}=randomEllipsoidInfo.edgeTransitionMeasuredInner{numHeight, numBorders};
+                rowNoTransitionInner{numRow,numBorders}=randomEllipsoidInfo.edgeNoTransitionMeasuredInner{numHeight, numBorders};
+            end
         end
     end
     
