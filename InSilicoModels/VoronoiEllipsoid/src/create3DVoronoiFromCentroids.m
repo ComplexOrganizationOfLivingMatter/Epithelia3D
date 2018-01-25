@@ -5,13 +5,18 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     % This will be used to increase the resolution of the pixel location
     % Because a pixel location has multiple decimals, when we round it 
     % we are simplifying it. This is done to avoid that.
-    ellipsoidInfo.resolutionFactor = 50;
+    ellipsoidInfo.resolutionFactor = 110; %With 50 problems
 
     centroids = round(centroids * ellipsoidInfo.resolutionFactor) + 2;
     augmentedCentroids = round(augmentedCentroids * ellipsoidInfo.resolutionFactor) + 2;
     
+    % We've try to do the 3D matrix sparse... but only exists 2D sparse
+    % matrices. The implemented methods for the N-D sparse matrix are weak
+    % and not sufficient (ndSparse).
     img3D = zeros(max(augmentedCentroids)+1);
 
+    %%img3D = ndSparse.build(max(augmentedCentroids)+1);
+    
     [allXs, allYs, allZs] = findND(img3D == 0);
     
     % Removing invalid areas
