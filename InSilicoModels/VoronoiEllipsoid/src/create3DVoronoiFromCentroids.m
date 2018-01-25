@@ -5,7 +5,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     % This will be used to increase the resolution of the pixel location
     % Because a pixel location has multiple decimals, when we round it 
     % we are simplifying it. This is done to avoid that.
-    ellipsoidInfo.resolutionFactor = 110; %With 50 problems
+    ellipsoidInfo.resolutionFactor = 200; %With 50 problems
 
     centroids = round(centroids * ellipsoidInfo.resolutionFactor) + 2;
     augmentedCentroids = round(augmentedCentroids * ellipsoidInfo.resolutionFactor) + 2;
@@ -13,12 +13,21 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     % We've try to do the 3D matrix sparse... but only exists 2D sparse
     % matrices. The implemented methods for the N-D sparse matrix are weak
     % and not sufficient (ndSparse).
-    img3D = zeros(max(augmentedCentroids)+1);
+    img3D = zeros(max(augmentedCentroids)+1, 'uint8');
 
     %%img3D = ndSparse.build(max(augmentedCentroids)+1);
     
-    [allXs, allYs, allZs] = findND(img3D == 0);
-    
+    %[allXs, allYs, allZs] = findND(img3D == 0); %% BIGGEST RAM PROBLEM
+    cc = {};
+    xs = ones(size(img3D(1, :, :)), 'uint16');
+    for numX = 1:size(img3D, 1)
+        imgActual = img3D(numX, :, :);
+        [y, z] = find(imgActual == 0);
+        cc(numX, :) = {xs*numX, uint16(y), uint16(z)};
+    end
+    allXs = vertcat(cc{:, 1});
+    allYs = vertcat(cc{:, 2});
+    allZs = vertcat(cc{:, 3});
     % Removing invalid areas
     disp('Removing invalid areas')
     [ validPxs, ~, ~ ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
@@ -30,7 +39,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     imgWithDistances = bwdist(img3D);
 
     disp('Reconstruct voronoi cells')
-    img3DLabelled = double(watershed(imgWithDistances, 26));
+    img3DLabelled = uint16(watershed(imgWithDistances, 26));
     img3DLabelledWithoutFilter=img3DLabelled;
     %novalidIndices = sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
             
