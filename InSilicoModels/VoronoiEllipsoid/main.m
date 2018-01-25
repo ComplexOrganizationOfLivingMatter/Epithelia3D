@@ -1,6 +1,8 @@
 addpath(genpath('src'));
 addpath(genpath('lib'));
 
+% X should be the greater number. Z should be the axis with the greater
+% curvature.
 allCombinations = {
     15 10 10 [15, 20, 30] 'Zepellin'
     10 15 15 [15, 20, 30] 'FilledDonnut'
