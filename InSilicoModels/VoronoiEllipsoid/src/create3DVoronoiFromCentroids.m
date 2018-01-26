@@ -5,7 +5,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     % This will be used to increase the resolution of the pixel location
     % Because a pixel location has multiple decimals, when we round it 
     % we are simplifying it. This is done to avoid that.
-    ellipsoidInfo.resolutionFactor = 200; %With 50 problems
+    ellipsoidInfo.resolutionFactor = 50; %With 50 problems
 
     centroids = round(centroids * ellipsoidInfo.resolutionFactor) + 2;
     augmentedCentroids = round(augmentedCentroids * ellipsoidInfo.resolutionFactor) + 2;
@@ -17,13 +17,13 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
 
     %%img3D = ndSparse.build(max(augmentedCentroids)+1);
     
-    %[allXs, allYs, allZs] = findND(img3D == 0); %% BIGGEST RAM PROBLEM
+    %[allXs2, allYs2, allZs3] = findND(img3D == 0); %% BIGGEST RAM PROBLEM
     pixelsPerX = {};
-    xs = ones(size(img3D(1, :, :), 2)*size(img3D(1, :, :), 3), 1, 'uint16');
-    for numX = 1:size(img3D, 1)
-        imgActual = img3D(:, :, numX);
+    xs = ones(size(img3D, 2)*size(img3D, 1), 1, 'uint16');
+    for numZ = 1:size(img3D, 3)
+        imgActual = img3D(:, :, numZ);
         [y, z] = find(imgActual == 0);
-        pixelsPerX(numX, :) = {xs*numX, uint16(y), uint16(z)};
+        pixelsPerX(numZ, :) = {xs*numZ, uint16(y), uint16(z)};
     end
     allXs = vertcat(pixelsPerX{:, 1});
     allYs = vertcat(pixelsPerX{:, 2});
