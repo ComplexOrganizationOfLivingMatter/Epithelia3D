@@ -18,16 +18,16 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     %%img3D = ndSparse.build(max(augmentedCentroids)+1);
     
     %[allXs, allYs, allZs] = findND(img3D == 0); %% BIGGEST RAM PROBLEM
-    cc = {};
-    xs = ones(size(img3D(1, :, :)), 'uint16');
+    pixelsPerX = {};
+    xs = ones(size(img3D(1, :, :), 2)*size(img3D(1, :, :), 3), 1, 'uint16');
     for numX = 1:size(img3D, 1)
         imgActual = img3D(numX, :, :);
         [y, z] = find(imgActual == 0);
-        cc(numX, :) = {xs*numX, uint16(y), uint16(z)};
+        pixelsPerX(numX, :) = {xs*numX, uint16(y), uint16(z)};
     end
-    allXs = vertcat(cc{:, 1});
-    allYs = vertcat(cc{:, 2});
-    allZs = vertcat(cc{:, 3});
+    allXs = vertcat(pixelsPerX{:, 1});
+    allYs = vertcat(pixelsPerX{:, 2});
+    allZs = vertcat(pixelsPerX{:, 3});
     % Removing invalid areas
     disp('Removing invalid areas')
     [ validPxs, ~, ~ ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
@@ -49,7 +49,8 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     colours = colorcube(size(centroids, 1));
     newOrderOfCentroids = zeros(size(centroids, 1), 1);
     figure('visible', 'off');
-    img3DLabelledPerim = bwperim(img3DLabelled) .* img3DLabelled;
+    img3DLabelledPerim = uint16(bwperim(img3DLabelled)) .* img3DLabelled;
+    disp('Building figure');
     for numSeed = 1:size(centroids, 1)
         % Getting the new order of the seeds
         newOrderOfCentroids(numSeed, 1) = img3DLabelledWithoutFilter(centroids(numSeed, 1), centroids(numSeed, 2), centroids(numSeed, 3));
