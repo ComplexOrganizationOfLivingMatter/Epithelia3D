@@ -23,11 +23,11 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     for numZ = 1:size(img3D, 3)
         imgActual = img3D(:, :, numZ);
         [y, z] = find(imgActual == 0);
-        pixelsPerX(numZ, :) = {xs*numZ, uint16(y), uint16(z)};
+        pixelsPerX(numZ, :) = {xs*numZ, uint16(z), uint16(y)};
     end
-    allXs = vertcat(pixelsPerX{:, 1});
+    allXs = vertcat(pixelsPerX{:, 3});
     allYs = vertcat(pixelsPerX{:, 2});
-    allZs = vertcat(pixelsPerX{:, 3});
+    allZs = vertcat(pixelsPerX{:, 1});
     % Removing invalid areas
     disp('Removing invalid areas')
     [ validPxs, ~, ~ ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
@@ -68,5 +68,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     ellipsoidInfo.centroids = augmentedCentroids(newOrderOfCentroids, :);
     save(strcat(outputDir, '\voronoi', date, '.mat'), 'img3DLabelled', 'ellipsoidInfo', '-v7.3');
     savefig(strcat(outputDir, '\voronoi_', date, '.fig'));
+    %You can see the figures:
+    %set(get(0,'children'),'visible','on')
 end
 
