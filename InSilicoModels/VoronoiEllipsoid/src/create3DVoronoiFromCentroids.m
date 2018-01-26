@@ -21,7 +21,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     pixelsPerX = {};
     xs = ones(size(img3D(1, :, :), 2)*size(img3D(1, :, :), 3), 1, 'uint16');
     for numX = 1:size(img3D, 1)
-        imgActual = img3D(numX, :, :);
+        imgActual = img3D(:, :, numX);
         [y, z] = find(imgActual == 0);
         pixelsPerX(numX, :) = {xs*numX, uint16(y), uint16(z)};
     end
