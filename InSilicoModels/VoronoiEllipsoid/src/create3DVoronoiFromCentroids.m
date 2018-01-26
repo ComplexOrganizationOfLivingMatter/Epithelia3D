@@ -25,9 +25,11 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
         [y, z] = find(imgActual == 0);
         pixelsPerX(numZ, :) = {xs*numZ, uint16(z), uint16(y)};
     end
+    %Indexation order
     allXs = vertcat(pixelsPerX{:, 3});
     allYs = vertcat(pixelsPerX{:, 2});
     allZs = vertcat(pixelsPerX{:, 1});
+    clearvars pixelsPerX xs
     % Removing invalid areas
     disp('Removing invalid areas')
     [ validPxs, ~, ~ ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);

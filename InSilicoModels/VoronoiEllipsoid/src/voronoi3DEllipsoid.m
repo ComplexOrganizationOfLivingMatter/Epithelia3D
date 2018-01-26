@@ -130,7 +130,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
                 disp('Getting info of vertices and neighbours: inner layer');
                 
                 img3DInnerLayer = zeros(size(img3DLabelled));
-                innerLayerIndices = uin64(sub2ind(size(img3DLabelled), allXs(innerLayerPxs), allYs(innerLayerPxs), allZs(innerLayerPxs)));
+                innerLayerIndices = uint64(sub2ind(size(img3DLabelled), allXs(innerLayerPxs), allYs(innerLayerPxs), allZs(innerLayerPxs)));
                 img3DInnerLayer(innerLayerIndices) = img3DLabelledActual(innerLayerIndices);
                 ellipsoidInfo.surfaceIndices = innerLayerIndices;
                 initialEllipsoid.img3DLayer = img3DInnerLayer;
