@@ -17,7 +17,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
 
     %%img3D = ndSparse.build(max(augmentedCentroids)+1);
     
-    %[allXs2, allYs2, allZs3] = findND(img3D == 0); %% BIGGEST RAM PROBLEM
+    %[allXs2, allYs2, allZs2] = findND(img3D == 0); %% BIGGEST RAM PROBLEM
     pixelsPerX = {};
     xs = ones(size(img3D, 2)*size(img3D, 1), 1, 'uint16');
     for numZ = 1:size(img3D, 3)

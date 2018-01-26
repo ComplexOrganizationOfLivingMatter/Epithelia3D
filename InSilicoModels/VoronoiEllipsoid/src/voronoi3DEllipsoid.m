@@ -27,13 +27,19 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
 
     ellipsoidInfo.areaOfEllipsoid = ellipsoidSurfaceArea([ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius]);
 
-    ellipsoidInfo.minDistanceBetweenCentroids = (ellipsoidInfo.areaOfEllipsoid*2.3 / maxNumberOfCellsInVoronoi);
+    ellipsoidInfo.minDistanceBetweenCentroids = (ellipsoidInfo.areaOfEllipsoid*3 / maxNumberOfCellsInVoronoi);
     minDistanceBetweenCentroids = ellipsoidInfo.minDistanceBetweenCentroids;
     %(resolutionEllipse + 1) * (resolutionEllipse + 1) number of points
     %generated at the surface of the ellipsoid
     ellipsoidInfo.resolutionEllipse = 300; %300 seems to be a good number
     [x, y, z] = ellipsoid(ellipsoidInfo.xCenter, ellipsoidInfo.yCenter, ellipsoidInfo.zCenter, ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius, ellipsoidInfo.resolutionEllipse);
 
+%     figure
+%     surf(x, y, z)
+%     xlabel('x')
+%     ylabel('y')
+%     zlabel('z')
+%     axis equal
     totalNumberOfPossibleCentroids = size(x, 1) * size(x, 1);
 
     %% Generate Random Centroids
@@ -89,6 +95,9 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         
         % Get all the pixels of the image
         [allXs, allYs, allZs] = findND(img3DLabelled > 0);
+        allXs = uint16(allXs);
+        allYs = uint16(allYs);
+        allZs = uint16(allZs);
         numException = 0;
         
         
@@ -105,10 +114,10 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             
             [ validPxs, innerLayerPxs, outerLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
             img3DLabelledActual = img3DLabelled;
-            novalidIndices = sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
+            novalidIndices = uint64(sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0)));
             img3DLabelledActual(novalidIndices) = 0;
             img3DOutterLayer = zeros(size(img3DLabelled));
-            outterLayerIndices = sub2ind(size(img3DLabelled), allXs(outerLayerPxs), allYs(outerLayerPxs), allZs(outerLayerPxs));
+            outterLayerIndices = uint64(sub2ind(size(img3DLabelled), allXs(outerLayerPxs), allYs(outerLayerPxs), allZs(outerLayerPxs)));
             img3DOutterLayer(outterLayerIndices) = img3DLabelledActual(outterLayerIndices);
             
             disp('Getting info of vertices and neighbours: outter layer');
@@ -121,23 +130,30 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
                 disp('Getting info of vertices and neighbours: inner layer');
                 
                 img3DInnerLayer = zeros(size(img3DLabelled));
-                innerLayerIndices = sub2ind(size(img3DLabelled), allXs(innerLayerPxs), allYs(innerLayerPxs), allZs(innerLayerPxs));
+                innerLayerIndices = uin64(sub2ind(size(img3DLabelled), allXs(innerLayerPxs), allYs(innerLayerPxs), allZs(innerLayerPxs)));
                 img3DInnerLayer(innerLayerIndices) = img3DLabelledActual(innerLayerIndices);
                 ellipsoidInfo.surfaceIndices = innerLayerIndices;
                 initialEllipsoid.img3DLayer = img3DInnerLayer;
                 [initialEllipsoid] = calculate_neighbours3D(img3DInnerLayer, initialEllipsoid);
                 initialEllipsoid.cellArea = calculate_volumeOrArea(img3DInnerLayer);
             end
-            %     figure;
-            %     for i = 1:500
-            %         i
-            %         [x,y,z] = findND(img3DOutterLayer == i);
-            %         colours = colorcube(500);
-            %         plot3(x, y, z,'*', 'MarkerFaceColor', colours(i, :))
-            %         hold on;
-            %     end
+%                 figure;
+%                 for i = [0, 5, 15, 4, 11]
+%                     i
+%                     [x,y,z] = findND(ellipsoidInfo.img3DLayer(outterLayerIndices) == i);
+%                     colours = colorcube(200);
+%                     plot3(x, y, z,'*', 'MarkerFaceColor', colours(i, :))
+%                     hold on;
+%                 end
             
-            exchangeNeighboursPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
+            exchangeNeighboursPerCell = cellfun(@(x, y) size(setxor(y, x), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
+            
+            winnigNeighboursPerCell = cellfun(@(x, y) size(setxor(y, x), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
+            losingNeighboursPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
+            
+            if sum(winnigNeighboursPerCell) ~= sum(losingNeighboursPerCell)
+                error ('incorrectNeighbours', 'There should be the same number of winning and losing neighbours')
+            end
             
             newRowTableMeasuredOuter = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell);
             newRowTableMeasuredInner = createExcel( initialEllipsoid, ellipsoidInfo, exchangeNeighboursPerCell);
@@ -151,7 +167,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             if ~isempty(cellsTransition)
                 [tableDataAnglesTransitionsEdgesOuter, tableDataAnglesNoTransitionsEdgesOuter] = getAnglesLengthAndTranstionFromTheEdges( initialEllipsoid, ellipsoidInfo);
                 close
-                [tableDataAnglesTransitionsEdgesInner, tableDataAnglesNoTransitionsEdgesInner] = getAnglesLengthAndTranstionFromTheEdges( ellipsoidInfo,initialEllipsoid);
+                [tableDataAnglesTransitionsEdgesInner, tableDataAnglesNoTransitionsEdgesInner] = getAnglesLengthAndTranstionFromTheEdges( ellipsoidInfo, initialEllipsoid);
                 close
             end
             
