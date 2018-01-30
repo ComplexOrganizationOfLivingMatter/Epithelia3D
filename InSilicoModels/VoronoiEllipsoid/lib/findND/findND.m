@@ -66,6 +66,20 @@ if nargout>nDims
     varargout{end}=val;
 else
     ind=find(X,K,side);%(:) add a few ms and is not needed with this syntax
+%     sz = size(X);
+%     I = ind;
+%     sz = [1 cumprod(sz(1:end-1))];
+%     I = I(:) - 1;
+%     for a = numel(sz):-1:2
+%         K = rem(I, sz(a));
+%         J(:,a) = uint16((I - K) / sz(a));
+%         I = K;
+%     end
+%     J(:,1) = I;
+%     clearvars I K
+%     J = J + 1;
+%     
+%     varargout = mat2cell(J, size(J, 1), ones(1, size(J, 2)))
     [varargout{:}] = ind2sub(size(X),ind);
 end
 end

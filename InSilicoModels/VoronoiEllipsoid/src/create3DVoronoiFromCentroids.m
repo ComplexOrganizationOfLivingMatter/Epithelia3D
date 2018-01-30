@@ -5,15 +5,31 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     % This will be used to increase the resolution of the pixel location
     % Because a pixel location has multiple decimals, when we round it 
     % we are simplifying it. This is done to avoid that.
-    ellipsoidInfo.resolutionFactor = 50;
+    ellipsoidInfo.resolutionFactor = 50; %With 50 problems
 
     centroids = round(centroids * ellipsoidInfo.resolutionFactor) + 2;
     augmentedCentroids = round(augmentedCentroids * ellipsoidInfo.resolutionFactor) + 2;
     
-    img3D = zeros(max(augmentedCentroids)+1);
+    % We've try to do the 3D matrix sparse... but only exists 2D sparse
+    % matrices. The implemented methods for the N-D sparse matrix are weak
+    % and not sufficient (ndSparse).
+    img3D = zeros(max(augmentedCentroids)+1, 'uint8');
 
-    [allXs, allYs, allZs] = findND(img3D == 0);
+    %%img3D = ndSparse.build(max(augmentedCentroids)+1);
     
+    %[allXs2, allYs2, allZs2] = findND(img3D == 0); %% BIGGEST RAM PROBLEM
+    pixelsPerX = {};
+    xs = ones(size(img3D, 2)*size(img3D, 1), 1, 'uint16');
+    for numZ = 1:size(img3D, 3)
+        imgActual = img3D(:, :, numZ);
+        [y, z] = find(imgActual == 0);
+        pixelsPerX(numZ, :) = {xs*numZ, uint16(z), uint16(y)};
+    end
+    %Indexation order
+    allXs = vertcat(pixelsPerX{:, 3});
+    allYs = vertcat(pixelsPerX{:, 2});
+    allZs = vertcat(pixelsPerX{:, 1});
+    clearvars pixelsPerX xs
     % Removing invalid areas
     disp('Removing invalid areas')
     [ validPxs, ~, ~ ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
@@ -25,7 +41,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     imgWithDistances = bwdist(img3D);
 
     disp('Reconstruct voronoi cells')
-    img3DLabelled = double(watershed(imgWithDistances, 26));
+    img3DLabelled = uint16(watershed(imgWithDistances, 26));
     img3DLabelledWithoutFilter=img3DLabelled;
     %novalidIndices = sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
             
@@ -35,7 +51,8 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     colours = colorcube(size(centroids, 1));
     newOrderOfCentroids = zeros(size(centroids, 1), 1);
     figure('visible', 'off');
-    img3DLabelledPerim = bwperim(img3DLabelled) .* img3DLabelled;
+    img3DLabelledPerim = uint16(bwperim(img3DLabelled)) .* img3DLabelled;
+    disp('Building figure');
     for numSeed = 1:size(centroids, 1)
         % Getting the new order of the seeds
         newOrderOfCentroids(numSeed, 1) = img3DLabelledWithoutFilter(centroids(numSeed, 1), centroids(numSeed, 2), centroids(numSeed, 3));
@@ -53,5 +70,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     ellipsoidInfo.centroids = augmentedCentroids(newOrderOfCentroids, :);
     save(strcat(outputDir, '\voronoi', date, '.mat'), 'img3DLabelled', 'ellipsoidInfo', '-v7.3');
     savefig(strcat(outputDir, '\voronoi_', date, '.fig'));
+    %You can see the figures:
+    %set(get(0,'children'),'visible','on')
 end
 
