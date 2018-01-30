@@ -52,7 +52,7 @@ for numImage=1:numTotalImages
     neighBySurfaceRatio3D=cell2table(neighBySurfaceRatio3D,'VariableNames',{'surfaceRatio','neighs'});
     
     %% measuring edges
-    [ basalDataTransition,apicalDataNoTransition ] = measureAnglesAndLengthOfEdges3Dcylinder( img3DBasalSurface,img3DApicalSurface);
+    [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthOfEdges3Dcylinder( img3DBasalSurface,img3DApicalSurface);
 
     disp 'a'
     

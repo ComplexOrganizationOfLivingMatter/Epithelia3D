@@ -2,7 +2,7 @@ addpath(genpath('src'));
 addpath(genpath('lib'));
 
 allCombinations = {
-    15 10 10 [15, 20, 30] 'Zepellin'
+%     15 10 10 [15, 20, 30] 'Zepellin'
     10 15 15 [15, 20, 30] 'FilledDonnut'
     10 10 10 [15, 20] 'Sphere'
     97.46-6.25 50.75-6.25 50.75-6.25 6.25 'Stage 8'
@@ -22,7 +22,7 @@ for numCombination = 1:size(allCombinations, 1)
     
     randomizationsInfo = cell(maxRandoms, 1);
     
-    parfor numRandomization = 1:maxRandoms %%parfor
+    for numRandomization = 1:maxRandoms %%parfor
         
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};

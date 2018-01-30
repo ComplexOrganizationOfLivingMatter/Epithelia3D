@@ -4,6 +4,10 @@ filesList=getAllFiles('..\data\');
 cellMaskFiles=logical(cell2mat(cellfun(@(x) ~isempty(strfind(x,'cellMask')),filesList,'UniformOutput',false)));
 cellMaskFiles=filesList(cellMaskFiles);
 convexityTable=table();
+
+T=readtable('..\data\WT\40X\centroidsDistances_15-Jan-2018.xlsx');
+    
+
 for i=1:length(cellMaskFiles)
     
     %read cellMask and cylinderAxis files
@@ -27,7 +31,7 @@ for i=1:length(cellMaskFiles)
     end
     
     %calculate distance to cylinder axis
-    [newConvexityTable]=getDistanceToCylinderAxis(cylinderAxisImg,cellMaskImg,filePath);
+    [newConvexityTable]=getDistanceToCylinderAxis(cylinderAxisImg,cellMaskImg,filePath,T);
     
     convexityTable=[convexityTable;newConvexityTable];
 

@@ -1,8 +1,8 @@
 %warp cylinder
 clear all
-load('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\Image_10.mat')
+load('D:\Pedro\Epithelia3D\InSilicoModels\TubularModel\data\expansion\512x1024_100seeds\Image_1_Diagram_5\Image_1_Diagram_5.mat')
 close all
-uiopen('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiCylinderSR1_ZoomOut.fig',1)
+%uiopen('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiCylinderSR1_ZoomOut.fig',1)
 %uiopen('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiCylinderSR5.fig',1)
 
 refFig = gca;
@@ -87,8 +87,8 @@ for i=1:length(surfaceRatios)
     newFig.CameraUpVector = refFig.CameraUpVector;
     newFig.CameraViewAngle = refFig.CameraViewAngle;
     
-    newFig.Visible = 'off';
-    set(get(0,'children'),'Color','w')
-    print(strcat('cylinder_With2Cylinders_Expansion_', num2str(listLOriginalProjection.surfaceRatio(surfaceRatios(i))), '_', date), '-dtiff', '-r600');
-    hold off;
+%     newFig.Visible = 'off';
+%     set(get(0,'children'),'Color','w')
+%     print(strcat('cylinder_With2Cylinders_Expansion_', num2str(listLOriginalProjection.surfaceRatio(surfaceRatios(i))), '_', date), '-dtiff', '-r600');
+%     hold off;
 end
