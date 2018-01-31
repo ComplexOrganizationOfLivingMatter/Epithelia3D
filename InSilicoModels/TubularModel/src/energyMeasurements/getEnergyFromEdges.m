@@ -24,13 +24,20 @@ function dataEnergy = getEnergyFromEdges( L_basal,L_apical,neighs_basal,neighs_a
     verticesOfEdgesBasal=arrayfun(@(x,y) intersect(basalVerticesPerCell{x},basalVerticesPerCell{y}), pairCell(:,1),pairCell(:,2),'UniformOutput',false);
        
     fourCellsMotifs=cellfun(@(x) unique(horzcat(verticesBasal.verticesConnectCells(x,:))),verticesOfEdgesBasal, 'UniformOutput', false);
-    validPairs=cell2mat(cellfun(@(x) isempty(intersect(noValidCells,x)),fourCellsMotifs,'UniformOutput',false));
+    validPairs1=cell2mat(cellfun(@(x) isempty(intersect(noValidCells,x)) | length(x)==4 ,fourCellsMotifs,'UniformOutput',false));
     
-    fourCellsMotifsValidCells=fourCellsMotifs(validPairs,:);
+    fourCellsMotifsValidCells=fourCellsMotifs(validPairs1,:);
     
+    pairCellValidCells=pairCell(validPairs1,:);
     
-    pairCellValidCells=pairCell(validPairs,:);   
-    cellsInMotifNoContactValidCells=cell2mat(arrayfun(@(x) setdiff(fourCellsMotifsValidCells{x},pairCellValidCells(x,:))',1:size(pairCellValidCells,1), 'UniformOutput', false)');
+    cellsInMotifNoContactValidCells=arrayfun(@(x) setdiff(fourCellsMotifsValidCells{x},pairCellValidCells(x,:))',1:size(pairCellValidCells,1), 'UniformOutput', false);
+    
+    %deleting incoherences with motif of 5 or 3 cells
+    validPairs2=cell2mat(cellfun(@(x) length(x)==2,cellsInMotifNoContactValidCells,'UniformOutput',false))';
+    cellsInMotifNoContactValidCells=cell2mat(cellsInMotifNoContactValidCells(validPairs2)');
+    pairCellValidCells=pairCellValidCells(validPairs2,:);
+       
+    
     
     
     %check if the 4 cells motif are preserved in apical

@@ -42,7 +42,7 @@ function [H1Length,H2Length,W1Length,W2Length,sumEdgesOfEnergy,edgeLength,edgeAn
     sumEdgesOfEnergy=zeros(length(verticesCell_1_2),1);
     
     %testing angle and edge length
-    for i=1:length(verticesCell_1_2)
+    parfor i=1:length(verticesCell_1_2)
         
         %HAY QUE AÑADIR ALGUNA EXCEPCION AQUÍPARA QUE PILLE SOLO VERTICES
         %QUE 
