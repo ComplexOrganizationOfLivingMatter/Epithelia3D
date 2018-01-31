@@ -5,20 +5,21 @@
 addpath lib
 addpath libEnergy
 
-surfaceExpansion= [1/0.6, 1/0.2];
+surfaceExpansion= 1/0.2;%[1/0.6, 1/0.2];
 numSeeds=200;%[50,100,200,400];
-numRandoms=2;
+numRandoms=20;
 relativePath= '..\..\data\expansion\512x1024_';
 
 for nSeeds=numSeeds
         
-    tableTransitionEnergy=table();
-    tableNoTransitionEnergy=table();
-    tableTransitionEnergyFiltering200data=table();
-    tableNoTransitionEnergyFiltering200data=table();
+    
     
     
     for i=1:length(surfaceExpansion)
+        tableTransitionEnergy=table();
+        tableNoTransitionEnergy=table();
+        tableTransitionEnergyFiltering200data=table();
+        tableNoTransitionEnergyFiltering200data=table();
     
         for nRand=1:numRandoms
             
@@ -28,8 +29,8 @@ for nSeeds=numSeeds
             indexImage=(listLOriginalProjection.surfaceRatio(:)'==surfaceExpansion(i));
             L_basal=listLOriginalProjection.L_originalProjection{indexImage};
             
-            ['surfaceRatio-Expansion: ' num2str(surfaceExpansion(i)) ]
-            ['nRand' num2str(nRand)]
+            ['surface ratio - expansion: ' num2str(surfaceExpansion(i)) ]
+            ['number of randomization: ' num2str(nRand)]
             
             %calculate neighbourings in apical and basal layers
             [neighs_basal,~]=calculateNeighbours(L_basal);
@@ -75,11 +76,11 @@ for nSeeds=numSeeds
         end
             
        
-        writetable(tableTransitionEnergy,['..\..\data\energyMeasurements\transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '.xls'])
-        writetable(tableNoTransitionEnergy,['..\..\data\energyMeasurements\noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '.xls'])
+        writetable(tableTransitionEnergy,['..\..\data\energyMeasurements\transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_' date  '.xls'])
+        writetable(tableNoTransitionEnergy,['..\..\data\energyMeasurements\noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_' date '.xls'])
         
-        writetable(tableTransitionEnergyFiltering200data,['..\..\data\energyMeasurements\transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements.xls'])
-        writetable(tableNoTransitionEnergyFiltering200data,['..\..\data\energyMeasurements\noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements.xls'])
+        writetable(tableTransitionEnergyFiltering200data,['..\..\data\energyMeasurements\transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements_' date '.xls'])
+        writetable(tableNoTransitionEnergyFiltering200data,['..\..\data\energyMeasurements\noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements_' date '.xls'])
         
         
     end
