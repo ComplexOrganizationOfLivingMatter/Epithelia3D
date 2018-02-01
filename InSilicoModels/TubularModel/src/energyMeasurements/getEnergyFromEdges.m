@@ -24,13 +24,20 @@ function dataEnergy = getEnergyFromEdges( L_basal,L_apical,neighs_basal,neighs_a
     verticesOfEdgesBasal=arrayfun(@(x,y) intersect(basalVerticesPerCell{x},basalVerticesPerCell{y}), pairCell(:,1),pairCell(:,2),'UniformOutput',false);
        
     fourCellsMotifs=cellfun(@(x) unique(horzcat(verticesBasal.verticesConnectCells(x,:))),verticesOfEdgesBasal, 'UniformOutput', false);
-    validPairs=cell2mat(cellfun(@(x) isempty(intersect(noValidCells,x)),fourCellsMotifs,'UniformOutput',false));
+    validPairs1=cell2mat(cellfun(@(x) isempty(intersect(noValidCells,x)) | length(x)==4 ,fourCellsMotifs,'UniformOutput',false));
     
-    fourCellsMotifsValidCells=fourCellsMotifs(validPairs,:);
+    fourCellsMotifsValidCells=fourCellsMotifs(validPairs1,:);
     
+    pairCellValidCells=pairCell(validPairs1,:);
     
-    pairCellValidCells=pairCell(validPairs,:);   
-    cellsInMotifNoContactValidCells=cell2mat(arrayfun(@(x) setdiff(fourCellsMotifsValidCells{x},pairCellValidCells(x,:))',1:size(pairCellValidCells,1), 'UniformOutput', false)');
+    cellsInMotifNoContactValidCells=arrayfun(@(x) setdiff(fourCellsMotifsValidCells{x},pairCellValidCells(x,:))',1:size(pairCellValidCells,1), 'UniformOutput', false);
+    
+    %deleting incoherences with motif of 5 or 3 cells
+    validPairs2=cell2mat(cellfun(@(x) length(x)==2,cellsInMotifNoContactValidCells,'UniformOutput',false))';
+    cellsInMotifNoContactValidCells=cell2mat(cellsInMotifNoContactValidCells(validPairs2)');
+    pairCellValidCells=pairCellValidCells(validPairs2,:);
+       
+    
     
     
     %check if the 4 cells motif are preserved in apical
@@ -49,36 +56,34 @@ function dataEnergy = getEnergyFromEdges( L_basal,L_apical,neighs_basal,neighs_a
     %testing transition data
     dataEnergy.fourCellsMotif=[pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];
     if strcmp(flag,'transition')
-        [dataEnergy.basalH1,dataEnergy.basalH2,dataEnergy.basalW1,dataEnergy.basalW2,dataEnergy.basalSumEdgesOfEnergy,dataEnergy.basalEdgeLength,emptyIndexesBasal]=capturingWidthHeightAndEnergy(basalVerticesPerCell,verticesBasal,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_basal);
-        [dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeLength,emptyIndexesApical]=capturingWidthHeightAndEnergy(apicalVerticesPerCell,verticesApical,cellsInMotifNoContactValidCellsPreserved,pairCellValidCellsPreserved,W_apical);
-    
-        
+        [dataEnergy.basalH1,dataEnergy.basalH2,dataEnergy.basalW1,dataEnergy.basalW2,dataEnergy.basalSumEdgesOfEnergy,dataEnergy.basalEdgeLength,dataEnergy.basalEdgeAngle,notEmptyIndexesBasal]=capturingWidthHeightAndEnergy(basalVerticesPerCell,verticesBasal,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_basal);
+        [dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeLength,dataEnergy.apicalEdgeAngle,noEmptyIndexesApical]=capturingWidthHeightAndEnergy(apicalVerticesPerCell,verticesApical,cellsInMotifNoContactValidCellsPreserved,pairCellValidCellsPreserved,W_apical);        
     else
-        [dataEnergy.basalH1,dataEnergy.basalH2,dataEnergy.basalW1,dataEnergy.basalW2,dataEnergy.basalSumEdgesOfEnergy,dataEnergy.basalEdgeLength,emptyIndexesBasal]=capturingWidthHeightAndEnergy(basalVerticesPerCell,verticesBasal,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_basal);
-        [dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeLength,emptyIndexesApical]=capturingWidthHeightAndEnergy(apicalVerticesPerCell,verticesApical,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_apical);
+        [dataEnergy.basalH1,dataEnergy.basalH2,dataEnergy.basalW1,dataEnergy.basalW2,dataEnergy.basalSumEdgesOfEnergy,dataEnergy.basalEdgeLength,dataEnergy.basalEdgeAngle,notEmptyIndexesBasal]=capturingWidthHeightAndEnergy(basalVerticesPerCell,verticesBasal,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_basal);
+        [dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeLength,dataEnergy.apicalEdgeAngle,noEmptyIndexesApical]=capturingWidthHeightAndEnergy(apicalVerticesPerCell,verticesApical,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_apical);
     end
     
     
-    if sum(emptyIndexesBasal)>0
-        dataEnergy.fourCellsMotif=dataEnergy.fourCellsMotif(emptyIndexesBasal,:);
-        dataEnergy.apicalH1=dataEnergy.apicalH1(emptyIndexesBasal);
-        dataEnergy.apicalH2=dataEnergy.apicalH2(emptyIndexesBasal);
-        dataEnergy.apicalW1=dataEnergy.apicalW1(emptyIndexesBasal);
-        dataEnergy.apicalW2=dataEnergy.apicalW2(emptyIndexesBasal);
-        dataEnergy.apicalSumEdgesOfEnergy=dataEnergy.apicalSumEdgesOfEnergy(emptyIndexesBasal);
-        dataEnergy.apicalEdgeLength=dataEnergy.apicalEdgeLength(emptyIndexesBasal);
+    if sum(notEmptyIndexesBasal)< length(notEmptyIndexesBasal) || sum(noEmptyIndexesApical)< length(noEmptyIndexesApical)
+        
+        notEmptyIndexes=(noEmptyIndexesApical & notEmptyIndexesBasal);
+        
+        dataEnergy.fourCellsMotif=dataEnergy.fourCellsMotif(notEmptyIndexes,:);
+        dataEnergy.apicalH1=dataEnergy.apicalH1(notEmptyIndexes);
+        dataEnergy.apicalH2=dataEnergy.apicalH2(notEmptyIndexes);
+        dataEnergy.apicalW1=dataEnergy.apicalW1(notEmptyIndexes);
+        dataEnergy.apicalW2=dataEnergy.apicalW2(notEmptyIndexes);
+        dataEnergy.apicalSumEdgesOfEnergy=dataEnergy.apicalSumEdgesOfEnergy(notEmptyIndexes);
+        dataEnergy.apicalEdgeLength=dataEnergy.apicalEdgeLength(notEmptyIndexes);
+        dataEnergy.apicalEdgeAngle=dataEnergy.apicalEdgeAngle(notEmptyIndexes);
 
-    end
-
-    if sum(emptyIndexesApical)>0
-        dataEnergy.fourCellsMotif=dataEnergy.fourCellsMotif(emptyIndexesApical,:);
-        dataEnergy.basalH1=dataEnergy.basalH1(emptyIndexesApical);
-        dataEnergy.basalH2=dataEnergy.basalH2(emptyIndexesApical);
-        dataEnergy.basalW1=dataEnergy.basalW1(emptyIndexesApical);
-        dataEnergy.basalW2=dataEnergy.basalW2(emptyIndexesApical);
-        dataEnergy.basalSumEdgesOfEnergy=dataEnergy.basalSumEdgesOfEnergy(emptyIndexesApical);
-        dataEnergy.basalEdgeLength=dataEnergy.basalEdgeLength(emptyIndexesApical);
-
+        dataEnergy.basalH1=dataEnergy.basalH1(notEmptyIndexes);
+        dataEnergy.basalH2=dataEnergy.basalH2(notEmptyIndexes);
+        dataEnergy.basalW1=dataEnergy.basalW1(notEmptyIndexes);
+        dataEnergy.basalW2=dataEnergy.basalW2(notEmptyIndexes);
+        dataEnergy.basalSumEdgesOfEnergy=dataEnergy.basalSumEdgesOfEnergy(notEmptyIndexes);
+        dataEnergy.basalEdgeLength=dataEnergy.basalEdgeLength(notEmptyIndexes);
+        dataEnergy.basalEdgeAngle=dataEnergy.basalEdgeAngle(notEmptyIndexes);
     end
     
 end

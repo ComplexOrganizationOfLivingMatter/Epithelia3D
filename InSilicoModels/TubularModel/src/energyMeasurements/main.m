@@ -5,17 +5,21 @@
 addpath lib
 addpath libEnergy
 
-surfaceExpansion= [1/0.6, 1/0.2];
-numSeeds=[50,100,200,400];
+surfaceExpansion= 1/0.2;%[1/0.6, 1/0.2];
+numSeeds=200;%[50,100,200,400];
 numRandoms=20;
 relativePath= '..\..\data\expansion\512x1024_';
 
 for nSeeds=numSeeds
         
-    tableTransitionEnergy=table();
-    tableNoTransitionEnergy=table();
+    
+    
     
     for i=1:length(surfaceExpansion)
+        tableTransitionEnergy=table();
+        tableNoTransitionEnergy=table();
+        tableTransitionEnergyFiltering200data=table();
+        tableNoTransitionEnergyFiltering200data=table();
     
         for nRand=1:numRandoms
             
@@ -25,7 +29,8 @@ for nSeeds=numSeeds
             indexImage=(listLOriginalProjection.surfaceRatio(:)'==surfaceExpansion(i));
             L_basal=listLOriginalProjection.L_originalProjection{indexImage};
             
-            
+            ['surface ratio - expansion: ' num2str(surfaceExpansion(i)) ]
+            ['number of randomization: ' num2str(nRand)]
             
             %calculate neighbourings in apical and basal layers
             [neighs_basal,~]=calculateNeighbours(L_basal);
@@ -38,24 +43,47 @@ for nSeeds=numSeeds
             transitionEdges=cellfun(@(x,y) setdiff(x,y),neighs_basal,neighs_apical,'UniformOutput',false);
             noTransitionEdges=cellfun(@(x,y) intersect(x,y),neighs_basal,neighs_apical,'UniformOutput',false);
 
-            %energy in transition edges
-            dataEnergyTransition = getEnergyFromEdges(L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,transitionEdges,'transition');
-            dataEnergyTransition.nRand=nRand*ones(size(dataEnergyTransition.basalH1,1),1);
-            dataEnergyTransition.numSeeds=nSeeds*ones(size(dataEnergyTransition.basalH1,1),1);
-            dataEnergyTransition.surfaceRatio=surfaceExpansion(i)*ones(size(dataEnergyTransition.basalH1,1),1);
-            
-            tableTransitionEnergy=[tableTransitionEnergy;struct2table(dataEnergyTransition)];
-            
-            %energy in no transition edges
-            dataEnergyNoTransition = getEnergyFromEdges(L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,noTransitionEdges,'noTransition');
-            dataEnergyNoTransition.nRand=nRand*ones(size(dataEnergyNoTransition.basalH1,1),1);
-            dataEnergyNoTransition.numSeeds=nSeeds*ones(size(dataEnergyNoTransition.basalH1,1),1);
-            dataEnergyNoTransition.surfaceRatio=surfaceExpansion(i)*ones(size(dataEnergyNoTransition.basalH1,1),1);
-            
-            tableNoTransitionEnergy=[tableNoTransitionEnergy;struct2table(dataEnergyNoTransition)];
+            totalEdges={transitionEdges,noTransitionEdges};
+            labelEdges={'transition','noTransition'};
+            for k=1:2
+                
+                %energy in edges (transition and no transition)
+                dataEnergy = getEnergyFromEdges(L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,totalEdges{k},labelEdges{k});
+                dataEnergy.nRand=nRand*ones(size(dataEnergy.basalH1,1),1);
+                dataEnergy.numSeeds=nSeeds*ones(size(dataEnergy.basalH1,1),1);
+                dataEnergy.surfaceRatio=surfaceExpansion(i)*ones(size(dataEnergy.basalH1,1),1);
+                
+                %filtering 10 data for each realization  
+                sumTableEnergy=struct2table(dataEnergy);
+                nanIndex=(isnan(sumTableEnergy.apicalH1) |  isnan(sumTableEnergy.basalH1));
+                sumTableEnergy=sumTableEnergy(~nanIndex,:);
+                pos = randperm(size(sumTableEnergy,1));
+                if length(pos)>=10
+                    pos = pos(1:10);
+                end
+                
+                %storing all data and filtered 10 data per realization (IF there are more than 10)
+                if strcmp(labelEdges{k},'transition');
+                    tableTransitionEnergy=[tableTransitionEnergy;sumTableEnergy];
+                    tableTransitionEnergyFiltering200data=[tableTransitionEnergyFiltering200data;sumTableEnergy(pos,:)];
+                else
+                    tableNoTransitionEnergy=[tableNoTransitionEnergy;sumTableEnergy];
+                    tableNoTransitionEnergyFiltering200data=[tableNoTransitionEnergyFiltering200data;sumTableEnergy(pos,:)];
+                end
+                                
+            end
             
         end
-
+            
+       
+        writetable(tableTransitionEnergy,['..\..\data\energyMeasurements\transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_' date  '.xls'])
+        writetable(tableNoTransitionEnergy,['..\..\data\energyMeasurements\noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_' date '.xls'])
+        
+        writetable(tableTransitionEnergyFiltering200data,['..\..\data\energyMeasurements\transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements_' date '.xls'])
+        writetable(tableNoTransitionEnergyFiltering200data,['..\..\data\energyMeasurements\noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements_' date '.xls'])
+        
+        
     end
     
+      
 end
