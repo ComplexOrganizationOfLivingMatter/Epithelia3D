@@ -49,6 +49,7 @@ $RECYCLE.BIN/
 /docs/
 docs/*
 */data/*
+results/*
 /Epithelia3DOld/*
 /Gastrulation/*/edge4d_*
 Gastrulation/*/data/*
@@ -101,3 +102,5 @@ Temporary Items
 *.mat
 *.stl
 *.jpg
+*.csv
+*.txt
