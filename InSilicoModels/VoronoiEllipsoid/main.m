@@ -5,10 +5,10 @@ addpath(genpath('lib'));
 % curvature.
 allCombinations = {
 %     15 10 10 [15, 20, 30] 'Zepellin'
-    10 15 15 [15, 20, 30] 'FilledDonnut'
-    10 10 10 [15, 30] 'Sphere'
-    97.46-6.25 50.75-6.25 50.75-6.25 6.25 'Stage 8'
-    38.57277778-5.506047536	31.61605556-5.506047536 31.61605556-5.506047536	5.506047536 'Stage 4'
+%    10 15 15 [15, 20, 30] 'FilledDonnut'
+    10 10 10 [1, 2, 3] 'Sphere' 200
+    97.46-6.145760671 48.32738462-6.145760671 48.32738462-6.145760671 6.145760671 'Stage 8' 450
+    36-5.369186755	29.59784615-5.369186755 29.59784615-5.369186755	5.369186755 'Stage 4' 200
     };
 
 maxRandoms = 20;
@@ -30,6 +30,7 @@ for numCombination = 1:size(allCombinations, 1)
         radiusY = allCombinations{numCombination, 2};
         radiusZ = allCombinations{numCombination, 3};
         hCell = allCombinations{numCombination, 4};
+        numCells = allCombinations{numCombination, 6};
         
         outputDirActual = [outputDirGlobal '\random_', num2str(numRandomization)];
         mkdir(outputDirActual);
@@ -42,7 +43,7 @@ for numCombination = 1:size(allCombinations, 1)
             radiusY = radiusInModelY;
         end
         
-        randomEllipsoidInfo = voronoi3DEllipsoid([radiusX+max(hCell)+0.5 radiusY+max(hCell)+0.5 radiusZ+max(hCell)+0.5], [radiusX radiusY radiusZ], 200, outputDirActual, hCell);
+        randomEllipsoidInfo = voronoi3DEllipsoid([radiusX+max(hCell)+0.5 radiusY+max(hCell)+0.5 radiusZ+max(hCell)+0.5], [radiusX radiusY radiusZ], numCells, outputDirActual, hCell);
         
         randomizationsInfo(numRandomization) = {randomEllipsoidInfo};
         
