@@ -27,7 +27,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
 
     ellipsoidInfo.areaOfEllipsoid = ellipsoidSurfaceArea([ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius]);
 
-    ellipsoidInfo.minDistanceBetweenCentroids = (ellipsoidInfo.areaOfEllipsoid*3 / maxNumberOfCellsInVoronoi);
+    ellipsoidInfo.minDistanceBetweenCentroids = (ellipsoidInfo.areaOfEllipsoid / (maxNumberOfCellsInVoronoi^(1/1.28)));
     minDistanceBetweenCentroids = ellipsoidInfo.minDistanceBetweenCentroids;
     %(resolutionEllipse + 1) * (resolutionEllipse + 1) number of points
     %generated at the surface of the ellipsoid
@@ -147,12 +147,13 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
 %                 end
             
             exchangeNeighboursPerCell = cellfun(@(x, y) size(setxor(y, x), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
+            %[ellipsoidInfo] = calculate_neighbours3D(img3DOutterLayer, ellipsoidInfo); [initialEllipsoid] = calculate_neighbours3D(img3DInnerLayer, initialEllipsoid);
+                
+            winnigNeighboursPerCell = cellfun(@(x, y) size(setdiff(y, x), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
+            losingNeighboursPerCell = cellfun(@(x, y) size(setdiff(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
             
-            winnigNeighboursPerCell = cellfun(@(x, y) size(setxor(y, x), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
-            losingNeighboursPerCell = cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
-            
-            if sum(winnigNeighboursPerCell) ~= sum(losingNeighboursPerCell)
-                error ('incorrectNeighbours', 'There should be the same number of winning and losing neighbours')
+            if sum(winnigNeighboursPerCell - losingNeighboursPerCell) == 0
+                %error ('incorrectNeighbours', 'There should be the same number of winning and losing neighbours')
             end
             
             newRowTableMeasuredOuter = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell);
