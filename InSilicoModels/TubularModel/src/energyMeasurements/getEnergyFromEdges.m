@@ -55,12 +55,12 @@ function dataEnergy = getEnergyFromEdges( L_basal,L_apical,neighs_basal,neighs_a
     
     %testing transition data
     dataEnergy.fourCellsMotif=[pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];
+    
+    [dataEnergy.basalEdgeLength,dataEnergy.basalSumEdgesOfEnergy,dataEnergy.basalEdgeAngle,dataEnergy.basalH1,dataEnergy.basalH2,dataEnergy.basalW1,dataEnergy.basalW2,notEmptyIndexesBasal]=capturingWidthHeightAndEnergy(basalVerticesPerCell,verticesBasal,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_basal);
     if strcmp(flag,'transition')
-        [dataEnergy.basalH1,dataEnergy.basalH2,dataEnergy.basalW1,dataEnergy.basalW2,dataEnergy.basalSumEdgesOfEnergy,dataEnergy.basalEdgeLength,dataEnergy.basalEdgeAngle,notEmptyIndexesBasal]=capturingWidthHeightAndEnergy(basalVerticesPerCell,verticesBasal,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_basal);
-        [dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeLength,dataEnergy.apicalEdgeAngle,noEmptyIndexesApical]=capturingWidthHeightAndEnergy(apicalVerticesPerCell,verticesApical,cellsInMotifNoContactValidCellsPreserved,pairCellValidCellsPreserved,W_apical);        
+        [dataEnergy.apicalEdgeLength,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeAngle,dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,noEmptyIndexesApical]=capturingWidthHeightAndEnergy(apicalVerticesPerCell,verticesApical,cellsInMotifNoContactValidCellsPreserved,pairCellValidCellsPreserved,W_apical);        
     else
-        [dataEnergy.basalH1,dataEnergy.basalH2,dataEnergy.basalW1,dataEnergy.basalW2,dataEnergy.basalSumEdgesOfEnergy,dataEnergy.basalEdgeLength,dataEnergy.basalEdgeAngle,notEmptyIndexesBasal]=capturingWidthHeightAndEnergy(basalVerticesPerCell,verticesBasal,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_basal);
-        [dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeLength,dataEnergy.apicalEdgeAngle,noEmptyIndexesApical]=capturingWidthHeightAndEnergy(apicalVerticesPerCell,verticesApical,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_apical);
+        [dataEnergy.apicalEdgeLength,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeAngle,dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,noEmptyIndexesApical]=capturingWidthHeightAndEnergy(apicalVerticesPerCell,verticesApical,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_apical);
     end
     
     

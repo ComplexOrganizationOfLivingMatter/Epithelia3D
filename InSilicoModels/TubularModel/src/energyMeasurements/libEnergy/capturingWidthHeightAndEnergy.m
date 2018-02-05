@@ -1,4 +1,4 @@
-function [H1Length,H2Length,W1Length,W2Length,sumEdgesOfEnergy,edgeLength,edgeAngle,emptyIndex]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W)
+function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Length,emptyIndex]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W)
     
 
     %cell 1 and 2, are the cells in contact. Cell 3 and 4 are not touching between them into the four cell motif.
