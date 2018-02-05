@@ -165,12 +165,13 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             tableDataAnglesNoTransitionsEdgesOuter=[];
             tableDataAnglesTransitionsEdgesInner=[];
             tableDataAnglesNoTransitionsEdgesInner=[];
-            if ~isempty(cellsTransition)
+            
+%             if ~isempty(cellsTransition)
                 [tableDataAnglesTransitionsEdgesOuter, tableDataAnglesNoTransitionsEdgesOuter] = getAnglesLengthAndTranstionFromTheEdges( initialEllipsoid, ellipsoidInfo);
                 close
                 [tableDataAnglesTransitionsEdgesInner, tableDataAnglesNoTransitionsEdgesInner] = getAnglesLengthAndTranstionFromTheEdges( ellipsoidInfo, initialEllipsoid);
                 close
-            end
+%             end
             
            
             %Saving info
@@ -178,7 +179,9 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             
             
             fieldsNoSavedInCSV={'edgeLength','edgeAngle','edgeVertices','cellularMotifs'};
-            for numBorders=1:length(newRowTableMeasuredOuter)
+            for numBorders=1:length(newRowTableMeasuredOuter)               
+                
+                
                 
                 transitionsCSVInfoTransitionsMeasuredOuter(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredOuter{numBorders}), struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
                 transitionsCSVInfoTransitionsMeasuredInner(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredInner{numBorders}), struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
