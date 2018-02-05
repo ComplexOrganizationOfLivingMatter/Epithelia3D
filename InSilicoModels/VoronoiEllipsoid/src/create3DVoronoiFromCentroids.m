@@ -5,7 +5,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     % This will be used to increase the resolution of the pixel location
     % Because a pixel location has multiple decimals, when we round it 
     % we are simplifying it. This is done to avoid that.
-    ellipsoidInfo.resolutionFactor = 50; %With 50 problems
+    ellipsoidInfo.resolutionFactor = 450; %With 50 problems. With 170 still problems. We need at least 200
 
     centroids = round(centroids * ellipsoidInfo.resolutionFactor) + 2;
     augmentedCentroids = round(augmentedCentroids * ellipsoidInfo.resolutionFactor) + 2;
