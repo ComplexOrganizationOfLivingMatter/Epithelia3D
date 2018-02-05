@@ -7,7 +7,7 @@ function [edgeLength, edgeAngle] = edgeLengthAnglesCalculation(vertsEdge,W)
     end
     
     
-    plot(vertsEdge(:,2),vertsEdge(:,1))
+%     plot(vertsEdge(:,2),vertsEdge(:,1))
     
     directorEdgeVector=[vertsEdge(2,:)-vertsEdge(1,:),0];   
     %fixing axis X as director vector (axis X = columns)

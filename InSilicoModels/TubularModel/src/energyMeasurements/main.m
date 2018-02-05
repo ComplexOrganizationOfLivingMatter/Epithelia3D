@@ -5,7 +5,7 @@
 addpath lib
 addpath libEnergy
 
-surfaceExpansion= 1/0.2;%[1/0.6, 1/0.2];
+surfaceExpansion= 1/0.8;%[1/0.6, 1/0.2];
 numSeeds=200;%[50,100,200,400];
 numRandoms=20;
 relativePath= '..\..\data\expansion\512x1024_';
@@ -76,11 +76,14 @@ for nSeeds=numSeeds
         end
             
        
-        writetable(tableTransitionEnergy,['..\..\data\energyMeasurements\transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_' date  '.xls'])
-        writetable(tableNoTransitionEnergy,['..\..\data\energyMeasurements\noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_' date '.xls'])
+        directory2save=['..\..\data\energyMeasurements\' num2str(nSeeds) 'seeds\'];
+        mkdir(directory2save);
         
-        writetable(tableTransitionEnergyFiltering200data,['..\..\data\energyMeasurements\transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements_' date '.xls'])
-        writetable(tableNoTransitionEnergyFiltering200data,['..\..\data\energyMeasurements\noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements_' date '.xls'])
+        writetable(tableTransitionEnergy,[directory2save 'transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_' date  '.xls'])
+        writetable(tableNoTransitionEnergy,[directory2save 'noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_' date '.xls'])
+        
+        writetable(tableTransitionEnergyFiltering200data,[directory2save 'transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements_' date '.xls'])
+        writetable(tableNoTransitionEnergyFiltering200data,[directory2save 'noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements_' date '.xls'])
         
         
     end
