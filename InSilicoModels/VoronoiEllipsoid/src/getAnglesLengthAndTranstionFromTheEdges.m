@@ -66,6 +66,9 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
     
     %get edges of transitions
     Lossing=cellfun(@(x,y) setdiff(x,y),outerEllipsoidInfo.neighbourhood,innerEllipsoidInfo.neighbourhood,'UniformOutput',false);
+    noValidPair=cellfun(@(x,y) size(setdiff(y,x), 1) ~= size(setdiff(x,y), 1),outerEllipsoidInfo.neighbourhood,innerEllipsoidInfo.neighbourhood);
+    
+    Lossing(noValidPair) = {[]};
     
     pairOfLostNeigh=cellfun(@(x, y) [y*ones(length(x),1),x],Lossing,num2cell(1:size(outerEllipsoidInfo.neighbourhood,1))','UniformOutput',false);
     pairOfLostNeigh=unique(vertcat(pairOfLostNeigh{:}),'rows');
