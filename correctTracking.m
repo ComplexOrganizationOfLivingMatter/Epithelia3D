@@ -1,8 +1,11 @@
 %The variables are loaded
-load('E:\Tina\Epithelia3D\Zebrafish\Results\Sample2\LayersCentroids2.mat');
-load('E:\Tina\Epithelia3D\Zebrafish\Results\Sample2\trackingCentroids2.mat');
+% load('E:\Tina\Epithelia3D\Zebrafish\Results\Sample2\LayersCentroids2.mat');
+% load('E:\Tina\Epithelia3D\Zebrafish\Results\Sample2\trackingCentroids2.mat');
 
-folderNumber=2;
+function [finalCentroid] = correctTracking( finalCentroid, folderNumber)
+
+fileNameCentroid=['LayersCentroid' sprintf('%d',folderNumber) '.mat'];
+load(fileNameCentroid);
 
 acum=1;
 [C,ia,ic] = unique(vertcat(finalCentroid{:,1}));
@@ -125,12 +128,15 @@ end
 
 [ finalCentroid ] = organizationTracking( finalCentroid, errorsCell, varTracking, errorsFrames, maxFrame, folderNumber );
 
+
+
+
 %It saves the final variable, which contains the tracking of 
 %all cells and deletion of those that are not cells.
-save('trackingLayer2.mat', 'finalCentroid')
+%save('trackingLayerPrueba2.mat', 'finalCentroid')
 
 
-
+end
 
 
 
