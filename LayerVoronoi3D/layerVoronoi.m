@@ -102,6 +102,7 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
                 maskImg(imgTreatment == imgTreatment(round(centroids(numCent,2)), round(centroids(numCent,1)))) = img(round(centroids(numCent,2)), round(centroids(numCent,1)));      
             end
         end
+       
         Img{numZ} = maskImg;
         
         fig=figure('Visible','off');

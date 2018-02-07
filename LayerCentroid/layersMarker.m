@@ -34,7 +34,7 @@ while any (oldCentroids==0)
                             newLayer=true;
                             
                         elseif newLayer==true %If there is layer created
-                            if size(LayerCentroid{numLayer+1,1},1)<201
+                            if size(LayerCentroid{numLayer+1,1},1)<51%201
                                 [LayerCentroid] = addToLayer( xQuery, yQuery, numFrame, n, LayerCentroid, numLayer+1);
                             else
                                 %It should be stored for when layer pass is analyzed and so on

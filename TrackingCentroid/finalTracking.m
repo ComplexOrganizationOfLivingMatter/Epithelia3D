@@ -1,11 +1,13 @@
 function [finalCentroid] = finalTracking( finalCentroid, initialFrame, maxFrame, folderNumber)
 
-%Variables 
+%%Variables
+%It creates variables with part of the name of the image with the nuclei and the way to find it in this computer.
 name=['50epib_' sprintf('%d',folderNumber) '_z'];
 photo_Path=['E:\Tina\Epithelia3D\Zebrafish\50epib_' sprintf('%d',folderNumber)];
 
 coord=vertcat(finalCentroid{:,2});
 acum=1;
+
 for numFrame=initialFrame:maxFrame
 
     channel2Name{numFrame}= [name sprintf('%03d',numFrame) '_c002.tif'];
@@ -14,8 +16,8 @@ for numFrame=initialFrame:maxFrame
     [centroidsC, pixel, maskBW] = Centroid(channel2PhotoPath{numFrame},name );
     pixelesFrame=regionprops(maskBW, 'PixelList');
     
-    
     n=1;
+    
     for numPixel=1:size(pixelesFrame,1)
         for numCentroid=1:size(coord,1)
             if vertcat(coord(numCentroid,3))== numFrame
@@ -29,7 +31,7 @@ for numFrame=initialFrame:maxFrame
                 end
             end
         end
-        if n==3
+        if n>2 %Estaba a n==3 pero puede que haya más de dos píxeles en un mismo núcleo (?), así prevengo.
             [M,I]=min(var{numPixel,3});
             index=var{numPixel,2}(I,2);
             for tracking=index:size(finalCentroid,1)

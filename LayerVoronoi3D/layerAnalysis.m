@@ -1,5 +1,5 @@
-load('..\..\data\trackingCentroids1.mat')
-maxFrame=71;
+load('..\..\data\trackingLayer2.mat')
+maxFrame=48;
 addpath(genpath('findND'));
 
 layerVoronoi( finalCentroid, 'all', maxFrame)

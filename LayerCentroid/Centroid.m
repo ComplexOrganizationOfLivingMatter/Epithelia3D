@@ -41,7 +41,7 @@ for i=1:max(max(L))
  M=zeros(size(BW2));
  M(L==i)=1;
  if Area_ob(i)> area_mean*1.5
-   se = strel('disk',7); %With 7 in the sample 5, it works. Usually
+   se = strel('disk',5); %With 7 in the sample 5, it works. Usually
    BWM = imerode(M,se);
  else
     BWM=M;
