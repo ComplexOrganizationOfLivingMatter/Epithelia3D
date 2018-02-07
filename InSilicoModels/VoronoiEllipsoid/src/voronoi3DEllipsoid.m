@@ -156,6 +156,11 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
                 %error ('incorrectNeighbours', 'There should be the same number of winning and losing neighbours')
             end
             
+            
+            ellipsoidInfo.xRadius = initialEllipsoid.xRadius + cellHeight;
+            ellipsoidInfo.yRadius = initialEllipsoid.yRadius + cellHeight;
+            ellipsoidInfo.zRadius = initialEllipsoid.zRadius + cellHeight;
+            
             newRowTableMeasuredOuter = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell);
             newRowTableMeasuredInner = createExcel( initialEllipsoid, ellipsoidInfo, exchangeNeighboursPerCell);
             
