@@ -6,14 +6,14 @@ addpath(genpath('lib'));
 allCombinations = {
 %     15 10 10 [15, 20, 30] 'Zepellin'
 %    10 15 15 [15, 20, 30] 'FilledDonnut'
-    10 10 10 [1, 2, 3] 'Sphere' 200
+    10 10 10 2 'Sphere' 200
     97.46-6.145760671 48.32738462-6.145760671 48.32738462-6.145760671 6.145760671 'Stage 8' 450
     36-5.369186755	29.59784615-5.369186755 29.59784615-5.369186755	5.369186755 'Stage 4' 200
     };
 
-maxRandoms = 20;
+maxRandoms = 10;
 delete(gcp);
-parpool(2);
+parpool(5);
 
 for numCombination = 1:size(allCombinations, 1)
     
@@ -24,7 +24,7 @@ for numCombination = 1:size(allCombinations, 1)
     
     randomizationsInfo = cell(maxRandoms, 1);
     
-    for numRandomization = 1:maxRandoms %%parfor
+    parfor numRandomization = 1:maxRandoms %%parfor
         
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};
