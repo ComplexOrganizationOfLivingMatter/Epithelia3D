@@ -1,7 +1,7 @@
 function [ellipsoidInfo] = calculate_neighbours3D(L_img, ellipsoidInfo)
 
 %% Generate neighbours
-    ratio=8;
+    ratio=4;
     neighs_real={};
     cells=sort(unique(L_img));
     cells=cells(cells~=0);                  %% Deleting cell 0 from range
