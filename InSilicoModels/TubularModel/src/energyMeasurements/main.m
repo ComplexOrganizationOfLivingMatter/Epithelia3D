@@ -5,17 +5,26 @@
 addpath lib
 addpath libEnergy
 
-surfaceExpansion= 1/0.8;%[1/0.6, 1/0.2];
+surfaceRatios= 1/0.8;%[1/0.6, 1/0.2];
+
+apicalReductions=[0.1,0.2,0.3,0.4,0.5];
+
 numSeeds=200;%[50,100,200,400];
 numRandoms=20;
-relativePath= '..\..\data\expansion\512x1024_';
+
+typeProjection= 'reduction';
+
+relativePath= ['..\..\data\' typeProjection  '\512x1024_'];
+
+if strcmp(typeProjection,'reduction');
+    numSurfaces=length(apicalReductions);
+else
+    numSurfaces=length(surfaceRatios);
+end
 
 for nSeeds=numSeeds
         
-    
-    
-    
-    for i=1:length(surfaceExpansion)
+    for i=1:numSurfaces
         tableTransitionEnergy=table();
         tableNoTransitionEnergy=table();
         tableTransitionEnergyFiltering200data=table();
@@ -23,14 +32,25 @@ for nSeeds=numSeeds
     
         for nRand=1:numRandoms
             
-            load([relativePath num2str(nSeeds) 'seeds\Image_' num2str(nRand) '_Diagram_5\Image_' num2str(nRand) '_Diagram_5.mat'],'listLOriginalProjection')            
-            L_apical=listLOriginalProjection.L_originalProjection{1};
+            if ~isempty(strfind(typeProjection,'expansion'))
+                load([relativePath num2str(nSeeds) 'seeds\Image_' num2str(nRand) '_Diagram_5\Image_' num2str(nRand) '_Diagram_5.mat'],'listLOriginalProjection')            
+                L_apical=listLOriginalProjection.L_originalProjection{1};
+                surfaceRatio=surfaceRatios(i);
+                indexImage=(listLOriginalProjection.surfaceRatio(:)'==surfaceRatio);
+                L_basal=listLOriginalProjection.L_originalProjection{indexImage};
+                ['surface ratio - expansion: ' num2str(surfaceRatio) ]
+                
+            else
+                load([relativePath num2str(nSeeds) 'seeds\Image_' num2str(nRand) '_Diagram_5\Image_' num2str(nRand) '_Diagram_5.mat'],'listLOriginalApical')            
+                L_basal=listLOriginalApical.L_originalApical{end};
+                indexImage=10-10*apicalReductions(i);
+                surfaceRatio=1/(1-apicalReductions(i));
+                L_apical=listLOriginalApical.L_originalApical{indexImage};
+                ['surface ratio - reduction: ' num2str(surfaceRatio) ]
+            end
             
-            indexImage=(listLOriginalProjection.surfaceRatio(:)'==surfaceExpansion(i));
-            L_basal=listLOriginalProjection.L_originalProjection{indexImage};
-            
-            ['surface ratio - expansion: ' num2str(surfaceExpansion(i)) ]
             ['number of randomization: ' num2str(nRand)]
+            
             
             %calculate neighbourings in apical and basal layers
             [neighs_basal,~]=calculateNeighbours(L_basal);
@@ -51,7 +71,7 @@ for nSeeds=numSeeds
                 dataEnergy = getEnergyFromEdges(L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,totalEdges{k},labelEdges{k});
                 dataEnergy.nRand=nRand*ones(size(dataEnergy.basalH1,1),1);
                 dataEnergy.numSeeds=nSeeds*ones(size(dataEnergy.basalH1,1),1);
-                dataEnergy.surfaceRatio=surfaceExpansion(i)*ones(size(dataEnergy.basalH1,1),1);
+                dataEnergy.surfaceRatio=surfaceRatio*ones(size(dataEnergy.basalH1,1),1);
                 
                 %filtering 10 data for each realization  
                 sumTableEnergy=struct2table(dataEnergy);
@@ -76,17 +96,15 @@ for nSeeds=numSeeds
         end
             
        
-        directory2save=['..\..\data\energyMeasurements\' num2str(nSeeds) 'seeds\'];
+        directory2save=['..\..\data\energyMeasurements\' typeProjection '\' num2str(nSeeds) 'seeds\'];
         mkdir(directory2save);
         
-        writetable(tableTransitionEnergy,[directory2save 'transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_' date  '.xls'])
-        writetable(tableNoTransitionEnergy,[directory2save 'noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_' date '.xls'])
+        writetable(tableTransitionEnergy,[directory2save 'transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_' date  '.xls'])
+        writetable(tableNoTransitionEnergy,[directory2save 'noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_' date '.xls'])
         
-        writetable(tableTransitionEnergyFiltering200data,[directory2save 'transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements_' date '.xls'])
-        writetable(tableNoTransitionEnergyFiltering200data,[directory2save 'noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceExpansion(i)) '_filter200measurements_' date '.xls'])
+        writetable(tableTransitionEnergyFiltering200data,[directory2save 'transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_filter200measurements_' date '.xls'])
+        writetable(tableNoTransitionEnergyFiltering200data,[directory2save 'noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_filter200measurements_' date '.xls'])
         
         
     end
-    
-      
 end
