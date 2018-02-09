@@ -1,6 +1,7 @@
-function [ ] = paint3DEllipsoid(centroids, img3DLabelled )
+function [ ] = paint3DEllipsoid(ellipsoidInfo, img3DLabelled )
 %PAINT3DELLIPSOID Summary of this function goes here
 %   Detailed explanation goes here
+    centroids = ellipsoidInfo.centroids;
     colours = colorcube(size(centroids, 1));
     colours = colours(randperm(size(centroids, 1)), :);
     figure;
@@ -10,9 +11,12 @@ function [ ] = paint3DEllipsoid(centroids, img3DLabelled )
         numSeed
         % Painting each cell
         [x, y, z] = findND(img3DLabelledPerim == numSeed);
-        cellFigure = alphaShape(x, y, z, 1000);
+        cellFigure = alphaShape(x, y, z, 500);
         plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
         hold on;
+        [x, y, z] = findND(ellipsoidInfo.img3DLayer == numSeed);
+        cellFigure = alphaShape(x, y, z, 500);
+        plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
     end
 
     axis equal
