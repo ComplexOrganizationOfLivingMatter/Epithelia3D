@@ -42,7 +42,7 @@ function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsO
     
     
     %create projections
-    for z=1:4
+    parfor z=1:4
         maskProjectionOuter=zeros(size(halfEllipsoidsOuter{z}(:,:,1)));
         maskProjectionInner=maskProjectionOuter;
         for i=orderIt{z}
@@ -90,12 +90,12 @@ function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsO
         projectionsOuterWater{z}=projOuterWat;
         projectionsInnerWater{z}=projInnerWat;
         
-        figure;imshow(acumCellProjectionsOuter)
+%         figure;imshow(acumCellProjectionsOuter)
 %         figure;imshow(acumCellProjectionsInner)
 %         figure;imshow(projInnerWat)
 %         figure;imshow(projOuterWat)
         
-        'jiji'
+        ['zProjection' num2str(z)]
     end
    
     
