@@ -1,6 +1,6 @@
 
-clear all
-close all
+% clear all
+% close all
 
 addpath('src\measureEnergy')
 addpath lib
@@ -15,29 +15,38 @@ filePaths={filePathStage8,filePathStage4,filePathSphere};
 
 numRandoms=10;
 
-tableTransitionEnergy=table();
-tableNoTransitionEnergyFilterRandom=table();
-tableNoTransitionEnergyTotal=table();
 
-for nPath=1:length(filePaths)
-    for nRand=2:numRandoms
-        
+
+for nPath=3:length(filePaths)
+    
+    tableTransitionEnergy=table();
+    tableNoTransitionEnergyFilterRandom=table();
+    tableNoTransitionEnergyTotal=table();
+    
+    for nRand=1:numRandoms
+        try
+            
         ellipsoidPath=dir([filePaths{nPath} 'random_' num2str(nRand) '\ellipsoid*' ]);
         load([filePaths{nPath} 'random_' num2str(nRand) '\' ellipsoidPath.name],'ellipsoidInfo','initialEllipsoid','tableDataAnglesTransitionsEdgesOuter','tableDataAnglesNoTransitionsEdgesOuter')
         
         %getting 4 projections from 3d ellipsoid
         [projectionsInner,projectionsOuter,projectionsInnerWater,projectionsOuterWater]=zProjectionEllipsoid( ellipsoidInfo.img3DLayer,initialEllipsoid.img3DLayer);
         
+        save([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
+        
+        load([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
+        
         %loading mask central cells in projection
         maskRoi=1-im2bw(imread([filePaths{nPath} 'mask.tif']));
 
         
-        for i=1:length(projectionsInner)
+        for i=1:length(projectionsInnerWater)
 
             % Calculation valid cells
+            se=strel('disk',4);
             outerRoiProjection=maskRoi(1:size(projectionsOuterWater{i},1),1:size(projectionsOuterWater{i},2)).*projectionsOuterWater{i};
             innerRoiProjection=maskRoi(1:size(projectionsOuterWater{i},1),1:size(projectionsOuterWater{i},2)).*projectionsInnerWater{i};
-            noValidCellsOuter=unique(imdilate((1-maskRoi(1:size(projectionsOuterWater{i},1),1:size(projectionsOuterWater{i},2))),[1 1;1 1]).*outerRoiProjection);
+            noValidCellsOuter=unique(imdilate((1-maskRoi(1:size(projectionsOuterWater{i},1),1:size(projectionsOuterWater{i},2))),se).*outerRoiProjection);
             validCellsOuter=setdiff(unique(outerRoiProjection),noValidCellsOuter);
             noValidCellsInner=setdiff(unique(innerRoiProjection),validCellsOuter);
 
@@ -60,6 +69,11 @@ for nPath=1:length(filePaths)
             % Calculate energy if there is any transition
             for j=1:2
                 if ~isempty(totalEdges{j});
+                    
+                    if j==1
+                       'PUTAAAAAAAAAAA' 
+                    end
+                    
                     dataEnergy = getEnergyFromEdges( outerRoiProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCellsOuter,totalEdges{j},labelEdges{j});
                     dataEnergy.nRand=nRand*ones(size(dataEnergy.outerH1,1),1);
 
@@ -86,17 +100,19 @@ for nPath=1:length(filePaths)
         end
     
         ['randomization ' num2str(nRand)]
+        
+        catch
+            ['randomization ERROR:' num2str(nRand)]
+        end
+        
     
     end
     
     
-    directory2save=['results\energyMeasurements\' typeProjection '\' num2str(nSeeds) 'seeds\'];
-    mkdir(directory2save);
+    writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\energyTransitionEdges_' date '.xls'])
+    writetable(tableNoTransitionEnergyTotal,[filePaths{nPath} 'energy\energyNoTransitionEdges_' date '.xls'])
 
-    writetable(tableTransitionEnergy,[filePaths{nPath} 'transitionEdges_' date '.xls'])
-    writetable(tableNoTransitionEnergyTotal,[filePaths{nPath} 'noTransitionEdges_' date '.xls'])
-
-    writetable(tableNoTransitionEnergyFilterRandom,[filePaths{nPath} 'noTransitionEdgesFilter_' date '.xls'])
+    writetable(tableNoTransitionEnergyFilterRandom,[filePaths{nPath} 'energy\energyNoTransitionEdgesFilter_' date '.xls'])
 
 
 

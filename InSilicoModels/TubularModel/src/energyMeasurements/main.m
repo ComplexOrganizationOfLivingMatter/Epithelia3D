@@ -5,14 +5,15 @@
 addpath lib
 addpath libEnergy
 
-surfaceRatios= 1/0.8;%[1/0.6, 1/0.2];
+surfaceRatios= [1/0.9 1/0.8 1/0.7 1/0.6 1/0.5 1/0.4 1/0.3 1/0.2 1/0.1];
 
-apicalReductions=[0.1,0.2,0.3,0.4,0.5];
+
+apicalReductions=[0.1,0.2,0.3,0.4,0.5,0.8];
 
 numSeeds=200;%[50,100,200,400];
 numRandoms=20;
 
-typeProjection= 'reduction';
+typeProjection= 'expansion';
 
 relativePath= ['..\..\data\' typeProjection  '\512x1024_'];
 
@@ -36,7 +37,7 @@ for nSeeds=numSeeds
                 load([relativePath num2str(nSeeds) 'seeds\Image_' num2str(nRand) '_Diagram_5\Image_' num2str(nRand) '_Diagram_5.mat'],'listLOriginalProjection')            
                 L_apical=listLOriginalProjection.L_originalProjection{1};
                 surfaceRatio=surfaceRatios(i);
-                indexImage=(listLOriginalProjection.surfaceRatio(:)'==surfaceRatio);
+                indexImage=10-(1/(surfaceRatio)*10)+1;
                 L_basal=listLOriginalProjection.L_originalProjection{indexImage};
                 ['surface ratio - expansion: ' num2str(surfaceRatio) ]
                 
@@ -96,7 +97,7 @@ for nSeeds=numSeeds
         end
             
        
-        directory2save=['..\..\data\energyMeasurements\' typeProjection '\' num2str(nSeeds) 'seeds\'];
+        directory2save=['..\..\data\energyMeasurements\' typeProjection '\' num2str(nSeeds) 'seeds\' date '\'];
         mkdir(directory2save);
         
         writetable(tableTransitionEnergy,[directory2save 'transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_' date  '.xls'])

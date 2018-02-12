@@ -30,11 +30,11 @@ function dataEnergy = getEnergyFromEdges( L_basal,L_apical,neighs_basal,neighs_a
     
     pairCellValidCells=pairCell(validPairs1,:);
     
-    cellsInMotifNoContactValidCells=arrayfun(@(x) setdiff(fourCellsMotifsValidCells{x},pairCellValidCells(x,:))',1:size(pairCellValidCells,1), 'UniformOutput', false);
+    cellsInMotifContactingCellsEdge=arrayfun(@(x) setdiff(fourCellsMotifsValidCells{x},pairCellValidCells(x,:))',1:size(pairCellValidCells,1), 'UniformOutput', false);
     
     %deleting incoherences with motif of 5 or 3 cells
-    validPairs2=cell2mat(cellfun(@(x) length(x)==2,cellsInMotifNoContactValidCells,'UniformOutput',false))';
-    cellsInMotifNoContactValidCells=cell2mat(cellsInMotifNoContactValidCells(validPairs2)');
+    validPairs2=cell2mat(cellfun(@(x) length(x)==2,cellsInMotifContactingCellsEdge,'UniformOutput',false))';
+    cellsInMotifContactingCellsEdge=cell2mat(cellsInMotifContactingCellsEdge(validPairs2)');
     pairCellValidCells=pairCellValidCells(validPairs2,:);
        
     
@@ -42,12 +42,12 @@ function dataEnergy = getEnergyFromEdges( L_basal,L_apical,neighs_basal,neighs_a
     
     %check if the 4 cells motif are preserved in apical
     preservedMotifsInApical=cell2mat(arrayfun(@(x,y,z,zz) (sum(ismember(neighs_apical{x},[z,zz]))+sum(ismember(neighs_apical{y},[z,zz])))==4,...
-        cellsInMotifNoContactValidCells(:,1),cellsInMotifNoContactValidCells(:,2),pairCellValidCells(:,1),pairCellValidCells(:,2),'UniformOutput',false));
-    
+        cellsInMotifContactingCellsEdge(:,1),cellsInMotifContactingCellsEdge(:,2),pairCellValidCells(:,1),pairCellValidCells(:,2),'UniformOutput',false));
+   
     
     %we filter with the motifs that they are in contact in apical.
     pairCellValidCellsPreserved=pairCellValidCells(preservedMotifsInApical,:);
-    cellsInMotifNoContactValidCellsPreserved=cellsInMotifNoContactValidCells(preservedMotifsInApical,:);
+    cellsInMotifNoContactValidCellsPreserved=cellsInMotifContactingCellsEdge(preservedMotifsInApical,:);
     
 %     figure;
 %     imshow(L_basal)
