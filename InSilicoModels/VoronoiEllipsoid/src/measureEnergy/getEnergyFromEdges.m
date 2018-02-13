@@ -17,7 +17,7 @@ function dataEnergy = getEnergyFromEdges( outerRoiProjection,innerRoiProjection,
     verticesOfEdgesOuter=arrayfun(@(x,y) intersect(outerVerticesPerCell{x},outerVerticesPerCell{y}), pairCell(:,1),pairCell(:,2),'UniformOutput',false);
        
     fourCellsMotifs=cellfun(@(x) unique(horzcat(verticesOuter.verticesConnectCells(x,:))),verticesOfEdgesOuter, 'UniformOutput', false);
-    validPairs1=cell2mat(cellfun(@(x) isempty(intersect(noValidCells,x)) | length(x)==4 ,fourCellsMotifs,'UniformOutput',false));
+    validPairs1=cell2mat(cellfun(@(x) isempty(intersect(noValidCells,x)) & length(x)==4 ,fourCellsMotifs,'UniformOutput',false));
     
     fourCellsMotifsValidCells=fourCellsMotifs(validPairs1,:);
     
