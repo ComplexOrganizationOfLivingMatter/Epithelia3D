@@ -24,7 +24,7 @@ function dataEnergy = getEnergyFromEdges( L_basal,L_apical,neighs_basal,neighs_a
     verticesOfEdgesBasal=arrayfun(@(x,y) intersect(basalVerticesPerCell{x},basalVerticesPerCell{y}), pairCell(:,1),pairCell(:,2),'UniformOutput',false);
        
     fourCellsMotifs=cellfun(@(x) unique(horzcat(verticesBasal.verticesConnectCells(x,:))),verticesOfEdgesBasal, 'UniformOutput', false);
-    validPairs1=cell2mat(cellfun(@(x) isempty(intersect(noValidCells,x)) == 0 & length(x)==4 ,fourCellsMotifs,'UniformOutput',false));
+    validPairs1=cell2mat(cellfun(@(x) isempty(intersect(noValidCells,x)) & length(x)==4 ,fourCellsMotifs,'UniformOutput',false));
     
     fourCellsMotifsValidCells=fourCellsMotifs(validPairs1,:);
     

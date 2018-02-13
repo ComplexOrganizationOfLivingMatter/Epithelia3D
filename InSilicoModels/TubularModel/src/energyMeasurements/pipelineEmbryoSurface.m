@@ -28,7 +28,7 @@ for numFile = 3:size(matFiles, 1)
     [neighs_apical, ~] = calculateNeighbours(L_apical);
 
     %no valid cells. No valid in apical or basal
-    noValidCells = find(trackingInfo.validCell);
+    noValidCells = find(trackingInfo.validCell == 0);
 
     %get edges of transitions
     transitionEdges=cellfun(@(x,y) setdiff(x,y),neighs_basal,neighs_apical,'UniformOutput',false);
