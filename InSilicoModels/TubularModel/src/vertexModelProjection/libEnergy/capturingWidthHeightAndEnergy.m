@@ -1,4 +1,4 @@
-function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Length,emptyIndex]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W)
+function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Length,notEmptyIndex]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W)
     
 
     %cell 1 and 2, are the cells in contact. Cell 3 and 4 are not touching between them into the four cell motif.
@@ -16,17 +16,17 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
     vertW2default=cellfun(@(x,y,z) intersect(verticesPerCell{x},[y;z]), table2cell(array2table(pairValidCellsPreserved(:,2))),vertH1default,vertH2default,'UniformOutput',false);
 
     %delete vertices with problems
-    emptyIndex=cell2mat(cellfun(@(x,y,z,zz,zzz) (length(x)==2 & length(y)==2 & length(z)==2 & length(zz)==2 & ~isempty(zzz)),vertH1default,vertH2default,vertW1default,vertW2default,verticesCell_1_2,'UniformOutput',false));
+    notEmptyIndex=cell2mat(cellfun(@(x,y,z,zz,zzz) (length(x)==2 & length(y)==2 & length(z)==2 & length(zz)==2 & ~isempty(zzz)),vertH1default,vertH2default,vertW1default,vertW2default,verticesCell_1_2,'UniformOutput',false));
     
     
-    if sum(~emptyIndex)>0 
-        verticesCell_1_2(~emptyIndex,:)={NaN};
-        vertH1default(~emptyIndex,:)={NaN};
-        vertH2default(~emptyIndex,:)={NaN};
-        vertW1default(~emptyIndex,:)={NaN};
-        vertW2default(~emptyIndex,:)={NaN};
-        verticesCell_3(~emptyIndex,:)={NaN};
-        verticesCell_4(~emptyIndex,:)={NaN};
+    if sum(~notEmptyIndex)>0 
+        verticesCell_1_2(~notEmptyIndex,:)={NaN};
+        vertH1default(~notEmptyIndex,:)={NaN};
+        vertH2default(~notEmptyIndex,:)={NaN};
+        vertW1default(~notEmptyIndex,:)={NaN};
+        vertW2default(~notEmptyIndex,:)={NaN};
+        verticesCell_3(~notEmptyIndex,:)={NaN};
+        verticesCell_4(~notEmptyIndex,:)={NaN};
     end
     
     

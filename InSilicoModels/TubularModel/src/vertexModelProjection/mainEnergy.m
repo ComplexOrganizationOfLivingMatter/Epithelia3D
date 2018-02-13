@@ -45,7 +45,7 @@ for nSeeds=numSeeds
             [verticesApical]=calculateVertices(L_apical,neighs_apical);
 
             %get vertices in new basal
-            verticesBasal.verticesPerCel=cellfun(@(x) [x(1,1),round(x(1,2)*surfaceRatio)],verticesApical.verticesPerCell,'UniformOutput',false);
+            verticesBasal.verticesPerCell=cellfun(@(x) [x(1,1),round(x(1,2)*surfaceRatio)],verticesApical.verticesPerCell,'UniformOutput',false);
             verticesBasal.verticesConnectCells=verticesApical.verticesConnectCells;
 
             %get edges of transitions               

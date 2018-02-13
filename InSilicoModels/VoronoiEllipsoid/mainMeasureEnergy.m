@@ -13,17 +13,17 @@ filePathSphere='results\Sphere\';
 filePaths={filePathStage8,filePathStage4,filePathSphere};
     
 
-numRandoms=10;
+numRandoms=30;
 
 
 
-for nPath=3:length(filePaths)
+for nPath=2%:length(filePaths)
     
     tableTransitionEnergy=table();
     tableNoTransitionEnergyFilterRandom=table();
     tableNoTransitionEnergyTotal=table();
     
-    for nRand=1:numRandoms
+    for nRand=11:numRandoms
         try
             
         ellipsoidPath=dir([filePaths{nPath} 'random_' num2str(nRand) '\ellipsoid*' ]);
@@ -34,7 +34,7 @@ for nPath=3:length(filePaths)
         
         save([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
         
-        load([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
+%         load([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
         
         %loading mask central cells in projection
         maskRoi=1-im2bw(imread([filePaths{nPath} 'mask.tif']));
@@ -69,10 +69,6 @@ for nPath=3:length(filePaths)
             % Calculate energy if there is any transition
             for j=1:2
                 if ~isempty(totalEdges{j});
-                    
-                    if j==1
-                       'PUTAAAAAAAAAAA' 
-                    end
                     
                     dataEnergy = getEnergyFromEdges( outerRoiProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCellsOuter,totalEdges{j},labelEdges{j});
                     dataEnergy.nRand=nRand*ones(size(dataEnergy.outerH1,1),1);
