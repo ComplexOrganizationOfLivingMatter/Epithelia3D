@@ -44,9 +44,6 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
     %testing angle and edge length
     parfor i=1:length(verticesCell_1_2)
         
-        %HAY QUE AÑADIR ALGUNA EXCEPCION AQUÍPARA QUE PILLE SOLO VERTICES
-        %QUE 
-        
         if ~isnan(verticesCell_1_2{i}) 
         
             try
