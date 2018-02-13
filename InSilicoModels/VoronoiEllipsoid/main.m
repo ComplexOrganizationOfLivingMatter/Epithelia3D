@@ -11,7 +11,7 @@ allCombinations = {
     36-5.369186755	29.59784615-5.369186755 29.59784615-5.369186755	5.369186755 'Stage 4' 200
     };
 
-maxRandoms = 10;
+maxRandoms = 11:30;
 delete(gcp);
 parpool(5);
 
@@ -22,9 +22,9 @@ for numCombination = 1:size(allCombinations, 1)
     outputDirGlobal= ['results\' fileName];
     
     
-    randomizationsInfo = cell(maxRandoms, 1);
+    randomizationsInfo = cell(max(maxRandoms), 1);
     
-    parfor numRandomization = 1:maxRandoms %%parfor
+    parfor numRandomization = maxRandoms %%parfor
         
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};
@@ -51,12 +51,12 @@ for numCombination = 1:size(allCombinations, 1)
     end
     
     
-    rowTransitionOuter=cell(maxRandoms*length(allCombinations{numCombination, 4}),2);
-    rowNoTransitionOuter=cell(maxRandoms*length(allCombinations{numCombination, 4}),2);
-    rowTransitionInner=cell(maxRandoms*length(allCombinations{numCombination, 4}),2);
-    rowNoTransitionInner=cell(maxRandoms*length(allCombinations{numCombination, 4}),2);
+    rowTransitionOuter=cell(max(maxRandoms)*length(allCombinations{numCombination, 4}),2);
+    rowNoTransitionOuter=cell(max(maxRandoms)*length(allCombinations{numCombination, 4}),2);
+    rowTransitionInner=cell(max(maxRandoms)*length(allCombinations{numCombination, 4}),2);
+    rowNoTransitionInner=cell(max(maxRandoms)*length(allCombinations{numCombination, 4}),2);
     
-    for numEllipsoid = 1:maxRandoms
+    for numEllipsoid = maxRandoms
         randomEllipsoidInfo = randomizationsInfo{numEllipsoid};
         for numHeight = 1:length(allCombinations{numCombination, 4})
             for numBorders=1:length(randomEllipsoidInfo.edgeTransitionMeasuredOuter)
@@ -70,7 +70,7 @@ for numCombination = 1:size(allCombinations, 1)
     end
     
     for numBorders=1:size(rowTransitionOuter,2)
-        borderLimit=rowTransitionOuter{1,numBorders}.bordersSituatedAt(1);
+        borderLimit=rowTransitionOuter{maxRandoms(1),numBorders}.bordersSituatedAt(1);
         writetable(vertcat(rowTransitionOuter{:,numBorders}), [outputDirGlobal '\transitionsOuterBorder' num2str(borderLimit) '_' fileName '_' date '.xls']);
         writetable(vertcat(rowNoTransitionOuter{:,numBorders}), [outputDirGlobal '\noTransitionsOuterBorder' num2str(borderLimit) '_' fileName '_' date '.xls']);
         writetable(vertcat(rowTransitionInner{:,numBorders}), [outputDirGlobal  '\transitionsInnerBorder' num2str(borderLimit) '_' fileName '_' date '.xls']);
