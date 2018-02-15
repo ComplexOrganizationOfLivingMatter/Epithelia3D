@@ -2,10 +2,10 @@
 % load('E:\Tina\Epithelia3D\Zebrafish\Results\Sample2\LayersCentroids2.mat');
 % load('E:\Tina\Epithelia3D\Zebrafish\Results\Sample2\trackingCentroids2.mat');
 
-function [finalCentroid] = correctTracking( finalCentroid, folderNumber)
+function [finalCentroid] = correctTracking(finalCentroid, folderNumber, maxFrame)
 
-fileNameCentroid=['LayersCentroid' sprintf('%d',folderNumber) '.mat'];
-load(fileNameCentroid);
+% fileNameCentroid=['LayersCentroidPrueba' sprintf('%d',folderNumber) '.mat'];
+% load(fileNameCentroid);
 
 acum=1;
 [C,ia,ic] = unique(vertcat(finalCentroid{:,1}));
@@ -48,7 +48,7 @@ end
 %front and two back.
 
 coord=vertcat(errorsCell{:,2});
-maxFrame=size(centroids,1);
+% maxFrame=size(centroids,1);
 
 
 

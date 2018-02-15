@@ -38,7 +38,7 @@ while any (oldCentroids==0)
                                 [LayerCentroid] = addToLayer( xQuery, yQuery, numFrame, n, LayerCentroid, numLayer+1);
                             else
                                 %It should be stored for when layer pass is analyzed and so on
-                                oldCentroids(n) = 0; %I put it back to 0 pork in the next layer I want you to analyze this centroid again
+                                oldCentroids(n) = 0; %I put it back to 0 because in the next layer I want you to analyze this centroid again
                             end
                         end
                     end

@@ -58,15 +58,22 @@ end
 %Sort by labels
 finalCentroid=sortrows(finalCentroid, 1);
 
-%Correct cells that only appear in a single frame
-[finalCentroid] = correctTracking( finalCentroid, folderNumber);
+
+
+finalFileName=['trackingCentroids-Prueba-NOW' sprintf('%d',folderNumber) '.mat'];
+save(finalFileName, 'finalCentroid')
 
 %Corrects overlapping cells
-[finalCentroids] = finalTracking( finalCentroid, initialFrame, maxFrame, folderNumber);
+[finalCentroidTracking] = finalTracking( finalCentroid, initialFrame, maxFrame, folderNumber);
+
+
+%Correct cells that only appear in a single frame
+[finalCentroid] = correctTracking(finalCentroid, folderNumber, maxFrame);
+
 
 % Save the result to a .mat file
-finalFileName=['trackingCentroidsPrueba' sprintf('%d',folderNumber) '.mat'];
-save(finalFileName, 'finalCentroids')
+finalFileName=['trackingCentroidPruebafinal' sprintf('%d',folderNumber) '.mat'];
+save(finalFileName, 'finalCentroidTracking')
 
 end
 

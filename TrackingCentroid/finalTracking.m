@@ -1,4 +1,4 @@
-function [finalCentroid] = finalTracking( finalCentroid, initialFrame, maxFrame, folderNumber)
+function [finalCentroidTracking] = finalTracking( finalCentroid, initialFrame, maxFrame, folderNumber)
 
 %%Variables
 %It creates variables with part of the name of the image with the nuclei and the way to find it in this computer.
@@ -31,7 +31,7 @@ for numFrame=initialFrame:maxFrame
                 end
             end
         end
-        if n>2 %Estaba a n==3 pero puede que haya más de dos píxeles en un mismo núcleo (?), así prevengo.
+        if n==3 
             [M,I]=min(var{numPixel,3});
             index=var{numPixel,2}(I,2);
             for tracking=index:size(finalCentroid,1)
@@ -51,10 +51,10 @@ end
 
 %Sort finalCentroid
 for numTrack=1:size(finalCentroid,1)
-    if isempty (finalCentroid{numTrack,:})==0
-        finalCentroids{acum,1}=finalCentroid{numTrack,1};
-        finalCentroids{acum,2}=finalCentroid{numTrack,2};
-        finalCentroids{acum,3}=finalCentroid{numTrack,3};
+    if isempty (finalCentroid{numTrack,1})==0
+        finalCentroidTracking{acum,1}=finalCentroid{numTrack,1};
+        finalCentroidTracking{acum,2}=finalCentroid{numTrack,2};
+        finalCentroidTracking{acum,3}=finalCentroid{numTrack,3};
         acum=acum+1;
     end
 end
