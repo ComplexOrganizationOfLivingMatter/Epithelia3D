@@ -1,4 +1,4 @@
-function [ verticesInfo ] = calculateVertices( L_img, neighbours )
+function [ verticesInfo ] = calculateVertices( L_img, neighbours, noValidCells)
  
     % With a labelled image as input, the objective is get all vertex for each
     % cell
@@ -9,12 +9,17 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours )
 
     neighboursVertices = buildTripletsOfNeighs( neighbours );%intersect dilatation of each cell of triplet
     vertices = cell(size(neighboursVertices, 1), 1);
+    
+    
 
     % We first calculate the perimeter of the cell to improve efficiency
     % If the image is small, is better not to use bwperim
     % For larger images it improves a lot the efficiency
     
     dilatedCells=cell(max(max(L_img)),1);
+    
+    
+    
     for i=1:max(max(L_img))
         BW=zeros(size(L_img));
         BW(L_img==i)=1;
@@ -49,6 +54,9 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours )
             vertices{numTriplet} = [row,col];
         end
     end
+    
+    
+    
 
     verticesInfo.verticesPerCell = vertices;
     verticesInfo.verticesConnectCells = neighboursVertices;

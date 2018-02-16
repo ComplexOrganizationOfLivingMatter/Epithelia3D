@@ -1,10 +1,8 @@
-function dataEnergy = getEnergyFromEdges( L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,pairsOfCells,flag)
-
+function dataEnergy = getEnergyFromEdgesMatchingMotifsBasalApical( L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,pairsOfCells,flag)
 
     [~,W_basal]=size(L_basal);
     [~,W_apical]=size(L_apical);
 
-    
     %get couples of edges
     pairCell=cellfun(@(x, y) [y*ones(length(x),1),x],pairsOfCells',num2cell(1:size(neighs_basal,2))','UniformOutput',false);
     pairCell=unique(vertcat(pairCell{:}),'rows');
@@ -17,9 +15,7 @@ function dataEnergy = getEnergyFromEdges( L_basal,L_apical,neighs_basal,neighs_a
     %all vertices in apical
     [verticesApical]=calculateVertices(L_apical,neighs_apical);
     apicalVerticesPerCell=arrayfun(@(x) find(sum(x==verticesApical.verticesConnectCells,2)), 1:max(max(L_apical)), 'UniformOutput', false);
-    
-    
-    
+        
     %vertices of edges transition in basal
     verticesOfEdgesBasal=arrayfun(@(x,y) intersect(basalVerticesPerCell{x},basalVerticesPerCell{y}), pairCell(:,1),pairCell(:,2),'UniformOutput',false);
        

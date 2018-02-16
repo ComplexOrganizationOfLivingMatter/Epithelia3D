@@ -48,6 +48,8 @@ for nSeeds=numSeeds
             verticesBasal.verticesPerCell=cellfun(@(x) [x(1,1),round(x(1,2)*surfaceRatio)],verticesApical.verticesPerCell,'UniformOutput',false);
             verticesBasal.verticesConnectCells=verticesApical.verticesConnectCells;
 
+            
+            
             %get edges of transitions               
             %energy in edges (transition and no transition)
             dataEnergy = getEnergyFromEdges( L_apical,neighs_apical,noValidCells,verticesApical,verticesBasal,surfaceRatio);
@@ -75,8 +77,8 @@ for nSeeds=numSeeds
         directory2save=['..\..\data\vertexModel\energyMeasurements\expansion\' num2str(nSeeds) 'seeds\' date '\'];
         mkdir(directory2save);
         
-        writetable(tableNoTransitionEnergy,[directory2save 'noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_' date '.xls'])
-        writetable(tableNoTransitionEnergyFiltering200data,[directory2save 'noTransitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_filter200measurements_' date '.xls'])
+        writetable(tableNoTransitionEnergy,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_' date '.xls'])
+        writetable(tableNoTransitionEnergyFiltering200data,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_filter200measurements_' date '.xls'])
         
         
     end

@@ -90,6 +90,8 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
             sumEdgesOfEnergy(i)=NaN;
         end
     end
+    
+      
         
 end
 
