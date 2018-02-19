@@ -1,4 +1,4 @@
-function [ differenceTableSummaryEnergyData ] = getEnergyInfo( data )
+function [ differenceTableSummaryEnergyData, totalEnergyData ] = getEnergyInfo( data )
 %GETENERGYINFO Summary of this function goes here
 %   Detailed explanation goes here
 
