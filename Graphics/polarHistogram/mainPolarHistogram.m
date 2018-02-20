@@ -1,85 +1,7 @@
 %%Supported by matlab 2016b or upper
 
-% % %% WT transition
-% % figure
-% % angleWT_tran=[29.5,0.5,12.5,20,21.1,26,4,12.2,2.1,10,29.5,21,23,1,18,30,16,26.5,1,8,29,49,3.5,34.26,...
-% %     16.77,16.76,0.12,19.47,10.33,15.26,17.79,0.00,8.92,17.62,18.56,9.47];
-% % 
-% % polarhistogram(deg2rad(angleWT_tran),'BinWidth',deg2rad(15),'Normalization','probability','FaceColor',[20 156 0]/255,'FaceAlpha',1,'LineWidth',1)
-% % ax=gca;
-% % ax.ThetaZeroLocation='right';
-% % % %ax.ThetaDir='clockwise';
-% % ax.ThetaLimMode='manual';
-% % ax.ThetaLim=[0,90];
-% % ax.RLimMode='manual';
-% % ax.GridAlpha=1;
-% % ax.LineWidth=1;
-% % ax.FontSize=30;
-% % ax.RLim=[0,0.6];
-% % title('WT transition')
-% % 
-% % %% WT no transition
-% % figure
-% % angleWT_noTran=[75,44.7,18,80,10,66,13,6.5,80.5,83.5,86.5,84,7.3,63.2,64.3,10.11,41.01,...
-% %     17.65,68.20,37.82,62.84,4.03,49.23,7.3,8.5,45.00,33.06,7.8,6.29,61.11,50.19,52.13,...
-% %     69.59,24.56,30.12,8.75,27.0,29.46,43.66,62.54,26.53,33.55,57.91,80.08,14.51,16.06,...
-% %     24.00,86.47,19.65,36.25,87.27,33.69,3.89,9.73,39.94,17.49,26.57,5.44,11.78,11.26,7.97...
-% %     ,12.15,26.99,3.33,18.11,19.10,14.17,32.13,54.38,12.03];
-% % 
-% % polarhistogram(deg2rad(angleWT_noTran),'BinWidth',deg2rad(15),'Normalization','probability','FaceColor',[1 0 0],'FaceAlpha',1,'LineWidth',1)
-% % ax=gca;
-% % ax.ThetaZeroLocation='right';
-% % % %ax.ThetaDir='clockwise';
-% % ax.ThetaLimMode='manual';
-% % ax.ThetaLim=[0,90];
-% % ax.RLimMode='manual';
-% % ax.GridAlpha=1;
-% % ax.LineWidth=1;
-% % ax.FontSize=30;
-% % ax.RLim=[0,0.6];
-% % title('WT no transition')
-% 
-% 
-% % % %% Gastrulation transition
-% 
-% angleGast_tran=[11.54	19.25	28.16	18.88	17.53	4.76	12.02	8.24	10.68	6.84	1.71	32.07	26.16	8.13	6.12	11.78	14.04	14.67	20.25	2.96	41.52	20.42	14.04	33.00	5.44	6.20	24.23	10.01	2.73];
-% polarhistogram(deg2rad(angleGast_tran),'BinWidth',deg2rad(6),'Normalization','probability','FaceColor',[20 156 0]/255,'FaceAlpha',1,'LineWidth',1)
-% ax=gca;
-% ax.ThetaZeroLocation='right';
-% % %ax.ThetaDir='clockwise';
-% ax.ThetaLimMode='manual';
-% ax.ThetaLim=[0,90];
-% ax.RLimMode='manual';
-% ax.GridAlpha=1;
-% ax.LineWidth=1;
-% ax.FontSize=30;
-% ax.RLim=[0,0.35];
-% title('Gastrulation embryo transition')
-% 
-% 
-% 
-% 
-% 
-% 
-% %% Gastrulation no transition
-% figure
-% angleGast_noTran=[73.39	6.89	6.91	77.19	6.71	55.80	3.08	79.08	78.83	61.34	71.77	64.80	5.36	69.90	74.71	53.33	7.41	89.01	77.19	39.76	67.25	73.92	42.83	77.60	63.68	37.50	7.27	74.08	6.59	33.46	81.49	88.75	62.34	4.29	7.48	87.66	79.38	85.75	68.99];
-% 
-% polarhistogram(deg2rad(angleGast_noTran),'BinWidth',deg2rad(6),'Normalization','probability','FaceColor',[1 0 0],'FaceAlpha',1,'LineWidth',1)
-% ax=gca;
-% ax.ThetaZeroLocation='right';
-% % %ax.ThetaDir='clockwise';
-% ax.ThetaLimMode='manual';
-% ax.ThetaLim=[0,90];
-% ax.RLimMode='manual';
-% ax.GridAlpha=1;
-% ax.LineWidth=1;
-% ax.FontSize=30;
-% ax.RLim=[0,0.35];
-% title('Gastrulation embryo no transition')
 
-
-%% General
+%% Colours
 colourTrans = [102 204 204]/255;
 colourNoTrans = [1 102/255 0];
 
@@ -107,3 +29,36 @@ angleSalivaryGland_NoTran=[28.5350000000000 17.4040000000000 33.3540000000000 18
 
 createPolarHistogram(angleSalivaryGland_Tran, colourTrans, 'Salivary gland - Transition');
 createPolarHistogram(angleSalivaryGland_NoTran, colourNoTrans, 'Salivary gland -  No transition');
+
+
+%% eggChamber stage 4
+angleEggChamber4_Tran=[80.538	36.87	68.199	12.265	71.565	59.036	66.038	18.435	32.005	42.51	5.194	45	82.875	26.565	30.964	0	80.583	48.013	40.601	23.499	59.036	71.71	53.13	80.538	63.435	4.399	53.13	14.036	53.13	6.843	90	64.983	75.964	30.964	86.634	78.69	36.87	14.036	5.711	85.236	29.745	10.491	77.471	39.806	63.435	42.879	52.125	51.34	48.013	90	80.538];
+angleEggChamber4_NoTran=[40.71	24.74	26.45	77.95	33.94	46.12	36.16	70.68	73.84	50.91	80.43	84.05	35.59	19.36	70.02	48.37	23.24	15.66	17.80	67.97	39.11	30.96	21.43	10.31	38.66	48.01	20.93	29.358	22.93	3.18	34.29	77.47	8.75	19.86	43.152	33.69	8.58	18.435	19.03	65.225	55.49	55.49	19.65	32.905	11.31	4.57	59.04	8.53	39.81	22.834	0.00	36.87	10.49	75.47	80.54	64.44	9.21	74.578	6.582	6.71	85.426	26.57	43.452	87.21	2.86	4.68	31.50	58.00	43.03	82.57	4.32	76.50	85.60	3.27	81.03	38.05	57.27	4.24	9.73	51.95	36.38];
+
+createPolarHistogram(angleEggChamber4_Tran, colourTrans, 'Egg Chamber Stage 4 - Transition');
+createPolarHistogram(angleEggChamber4_NoTran, colourNoTrans, 'Egg Chamber Stage 4 -  No transition');
+
+%% eggChamber stage 8
+angleEggChamber8_Tran=[59.744	49.399	15.255	0	21.038	37.875	0	50.19	42.71	0	14.036	2.862	20.556	7.125	19.44	8.531	88.264	7.595	8.13	53.13	37.875	3.18	60.945	26.565	90	0	63.435	28.113	55.491	83.66	30.466	15.945	3.366	2.49	58.392	77.905	54.462	47.726	41.987	16.928	79.695	24.775];
+angleEggChamber8_NoTran=[10.62	76.43	74.745	46.469	0	3.27	83.66	46.005	53.616	17.526	4.055	11.31	2.726	33.69	76.759	25.201	71.565	5.042	17.526	8.13	3.366	10.954	17.65	9.462	56.31	56.529	79.99	42.417	65.323	74.398	74.778	80.609	88.351	15.272	43.905	78.93	86.978	64.179	22.881	88.091	22.479	10.954	90	84.56	4.086	56.31	57.529	26.565	84.56	16.928	69.146	60.642	90	28.072	2.726	14.931	10.008	86.186	81.254];
+
+createPolarHistogram(angleEggChamber8_Tran, colourTrans, 'Egg Chamber Stage 8 - Transition');
+createPolarHistogram(angleEggChamber8_NoTran, colourNoTrans, 'Egg Chamber Stage 8 -  No transition');
+
+
+%% zebrafish
+angleZebrafish_Tran=[48.814	74.055	45.000	71.565	80.538	56.310	0.000	0.000	14.036	69.444	79.695	23.199	26.565	33.690	68.199	77.471	68.199	23.199	90.000	4.399	59.036	45.000	81.254	0.000	49.399	23.962	33.690	66.038	5.194	15.945	48.814	38.660	31.608	9.462	45.000	14.036	26.565	75.964	14.036	6.340	0.000	36.870	90.000	61.390	71.565	45.000	26.565	63.435	71.565	80.538	18.435	45.000];
+angleZebrafish_NoTran=[0.000	0.000	57.995	68.199	9.462	85.601	63.435	90.000	0.000	29.055	0.000	14.036	61.390	90.000	12.529	72.474	70.821	85.426	29.476	90.000	84.806	21.801	0.000	35.538	42.510	36.870	73.301	68.199	26.565	21.801	34.695	90.000	85.914	42.709	23.962	20.556	0.000	63.435	85.914	30.964	8.130	7.125	86.987	45.000	13.241	53.746	11.310	82.875	50.194	26.565	57.529	78.690	0.000	60.255	0.000	29.745	10.305	78.690	71.565	42.274	57.995];
+
+createPolarHistogram(angleZebrafish_Tran, colourTrans, 'Zebrafish - Transition');
+createPolarHistogram(angleZebrafish_NoTran, colourNoTrans, 'Zebrafish -  No transition');
+
+
+%% embryo fold
+angleGast_Tran=[11.54	19.25	28.16	18.88	17.53	4.76	12.02	8.24	10.68	6.84	1.71	32.07	26.16	8.13	6.12	11.78	14.04	14.67	20.25	2.96	41.52	20.42	14.04	33.00	5.44	6.20	24.23	10.01	2.73];
+angleGast_NoTran=[73.39	6.89	6.91	77.19	6.71	55.80	3.08	79.08	78.83	61.34	71.77	64.80	5.36	69.90	74.71	53.33	7.41	89.01	77.19	39.76	67.25	73.92	42.83	77.60	63.68	37.50	7.27	74.08	6.59	33.46	81.49	88.75	62.34	4.29	7.48	87.66	79.38	85.75	68.99];
+
+createPolarHistogram(angleGast_Tran, colourTrans, 'Embryo fold - Transition');
+createPolarHistogram(angleGast_NoTran, colourNoTrans, 'Embryo fold -  No transition');
+
+
