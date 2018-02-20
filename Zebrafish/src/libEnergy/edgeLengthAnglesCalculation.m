@@ -1,11 +1,11 @@
-function [edgeLength, edgeAngle] = edgeLengthAnglesCalculation(vertsEdge,W)
+function [edgeLength, edgeAngle] = edgeLengthAnglesCalculation(vertsEdge)
 
     
-    if abs(vertsEdge(2,2)-vertsEdge(1,2)) > W/2
-        [~,index]=min(vertsEdge(:,2));
-        vertsEdge(index,2)=vertsEdge(index,2)+W;
-    end
-    
+%     if abs(vertsEdge(2,2)-vertsEdge(1,2)) > W/2
+%         [~,index]=min(vertsEdge(:,2));
+%         vertsEdge(index,2)=vertsEdge(index,2)+W;
+%     end
+%     
     
 %     plot(vertsEdge(:,2),vertsEdge(:,1))
     

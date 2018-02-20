@@ -1,4 +1,4 @@
-function createScatterPolar( angleTran,lengthTran,angleNoTran,lengthNoTran )
+function createScatterPolar( angleTran,lengthTran,angleNoTran,lengthNoTran,titleFig )
 
     %polarscatter(deg2rad(angleWT_noTran),lengthEdge_noTran,50,'o','MarkerEdgeColor',[1 0 0],'LineWidth',2);
     polarscatter(deg2rad(angleNoTran),lengthNoTran,50,'o','MarkerFaceColor',[1 102/255 0],'MarkerEdgeColor',[0,0,0]);
@@ -25,6 +25,7 @@ function createScatterPolar( angleTran,lengthTran,angleNoTran,lengthNoTran )
     
     pause;
 
+    title(titleFig, 'FontSize', 16);
 
 end
 

@@ -15,7 +15,7 @@ numRandoms=20;
 
 typeProjection= 'expansion';
 
-relativePath= ['..\..\data\' typeProjection  '\512x1024_'];
+relativePath= ['..\..\..\data\voronoiModel\' typeProjection  '\512x1024_'];
 
 if strcmp(typeProjection,'reduction');
     numSurfaces=length(apicalReductions);
@@ -69,7 +69,7 @@ for nSeeds=numSeeds
             for k=1:2
                 
                 %energy in edges (transition and no transition)
-                dataEnergy = getEnergyFromEdges(L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,totalEdges{k},labelEdges{k});
+                dataEnergy = getEnergyFromEdgesMatchingMotifsBasalApical(L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,totalEdges{k},labelEdges{k});
                 dataEnergy.nRand=nRand*ones(size(dataEnergy.basalH1,1),1);
                 dataEnergy.numSeeds=nSeeds*ones(size(dataEnergy.basalH1,1),1);
                 dataEnergy.surfaceRatio=surfaceRatio*ones(size(dataEnergy.basalH1,1),1);
@@ -97,7 +97,7 @@ for nSeeds=numSeeds
         end
             
        
-        directory2save=['..\..\data\energyMeasurements\' typeProjection '\' num2str(nSeeds) 'seeds\' date '\'];
+        directory2save=['..\..\..\data\voronoiModel\energyMeasurements\' typeProjection '\' num2str(nSeeds) 'seeds\' date '\'];
         mkdir(directory2save);
         
         writetable(tableTransitionEnergy,[directory2save 'transitionEdges_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_' date  '.xls'])

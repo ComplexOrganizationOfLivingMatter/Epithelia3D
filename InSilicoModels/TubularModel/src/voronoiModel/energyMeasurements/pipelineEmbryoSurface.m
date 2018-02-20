@@ -45,7 +45,7 @@ for numFile = 3:size(matFiles, 1)
     for k=1:2
 
         %energy in edges (transition and no transition)
-        dataEnergy = getEnergyFromEdges(L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,totalEdges{k},labelEdges{k});
+        dataEnergy = getEnergyFromEdgesMatchingMotifsBasalApical(L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,totalEdges{k},labelEdges{k});
         %dataEnergy.nRand=nRand*ones(size(dataEnergy.basalH1,1),1);
         %dataEnergy.numSeeds=nSeeds*ones(size(dataEnergy.basalH1,1),1);
         %dataEnergy.surfaceRatio=surfaceRatio*ones(size(dataEnergy.basalH1,1),1);

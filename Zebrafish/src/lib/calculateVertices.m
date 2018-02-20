@@ -3,7 +3,7 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
     % With a labelled image as input, the objective is get all vertex for each
     % cell
 
-    ratio=4;
+    ratio=2;
     se=strel('disk',ratio);
 
 
@@ -39,15 +39,7 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
         %It is better use '&' than '.*' in this function
         [row,col]=find((BW1_dilate.*BW2_dilate.*BW3_dilate.*borderImg)==1);
 
-        %in case of vertices in X extremes... expanding the image
-        if isempty(row) && isempty(col)
-            [row,col]=find((imdilate([BW1_dilate,BW1_dilate],[1,1;1,1]).*imdilate([BW2_dilate,BW2_dilate],[1,1;1,1]).*imdilate([BW3_dilate,BW3_dilate],[1,1;1,1]).*[borderImg,borderImg])==1);
-            if round(mean(col))>size(L_img,2)
-               col= size(L_img,2);
-               row=mean(row);
-            end
-        end
-        
+               
         if length(row)>1
             vertices{numTriplet} = round(mean([row,col]));
         else
