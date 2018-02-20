@@ -78,7 +78,8 @@
 % ax.RLim=[0,0.35];
 % title('Gastrulation embryo no transition')
 
-
+close all
+clear all
 %% General
 colourTrans = [102 204 204]/255;
 colourNoTrans = [1 102/255 0];
