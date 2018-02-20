@@ -1,25 +1,23 @@
-function dataEnergy = getEnergyFromEdges( L_apical,neighs_apical,noValidCells,verticesApical,verticesBasal,surfaceRatio)
+function dataEnergy = getEnergyFromEdges( L_img,neighs,noValidCells,verticesApical,verticesProjection,surfaceRatio)
 
-    neighs_basal=neighs_apical;
+    neighsProjection=neighs;
     
-    [~,W_apical]=size(L_apical);
-    W_basal=round(W_apical*surfaceRatio);
+    [~,W]=size(L_img);
+    W_projection=round(W*surfaceRatio);
     %get couples of edges
-    pairCell=cellfun(@(x, y) [y*ones(length(x),1),x],neighs_apical',num2cell(1:size(neighs_basal,2))','UniformOutput',false);
+    pairCell=cellfun(@(x, y) [y*ones(length(x),1),x],neighs',num2cell(1:size(neighsProjection,2))','UniformOutput',false);
     pairCell=unique(vertcat(pairCell{:}),'rows');
     pairCell=unique([min(pairCell,[],2),max(pairCell,[],2)],'rows');   
     
     %all vertices in basal
-    basalVerticesPerCell=arrayfun(@(x) find(sum(x==verticesBasal.verticesConnectCells,2)), 1:max(max(L_apical)), 'UniformOutput', false);
+    projectionVerticesPerCell=arrayfun(@(x) find(sum(x==verticesProjection.verticesConnectCells,2)), 1:max(max(L_img)), 'UniformOutput', false);
     %all vertices in apical
-    apicalVerticesPerCell=arrayfun(@(x) find(sum(x==verticesApical.verticesConnectCells,2)), 1:max(max(L_apical)), 'UniformOutput', false);
-    
-    
-    
+    verticesPerCell=arrayfun(@(x) find(sum(x==verticesApical.verticesConnectCells,2)), 1:max(max(L_img)), 'UniformOutput', false);
+        
     %vertices of edges transition in basal
-    verticesOfEdgesBasal=arrayfun(@(x,y) intersect(basalVerticesPerCell{x},basalVerticesPerCell{y}), pairCell(:,1),pairCell(:,2),'UniformOutput',false);
+    verticesOfEdgesProjection=arrayfun(@(x,y) intersect(projectionVerticesPerCell{x},projectionVerticesPerCell{y}), pairCell(:,1),pairCell(:,2),'UniformOutput',false);
        
-    fourCellsMotifs=cellfun(@(x) unique(horzcat(verticesBasal.verticesConnectCells(x,:))),verticesOfEdgesBasal, 'UniformOutput', false);
+    fourCellsMotifs=cellfun(@(x) unique(horzcat(verticesProjection.verticesConnectCells(x,:))),verticesOfEdgesProjection, 'UniformOutput', false);
     validPairs1=cell2mat(cellfun(@(x) isempty(intersect(noValidCells,x)) & length(x)==4 ,fourCellsMotifs,'UniformOutput',false));
     
     fourCellsMotifsValidCells=fourCellsMotifs(validPairs1,:);
@@ -33,11 +31,8 @@ function dataEnergy = getEnergyFromEdges( L_apical,neighs_apical,noValidCells,ve
     cellsInMotifContactingCellsEdge=cell2mat(cellsInMotifContactingCellsEdge(validPairs2)');
     pairCellValidCells=pairCellValidCells(validPairs2,:);
        
-    
-    
-    
     %check if the 4 cells motif are preserved in apical
-    preservedMotifsInApical=cell2mat(arrayfun(@(x,y,z,zz) (sum(ismember(neighs_apical{x},[z,zz]))+sum(ismember(neighs_apical{y},[z,zz])))==4,...
+    preservedMotifsInApical=cell2mat(arrayfun(@(x,y,z,zz) (sum(ismember(neighs{x},[z,zz]))+sum(ismember(neighs{y},[z,zz])))==4,...
         cellsInMotifContactingCellsEdge(:,1),cellsInMotifContactingCellsEdge(:,2),pairCellValidCells(:,1),pairCellValidCells(:,2),'UniformOutput',false));
    
     
@@ -49,32 +44,17 @@ function dataEnergy = getEnergyFromEdges( L_apical,neighs_apical,noValidCells,ve
     %testing transition data
     dataEnergy.fourCellsMotif=[pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];
     
-    [dataEnergy.basalEdgeLength,dataEnergy.basalSumEdgesOfEnergy,dataEnergy.basalEdgeAngle,dataEnergy.basalH1,dataEnergy.basalH2,dataEnergy.basalW1,dataEnergy.basalW2,notEmptyIndexesBasal]=capturingWidthHeightAndEnergy(basalVerticesPerCell,verticesBasal,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_basal);
+    [dataEnergy.EdgeLength,dataEnergy.SumEdgesOfEnergy,dataEnergy.EdgeAngle,dataEnergy.H1,dataEnergy.H2,dataEnergy.W1,dataEnergy.W2,notEmptyIndexes]=capturingWidthHeightAndEnergy(projectionVerticesPerCell,verticesProjection,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_projection);
+   
+    dataEnergy.fourCellsMotif=dataEnergy.fourCellsMotif(notEmptyIndexes,:);
+    dataEnergy.H1=dataEnergy.H1(notEmptyIndexes);
+    dataEnergy.H2=dataEnergy.H2(notEmptyIndexes);
+    dataEnergy.W1=dataEnergy.W1(notEmptyIndexes);
+    dataEnergy.W2=dataEnergy.W2(notEmptyIndexes);
+    dataEnergy.SumEdgesOfEnergy=dataEnergy.SumEdgesOfEnergy(notEmptyIndexes);
+    dataEnergy.EdgeLength=dataEnergy.EdgeLength(notEmptyIndexes);
+    dataEnergy.EdgeAngle=dataEnergy.EdgeAngle(notEmptyIndexes);
     
-    [dataEnergy.apicalEdgeLength,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeAngle,dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,noEmptyIndexesApical]=capturingWidthHeightAndEnergy(apicalVerticesPerCell,verticesApical,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_apical);
-        
-    
-    if sum(notEmptyIndexesBasal)< length(notEmptyIndexesBasal) || sum(noEmptyIndexesApical)< length(noEmptyIndexesApical)
-        
-        notEmptyIndexes=(noEmptyIndexesApical & notEmptyIndexesBasal);
-        
-        dataEnergy.fourCellsMotif=dataEnergy.fourCellsMotif(notEmptyIndexes,:);
-        dataEnergy.apicalH1=dataEnergy.apicalH1(notEmptyIndexes);
-        dataEnergy.apicalH2=dataEnergy.apicalH2(notEmptyIndexes);
-        dataEnergy.apicalW1=dataEnergy.apicalW1(notEmptyIndexes);
-        dataEnergy.apicalW2=dataEnergy.apicalW2(notEmptyIndexes);
-        dataEnergy.apicalSumEdgesOfEnergy=dataEnergy.apicalSumEdgesOfEnergy(notEmptyIndexes);
-        dataEnergy.apicalEdgeLength=dataEnergy.apicalEdgeLength(notEmptyIndexes);
-        dataEnergy.apicalEdgeAngle=dataEnergy.apicalEdgeAngle(notEmptyIndexes);
-
-        dataEnergy.basalH1=dataEnergy.basalH1(notEmptyIndexes);
-        dataEnergy.basalH2=dataEnergy.basalH2(notEmptyIndexes);
-        dataEnergy.basalW1=dataEnergy.basalW1(notEmptyIndexes);
-        dataEnergy.basalW2=dataEnergy.basalW2(notEmptyIndexes);
-        dataEnergy.basalSumEdgesOfEnergy=dataEnergy.basalSumEdgesOfEnergy(notEmptyIndexes);
-        dataEnergy.basalEdgeLength=dataEnergy.basalEdgeLength(notEmptyIndexes);
-        dataEnergy.basalEdgeAngle=dataEnergy.basalEdgeAngle(notEmptyIndexes);
-    end
     
 end
 
