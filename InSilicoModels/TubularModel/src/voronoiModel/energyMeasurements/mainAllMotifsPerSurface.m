@@ -3,11 +3,14 @@ addpath libEnergy
 
 surfaceRatios= [1 1/0.9 1/0.8 1/0.7 1/0.6 1/0.5 1/0.4 1/0.3 1/0.2 1/0.1];
 
+apicalReductions=[0 0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9];
+
+
 numSeeds=200;%[50,100,200,400];
 numRandoms=20;
 numSurfaces=length(surfaceRatios);
 
-typeProjection= 'expansion';
+typeProjection= 'reduction';
 relativePath= ['..\..\..\data\voronoiModel\' typeProjection  '\512x1024_'];
 
 
@@ -25,6 +28,15 @@ for nSeeds=numSeeds
                 indexImage=10-(1/(surfaceRatio)*10)+1;
                 L_img=listLOriginalProjection.L_originalProjection{indexImage};
                 ['surface ratio - expansion: ' num2str(surfaceRatio) ]
+            
+            else
+                load([relativePath num2str(nSeeds) 'seeds\Image_' num2str(nRand) '_Diagram_5\Image_' num2str(nRand) '_Diagram_5.mat'],'listLOriginalApical')            
+                indexImage=10-10*apicalReductions(i);
+                surfaceRatio=1/(1-apicalReductions(i));
+                L_img=listLOriginalApical.L_originalApical{indexImage};
+                ['surface ratio - reduction: ' num2str(surfaceRatio) ]
+            
+            
             end
             
             ['number of randomization: ' num2str(nRand)]
