@@ -1,12 +1,12 @@
-function [ finalCentroid ] = 	organizationTracking( finalCentroid, errorsCell, varTracking, errorsFrames, maxFrame, folderNumber )
-%UNTITLED2 Summary of this function goes here
-%   Detailed explanation goes here
+function [ finalCentroid ] = organizationTracking( finalCentroid, errorsCell, maxFrame, folderNumber )
+%ORGANIZATIONTRACKING This function deals with the centroids that only appear in a single frame, seeing 
+%them one by one in the frames that are around. If the centroid coincides with some frame around it, the
+%centroid is added by hand and this would be the follow-up of the centroid that is alone.
 
 acum=1;
 
 for numCell=1:size(finalCentroid, 1)
     for numError=1:size(errorsCell,1)
-        
         if finalCentroid{numCell,1}==errorsCell{numError,1}
             errorsCell{numError,2}=finalCentroid{numCell,2};
             errorsCell{numError,3}=finalCentroid{numCell,3};
@@ -63,7 +63,7 @@ for numCell=1:size(finalCentroid, 1)
     
 end
 
-%The cell of our final variable is deleted.
+%The cells of our final variable are deleted.
 acum=1;
 for newErrors=1:size(errorsCell)
     if errorsCell{newErrors,4}==1

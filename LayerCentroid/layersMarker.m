@@ -1,7 +1,12 @@
 function [ LayerCentroid, centroids, pixel, xQuery, yQuery, initialFrame, newLayer] = layersMarker( LayerCentroid, centroids, pixel, numFrame, xQuery, yQuery, initialFrame, newLayer)
+%LAYERSMARKER Divide the centroids by layers
+%It goes frame by frame analyzing the centroids that are new, that is, they
+%have not appeared in the previous frame, and separates them by layers according
+%to the boundary function and the number of centroids that already exist in the layer.
 
 numLayer=1;
-oldCentroids = ismember(round(centroids{numFrame,1}),pixel{numFrame-1,1},'rows'); %The centroids of the new frame that are in the pixels of the previous one
+%The centroids of the new frame that are in the pixels of the previous one
+oldCentroids = ismember(round(centroids{numFrame,1}),pixel{numFrame-1,1},'rows'); 
 
 
 while any (oldCentroids==0)

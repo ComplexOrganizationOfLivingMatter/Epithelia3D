@@ -1,5 +1,5 @@
-function [ output_args ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
-%LAYERVORONOI Summary of this function goes here
+function [ img3DLabelled ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
+%LAYERVORONOI Create voronoi in 3D with tracking of centroids
 %   Detailed explanation goes here
 
 
@@ -37,7 +37,6 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
         znAcum=[];
         for nSeed=1:size(seedsOfCell)-1 %Less one for the structure of the Drawline3D function that needs the current and the next
             %get pixel coordinates of lines joining centroids
-            
             [xn,yn,zn] = Drawline3D(seedsOfCell(nSeed,1), seedsOfCell(nSeed,2), seedsOfCell(nSeed,3),seedsOfCell(nSeed+1,1), seedsOfCell(nSeed+1,2), seedsOfCell(nSeed+1,3));
             xnAcum=[xnAcum;xn];
             ynAcum=[ynAcum;yn];
@@ -60,29 +59,22 @@ function [ output_args ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
                     num=num+1;
                 end
            end
-    end
-    
-        
-    
+    end    
     
     imgDist = bwdist(imgWithSegmentSeeds3D);
     
     %We create the shape in which the voronoi will be embedded
     shapeOfSeeds = alphaShape(seeds(:, 1), seeds(:, 2), seeds(:, 3), 500);
     
-
     img3DActual = zeros(max(seeds) + 1);
     %Remove pixels outside the cells area
     [xPx, yPx, zPx] = findND(img3DActual==0);
     validPxs = shapeOfSeeds.inShape(xPx, yPx, zPx);
-
     
     water3DImage=watershed(imgDist,26); 
     water3DImage(validPxs==0)=0;
     
-
-
-    %Create voronoi 3D region and paint it
+    %Create voronoi 3D region, paint it and save it all
     img3DLabelled = zeros(max(seeds) + 1);
     colours = colorcube(max(cellIds));
     figure;

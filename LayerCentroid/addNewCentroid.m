@@ -1,4 +1,5 @@
 function [LayerCentroid] = addNewCentroid( f, LayerCentroid, numFrame )
+%ADDNEWCENTROID This function is used to manually add a centroid and put in which layer it belongs
 
 newLayer1=false;
 [x,y]=getpts(f);

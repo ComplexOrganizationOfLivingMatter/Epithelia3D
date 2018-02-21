@@ -1,4 +1,6 @@
-function [xnAcum,ynAcum,znAcum] = Drawline3D(X0, Y0, Z0, X1, Y1, Z1)
+function [xnAcum,ynAcum,znAcum] = Drawline3D (X0, Y0, Z0, X1, Y1, Z1)
+%DRAWLINE3D   Generate a line in 3D according to the points (centroids) that are passed
+%   
         xnAcum=[];
         ynAcum=[];
         znAcum=[];

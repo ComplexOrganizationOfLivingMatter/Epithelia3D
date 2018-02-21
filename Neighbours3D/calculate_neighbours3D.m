@@ -1,6 +1,7 @@
 function [neighs_real,sides_cells]=calculate_neighbours3D(L_img)
+%CALCULATE_NEIGHBOURS3D   Generate neighbours
+%   
 
-%% Generate neighbours
     ratio=4;
 %     se = strel('ball',ratio,ratio,0);
     neighs_real={};

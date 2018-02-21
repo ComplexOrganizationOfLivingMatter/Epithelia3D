@@ -1,11 +1,11 @@
 function deleteFrame( pathArchMat, frameToDelete, folderNumber )
 
-%SEPARATESANDCORRECTSCENTROIDSBYLAYERS Separate and correct centroids
+%DELETEFRAME Eliminates centroids that have as frame the same one that is taken as input parameter.
 %
 % Input/output specs
 % ------------------
 % pathArchMat:  'E:\Tina\Epithelia3D\Zebrafish\Code\LayersCentroids5.mat';
-% frameToDElete: 75;
+% frameToDelete: 75;
 % folderNumber: 5;
 
 load(pathArchMat);

@@ -1,13 +1,16 @@
+function [neigh_real, basicInfo]=deleteLowDilate(neigh_real, basicInfo, finalCentroid)
+%DELETELOWDILATE %A filter is made to eliminate the shared information if the percentage that the
+%cells share among each other is less than 0.0051
 
+%load necessary variables
+%load('neighbours_layer2.mat')
+%load('trackingCentroidPruebafinal2.mat')
 
-load('neighbours_layer2.mat')
-load('trackingCentroidPruebafinal2.mat')
+%Convert the variable tables into matrices
+neigh_real=table2array(neigh_real);
+basicInfo=table2array(basicInfo);
 
-neighs_real=table2array(neigh_real);
-basicInfos=table2array(basicInfo);
-
-%Lo que esta comentado es para ver los errores que hay (celulas de capa 1
-%vecinas de capa 3, etc
+%What is commented is to see the errors that there are (layer 1 cells neighboring layer 3, etc.)
 
 % neighsLayers(:,1)=neighs_real(:,1);
 % neighsLayers(:,3)=neighs_real(:,5);
@@ -56,22 +59,29 @@ basicInfos=table2array(basicInfo);
 %     end
 % end
 
-neighs_real(neighs_real(:,4) < 0.0051, :) = [];
+
+%A filter is made to eliminate the shared information if the percentage that the
+%cells share among each other is less than 0.0051
+neigh_real(neigh_real(:,4) < 0.0051, :) = [];
 acum=0;
-for num=1:size(basicInfos,1)
-    for numNeigh=1:size(neighs_real,1)
-        if neighs_real(numNeigh,1)==basicInfos{num,1}(1,1)
+
+%This loop modifies the number of neighbors that each cell of the variable has
+%with the basic information according to the filter made before.
+for num=1:size(basicInfo,1)
+    for numNeigh=1:size(neigh_real,1)
+        if neigh_real(numNeigh,1)==basicInfo{num,1}(1,1)
             acum=acum+1;
         end        
     end
-    basicInfos{num,2}(1,1)=acum;
+    basicInfo{num,2}(1,1)=acum;
     acum=0;
 end
 
-clear basicInfo neigh_real;
-neigh_real=neighs_real;
-basicInformation=basicInfos;
+% clear basicInfo neigh_real;
+% neigh_real=neighs_real;
+% basicInformation=basicInfos;
 
+%These variables are saved again both in excel and in .mat file with a new name
 neigh_real=array2table(neigh_real);
 neigh_real.Properties.VariableNames={'ID', 'neighbours', 'sharedDilateArea', 'percentageShared', 'LayerNeigh', 'sharedRealArea'};
 
@@ -83,3 +93,4 @@ writetable(basicInfo, 'neighbours_layer_filter2.xlsx', 'Sheet','basicInfo');
 
 save('neighbours_layer_filter2.mat','neigh_real', 'basicInfo');
 
+end

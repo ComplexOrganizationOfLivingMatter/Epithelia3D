@@ -1,4 +1,5 @@
 function [LayerCentroid] = layer_write_mode(fig,LayerCentroid, numFrame)
+%LAYER_WRITE_MODE This function is used to change the layer centroid
 
 newLayer1=false;
 

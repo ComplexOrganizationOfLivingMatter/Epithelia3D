@@ -1,4 +1,4 @@
-function [centroidsC, pixel, maskBW] = Centroid( photoPath,name )
+function [centroidsC, pixel, maskBW] = Centroid( photoPath, name)
 
 
 %%Load images
@@ -10,28 +10,21 @@ I=Img>80;  %Convert image to binary image, based on threshold
 BW2= bwareaopen(I,5);
 
 
-
 % D = bwdist(~BW2);
 % D = -D;
 % L = watershed(D);
 % L(~BW2) = 0;
 % maskBW=double(L);
 % imshow(maskBW)
-
-
  
 %%Dilatation
 se=strel('disk',2);
 BW2=imdilate(BW2,se);
 
-
-
-
 %%Calculate area of objects
 Area_ob = regionprops(BW2, 'area');
 Area_ob = cat(1, Area_ob.Area);
 area_mean=mean(Area_ob);
-
 
 %%Separation between cells according to size
 L=bwlabel(BW2,8);

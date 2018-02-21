@@ -32,6 +32,8 @@ for numFrame=initialFrame+1:maxFrame
     end
 end
 
+%It is stored in the variable 'finalCentroid', the ID of each cell, the coordinates where they appear and
+%the layer to which it belongs.
 for numLayer=1:size(LayerCentroid)
     for numCentroidLayer=1:size(LayerCentroid{numLayer,1})
         coord=[LayerCentroid{numLayer,1}(numCentroidLayer,2), LayerCentroid{numLayer,1}(numCentroidLayer,3), LayerCentroid{numLayer,1}(numCentroidLayer,1)];
@@ -59,7 +61,7 @@ end
 finalCentroid=sortrows(finalCentroid, 1);
 
 
-
+%Temporarily saved
 finalFileName=['trackingCentroids-Prueba-NOW' sprintf('%d',folderNumber) '.mat'];
 save(finalFileName, 'finalCentroid')
 
@@ -67,9 +69,11 @@ save(finalFileName, 'finalCentroid')
 [finalCentroidTracking] = finalTracking( finalCentroid, initialFrame, maxFrame, folderNumber);
 
 
-%Correct cells that only appear in a single frame
-[finalCentroid] = correctTracking(finalCentroid, folderNumber, maxFrame);
+%Correct cells that only appear in a single frame. REPLACED BY THE FUNCTION 'deleUniqueCentroids.m'
+%[finalCentroid] = correctTracking(finalCentroid, folderNumber, maxFrame);
 
+%Eliminates centroids from the centroids that only appear in a frame
+[finalCentroid] = deleteUniqueCentroids( finalCentroid );
 
 % Save the result to a .mat file
 finalFileName=['trackingCentroidPruebafinal' sprintf('%d',folderNumber) '.mat'];

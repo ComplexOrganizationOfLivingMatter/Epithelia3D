@@ -1,4 +1,5 @@
 function [fig]= display_labelled(fig, LayerCentroid)
+%DISPLAY_LABELLED This function is used to visualize the labels (IDs) of all the centroids (nuclei)
 
 delete(findall(fig, 'Type', 'Text'));
 

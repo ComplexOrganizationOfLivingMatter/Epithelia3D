@@ -1,3 +1,6 @@
+function [finalCentroid] = deleteUniqueCentroids( finalCentroid )
+%DELETEUNIQUECENTROIDS Eliminates centroids that only appear in a frame
+
 
 acum=1;
 [C,ia,ic] = unique(vertcat(finalCentroid{:,1}));
@@ -22,7 +25,7 @@ for numRep=1:size(numRepCell,1)
     end
 end
 
-%The cell of our final variable is deleted.
+%The cells of our final variable are deleted.
 numError=1;
 acum=1;
 for numCellT=1:size(finalCentroid,1)
@@ -47,4 +50,6 @@ finalCentroid=sortrows(finalCentroid,1);
 %Re-label the cells.
 for numRep=1:size(vertcat(finalCentroid{:,1}),1)
     finalCentroid{numRep,1} = ic(numRep);
+end
+
 end
