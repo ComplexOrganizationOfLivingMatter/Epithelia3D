@@ -31,7 +31,10 @@ function dataEnergy = getEnergyFromEdges( outerRoiProjection,innerRoiProjection,
     pairCellValidCells=pairCellValidCells(validPairs2,:);
        
     
-    
+    if sum(pairCellValidCells)==0
+        dataEnergy=[];
+        return
+    end
     
     %check if the 4 cells motif are preserved in inner
     preservedMotifsInInner=cell2mat(arrayfun(@(x,y,z,zz) (sum(ismember(neighsInner{x},[z,zz]))+sum(ismember(neighsInner{y},[z,zz])))==4,...
