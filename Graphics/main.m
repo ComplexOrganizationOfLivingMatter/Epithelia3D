@@ -1,4 +1,5 @@
 %Developed by Pablo Vicente-Munuera
+addpath('src');
 % close all
 % 
 % %Headers = Basal EdgeTransition, Apical EdgeTransition, Basal angle, Apical angle
@@ -163,75 +164,101 @@
 % mean(energyInfoTubMod(:, 3) - energyInfoTubMod(:, 4))
 
 % -------------------------------------------------------------------------------- %
-%% Salivary gland
-salivaryGlandTrans = readtable('D:\Pablo\Epithelia3D\Salivary Glands\docs\energyMeasurements_TotalEnergy_Transitions_SalivaryGland_20x_40x_60x_19_02_2018.xlsx');
-salivaryGlandNoTrans = readtable('D:\Pablo\Epithelia3D\Salivary Glands\docs\energyMeasurements_TotalEnergy_NoTransitions_SalivaryGland_20x_40x_60x_19_02_2018.xlsx');
+% %% Salivary gland
+% salivaryGlandTrans = readtable('D:\Pablo\Epithelia3D\Salivary Glands\docs\energyMeasurements_TotalEnergy_Transitions_SalivaryGland_20x_40x_60x_19_02_2018.xlsx');
+% salivaryGlandNoTrans = readtable('D:\Pablo\Epithelia3D\Salivary Glands\docs\energyMeasurements_TotalEnergy_NoTransitions_SalivaryGland_20x_40x_60x_19_02_2018.xlsx');
+% 
+% % randomIndicesTrans = randperm(size(salivaryGlandTrans, 1), 100);
+% % randomIndicesNoTrans = randperm(size(salivaryGlandNoTrans, 1), 100);
+% randomIndicesTrans = [6 65 110 97 28 54 47 82 73 62 12 101 91 36 61 85 24 126 102 31 35 69 41 42 45 19 8 70 9 80 123 66 105 33 100 39 15 71 37 53 23 11 46 16 5 106 68 1 113 27 14 92 83 49 25 115 127 60 86 81 109 58 89 104 55 57 124 51 90 3 125 122 95 107 21 29 64 43 10 119 52 108 18 128 7 96 72 44 98 74 117 17 20 13 4 34 26 75 50 2];
+% randomIndicesNoTrans = [513 204 290 422 373 84 13 78 139 279 331 613 443 604 34 392 589 166 581 551 119 447 107 64 191 211 241 171 189 431 566 53 167 356 493 465 619 22 396 501 39 213 152 254 180 565 76 127 520 361 231 206 374 423 421 550 27 243 6 402 445 321 14 5 559 114 464 203 259 62 437 586 612 200 268 239 387 625 4 44 253 427 608 345 199 483 137 36 394 415 485 413 509 288 514 523 620 450 477 494];
+% 
+% % [noTransDiffSummary, salivaryGlandNoTransEnergy] = getEnergyInfo(salivaryGlandNoTrans(randomIndicesNoTrans(1:100), :));
+% % [transDiffSummary, salivaryGlandTransEnergy] = getEnergyInfo(salivaryGlandTrans(randomIndicesTrans(1:100), :));
+% % [diffSummary, salivaryGlandEnergy] = getEnergyInfo(vertcat(salivaryGlandTrans(randomIndicesTrans(1:100), :), salivaryGlandNoTrans(randomIndicesNoTrans(1:100), :)));
+% [noTransDiffSummary, salivaryGlandNoTransEnergy] = getEnergyInfo(salivaryGlandNoTrans(randomIndicesNoTrans(1:31), :));
+% [transDiffSummary, salivaryGlandTransEnergy] = getEnergyInfo(salivaryGlandTrans(randomIndicesTrans(1:31), :));
+% [diffSummary, salivaryGlandEnergy] = getEnergyInfo(vertcat(salivaryGlandTrans(randomIndicesTrans(1:31), :), salivaryGlandNoTrans(randomIndicesNoTrans(1:31), :)));
 
-% randomIndicesTrans = randperm(size(salivaryGlandTrans, 1), 100);
-% randomIndicesNoTrans = randperm(size(salivaryGlandNoTrans, 1), 100);
-randomIndicesTrans = [6 65 110 97 28 54 47 82 73 62 12 101 91 36 61 85 24 126 102 31 35 69 41 42 45 19 8 70 9 80 123 66 105 33 100 39 15 71 37 53 23 11 46 16 5 106 68 1 113 27 14 92 83 49 25 115 127 60 86 81 109 58 89 104 55 57 124 51 90 3 125 122 95 107 21 29 64 43 10 119 52 108 18 128 7 96 72 44 98 74 117 17 20 13 4 34 26 75 50 2];
-randomIndicesNoTrans = [513 204 290 422 373 84 13 78 139 279 331 613 443 604 34 392 589 166 581 551 119 447 107 64 191 211 241 171 189 431 566 53 167 356 493 465 619 22 396 501 39 213 152 254 180 565 76 127 520 361 231 206 374 423 421 550 27 243 6 402 445 321 14 5 559 114 464 203 259 62 437 586 612 200 268 239 387 625 4 44 253 427 608 345 199 483 137 36 394 415 485 413 509 288 514 523 620 450 477 494];
-
-[noTransDiffSummary, salivaryGlandNoTransEnergy] = getEnergyInfo(salivaryGlandNoTrans(randomIndicesNoTrans(1:52), :));
-[transDiffSummary, salivaryGlandTransEnergy] = getEnergyInfo(salivaryGlandTrans(randomIndicesTrans(1:52), :));
-[diffSummary, salivaryGlandEnergy] = getEnergyInfo(vertcat(salivaryGlandTrans(randomIndicesTrans(1:52), :), salivaryGlandNoTrans(randomIndicesNoTrans(1:52), :)));
 
 ttestDifferences = @(x, y) ttest2(x(:, 1) - x(:, 2), y(:, 1) - y(:, 2));
-
-%ttestDifferences(salivaryGlandEnergy, vertexModelGlandEnergy)
-
-%% Egg chamber Stage 4
-eggChamberStage4Trans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage4_transitions_19_02_2018.xlsx');
-eggChamberStage4NoTrans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage4_noTransitions_19_02_2018.xlsx');
-
-maxSamples = 51;
-
-%randomIndicesNoTrans = randperm(size(eggChamberStage4NoTrans, 1), maxSamples);
-randomIndicesNoTrans = [72,58,34,16,67,49,65,21,47,8,36,73,25,81,20,75,35,52,79,51,62,69,22,57,9,80,43,55,3,39,38,76,78,74,13,12,61,31,19,59,7,29,11,30,5,60,71,2,18,37,40];
-
-[stage4NoTransSummary, stage4NoTransEnergy] = getEnergyInfo(eggChamberStage4NoTrans(randomIndicesNoTrans(1:maxSamples), :));
-[stage4TransSummary, stage4TransEnergy] = getEnergyInfo(eggChamberStage4Trans);
-
-[stage4Summary, stage4Energy] = getEnergyInfo(vertcat(eggChamberStage4Trans, eggChamberStage4NoTrans(randomIndicesNoTrans(1:maxSamples), :)));
-
-%% Egg chamber Stage 8
-eggChamberStage8Trans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage8_transitions_19_02_2018.xlsx');
-eggChamberStage8NoTrans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage8_noTransitions_19_02_2018.xlsx');
-
-maxSamples = size(eggChamberStage8Trans, 1);
-
-randomIndicesNoTrans = [6,28,21,11,17,13,29,38,34,5,44,3,19,25,45,49,43,20,46,1,41,22,55,52,58,14,51,12,9,18,4,54,2,48,27,59,32,16,47,24,42,35];
-%randomIndicesNoTrans = randperm(size(eggChamberStage8NoTrans, 1), maxSamples);
-
-[stage8NoTransSummary, stage8NoTransEnergy] = getEnergyInfo(eggChamberStage8NoTrans(randomIndicesNoTrans(1:maxSamples), :));
-[stage8TransSummary, stage8TransEnergy] = getEnergyInfo(eggChamberStage8Trans);
-
-[stage8Summary, stage8Energy] = getEnergyInfo(vertcat(eggChamberStage8Trans, eggChamberStage8NoTrans(randomIndicesNoTrans(1:maxSamples), :)));
+%ttestDifferencesReduction = @(x, y) ttest2(-x(:, 1) + x(:, 2), -y(:, 1) + y(:, 2));
+% 
+% %ttestDifferences(salivaryGlandEnergy, vertexModelGlandEnergy)
+% 
+% %% Egg chamber Stage 4
+% eggChamberStage4Trans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage4_transitions_19_02_2018.xlsx');
+% eggChamberStage4NoTrans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage4_noTransitions_19_02_2018.xlsx');
+% 
+% maxSamples = 51;
+% 
+% %randomIndicesNoTrans = randperm(size(eggChamberStage4NoTrans, 1), maxSamples);
+% randomIndicesNoTrans = [72,58,34,16,67,49,65,21,47,8,36,73,25,81,20,75,35,52,79,51,62,69,22,57,9,80,43,55,3,39,38,76,78,74,13,12,61,31,19,59,7,29,11,30,5,60,71,2,18,37,40];
+% 
+% [stage4NoTransSummary, stage4NoTransEnergy] = getEnergyInfo(eggChamberStage4NoTrans(randomIndicesNoTrans(1:maxSamples), :));
+% [stage4TransSummary, stage4TransEnergy] = getEnergyInfo(eggChamberStage4Trans);
+% 
+% [stage4Summary, stage4Energy] = getEnergyInfo(vertcat(eggChamberStage4Trans, eggChamberStage4NoTrans(randomIndicesNoTrans(1:maxSamples), :)));
+% 
+% %% Egg chamber Stage 8
+% eggChamberStage8Trans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage8_transitions_19_02_2018.xlsx');
+% eggChamberStage8NoTrans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage8_noTransitions_19_02_2018.xlsx');
+% 
+% maxSamples = size(eggChamberStage8Trans, 1);
+% 
+% randomIndicesNoTrans = [6,28,21,11,17,13,29,38,34,5,44,3,19,25,45,49,43,20,46,1,41,22,55,52,58,14,51,12,9,18,4,54,2,48,27,59,32,16,47,24,42,35];
+% %randomIndicesNoTrans = randperm(size(eggChamberStage8NoTrans, 1), maxSamples);
+% 
+% [stage8NoTransSummary, stage8NoTransEnergy] = getEnergyInfo(eggChamberStage8NoTrans(randomIndicesNoTrans(1:maxSamples), :));
+% [stage8TransSummary, stage8TransEnergy] = getEnergyInfo(eggChamberStage8Trans);
+% 
+% [stage8Summary, stage8Energy] = getEnergyInfo(vertcat(eggChamberStage8Trans, eggChamberStage8NoTrans(randomIndicesNoTrans(1:maxSamples), :)));
 
 %% Voronoi Model & All frusta Model
 % Same cells in apical in both models
 % Matching cells
-surfaceRatio = '5';
-voronoiModelNoTrans = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\voronoiModel\matchingMotifsBasalApical\noTransitions\filtering200dataRandom\noTransitionEdges_200seeds_surfaceRatio_', surfaceRatio, '_filter200measurements_16-Feb-2018.xls'));
-voronoiModelTrans = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\voronoiModel\matchingMotifsBasalApical\Transitions\filtering200dataRandom\transitionEdges_200seeds_surfaceRatio_', surfaceRatio, '_filter200measurements_16-Feb-2018.xls'));
-allFrustaModel = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\allFrusta\allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatio, '_13-Feb-2018.xls'));
-% voronoiModelNoTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\noTransitionEdges_200seeds_surfaceRatio_1.6667_filter200measurements_14-Feb-2018.xls');
+% surfaceRatio = '5';
+% voronoiModelNoTrans = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\voronoiModel\matchingMotifsBasalApical\noTransitions\filtering200dataRandom\noTransitionEdges_200seeds_surfaceRatio_', surfaceRatio, '_filter200measurements_16-Feb-2018.xls'));
+% voronoiModelTrans = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\voronoiModel\matchingMotifsBasalApical\Transitions\filtering200dataRandom\transitionEdges_200seeds_surfaceRatio_', surfaceRatio, '_filter200measurements_16-Feb-2018.xls'));
+% allFrustaModel = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\allFrusta\allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatio, '_13-Feb-2018.xls'));
+% % voronoiModelNoTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\noTransitionEdges_200seeds_surfaceRatio_1.6667_filter200measurements_14-Feb-2018.xls');
 % voronoiModelTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\transitionEdges_200seeds_surfaceRatio_1.6667_filter200measurements_14-Feb-2018.xls');
 % allFrustaModel = readtable('D:\Pablo\Epithelia3D\docs\Tables\tubularVertexModel_noTransitionEdges_200seeds_surfaceRatio_1.6667_13-Feb-2018.xls');
+
+% reduction
+surfaceRatio = '5';
+voronoiModelNoTrans = readtable(horzcat('D:\Pablo\Epithelia3D\docs\Tables\tubularModel_reduction_data_08_02_2018\noTransitionEdges_200seeds_surfaceRatio_', surfaceRatio, '_filter200measurements_20-Feb-2018.xls'));
+voronoiModelTrans = readtable(horzcat('D:\Pablo\Epithelia3D\docs\Tables\tubularModel_reduction_data_08_02_2018\transitionEdges_200seeds_surfaceRatio_', surfaceRatio,'_filter200measurements_20-Feb-2018.xls'));
+allFrustaModelApical = readtable(horzcat('D:\Pablo\Epithelia3D\docs\Tables\reductionAllMotifs\AllFrusta\allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatio,'_20-Feb-2018.xls'));
+allFrustaModelBasal = readtable(horzcat('D:\Pablo\Epithelia3D\docs\Tables\reductionAllMotifs\AllFrusta\allFrustaEnergy_200seeds_surfaceRatio_1_20-Feb-2018.xls'));
+
+%idsFilter = 1:2:200;
+idsFilter = 1:31;
+
+allFrustaModelApical.Properties.VariableNames(5:end-3) = cellfun(@(x) strcat('apical', x), allFrustaModelApical.Properties.VariableNames(5:end-3), 'UniformOutput', false);
+allFrustaModelBasal.Properties.VariableNames(5:end-3) = cellfun(@(x) strcat('basal', x), allFrustaModelBasal.Properties.VariableNames(5:end-3), 'UniformOutput', false);
+
+apicalIds = table2array(allFrustaModelApical(:, [1:4 12]));
+basalIds = table2array(allFrustaModelBasal(:, [1:4 12]));
+
+[~, correspondanceIdBasalApical] = ismember(basalIds, apicalIds, 'rows');
+
+allFrustaModel = horzcat(allFrustaModelApical(:, 1:end-3), allFrustaModelBasal(correspondanceIdBasalApical, 5:end));
 
 noTransIds = table2array(voronoiModelNoTrans);
 transIds = table2array(voronoiModelTrans);
 vertexModel_noTransIds = table2array(allFrustaModel);
 
-idsTubularModelTrans = transIds(:, [3:4 1:2 19]);
+%idsTubularModelTrans = transIds(:, [3:4 1:2 19]);
+idsTubularModelTrans = transIds(:, [1:4 19]);
 idsTubularModelNoTrans = noTransIds(:, [1:4 19]);
 idsVertexModel = vertexModel_noTransIds(:, [1:4 19]);
 
 [~, correspondanceIdNoTrans] = ismember(idsTubularModelNoTrans, idsVertexModel, 'rows');
 [~, correspondanceIdTrans] = ismember(idsTubularModelTrans, idsVertexModel, 'rows');
 
-correspondanceIdNoTrans = correspondanceIdNoTrans(1:52, :);
-correspondanceIdTrans = correspondanceIdTrans(1:52, :);
+correspondanceIdNoTrans = correspondanceIdNoTrans(idsFilter, :);
+correspondanceIdTrans = correspondanceIdTrans(idsFilter, :);
 
 energyInfoVertexModelAllColTrans = allFrustaModel( correspondanceIdTrans, :);
 energyInfoVertexModelAllColNoTrans = allFrustaModel(correspondanceIdNoTrans, :);
@@ -240,13 +267,16 @@ energyInfoVertexModelAllColNoTrans = allFrustaModel(correspondanceIdNoTrans, :);
 [frustaNoTransEnergyTable, energyInfoVertexModelNoTran] = getEnergyInfo(allFrustaModel(correspondanceIdNoTrans, :));
 [frustaTransEnergyTable, energyInfoVertexModelTran] = getEnergyInfo(allFrustaModel(correspondanceIdTrans, :));
 
-[voronoiNoTransEnergyTable, energyInfoTubModNoTrans] = getEnergyInfo(voronoiModelNoTrans(1:52, :));
-[voronoiTransEnergyTable, energyInfoTubModTrans] = getEnergyInfo(voronoiModelTrans(1:52, :));
-[voronoiModelEnergyTable, energyInfoTubMod] = getEnergyInfo(vertcat(voronoiModelTrans(1:52, :), voronoiModelNoTrans(1:52, :)));
+[voronoiNoTransEnergyTable, energyInfoTubModNoTrans] = getEnergyInfo(voronoiModelNoTrans(idsFilter, :));
+[voronoiTransEnergyTable, energyInfoTubModTrans] = getEnergyInfo(voronoiModelTrans(idsFilter, :));
+[voronoiModelEnergyTable, energyInfoTubMod] = getEnergyInfo(vertcat(voronoiModelTrans(idsFilter, :), voronoiModelNoTrans(idsFilter, :)));
 
 [~, pValue1] = ttestDifferences(energyInfoVertexModel, energyInfoTubMod);
-[~, pValue2] = ttestDifferences(salivaryGlandEnergy, energyInfoTubMod);
-[~, pValue3] = ttestDifferences(salivaryGlandEnergy, energyInfoVertexModel);
+[~, pValue2] = ttestDifferences(-salivaryGlandEnergy, energyInfoTubMod);
+[~, pValue3] = ttestDifferences(-salivaryGlandEnergy, energyInfoVertexModel);
+
+results =  horzcat( frustaEnergyTable,voronoiModelEnergyTable, frustaTransEnergyTable, frustaNoTransEnergyTable, voronoiTransEnergyTable, voronoiNoTransEnergyTable);
+pValueResults = vertcat(pValue1, pValue2, pValue3);
 
 % drawArrowBasalApical(energyInfoTubModNoTrans, 'Tubular Model - NoTransitions');
 % drawArrowBasalApical(energyInfoTubModTrans, 'Tubular Model - Transitions');
