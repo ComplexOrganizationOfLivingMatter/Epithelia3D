@@ -12,23 +12,25 @@ for numEllipsoid = 1:size(ellipsoidFiles, 1)
         disp(['NumEllipsoid: ' num2str(numEllipsoid)]);
         load(inputFile);
 
+        disp('Getting vertices 3D');
         %Get vertices info on the apical layer
         initialEllipsoid = getVertices3D( initialEllipsoid.img3DLayer, initialEllipsoid.neighbourhood, initialEllipsoid );
 
         initialEllipsoid.resolutionFactor = ellipsoidInfo.resolutionFactor;
         initialEllipsoid.resolutionEllipse = 500;
 
+        disp('Getting outter layer vertices');
         %New vertices on basal
         [ finalCentroidsAugmented] = getAugmentedCentroids( initialEllipsoid, vertcat(initialEllipsoid.verticesPerCell{:}), ellipsoidInfo.cellHeight);
 
         allFrustaImage = initialEllipsoid.img3DLayer;
 
-        colours = colorcube(size(centroids, 1));
+        colours = colorcube(size(initialEllipsoid.centroids, 1));
         outputFigure = figure;
 
         % Now we have to get the actual pixels from the faces of the cells
         for numCell = 1:size(initialEllipsoid.centroids, 1)
-            disp(['NumCell: ' num2str(numEllipsoid)]);
+            disp(['NumCell: ' num2str(numCell)]);
             indicesVerticesOfActualCell = find(any(ismember(initialEllipsoid.verticesConnectCells, numCell), 2));
 
             verticesConnectingCellsOfActualCell = initialEllipsoid.verticesConnectCells(indicesVerticesOfActualCell, :);
@@ -46,17 +48,18 @@ for numEllipsoid = 1:size(ellipsoidFiles, 1)
 
             [x, y, z] = findND(outputGrid == 1);
 
-            realPixels = unique(round(vertcat(gridCOx(x), gridCOy(y), gridCOz(z)))', 'rows');
+            realPixels = round(vertcat(gridCOx(x), gridCOy(y), gridCOz(z)))';
 
             %Paint the real pixels on the new image
             for numPixel = 1:size(realPixels, 1)
+                
                 allFrustaImage(realPixels(numPixel, 1), realPixels(numPixel, 2), realPixels(numPixel, 3)) = numCell;
             end
 
-            %Paint the cell to check if everything fits
-            cellFigure = alphaShape(realPixels(numPixel, 1), realPixels(numPixel, 2), realPixels(numPixel, 3), 500);
-            plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
-            hold on;
+%             %Paint the cell to check if everything fits
+%             cellFigure = alphaShape(realPixels(:, 1), realPixels(:, 2), realPixels(:, 3), 500);
+%             plot(cellFigure, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
+%             hold on;
         end
 
         %Save necessary info
@@ -65,7 +68,7 @@ for numEllipsoid = 1:size(ellipsoidFiles, 1)
         outputFileDirectory = strjoin(outputFile(1:end-1), '\');
         mkdir(outputFileDirectory)
 
-        savefig(strcat(outputFileDirectory, '\frustaEllipsoidModel_OutterLayer_', date, '.fig'));
+        %savefig(strcat(outputFileDirectory, '\frustaEllipsoidModel_OutterLayer_', date, '.fig'));
 
         save(strcat(outputFileDirectory, '\frustaEllipsoidModel_', date'), 'allFrustaImage');
 
