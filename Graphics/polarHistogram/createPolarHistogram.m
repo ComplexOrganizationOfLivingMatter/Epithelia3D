@@ -13,9 +13,13 @@ ax.RLimMode='manual';
 ax.GridAlpha=1;
 ax.LineWidth=1;
 ax.FontSize=30;
-ax.RLim=[0,0.7];
+ax.RLim=[0,0.8];
 ax.FontName='Helvetica-Narrow';
 title(titleFig, 'FontSize', 16);
 
+
+print(['results\polarHistogram_' strrep(titleFig,' ','') '_' date],'-dtiff','-r300')
+
+close
 end
 

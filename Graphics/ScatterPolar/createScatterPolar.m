@@ -27,5 +27,7 @@ function createScatterPolar( angleTran,lengthTran,angleNoTran,lengthNoTran,title
 
     title(titleFig, 'FontSize', 16);
 
+    print(['results\scatterPolar_' strrep(titleFig,' ','') '_' date],'-dtiff','-r300')
+
 end
 
