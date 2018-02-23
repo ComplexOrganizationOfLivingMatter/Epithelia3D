@@ -60,7 +60,7 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
 
     %savefig(strcat(outputFileDirectory, '\frustaEllipsoidModel_OutterLayer_', date, '.fig'));
 
-    save(strcat(outputFileDirectory, '\frustaEllipsoidModel_', date'), 'allFrustaImage');
+    save(strcat(outputFileDirectory, '\frustaEllipsoidModel_', date, '.mat'), 'allFrustaImage');
 
     %close outputFigure
 
