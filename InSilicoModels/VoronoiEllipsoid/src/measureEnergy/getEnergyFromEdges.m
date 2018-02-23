@@ -1,4 +1,4 @@
-function dataEnergy = getEnergyFromEdges( outerRoiProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCells,pairCell,flag)
+function [dataEnergy,numberOfValidMotifs] = getEnergyFromEdges( outerRoiProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCells,pairCell,flag)
 
 
     [~,W_outer]=size(outerRoiProjection);
@@ -33,7 +33,10 @@ function dataEnergy = getEnergyFromEdges( outerRoiProjection,innerRoiProjection,
     
     if sum(pairCellValidCells)==0
         dataEnergy=[];
+        numberOfValidMotifs=0;
         return
+    else
+        numberOfValidMotifs=length(validPairs2);
     end
     
     %check if the 4 cells motif are preserved in inner

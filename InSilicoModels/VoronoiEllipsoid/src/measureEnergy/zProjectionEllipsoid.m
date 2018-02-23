@@ -1,35 +1,40 @@
-function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsOuterWater ] = zProjectionEllipsoid( img3dLayerOuter,img3dLayerInner)
+function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsOuterWater ] = zProjectionEllipsoid( img3dLayerOuter,initialEllipsoid)
 
     
+    img3dLayerInner=initialEllipsoid.img3DLayer;
     
+    centerEllipsoidY=round(initialEllipsoid.yRadius*initialEllipsoid.resolutionEllipse);
+    centerEllipsoidZ=round(initialEllipsoid.zRadius*initialEllipsoid.resolutionEllipse);
     
     [~,W,c]=size(img3dLayerOuter);
     
     %% Dividing the 3d image in half along the X axis
     
     %first half along Y axis
-    halfEllipsoidOuterYfirst=img3dLayerOuter(:,1:round(W/2),:);
-    halfEllipsoidInnerYfirst=img3dLayerInner(:,1:round(W/2),:);
+    halfEllipsoidOuterYfirst=img3dLayerOuter(:,(end-centerEllipsoidY):end,:);
+    halfEllipsoidInnerYfirst=img3dLayerInner(:,(end-centerEllipsoidY):end,:);
     halfEllipsoidOuterYfirstPerm=permute(halfEllipsoidOuterYfirst,[1,3,2]);
     halfEllipsoidInnerYfirstPerm=permute(halfEllipsoidInnerYfirst,[1,3,2]);
-    orderProjYfirst=round(W/2):-1:1;
+    orderProjYfirst=size(halfEllipsoidOuterYfirstPerm,3):-1:1;
         
     %second half along Y axis
-    halfEllipsoidOuterYsecond=img3dLayerOuter(:,round(W/2):end,:);
-    halfEllipsoidInnerYsecond=img3dLayerInner(:,round(W/2):end,:);
+    halfEllipsoidOuterYsecond=img3dLayerOuter(:,1:(end-centerEllipsoidY),:);
+    halfEllipsoidInnerYsecond=img3dLayerInner(:,1:(end-centerEllipsoidY),:);
     halfEllipsoidOuterYsecondPerm=permute(halfEllipsoidOuterYsecond,[1,3,2]);
     halfEllipsoidInnerYsecondPerm=permute(halfEllipsoidInnerYsecond,[1,3,2]);
-    orderProjYsecond=1:round(W/2);
+    %orderProjYsecond=1:centerEllipsoidY;
+    orderProjYsecond=1:size(halfEllipsoidInnerYsecondPerm,3);
     
     %first half along Z axis
-    halfEllipsoidOuterZfirst=img3dLayerOuter(:,:,1:round(c/2));
-    halfEllipsoidInnerZfirst=img3dLayerInner(:,:,1:round(c/2));
-    orderProjZfirst=round(c/2):-1:1;
+    halfEllipsoidOuterZfirst=img3dLayerOuter(:,:,(end-centerEllipsoidZ):end);
+    halfEllipsoidInnerZfirst=img3dLayerInner(:,:,(end-centerEllipsoidZ):end);
+    orderProjZfirst=centerEllipsoidZ:-1:1;
 
     %second half along Z axis
-    halfEllipsoidOuterZsecond=img3dLayerOuter(:,:,round(c/2):end);
-    halfEllipsoidInnerZsecond=img3dLayerInner(:,:,round(c/2):end);
-    orderProjZsecond=1:round(c/2);            
+    halfEllipsoidOuterZsecond=img3dLayerOuter(:,:,1:(end-centerEllipsoidZ));
+    halfEllipsoidInnerZsecond=img3dLayerInner(:,:,1:(end-centerEllipsoidZ));
+    orderProjZsecond=1:size(halfEllipsoidInnerZsecond,3);
+              
    
     %storing half
     orderIt={orderProjYfirst,orderProjYsecond,orderProjZfirst,orderProjZsecond};

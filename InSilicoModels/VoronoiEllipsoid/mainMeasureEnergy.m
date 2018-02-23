@@ -17,7 +17,7 @@ filePaths={filePathStage8,filePathStage4,filePathSphere};
 
 
 
-for nPath=2%length(filePaths)
+for nPath=1:length(filePaths)
     
     tableTransitionEnergy=table();
     tableNoTransitionEnergyFilterRandom=table();
@@ -36,14 +36,14 @@ for nPath=2%length(filePaths)
             load([filePaths{nPath} 'random_' num2str(nRand) '\' ellipsoidPath.name],'ellipsoidInfo','initialEllipsoid','tableDataAnglesTransitionsEdgesOuter','tableDataAnglesNoTransitionsEdgesOuter')
 
 
-            if exist([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'file')
+%             if exist([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'file')
                load([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
-            else
-                %getting 4 projections from 3d ellipsoid
-                [projectionsInner,projectionsOuter,projectionsInnerWater,projectionsOuterWater]=zProjectionEllipsoid( ellipsoidInfo.img3DLayer,initialEllipsoid.img3DLayer);
-                save([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
-
-            end
+%             else
+%                 %getting 4 projections from 3d ellipsoid
+%                 [projectionsInner,projectionsOuter,projectionsInnerWater,projectionsOuterWater]=zProjectionEllipsoid( ellipsoidInfo.img3DLayer,initialEllipsoid);
+%                 save([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
+% 
+%             end
 
 
             %loading mask central cells in projection
@@ -80,9 +80,13 @@ for nPath=2%length(filePaths)
                 for j=1:2
                     if ~isempty(totalEdges{j});
 
-                        dataEnergy = getEnergyFromEdges( outerRoiProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCellsOuter,totalEdges{j},labelEdges{j});
+                        [dataEnergy,numberOfValidMotifs] = getEnergyFromEdges( outerRoiProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCellsOuter,totalEdges{j},labelEdges{j});
 
                         if ~isempty(dataEnergy)
+                            
+                            if strcmp(labelEdges{j},'transition')
+                                numberOfValidMotifsTransition=numberOfValidMotifs;
+                            end
 
                             dataEnergy.nRand=nRand*ones(size(dataEnergy.outerH1,1),1);
                             %filtering no transition data for each transition  
@@ -93,10 +97,10 @@ for nPath=2%length(filePaths)
                             if strcmp(labelEdges{j},'transition')
                                 tableTransitionEnergy=[tableTransitionEnergy;sumTableEnergy];
                             else
-                                if ~isempty(totalEdges{1}) && ~isempty(sumTableEnergy)
+                                if ~isempty(totalEdges{1}) && ~isempty(sumTableEnergy) && ~isempty(sumTableEnergy) && numberOfValidMotifsTransition>0
                                     %same number of no transitions than transitions
                                     pos = randperm(size(sumTableEnergy,1));
-                                    pos = pos(1:size(pairTransitions,1));
+                                    pos = pos(1:numberOfValidMotifsTransition);
                                     tableNoTransitionEnergyFilterRandom=[tableNoTransitionEnergyFilterRandom;sumTableEnergy(pos,:)];
                                 end
                                 tableNoTransitionEnergyTotal=[tableNoTransitionEnergyTotal;sumTableEnergy];
