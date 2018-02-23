@@ -23,10 +23,8 @@ function createScatterPolar( angleTran,lengthTran,angleNoTran,lengthNoTran,title
     %polarscatter(deg2rad(angleWT_tran),lengthEdge_Tran,50,'o','MarkerEdgeColor',[20 156 0]/255,'LineWidth',2);
     polarscatter(deg2rad(angleTran),lengthTran,50,'o','MarkerFaceColor',[102 204 204]/255,'MarkerEdgeColor',[0,0,0]);
     
-    pause;
-
     title(titleFig, 'FontSize', 16);
-
+    pause;
     print(['results\scatterPolar_' strrep(titleFig,' ','') '_' date],'-dtiff','-r300')
 
 end
