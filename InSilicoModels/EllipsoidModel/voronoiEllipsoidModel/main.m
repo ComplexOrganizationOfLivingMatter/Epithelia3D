@@ -4,15 +4,14 @@ addpath(genpath('lib'));
 % X should be the greater number. Z should be the axis with the greater
 % curvature.
 allCombinations = {
-      1.5 1 1 [2] 'Ball' 200
-%     1.5 1 1 [0.5, 1, 2] 'Ball' 200
+	1.5 1 1 [0.5, 1, 2] 'Ball' 200
     2 1 1 [0.5, 1, 2] 'Rugby' 200
     1 1 1 [0.5, 1, 2] 'Sphere' 200
 %    36-5.369186755	29.59784615-5.369186755 29.59784615-5.369186755	5.369186755 'Stage 4' 200
 %    97.46-6.145760671 48.32738462-6.145760671 48.32738462-6.145760671 6.145760671 'Stage 8' 450
     };
 
-maxRandoms = 1;
+maxRandoms = 1:3;
 delete(gcp);
 parpool(3);
 
@@ -25,7 +24,7 @@ for numCombination = 1:size(allCombinations, 1)
     
     randomizationsInfo = cell(max(maxRandoms), 1);
     
-    for numRandomization = maxRandoms %%parfor
+    parfor numRandomization = maxRandoms %%parfor
         
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};
@@ -44,7 +43,8 @@ for numCombination = 1:size(allCombinations, 1)
             radiusY = radiusInModelY;
         end
         
-        randomEllipsoidInfo = voronoi3DEllipsoid([radiusX+max(hCell)+0.5 radiusY+max(hCell)+0.5 radiusZ+max(hCell)+0.5], [radiusX radiusY radiusZ], numCells, outputDirActual, hCell);
+        %randomEllipsoidInfo = voronoi3DEllipsoid([radiusX+max(hCell)+0.5 radiusY+max(hCell)+0.5 radiusZ+max(hCell)+0.5], [radiusX radiusY radiusZ], numCells, outputDirActual, hCell);
+        randomEllipsoidInfo = voronoi3DEllipsoid([radiusX+max(hCell)+0.001 radiusY+max(hCell)+0.001 radiusZ+max(hCell)+0.001], [radiusX radiusY radiusZ], numCells, outputDirActual, hCell);
         
         randomizationsInfo(numRandomization) = {randomEllipsoidInfo};
         
