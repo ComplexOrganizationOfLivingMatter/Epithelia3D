@@ -13,7 +13,7 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition]=classifyEdgeD
             %outerSurfaceDataTransition
             outerSurfaceDataTransition(:,i).cellularMotifs=uniquePairOfNeighsOuterSurface(indexesEdgesTransition(:,i),:);
             outerSurfaceDataTransition(:,i).(['numOfScutoids' region])=numUniqueScutoid(i);
-            outerSurfaceDataTransition(:,i).(['numOfScutoids' region])=numUniqueScutoid(i) / numCells(i);
+            outerSurfaceDataTransition(:,i).(['numOfScutoidsPerCell' region])=numUniqueScutoid(i) / numCells(i);
             outerSurfaceDataTransition(:,i).(['numOfEdges' region])=size(outerSurfaceDataTransition(:,i).edgeAngle,1);
             outerSurfaceDataTransition(:,i).(['numOfEdgesPerCell' region])=outerSurfaceDataTransition(:,i).(['numOfEdges' region])/numCells(i);
             
@@ -35,7 +35,7 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition]=classifyEdgeD
             outerSurfaceDataTransition(:,i).edgeVertices=NaN;
             outerSurfaceDataTransition(:,i).cellularMotifs=NaN;
             outerSurfaceDataTransition(:,i).(['numOfScutoids' region])=numUniqueScutoid(i);
-            outerSurfaceDataTransition(:,i).(['numOfScutoids' region])=numUniqueScutoid(i) / numCells(i);
+            outerSurfaceDataTransition(:,i).(['numOfScutoidsPerCell' region])=numUniqueScutoid(i) / numCells(i);
             outerSurfaceDataTransition(:,i).(['numOfEdges' region])=NaN;
             outerSurfaceDataTransition(:,i).(['numOfEdgesPerCell' region])=NaN;
             outerSurfaceDataTransition(:,i).(['proportionAnglesLess15deg' region])=NaN;

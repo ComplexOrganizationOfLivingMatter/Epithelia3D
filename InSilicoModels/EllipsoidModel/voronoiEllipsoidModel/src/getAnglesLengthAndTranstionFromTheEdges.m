@@ -82,7 +82,7 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
         scutoidCells(numEdge) = {actualScutoidCells};
     end
     
-    uniqueScutoidsCells = unique(vertcat(scutoidCells{:}));
+    uniqueScutoidsCells = unique(horzcat(scutoidCells{:}));
     
     %classify data per zone
     endLimitRight=((outerEllipsoidInfo.xCenter+(outerEllipsoidInfo.xRadius)*outerEllipsoidInfo.bordersSituatedAt)*resolutionFactor);   
