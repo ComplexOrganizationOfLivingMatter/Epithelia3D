@@ -65,6 +65,7 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
 
     
     %get edges of transitions
+    
     Lossing=cellfun(@(x,y) setdiff(x,y),outerEllipsoidInfo.neighbourhood,innerEllipsoidInfo.neighbourhood,'UniformOutput',false);
     noValidPair=cellfun(@(x,y) size(setdiff(y,x), 1) ~= size(setdiff(x,y), 1),outerEllipsoidInfo.neighbourhood,innerEllipsoidInfo.neighbourhood);
     
@@ -75,7 +76,13 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
     pairOfLostNeigh=unique([min(pairOfLostNeigh,[],2),max(pairOfLostNeigh,[],2)],'rows');
     indexesPairCellsTransition=ismember(uniquePairOfNeighsOuterSurface,pairOfLostNeigh,'rows');
     
+    scutoidCells = cell(size(pairOfLostNeigh, 1), 1);
+    for numEdge = 1:size(pairOfLostNeigh, 1)
+        actualScutoidCells = horzcat(pairOfLostNeigh(numEdge, :), intersect(outerEllipsoidInfo.neighbourhood{pairOfLostNeigh(numEdge, 1)}, innerEllipsoidInfo.neighbourhood{pairOfLostNeigh(numEdge, 2)})');
+        scutoidCells(numEdge) = {actualScutoidCells};
+    end
     
+    uniqueScutoidsCells = unique(vertcat(scutoidCells{:}));
     
     %classify data per zone
     endLimitRight=((outerEllipsoidInfo.xCenter+(outerEllipsoidInfo.xRadius)*outerEllipsoidInfo.bordersSituatedAt)*resolutionFactor);   
@@ -95,6 +102,9 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
     numCellsAtXBorderRight=zeros(length(endLimitRight),1);
     numCellsAtXBorderLeft=zeros(length(endLimitRight),1);
     numCellsAtXCentral=zeros(length(endLimitRight),1);
+    scutoidsAtXBorderRight=zeros(length(endLimitRight),1);
+    scutoidsAtXBorderLeft=zeros(length(endLimitRight),1);
+    scutoidsAtXCentral=zeros(length(endLimitRight),1);
    
     
     for i=1:length(endLimitRight)
@@ -109,14 +119,18 @@ function [outerSurfaceDataTransition,outerSurfaceDataNoTransition] = getAnglesLe
         numCellsAtXBorderRight(i) = sum(outerEllipsoidInfo.centroids(:, 1)*centroidsRefactor > endLimitRight(i));
         numCellsAtXBorderLeft(i) = sum(outerEllipsoidInfo.centroids(:, 1)*centroidsRefactor < endLimitLeft(i));
         numCellsAtXCentral(i) = numberOfTotalCell - numCellsAtXBorderRight(i) - numCellsAtXBorderLeft(i);
+        
+        scutoidsAtXBorderRight(i) = sum(outerEllipsoidInfo.centroids(uniqueScutoidsCells, 1)*centroidsRefactor > endLimitRight(i));
+        scutoidsAtXBorderLeft(i) = sum(outerEllipsoidInfo.centroids(uniqueScutoidsCells, 1)*centroidsRefactor < endLimitLeft(i));
+        scutoidsAtXCentral(i) = (length(uniqueScutoidsCells) - scutoidsAtXBorderRight(i) - scutoidsAtXBorderLeft(i));
 
     end
     
     
     %organize transitions per region
-    [outerSurfaceDataTransition.TotalRegion,outerSurfaceDataNoTransition.TotalRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(indexesPairCellsTransition),logical(1-indexesPairCellsTransition),numberOfTotalCell,'Total');
-    [outerSurfaceDataTransition.RightRegion,outerSurfaceDataNoTransition.RightRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isRightEdgeTransition),logical(isRightEdgeNoTransition),numCellsAtXBorderRight,'Right');
-    [outerSurfaceDataTransition.LeftRegion,outerSurfaceDataNoTransition.LeftRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isLeftEdgeTransition),logical(isLeftEdgeNoTransition),numCellsAtXBorderLeft,'Left');
-    [outerSurfaceDataTransition.CentralRegion,outerSurfaceDataNoTransition.CentralRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isCentralEdgeTransition),logical(isCentralEdgeNoTransition),numCellsAtXCentral,'Central');               
+    [outerSurfaceDataTransition.TotalRegion,outerSurfaceDataNoTransition.TotalRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(indexesPairCellsTransition),logical(1-indexesPairCellsTransition),numberOfTotalCell, length(uniqueScutoidsCells),'Total');
+    [outerSurfaceDataTransition.RightRegion,outerSurfaceDataNoTransition.RightRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isRightEdgeTransition),logical(isRightEdgeNoTransition),numCellsAtXBorderRight,scutoidsAtXBorderRight,'Right');
+    [outerSurfaceDataTransition.LeftRegion,outerSurfaceDataNoTransition.LeftRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isLeftEdgeTransition),logical(isLeftEdgeNoTransition),numCellsAtXBorderLeft, scutoidsAtXBorderLeft,'Left');
+    [outerSurfaceDataTransition.CentralRegion,outerSurfaceDataNoTransition.CentralRegion]=classifyEdgeDataPerZone(uniquePairOfNeighsOuterSurface,outerSurfaceTotalData,logical(isCentralEdgeTransition),logical(isCentralEdgeNoTransition),numCellsAtXCentral, scutoidsAtXCentral,'Central');               
         
 end
