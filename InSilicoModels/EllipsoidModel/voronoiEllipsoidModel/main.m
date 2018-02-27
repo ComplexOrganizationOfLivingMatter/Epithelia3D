@@ -4,16 +4,17 @@ addpath(genpath('lib'));
 % X should be the greater number. Z should be the axis with the greater
 % curvature.
 allCombinations = {
-%     15 10 10 [15, 20, 30] 'Zepellin'
-%    10 15 15 [15, 20, 30] 'FilledDonnut'
-    10 10 10 2 'Sphere' 200
-    97.46-6.145760671 48.32738462-6.145760671 48.32738462-6.145760671 6.145760671 'Stage 8' 450
-    36-5.369186755	29.59784615-5.369186755 29.59784615-5.369186755	5.369186755 'Stage 4' 200
+      1.5 1 1 [2] 'Ball' 200
+%     1.5 1 1 [0.5, 1, 2] 'Ball' 200
+    2 1 1 [0.5, 1, 2] 'Rugby' 200
+    1 1 1 [0.5, 1, 2] 'Sphere' 200
+%    36-5.369186755	29.59784615-5.369186755 29.59784615-5.369186755	5.369186755 'Stage 4' 200
+%    97.46-6.145760671 48.32738462-6.145760671 48.32738462-6.145760671 6.145760671 'Stage 8' 450
     };
 
-maxRandoms = 11:30;
+maxRandoms = 1;
 delete(gcp);
-parpool(5);
+parpool(3);
 
 for numCombination = 1:size(allCombinations, 1)
     
@@ -24,7 +25,7 @@ for numCombination = 1:size(allCombinations, 1)
     
     randomizationsInfo = cell(max(maxRandoms), 1);
     
-    parfor numRandomization = maxRandoms %%parfor
+    for numRandomization = maxRandoms %%parfor
         
         radiusX = allCombinations{numCombination, 1};
         radiusY = allCombinations{numCombination, 2};

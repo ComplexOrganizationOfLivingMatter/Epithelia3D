@@ -1,8 +1,10 @@
-function [ output_args ] = drawArrowBasalApical( data, titleName )
+function [ ] = drawArrowBasalApical( data, titleName )
 %DRAWARROWBASALAPICAL Summary of this function goes here
 %   Detailed explanation goes here
 
 h = figure;
+
+data = horzcat(data(:, 3:4), data(:, 1:2));
 
 drawArrow = @(x,y,varargin) quiver( x(1),y(1),x(2)-x(1),y(2)-y(1), 0, varargin{:});
 for numRow = 1:size(data, 1)
@@ -14,16 +16,21 @@ for numRow = 1:size(data, 1)
     
 end
 title(titleName);
-xlabel('Edge Length');
-ylabel('Angle');
+%xlabel('Edge Length');
+% ylabel('Angle');
+xlabel('Aspect ratio');
+ylabel('Energy');
 newxLim = xlim;
 newxLim(1) = 0;
+newxLim(2) = 6;
 set(gca, 'xlim', newxLim);
 
 newyLim = ylim;
 newyLim(1) = 0;
-newyLim(2) = 90;
+newyLim(2) = 1.2;
 set(gca, 'ylim', newyLim);
+
+legend('basal', 'apical')
 
 end
 
