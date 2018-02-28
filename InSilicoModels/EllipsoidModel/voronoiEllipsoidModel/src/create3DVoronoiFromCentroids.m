@@ -7,13 +7,13 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     % we are simplifying it. This is done to avoid that.
     ellipsoidInfo.resolutionFactor = 300; %300 is fair
 
-    centroids = round(centroids * ellipsoidInfo.resolutionFactor) + 2;
-    augmentedCentroids = round(augmentedCentroids * ellipsoidInfo.resolutionFactor) + 2;
+    centroids = round(centroids * ellipsoidInfo.resolutionFactor) + 1;
+    augmentedCentroids = round(augmentedCentroids * ellipsoidInfo.resolutionFactor) + 1;
     
     % We've try to do the 3D matrix sparse... but only exists 2D sparse
     % matrices. The implemented methods for the N-D sparse matrix are weak
     % and not sufficient (ndSparse).
-    img3D = zeros(max(augmentedCentroids)+1, 'uint8');
+    img3D = zeros(round(max(augmentedCentroids)) + ((ellipsoidInfo.resolutionFactor)/10), 'uint8');
 
     %%img3D = ndSparse.build(max(augmentedCentroids)+1);
     
