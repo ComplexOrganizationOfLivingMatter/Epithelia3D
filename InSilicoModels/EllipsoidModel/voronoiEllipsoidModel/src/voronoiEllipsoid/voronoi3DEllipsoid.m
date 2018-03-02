@@ -91,7 +91,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         close
         disp('Random voronoi created')
         
-        initialEllipsoid.neighbourhood = [];
+        initialEllipsoid.surfaceIndices = [];
         
         % Get all the pixels of the image
         [allXs, allYs, allZs] = findND(img3DLabelled > 0);
@@ -130,6 +130,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             ellipsoidInfo.cellArea = calculate_volumeOrArea(img3DOutterLayer);
             ellipsoidInfo.cellVolume = calculate_volumeOrArea(img3DLabelled);
             if isempty(initialEllipsoid.neighbourhood)
+            if isempty(initialEllipsoid.surfaceIndices)
                 disp('Getting info of vertices and neighbours: inner layer');
                 
                 img3DInnerLayer = zeros(size(img3DLabelled), 'uint16');
