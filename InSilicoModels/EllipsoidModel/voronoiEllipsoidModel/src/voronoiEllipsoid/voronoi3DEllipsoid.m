@@ -110,6 +110,9 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
         
         for cellHeight = hCellsPredefined
             cellHeight
+            ellipsoidInfo.xRadius = initialEllipsoid.xRadius;
+            ellipsoidInfo.yRadius = initialEllipsoid.yRadius;
+            ellipsoidInfo.zRadius = initialEllipsoid.zRadius;
             ellipsoidInfo.cellHeight = cellHeight;
             
             [ validPxs, innerLayerPxs, outerLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
