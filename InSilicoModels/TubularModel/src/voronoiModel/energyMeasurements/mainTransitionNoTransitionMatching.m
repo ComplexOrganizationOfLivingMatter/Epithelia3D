@@ -64,6 +64,7 @@ for nSeeds=numSeeds
             transitionEdges=cellfun(@(x,y) setdiff(x,y),neighs_basal,neighs_apical,'UniformOutput',false);
             noTransitionEdges=cellfun(@(x,y) intersect(x,y),neighs_basal,neighs_apical,'UniformOutput',false);
 
+            
             totalEdges={transitionEdges,noTransitionEdges};
             labelEdges={'transition','noTransition'};
             for k=1:2

@@ -1,6 +1,6 @@
 
 % clear all
-% close all
+close all
 
 addpath('src\measureEnergy')
 addpath lib
@@ -9,101 +9,112 @@ addpath ('lib\energy')
 filePathStage8='results\Stage 8\';
 filePathStage4='results\Stage 4\';
 filePathSphere='results\Sphere\';
+filePathGlobe='results\Globe\';
+filePathRugby='results\Rugby\';
 
-filePaths={filePathStage8,filePathStage4,filePathSphere};
+filePaths={filePathStage8,filePathStage4,filePathGlobe,filePathRugby,filePathSphere};
     
-
-
-
-
-
-for nPath=1:length(filePaths)
+for nPath=1:2%length(filePaths)
     
-    tableTransitionEnergy=table();
-    tableNoTransitionEnergyFilterRandom=table();
-    tableNoTransitionEnergyTotal=table();
+    
     
     if nPath==1
        numRandoms=30;
-    else
+       nCellHeight=1;
+    else if nPath==2
        numRandoms=180; 
+       nCellHeight=1;
+        else
+            numRandoms=3;
+            nCellHeight=3;
+        end
     end
-    
-    for nRand=1:numRandoms
-         try
+  
             
+    for cellHeight=1:nCellHeight
+
+        tableTransitionEnergy=table();
+        tableTransitionEnergyNonPreservedMotifs=table();
+        tableNoTransitionEnergyFilterRandom=table();
+        tableNoTransitionEnergyTotal=table();
+        tableNoTransitionEnergyTotalNonPreservedMotifs=table();
+        
+
+        for nRand=1:numRandoms
+
+%             try
             ellipsoidPath=dir([filePaths{nPath} 'random_' num2str(nRand) '\ellipsoid*' ]);
-            load([filePaths{nPath} 'random_' num2str(nRand) '\' ellipsoidPath.name],'ellipsoidInfo','initialEllipsoid','tableDataAnglesTransitionsEdgesOuter','tableDataAnglesNoTransitionsEdgesOuter')
+            %if projectins are just created...load, else run the
+            %zProjections program
 
+            splittedPath=strsplit(ellipsoidPath(cellHeight).name,'_');
+            splittedCellHeight=splittedPath{end};
 
-%             if exist([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'file')
-               load([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
-%             else
-%                 %getting 4 projections from 3d ellipsoid
-%                 [projectionsInner,projectionsOuter,projectionsInnerWater,projectionsOuterWater]=zProjectionEllipsoid( ellipsoidInfo.img3DLayer,initialEllipsoid);
-%                 save([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
-% 
-%             end
+            if exist([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'file') || exist([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'file')
+                if nCellHeight>1
+                    
+                    load([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')
+                else
+                    load([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
+                end
+            else
+                load([filePaths{nPath} 'random_' num2str(nRand) '\' ellipsoidPath(cellHeight).name],'ellipsoidInfo','initialEllipsoid')
+                %getting 4 projections from 3d ellipsoid
+                [projectionsInner,projectionsOuter,projectionsInnerWater,projectionsOuterWater]=zProjectionEllipsoid( ellipsoidInfo,initialEllipsoid);
+                if nCellHeight>1
+                    save([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')
+                else
+                    save([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
+                end
 
+            end
 
             %loading mask central cells in projection
-            maskRoi=1-im2bw(imread([filePaths{nPath} 'mask.tif']));
-
-
+            maskRoiInner=1-im2bw(imread([filePaths{nPath} 'maskInner.tif']));
             for i=1:length(projectionsInnerWater)
 
-                % Calculation valid cells
-                se=strel('disk',4);
-                outerRoiProjection=maskRoi(1:size(projectionsOuterWater{i},1),1:size(projectionsOuterWater{i},2)).*projectionsOuterWater{i};
-                innerRoiProjection=maskRoi(1:size(projectionsOuterWater{i},1),1:size(projectionsOuterWater{i},2)).*projectionsInnerWater{i};
-                noValidCellsOuter=unique(imdilate((1-maskRoi(1:size(projectionsOuterWater{i},1),1:size(projectionsOuterWater{i},2))),se).*outerRoiProjection);
-                validCellsOuter=setdiff(unique(outerRoiProjection),noValidCellsOuter);
-                noValidCellsInner=setdiff(unique(innerRoiProjection),validCellsOuter);
-
-
-                % Calculation neighbours
-                [neighsOuter,~]=calculateNeighbours(outerRoiProjection);
-                [neighsInner,~]=calculateNeighbours(innerRoiProjection);
-
-                % Getting edges transition and no transition
-                pairTransitions=tableDataAnglesTransitionsEdgesOuter.TotalRegion.cellularMotifs;
-                pairNoTransitions=tableDataAnglesNoTransitionsEdgesOuter.TotalRegion.cellularMotifs;
-
-                pairTransitions=pairTransitions(sum(ismember(pairTransitions,validCellsOuter),2)==2,:);
-                pairNoTransitions=pairNoTransitions(sum(ismember(pairNoTransitions,validCellsOuter),2)==2,:);
-
-
-                totalEdges={pairTransitions,pairNoTransitions};
-                labelEdges={'transition','noTransition'};
+                %function for getting inner roi, edges, neighbours and valid cells
+                [innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,totalEdges,labelEdges]= checkingParametersFromRoi(maskRoiInner,projectionsInnerWater{i},projectionsOuterWater{i});
 
                 % Calculate energy if there is any transition
                 for j=1:2
                     if ~isempty(totalEdges{j});
 
-                        [dataEnergy,numberOfValidMotifs] = getEnergyFromEdges( outerRoiProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCellsOuter,totalEdges{j},labelEdges{j});
+                        [dataEnergy,dataEnergyOuterNonPreservedMotifs,numberOfValidMotifs] = getEnergyFromEdges( projectionsOuterWater{i},innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,totalEdges{j},labelEdges{j});
 
                         if ~isempty(dataEnergy)
-                            
+
                             if strcmp(labelEdges{j},'transition')
                                 numberOfValidMotifsTransition=numberOfValidMotifs;
                             end
 
                             dataEnergy.nRand=nRand*ones(size(dataEnergy.outerH1,1),1);
-                            %filtering no transition data for each transition  
+                            dataEnergyOuterNonPreservedMotifs.nRand=nRand*ones(size(dataEnergyOuterNonPreservedMotifs.outerH1,1),1);
+                            %filtering no transition data for each transition 
+                            
+                            %preserved motifs
                             sumTableEnergy=struct2table(dataEnergy);
                             nanIndex=(isnan(sumTableEnergy.innerH1) |  isnan(sumTableEnergy.outerH1));
                             sumTableEnergy=sumTableEnergy(~nanIndex,:);
+                            %nonpreserved motifs
+                            sumTableEnergyNonPreservedMotifs=struct2table(dataEnergyOuterNonPreservedMotifs);
+                            nanIndexNonPreservedMotifs=(isnan(sumTableEnergyNonPreservedMotifs.outerH1));
+                            sumTableEnergyNonPreservedMotifs=sumTableEnergyNonPreservedMotifs(~nanIndexNonPreservedMotifs,:);
 
                             if strcmp(labelEdges{j},'transition')
                                 tableTransitionEnergy=[tableTransitionEnergy;sumTableEnergy];
+                                tableTransitionEnergyNonPreservedMotifs=[tableTransitionEnergyNonPreservedMotifs;sumTableEnergyNonPreservedMotifs];
                             else
                                 if ~isempty(totalEdges{1}) && ~isempty(sumTableEnergy) && ~isempty(sumTableEnergy) && numberOfValidMotifsTransition>0
                                     %same number of no transitions than transitions
                                     pos = randperm(size(sumTableEnergy,1));
-                                    pos = pos(1:numberOfValidMotifsTransition);
+                                    if size(sumTableEnergy,1) > numberOfValidMotifsTransition
+                                           pos = pos(1:numberOfValidMotifsTransition);
+                                    end
                                     tableNoTransitionEnergyFilterRandom=[tableNoTransitionEnergyFilterRandom;sumTableEnergy(pos,:)];
                                 end
                                 tableNoTransitionEnergyTotal=[tableNoTransitionEnergyTotal;sumTableEnergy];
+                                tableNoTransitionEnergyTotalNonPreservedMotifs=[tableNoTransitionEnergyTotalNonPreservedMotifs;sumTableEnergyNonPreservedMotifs];
                             end 
 
                         else
@@ -116,24 +127,48 @@ for nPath=1:length(filePaths)
                 end
             end
 
-            ['randomization ' num2str(nRand)]
-        
-        catch
-            ['randomization ERROR:' num2str(nRand)]
+            [filePaths{nPath} 'randomization ' num2str(nRand) '-' splittedCellHeight(1:end-4)]
+
+
+%             catch
+%                   ['randomization ERROR:' num2str(nRand) '-' filePaths{nPath} '-' splittedCellHeight(1:end-4)]
+% 
+%             end
+
+
         end
+
         
+
+         %saving tables
+         if nCellHeight>1
+            writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\energyTransitionEdges_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            writetable(tableNoTransitionEnergyTotal,[filePaths{nPath} 'energy\energyNoTransitionEdges_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            writetable(tableNoTransitionEnergyFilterRandom,[filePaths{nPath} 'energy\energyNoTransitionEdgesFilter_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            %non preserved motifs between apical and basal
+            writetable(tableNoTransitionEnergyTotalNonPreservedMotifs,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            writetable(tableTransitionEnergyNonPreservedMotifs,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_' splittedCellHeight(1:end-4) '_' date '.xls'])
+
+         else
+            writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\energyTransitionEdges_' date '.xls'])
+            writetable(tableNoTransitionEnergyTotal,[filePaths{nPath} 'energy\energyNoTransitionEdges_' date '.xls'])
+            writetable(tableNoTransitionEnergyFilterRandom,[filePaths{nPath} 'energy\energyNoTransitionEdgesFilter_' date '.xls'])
+            %non preserved motifs between apical and basal
+            writetable(tableTransitionEnergyNonPreservedMotifs,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_' date '.xls'])
+            writetable(tableNoTransitionEnergyTotalNonPreservedMotifs,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_' date '.xls'])
+         end
     
+
     end
-    
-    
-    writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\energyTransitionEdges_' date '.xls'])
-    writetable(tableNoTransitionEnergyTotal,[filePaths{nPath} 'energy\energyNoTransitionEdges_' date '.xls'])
-
-    writetable(tableNoTransitionEnergyFilterRandom,[filePaths{nPath} 'energy\energyNoTransitionEdgesFilter_' date '.xls'])
-
-
 
     
-    
-    
+     
+     
+
 end
+    
+    
+
+    
+    
+    

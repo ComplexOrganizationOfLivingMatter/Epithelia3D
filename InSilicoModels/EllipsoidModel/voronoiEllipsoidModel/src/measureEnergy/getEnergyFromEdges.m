@@ -1,16 +1,23 @@
-function [dataEnergy,numberOfValidMotifs] = getEnergyFromEdges( outerRoiProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCells,pairCell,flag)
+function [dataEnergy,dataEnergyNonPreservedMotifs,numberOfValidMotifs] = getEnergyFromEdges( outerProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,pairsOfCells,flag)
 
 
-    [~,W_outer]=size(outerRoiProjection);
+    [~,W_outer]=size(outerProjection);
     [~,W_inner]=size(innerRoiProjection);
 
     %all vertices in outer surface
-    [verticesOuter]=calculateVertices(outerRoiProjection,neighsOuter);
-    outerVerticesPerCell=arrayfun(@(x) find(sum(x==verticesOuter.verticesConnectCells,2)), 1:max(max(outerRoiProjection)), 'UniformOutput', false);
+    [verticesOuter]=calculateVertices(outerProjection,neighsOuter);
+    outerVerticesPerCell=arrayfun(@(x) find(sum(x==verticesOuter.verticesConnectCells,2)), 1:max(max(outerProjection)), 'UniformOutput', false);
     
     %all vertices in inner surface
     [verticesInner]=calculateVertices(innerRoiProjection,neighsInner);
     innerVerticesPerCell=arrayfun(@(x) find(sum(x==verticesInner.verticesConnectCells,2)), 1:max(max(innerRoiProjection)), 'UniformOutput', false);
+    
+    pairCell=cellfun(@(x, y) [y*ones(length(x),1),x],pairsOfCells',num2cell(1:length(pairsOfCells))','UniformOutput',false);
+    pairCell=unique(vertcat(pairCell{:}),'rows');
+    pairCell=unique([min(pairCell,[],2),max(pairCell,[],2)],'rows');
+                
+    pairCell=pairCell(sum(ismember(pairCell,validCells),2)==2,:);
+
     
     
     %vertices of edges transition in outer
@@ -33,6 +40,7 @@ function [dataEnergy,numberOfValidMotifs] = getEnergyFromEdges( outerRoiProjecti
     
     if sum(pairCellValidCells)==0
         dataEnergy=[];
+        dataEnergyNonPreservedMotifs=[];
         numberOfValidMotifs=0;
         return
     else
@@ -51,6 +59,8 @@ function [dataEnergy,numberOfValidMotifs] = getEnergyFromEdges( outerRoiProjecti
 
     %testing transition data
     dataEnergy.fourCellsMotif=[pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];
+    dataEnergyNonPreservedMotifs.fourCellsMotif=[pairCellValidCells,cellsInMotifNoContactValidCells];
+
     
     [dataEnergy.outerEdgeLength,dataEnergy.outerSumEdgesOfEnergy,dataEnergy.outerEdgeAngle,dataEnergy.outerH1,dataEnergy.outerH2,dataEnergy.outerW1,dataEnergy.outerW2,notEmptyIndexesOuter]=capturingWidthHeightAndEnergy(outerVerticesPerCell,verticesOuter,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_outer);
     if strcmp(flag,'transition')
@@ -59,6 +69,8 @@ function [dataEnergy,numberOfValidMotifs] = getEnergyFromEdges( outerRoiProjecti
         [dataEnergy.innerEdgeLength,dataEnergy.innerSumEdgesOfEnergy,dataEnergy.innerEdgeAngle,dataEnergy.innerH1,dataEnergy.innerH2,dataEnergy.innerW1,dataEnergy.innerW2,noEmptyIndexesInner]=capturingWidthHeightAndEnergy(innerVerticesPerCell,verticesInner,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_inner);
     end
     
+    %testing transitions data (without filtering with preserved in inner)
+    [dataEnergyNonPreservedMotifs.outerEdgeLength,dataEnergyNonPreservedMotifs.outerSumEdgesOfEnergy,dataEnergyNonPreservedMotifs.outerEdgeAngle,dataEnergyNonPreservedMotifs.outerH1,dataEnergyNonPreservedMotifs.outerH2,dataEnergyNonPreservedMotifs.outerW1,dataEnergyNonPreservedMotifs.outerW2,notEmptyIndexesOuterTransitions]=capturingWidthHeightAndEnergy(outerVerticesPerCell,verticesOuter,pairCellValidCells,cellsInMotifNoContactValidCells,W_outer);
     
     if sum(notEmptyIndexesOuter)< length(notEmptyIndexesOuter) || sum(noEmptyIndexesInner)< length(noEmptyIndexesInner)
         
@@ -81,5 +93,17 @@ function [dataEnergy,numberOfValidMotifs] = getEnergyFromEdges( outerRoiProjecti
         dataEnergy.outerEdgeLength=dataEnergy.outerEdgeLength(notEmptyIndexes);
         dataEnergy.outerEdgeAngle=dataEnergy.outerEdgeAngle(notEmptyIndexes);
     end
+    
+    if sum(notEmptyIndexesOuterTransitions)< length(notEmptyIndexesOuterTransitions)
+        dataEnergyNonPreservedMotifs.fourCellsMotif=dataEnergyNonPreservedMotifs.fourCellsMotif(notEmptyIndexesOuterTransitions,:);
+        dataEnergyNonPreservedMotifs.outerH1=dataEnergyNonPreservedMotifs.outerH1(notEmptyIndexesOuterTransitions);
+        dataEnergyNonPreservedMotifs.outerH2=dataEnergyNonPreservedMotifs.outerH2(notEmptyIndexesOuterTransitions);
+        dataEnergyNonPreservedMotifs.outerW1=dataEnergyNonPreservedMotifs.outerW1(notEmptyIndexesOuterTransitions);
+        dataEnergyNonPreservedMotifs.outerW2=dataEnergyNonPreservedMotifs.outerW2(notEmptyIndexesOuterTransitions);
+        dataEnergyNonPreservedMotifs.outerSumEdgesOfEnergy=dataEnergyNonPreservedMotifs.outerSumEdgesOfEnergy(notEmptyIndexesOuterTransitions);
+        dataEnergyNonPreservedMotifs.outerEdgeLength=dataEnergyNonPreservedMotifs.outerEdgeLength(notEmptyIndexesOuterTransitions);
+        dataEnergyNonPreservedMotifs.outerEdgeAngle=dataEnergyNonPreservedMotifs.outerEdgeAngle(notEmptyIndexesOuterTransitions);
+    end
+    
     
 end
