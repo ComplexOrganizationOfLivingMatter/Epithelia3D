@@ -1,13 +1,13 @@
-function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsOuterWater ] = zProjectionEllipsoid( img3dLayerOuter,initialEllipsoid)
+function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsOuterWater ] = zProjectionEllipsoid( ellipsoidInfo,initialEllipsoid)
 
     
     img3dLayerInner=initialEllipsoid.img3DLayer;
+    img3dLayerOuter=ellipsoidInfo.img3DLayer;
     
-    centerEllipsoidY=round(initialEllipsoid.yRadius*initialEllipsoid.resolutionEllipse);
-    centerEllipsoidZ=round(initialEllipsoid.zRadius*initialEllipsoid.resolutionEllipse);
+    centerEllipsoidY=round(initialEllipsoid.yCenter*ellipsoidInfo.resolutionFactor);
+    centerEllipsoidZ=round(initialEllipsoid.zCenter*ellipsoidInfo.resolutionFactor);
     
-    [~,W,c]=size(img3dLayerOuter);
-    
+   
     %% Dividing the 3d image in half along the X axis
     
     %first half along Y axis
