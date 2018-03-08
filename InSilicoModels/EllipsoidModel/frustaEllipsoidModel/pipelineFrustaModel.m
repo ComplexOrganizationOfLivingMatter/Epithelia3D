@@ -1,6 +1,5 @@
 clear
-addpath(genpath('src'));
-addpath(genpath('lib'));
+addpath(genpath('..\voronoiEllipsoidModel'));
 
 resultFiles = getAllFiles('results/VoronoiModel/');
 ellipsoidFiles = resultFiles(cellfun(@(x) isempty(strfind(x, '.mat')) == 0 & isempty(strfind(x, 'ellipsoid_x')) == 0, resultFiles));
