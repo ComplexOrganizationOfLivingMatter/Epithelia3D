@@ -12,10 +12,10 @@ function [ res ] = calculateSurfaceRatioWidthHeight( trackingInfo )
     endXWidth = bboxRegionProps(trackingInfo.validCell > 0, 3); %Width
     endYWidth = bboxRegionProps(trackingInfo.validCell > 0, 4); %Height
 
-    diffWidth = initialXWidth ./ endXWidth;
-    diffHeight = initialXWidth ./ endXWidth;
+    diffWidth = mean(initialXWidth) / mean(endXWidth);
+    diffHeight = mean(initialYWidth) / mean(endYWidth);
 
-    res = [mean(diffWidth) std(diffWidth) mean(diffHeight) std(diffHeight)];
+    res = [diffWidth diffHeight];
 
 end
 
