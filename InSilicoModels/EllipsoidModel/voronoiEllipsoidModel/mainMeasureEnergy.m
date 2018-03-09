@@ -6,27 +6,29 @@ addpath('src\measureEnergy')
 addpath lib
 addpath ('lib\energy')
 
-filePathStage8='results\Stage 8\';
-filePathStage4='results\Stage 4\';
+filePathVoronoiStage8='results\Stage 8\';
+filePathVoronoiStage4='results\Stage 4\';
+filePathFrustaStage8='..\frustaEllipsoidModel\results\Stage 8\';
+filePathFrustaStage4='..\frustaEllipsoidModel\results\Stage 4\';
 filePathSphere='results\Sphere\';
 filePathGlobe='results\Globe\';
 filePathRugby='results\Rugby\';
 
-filePaths={filePathStage8,filePathStage4,filePathGlobe,filePathRugby,filePathSphere};
+filePaths={filePathVoronoiStage8,filePathVoronoiStage4,filePathFrustaStage8,filePathFrustaStage4,filePathGlobe,filePathRugby,filePathSphere};
     
-for nPath=1:2%length(filePaths)
+for nPath=4%1:length(filePaths)
     
     
     
-    if nPath==1
+    if nPath==1 || nPath==3
        numRandoms=30;
        nCellHeight=1;
-    else if nPath==2
+    else if nPath==2 || nPath==4
        numRandoms=180; 
        nCellHeight=1;
         else
-            numRandoms=3;
-            nCellHeight=3;
+            numRandoms=10;
+            nCellHeight=10;
         end
     end
   
@@ -42,8 +44,8 @@ for nPath=1:2%length(filePaths)
 
         for nRand=1:numRandoms
 
-%             try
-            ellipsoidPath=dir([filePaths{nPath} 'random_' num2str(nRand) '\ellipsoid*' ]);
+            try
+            ellipsoidPath=dir([filePaths{nPath} 'random_' num2str(nRand) '\*llipsoid*' ]);
             %if projectins are just created...load, else run the
             %zProjections program
 
@@ -52,13 +54,22 @@ for nPath=1:2%length(filePaths)
 
             if exist([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'file') || exist([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'file')
                 if nCellHeight>1
-                    
                     load([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')
                 else
                     load([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
                 end
             else
-                load([filePaths{nPath} 'random_' num2str(nRand) '\' ellipsoidPath(cellHeight).name],'ellipsoidInfo','initialEllipsoid')
+                
+                if nPath==3 || nPath==4
+                    load([filePaths{nPath} 'random_' num2str(nRand) '\' ellipsoidPath(cellHeight).name],'allFrustaImage')
+                    ellipsoidPath=dir([strrep(filePaths{nPath},'..\frustaEllipsoidModel\','') 'random_' num2str(nRand) '\*llipsoid*' ]);
+                    load([strrep(filePaths{nPath},'..\frustaEllipsoidModel\','') 'random_' num2str(nRand) '\' ellipsoidPath(cellHeight).name],'initialEllipsoid','ellipsoidInfo')
+                    ellipsoidInfo.img3DLayer=allFrustaImage;
+
+                else
+                    load([filePaths{nPath} 'random_' num2str(nRand) '\' ellipsoidPath(cellHeight).name],'ellipsoidInfo','initialEllipsoid')
+                end
+                    
                 %getting 4 projections from 3d ellipsoid
                 [projectionsInner,projectionsOuter,projectionsInnerWater,projectionsOuterWater]=zProjectionEllipsoid( ellipsoidInfo,initialEllipsoid);
                 if nCellHeight>1
@@ -127,19 +138,19 @@ for nPath=1:2%length(filePaths)
                 end
             end
 
-            [filePaths{nPath} 'randomization ' num2str(nRand) '-' splittedCellHeight(1:end-4)]
+            [filePaths{nPath} 'randomization ' num2str(nRand) '  -  ' splittedCellHeight(1:end-4)]
 
 
-%             catch
-%                   ['randomization ERROR:' num2str(nRand) '-' filePaths{nPath} '-' splittedCellHeight(1:end-4)]
-% 
-%             end
+            catch
+                  ['randomization ERROR:' num2str(nRand) '  -  ' filePaths{nPath} '-' splittedCellHeight(1:end-4)]
+
+            end
 
 
         end
 
         
-
+         mkdir([filePaths{nPath} 'energy\'])
          %saving tables
          if nCellHeight>1
             writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\energyTransitionEdges_' splittedCellHeight(1:end-4) '_' date '.xls'])
@@ -161,9 +172,7 @@ for nPath=1:2%length(filePaths)
 
     end
 
-    
-     
-     
+ 
 
 end
     

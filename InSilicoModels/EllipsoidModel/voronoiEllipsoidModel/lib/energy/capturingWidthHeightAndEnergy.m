@@ -1,4 +1,4 @@
-function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Length,emptyIndex]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W)
+function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Length,emptyIndex]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved)
     
 
     %cell 1 and 2, are the cells in contact. Cell 3 and 4 are not touching between them into the four cell motif.
@@ -48,12 +48,12 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
         if ~isnan(verticesCell_1_2{i}) 
         
             try
-                [edgeLength(i), edgeAngle(i)] = edgeLengthAnglesCalculation([vertices.verticesPerCell{verticesCell_1_2{i}(1,1)};vertices.verticesPerCell{verticesCell_1_2{i}(2,1)}],W);
+                [edgeLength(i), edgeAngle(i)] = edgeLengthAnglesCalculation([vertices.verticesPerCell{verticesCell_1_2{i}(1,1)};vertices.verticesPerCell{verticesCell_1_2{i}(2,1)}]);
 
-                [edge1Length, edge1Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertH1default{i}(1,1)};vertices.verticesPerCell{vertH1default{i}(2,1)}],W);
-                [edge2Length, edge2Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertH2default{i}(1,1)};vertices.verticesPerCell{vertH2default{i}(2,1)}],W);
-                [edge3Length, edge3Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertW1default{i}(1,1)};vertices.verticesPerCell{vertW1default{i}(2,1)}],W);
-                [edge4Length, edge4Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertW2default{i}(1,1)};vertices.verticesPerCell{vertW2default{i}(2,1)}],W);
+                [edge1Length, edge1Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertH1default{i}(1,1)};vertices.verticesPerCell{vertH1default{i}(2,1)}]);
+                [edge2Length, edge2Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertH2default{i}(1,1)};vertices.verticesPerCell{vertH2default{i}(2,1)}]);
+                [edge3Length, edge3Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertW1default{i}(1,1)};vertices.verticesPerCell{vertW1default{i}(2,1)}]);
+                [edge4Length, edge4Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertW2default{i}(1,1)};vertices.verticesPerCell{vertW2default{i}(2,1)}]);
 
                 %detecting who is W and who H depending on its angle
                 if (edge1Angle+edge2Angle)>(edge3Angle+edge4Angle)
@@ -69,7 +69,7 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
                 end
 
                 %get sum of energies
-                sumEdgesOfEnergy(i) = getSumOfEnergyEdges(verticesCell_1_2{i},verticesCell_3{i},verticesCell_4{i},vertices,W);
+                sumEdgesOfEnergy(i) = getSumOfEnergyEdges(verticesCell_1_2{i},verticesCell_3{i},verticesCell_4{i},vertices);
             catch
                 edgeLength(i)=NaN;
                 edgeAngle(i)=NaN;
