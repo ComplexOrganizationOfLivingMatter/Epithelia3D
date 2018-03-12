@@ -28,7 +28,7 @@ for nPath=4%1:length(filePaths)
        nCellHeight=1;
         else
             numRandoms=10;
-            nCellHeight=10;
+            nCellHeight=3;
         end
     end
   
@@ -71,7 +71,7 @@ for nPath=4%1:length(filePaths)
                 end
                     
                 %getting 4 projections from 3d ellipsoid
-                [projectionsInner,projectionsOuter,projectionsInnerWater,projectionsOuterWater]=zProjectionEllipsoid( ellipsoidInfo,initialEllipsoid);
+                [projectionsInner,projectionsOuter,projectionsInnerWater,projectionsOuterWater]=maxProjectionEllipsoid( ellipsoidInfo,initialEllipsoid);
                 if nCellHeight>1
                     save([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')
                 else

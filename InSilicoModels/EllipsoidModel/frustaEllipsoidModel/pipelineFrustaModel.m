@@ -1,13 +1,18 @@
 clear
 addpath(genpath('..\voronoiEllipsoidModel'));
+addpath(genpath('src'));
 
-resultFiles = getAllFiles('results/VoronoiModel/');
-ellipsoidFiles = resultFiles(cellfun(@(x) isempty(strfind(x, '.mat')) == 0 & isempty(strfind(x, 'ellipsoid_x')) == 0, resultFiles));
+resultFilesStage4 = getAllFiles('../voronoiEllipsoidModel/results/Stage 4/');
+ellipsoidFilesStage4 = resultFilesStage4(cellfun(@(x) isempty(strfind(x, '.mat')) == 0 & isempty(strfind(x, 'ellipsoid_x')) == 0, resultFilesStage4));
+resultFilesStage8 = getAllFiles('../voronoiEllipsoidModel/results/Stage 8/');
+ellipsoidFilesStage8 = resultFilesStage8(cellfun(@(x) isempty(strfind(x, '.mat')) == 0 & isempty(strfind(x, 'ellipsoid_x')) == 0, resultFilesStage8));
+
+ellipsoidFiles=[ellipsoidFilesStage4;ellipsoidFilesStage8];
 
 % stage8_ValidRandom = [1:5 7:8 10 13 15:17 19:20 22 25 26 29 30];
 % stage4_ValidRandom = [7 15 19 20 25 33 36 39 46 61:64 69 80 81 96 102 106 119 124 135 145 150 154 162 170:172 180];
 
-parfor numEllipsoid = 1:size(ellipsoidFiles, 1)
+parfor numEllipsoid = 2:180%size(ellipsoidFiles, 1)
     validRandom = 0;
     inputFile = ellipsoidFiles{numEllipsoid};
     inputFileSplitted = strsplit(inputFile, '\');

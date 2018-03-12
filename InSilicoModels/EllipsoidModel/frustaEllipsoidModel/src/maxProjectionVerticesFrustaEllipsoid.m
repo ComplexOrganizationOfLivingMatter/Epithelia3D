@@ -1,4 +1,4 @@
-function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsOuterWater ] = zProjectionEllipsoid( ellipsoidInfo,initialEllipsoid)
+function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsOuterWater,verticesInnerProjections,verticesOuterProjections,cellConnectedToVertexInProjections] = maxProjectionVerticesFrustaEllipsoid( ellipsoidInfo,initialEllipsoid,verticesOuter,verticesInner,cellConnectedToVertex)
 
     
     img3dLayerInner=initialEllipsoid.img3DLayer;
@@ -11,29 +11,51 @@ function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsO
     %% Dividing the 3d image in half along the X axis
     
     %first half along Y axis
-    halfEllipsoidOuterYfirst=img3dLayerOuter(:,(end-centerEllipsoidY):end,:);
-    halfEllipsoidInnerYfirst=img3dLayerInner(:,(end-centerEllipsoidY):end,:);
+    halfEllipsoidOuterYfirst=img3dLayerOuter(:,centerEllipsoidY:end,:);
+    halfEllipsoidInnerYfirst=img3dLayerInner(:,centerEllipsoidY:end,:);
     halfEllipsoidOuterYfirstPerm=permute(halfEllipsoidOuterYfirst,[1,3,2]);
     halfEllipsoidInnerYfirstPerm=permute(halfEllipsoidInnerYfirst,[1,3,2]);
     orderProjYfirst=size(halfEllipsoidOuterYfirstPerm,3):-1:1;
+    %cells vertices along first Y projection
+    indexVertYfirst=(verticesOuter(:,2) >= centerEllipsoidY);
+    verticesOuterYfirst=verticesOuter(indexVertYfirst,[1 3]);
+    verticesInnerYfirst=verticesInner(indexVertYfirst,[1 3]);
+    cellConnectedToVertexYfirst=cellConnectedToVertex(indexVertYfirst,:);
         
     %second half along Y axis
-    halfEllipsoidOuterYsecond=img3dLayerOuter(:,1:(end-centerEllipsoidY),:);
-    halfEllipsoidInnerYsecond=img3dLayerInner(:,1:(end-centerEllipsoidY),:);
+    halfEllipsoidOuterYsecond=img3dLayerOuter(:,1:centerEllipsoidY,:);
+    halfEllipsoidInnerYsecond=img3dLayerInner(:,1:centerEllipsoidY,:);
     halfEllipsoidOuterYsecondPerm=permute(halfEllipsoidOuterYsecond,[1,3,2]);
     halfEllipsoidInnerYsecondPerm=permute(halfEllipsoidInnerYsecond,[1,3,2]);
     %orderProjYsecond=1:centerEllipsoidY;
     orderProjYsecond=1:size(halfEllipsoidInnerYsecondPerm,3);
+    %cells vertices along second Y projection
+    indexVertYsecond=(verticesOuter(:,2) <= centerEllipsoidY);
+    verticesOuterYsecond=verticesOuter(indexVertYsecond,[1 3]);
+    verticesInnerYsecond=verticesInner(indexVertYsecond,[1 3]);
+    cellConnectedToVertexYsecond=cellConnectedToVertex(indexVertYsecond,:);
     
+       
     %first half along Z axis
     halfEllipsoidOuterZfirst=img3dLayerOuter(:,:,(end-centerEllipsoidZ):end);
     halfEllipsoidInnerZfirst=img3dLayerInner(:,:,(end-centerEllipsoidZ):end);
     orderProjZfirst=centerEllipsoidZ:-1:1;
+    %cells vertices along first Z projection
+    indexVertZfirst=(verticesOuter(:,3) >= centerEllipsoidZ);
+    verticesOuterZfirst=verticesOuter(indexVertZfirst,[1 2]);
+    verticesInnerZfirst=verticesInner(indexVertZfirst,[1 2]);
+    cellConnectedToVertexZfirst=cellConnectedToVertex(indexVertZfirst,:);
+    
 
     %second half along Z axis
     halfEllipsoidOuterZsecond=img3dLayerOuter(:,:,1:(end-centerEllipsoidZ));
     halfEllipsoidInnerZsecond=img3dLayerInner(:,:,1:(end-centerEllipsoidZ));
     orderProjZsecond=1:size(halfEllipsoidInnerZsecond,3);
+    %cells vertices along first Z projection
+    indexVertZsecond=(verticesOuter(:,3) <= centerEllipsoidZ);
+    verticesOuterZsecond=verticesOuter(indexVertZsecond,[1 2]);
+    verticesInnerZsecond=verticesInner(indexVertZsecond,[1 2]);
+    cellConnectedToVertexZsecond=cellConnectedToVertex(indexVertZsecond,:);
               
    
     %storing half
@@ -44,7 +66,9 @@ function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsO
     projectionsInner=cell(1,4);
     projectionsOuterWater=cell(1,4);
     projectionsInnerWater=cell(1,4);
-    
+    verticesInnerProjections={verticesInnerYfirst,verticesInnerYsecond,verticesInnerZfirst,verticesInnerZsecond};
+    verticesOuterProjections={verticesOuterYfirst,verticesOuterYsecond,verticesOuterZfirst,verticesOuterZsecond};
+    cellConnectedToVertexInProjections={cellConnectedToVertexYfirst,cellConnectedToVertexYsecond,cellConnectedToVertexZfirst,cellConnectedToVertexZsecond};
     
     %create projections
     parfor z=1:4
@@ -100,9 +124,9 @@ function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsO
 %         figure;imshow(projInnerWat)
 %         figure;imshow(projOuterWat)
         
-        ['zProjection' num2str(z)]
+        
     end
-   
+   'Projection step finished'
     
 end
 
