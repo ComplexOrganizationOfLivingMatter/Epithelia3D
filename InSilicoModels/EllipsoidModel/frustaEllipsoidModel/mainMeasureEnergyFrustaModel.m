@@ -18,10 +18,10 @@ for nPath=1%:length(filePaths)
     
     
     if nPath==1
-       numRandoms=30;
+       numRandoms=180;
        nCellHeight=1;
     else if nPath==2
-       numRandoms=180; 
+       numRandoms=30; 
        nCellHeight=1;
         else
             numRandoms=10;

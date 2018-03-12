@@ -2,27 +2,29 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
 %CREATEFRUSTAMODELFROMAPICALIMAGE Summary of this function goes here
 %   Detailed explanation goes here
     
-    outputFile = strrep(inputFile, 'VoronoiModel', 'FrustaModel');
+    outputFile = strrep(inputFile, '..\voronoiEllipsoidModel\', '');
     outputFileSplitted = strsplit(outputFile, '\');
     outputFileDirectory = strjoin(outputFileSplitted(1:end-1), '\');
     mkdir(outputFileDirectory)
     
-    outputFilesChecking = getAllFiles(outputFileDirectory);
+    outputNameFile=dir([outputFileDirectory '\frusta*']);
+        
+    load(inputFile);
+
+    disp('Getting vertices 3D');
+    %Get vertices info on the apical layer
     
-    if isempty(outputFilesChecking)
-        
-        load(inputFile);
-        
-        disp('Getting vertices 3D');
-        %Get vertices info on the apical layer
-        initialEllipsoid = getVertices3D( initialEllipsoid.img3DLayer, initialEllipsoid.neighbourhood, initialEllipsoid );
-        
-        initialEllipsoid.resolutionFactor = ellipsoidInfo.resolutionFactor;
-        initialEllipsoid.resolutionEllipse = 500;
-        
-        disp('Getting outter layer vertices');
-        %New vertices on basal
-        [ finalCentroidsAugmented] = getAugmentedCentroids( initialEllipsoid, vertcat(initialEllipsoid.verticesPerCell{:}), ellipsoidInfo.cellHeight);
+    initialEllipsoid = getVertices3D( initialEllipsoid.img3DLayer, initialEllipsoid.neighbourhood, initialEllipsoid );
+    
+    initialEllipsoid.resolutionFactor = ellipsoidInfo.resolutionFactor;
+    initialEllipsoid.resolutionEllipse = 500;
+
+    disp('Getting outter layer vertices');
+    %New vertices on basal
+    [ finalVerticesAugmented ] = getAugmentedCentroids( initialEllipsoid, vertcat(initialEllipsoid.verticesPerCell{:}), ellipsoidInfo.cellHeight);
+
+       
+    if isempty(outputNameFile.name)
         
         allFrustaImage = initialEllipsoid.img3DLayer;
         
@@ -34,7 +36,7 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
             %disp(['NumCell: ' num2str(numCell)]);
             indicesVerticesOfActualCell = any(ismember(initialEllipsoid.verticesConnectCells, numCell), 2);
             
-            verticesOfActualCell = round(finalCentroidsAugmented(indicesVerticesOfActualCell, :));
+            verticesOfActualCell = round(finalVerticesAugmented(indicesVerticesOfActualCell, :));
             
             %Get the faces of the cell
             KVert = convhulln(verticesOfActualCell);
@@ -69,7 +71,16 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
         save(strcat(outputFileDirectory, '\frustaEllipsoidModel_', date, '.mat'), 'allFrustaImage', '-v7.3');
         
         %close outputFigure
+        
+        
     end
+    
+    verticesPerCellInitial=initialEllipsoid.verticesPerCell;
+    verticesConnectCellsInitial=initialEllipsoid.verticesConnectCells;
+    neighsInitial=initialEllipsoid.neighbourhood;
+    
+    save(strcat(outputFileDirectory, '\', outputNameFile(1).name),'neighsInitial','verticesPerCellInitial','verticesConnectCellsInitial','finalVerticesAugmented', '-append');
+     
 
 end
 
