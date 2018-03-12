@@ -3,11 +3,19 @@ function [ differenceTableSummaryEnergyData, totalEnergyData ] = getEnergyInfo( 
 %   Detailed explanation goes here
 
 %Energy formulas
-energyBasal = @(x) (x.basalSumEdgesOfEnergy ./ mean([x.basalW1 x.basalW2], 2)) ./ (2*sqrt(1+(mean([x.basalH1 x.basalH2], 2) ./ mean([x.basalW1 x.basalW2], 2)).^2));
-energyApical = @(x) (x.apicalSumEdgesOfEnergy ./ mean([x.apicalW1 x.apicalW2], 2)) ./ (2*sqrt(1+(mean([x.apicalH1 x.apicalH2], 2) ./ mean([x.apicalW1 x.apicalW2], 2)).^2));
-aspectRatioBasal = @(x) mean([x.basalH1 x.basalH2], 2) ./ mean([x.basalW1 x.basalW2], 2);
-aspectRatioApical = @(x) mean([x.apicalH1 x.apicalH2], 2) ./ mean([x.apicalW1 x.apicalW2], 2);
-totalEnergyCalculation = @(x) horzcat(energyBasal(x), energyApical(x), aspectRatioBasal(x), aspectRatioApical(x));
+if any(cellfun(@(x) isempty(strfind(x, 'basal')) == 0, data.Properties.VariableNames))
+    disp('Calculating energy in apical and basal');
+    energyBasal = @(x) (x.basalSumEdgesOfEnergy ./ mean([x.basalW1 x.basalW2], 2)) ./ (2*sqrt(1+(mean([x.basalH1 x.basalH2], 2) ./ mean([x.basalW1 x.basalW2], 2)).^2));
+    energyApical = @(x) (x.apicalSumEdgesOfEnergy ./ mean([x.apicalW1 x.apicalW2], 2)) ./ (2*sqrt(1+(mean([x.apicalH1 x.apicalH2], 2) ./ mean([x.apicalW1 x.apicalW2], 2)).^2));
+    aspectRatioBasal = @(x) mean([x.basalH1 x.basalH2], 2) ./ mean([x.basalW1 x.basalW2], 2);
+    aspectRatioApical = @(x) mean([x.apicalH1 x.apicalH2], 2) ./ mean([x.apicalW1 x.apicalW2], 2);
+    totalEnergyCalculation = @(x) horzcat(energyBasal(x), energyApical(x), aspectRatioBasal(x), aspectRatioApical(x));
+else
+    disp('No basal-apical differentiation');
+    energy = @(x) (x.SumEdgesOfEnergy ./ mean([x.W1 x.W2], 2)) ./ (2*sqrt(1+(mean([x.H1 x.H2], 2) ./ mean([x.W1 x.W2], 2)).^2));
+    aspectRatio = @(x) mean([x.H1 x.H2], 2) ./ mean([x.W1 x.W2], 2);
+    totalEnergyCalculation = @(x) horzcat(energy(x), aspectRatio(x));
+end
 
 
 totalEnergyData = totalEnergyCalculation(data);
@@ -27,6 +35,8 @@ totalEnergyTableSummary = @(x) vertcat(sum(x(:, 2)), ...
     sum(x(:, 1)),...
     sum(x(:, 1) + x(:, 2)));
 
+totalEnergyNoApicalNoBasalTableSummary = @(x) vertcat(mean(x(:, 1)), ...
+    sum(x(:, 1)));
 
 differenceTableSummaryReduction = @(x) vertcat(mean(x(:, 2)), ...
     std(x(:, 2)), ...
@@ -40,7 +50,7 @@ differenceTableSummaryReduction = @(x) vertcat(mean(x(:, 2)), ...
     std(abs(-x(:, 1) + x(:, 2))));
 
 
-differenceTableSummaryEnergyData = totalEnergyTableSummary(totalEnergyData);
+differenceTableSummaryEnergyData = totalEnergyNoApicalNoBasalTableSummary(totalEnergyData);
 
 end
 
