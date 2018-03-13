@@ -75,11 +75,15 @@ function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsO
         maskProjectionOuter=zeros(size(halfEllipsoidsOuter{z}(:,:,1)));
         maskProjectionInner=zeros(size(halfEllipsoidsInner{z}(:,:,1)));
         for i=orderIt{z}
+            if i <= size(halfEllipsoidsOuter{z}, 3)
+                imgMaskOuter=halfEllipsoidsOuter{z}(:,:,i);
+                maskProjectionOuter(maskProjectionOuter==0)=imgMaskOuter(maskProjectionOuter==0);
+            end
             
-            imgMaskOuter=halfEllipsoidsOuter{z}(:,:,i);
-            imgMaskInner=halfEllipsoidsInner{z}(:,:,i);
-            maskProjectionOuter(maskProjectionOuter==0)=imgMaskOuter(maskProjectionOuter==0);
-            maskProjectionInner(maskProjectionInner==0)=imgMaskInner(maskProjectionInner==0);
+            if i <= size(halfEllipsoidsInner{z}, 3)
+                imgMaskInner=halfEllipsoidsInner{z}(:,:,i);
+                maskProjectionInner(maskProjectionInner==0)=imgMaskInner(maskProjectionInner==0);
+            end
             
         end
         
