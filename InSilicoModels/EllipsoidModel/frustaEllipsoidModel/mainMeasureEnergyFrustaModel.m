@@ -111,7 +111,7 @@ for nPath=1:length(filePaths)
                 fid = fopen('logFile','a+');
                 % write the error to file
                 % first line: message
-                fprintf(fid,'%s\n',['randomization ERROR:' num2str(nRand) '  -  ' filePaths{nPath} '-' splittedCellHeight(1:end-4)]);
+                fprintf(fid,'%s\r\n',['randomization ERROR:' num2str(nRand) '  -  ' filePaths{nPath} '-' splittedCellHeight(1:end-4)]);
                 
                 % close file
                 fclose(fid);
