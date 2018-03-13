@@ -71,9 +71,9 @@ function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsO
     cellConnectedToVertexInProjections={cellConnectedToVertexYfirst,cellConnectedToVertexYsecond,cellConnectedToVertexZfirst,cellConnectedToVertexZsecond};
     
     %create projections
-    parfor z=1:4
+    for z=1:4
         maskProjectionOuter=zeros(size(halfEllipsoidsOuter{z}(:,:,1)));
-        maskProjectionInner=maskProjectionOuter;
+        maskProjectionInner=zeros(size(halfEllipsoidsInner{z}(:,:,1)));
         for i=orderIt{z}
             
             imgMaskOuter=halfEllipsoidsOuter{z}(:,:,i);
