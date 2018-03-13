@@ -1,4 +1,4 @@
-function [ uniqueValidCells ] = getValidOfValidCells( modelFrusta, modelVoronoi, surfaceRatio )
+function [ uniqueValidCells, modelFrusta, modelVoronoi ] = getValidOfValidCells( modelFrusta, modelVoronoi, surfaceRatio )
 %GETVALIDOFVALIDCELLS Summary of this function goes here
 %   Detailed explanation goes here
     
@@ -22,7 +22,7 @@ function [ uniqueValidCells ] = getValidOfValidCells( modelFrusta, modelVoronoi,
         
         oldValidCells = intersect(uniqueCellsModelVoronoi, uniqueCellsModelFrusta);
         
-        validCells = zeros(size(oldValidCells));
+        validCells = zeros(size(oldValidCells, 1), 1);
         
         for numCell = 1:length(oldValidCells)
             oldValidCell = oldValidCells(numCell);
@@ -38,7 +38,11 @@ function [ uniqueValidCells ] = getValidOfValidCells( modelFrusta, modelVoronoi,
         end
         
         uniqueValidCells{nRandom} = oldValidCells(logical(validCells));
-        modelFrusta
+        motifsVoronoiIndices = find(modelVoronoi.nRand == nRandom);
+        modelVoronoi(motifsVoronoiIndices(all(ismember(motifsVoronoi, uniqueValidCells{nRandom}), 2) == 0), :) = [];
+        motifsFrustaIndices = find(modelFrusta.nRand == nRandom);
+        modelFrusta(motifsFrustaIndices(all(ismember(motifsFrusta, uniqueValidCells{nRandom}), 2) == 0), :) = [];
+        
     end
     
 
