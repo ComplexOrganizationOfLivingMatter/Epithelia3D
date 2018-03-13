@@ -13,7 +13,7 @@ filePathVoronoiStage4='..\voronoiEllipsoidModel\results\Stage 4\';
 
 filePaths={filePathFrustaStage4,filePathFrustaStage8};
     
-for nPath=1%:length(filePaths)
+for nPath=1:length(filePaths)
     
     
     
@@ -108,8 +108,13 @@ for nPath=1%:length(filePaths)
 
 
             catch
-                  ['randomization ERROR:' num2str(nRand) '  -  ' filePaths{nPath} '-' splittedCellHeight(1:end-4)]
-
+                fid = fopen('logFile','a+');
+                % write the error to file
+                % first line: message
+                fprintf(fid,'%s\n',['randomization ERROR:' num2str(nRand) '  -  ' filePaths{nPath} '-' splittedCellHeight(1:end-4)]);
+                
+                % close file
+                fclose(fid);
             end
 
 
