@@ -10,7 +10,7 @@ function [ uniqueValidCells, modelFrusta, modelVoronoi ] = getValidOfValidCells(
         %Neighbours in frusta are the same as in apical
         [~, sides_cellsFrusta] = calculateNeighbours(listLOriginalProjection(listLOriginalProjection.surfaceRatio == 1, :).L_originalProjection{1});
 
-        [~, sides_cellsVoronoi] = calculateNeighbours(listLOriginalProjection(listLOriginalProjection.surfaceRatio == surfaceRatio, :).L_originalProjection{1});
+        [~, sides_cellsVoronoi] = calculateNeighbours(listLOriginalProjection(round(listLOriginalProjection.surfaceRatio, 2) == round(surfaceRatio, 2), :).L_originalProjection{1});
 
         motifsFrusta = table2array(modelFrusta(modelFrusta.nRand == nRandom, 1:4));
         uniqueCellsModelFrusta = unique(motifsFrusta(:));
@@ -39,9 +39,9 @@ function [ uniqueValidCells, modelFrusta, modelVoronoi ] = getValidOfValidCells(
         
         uniqueValidCells{nRandom} = oldValidCells(logical(validCells));
         motifsVoronoiIndices = find(modelVoronoi.nRand == nRandom);
-        modelVoronoi(motifsVoronoiIndices(all(ismember(motifsVoronoi, uniqueValidCells{nRandom}), 2) == 0), :) = [];
+        modelVoronoi(motifsVoronoiIndices(all(ismember(motifsVoronoi, oldValidCells), 2) == 0), :) = [];
         motifsFrustaIndices = find(modelFrusta.nRand == nRandom);
-        modelFrusta(motifsFrustaIndices(all(ismember(motifsFrusta, uniqueValidCells{nRandom}), 2) == 0), :) = [];
+        modelFrusta(motifsFrustaIndices(all(ismember(motifsFrusta, oldValidCells), 2) == 0), :) = [];
         
     end
     
