@@ -36,7 +36,7 @@ for nPath=1:length(filePaths)
         tableNoTransitionEnergyTotalNonPreservedMotifs=table();
 
         for nRand=1:numRandoms
-
+            nRand
             try
             ellipsoidPath=dir([filePaths{nPath} 'random_' num2str(nRand) '\*llipsoid*' ]);
             %if projectins are just created...load, else run the
@@ -46,63 +46,63 @@ for nPath=1:length(filePaths)
             [projectionsInnerWater,projectionsOuterWater,projectionsInnerVertices,projectionsOuterVertices,projectionsCellsConnectedToVertex] = checkMaxProjectionExist(ellipsoidPath,filePaths,nRand,nCellHeight,splittedCellHeight,nPath,cellHeight);
             
 
-%             %loading mask central cells in projection
-%             maskRoiInner=1-im2bw(imread([filePaths{nPath} 'maskInner.tif']));
-%             for i=1:length(projectionsInnerWater)
-% 
-%                 %function for getting inner roi, edges, neighbours and valid cells
-%                 [innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,totalEdges,labelEdges]= checkingParametersFromRoi(maskRoiInner,projectionsInnerWater{i},projectionsOuterWater{i});
-% 
-%                 % Calculate energy if there is any transition
-%                 for j=1:2
-%                     if ~isempty(totalEdges{j});
-% 
-%                         [dataEnergy,dataEnergyOuterNonPreservedMotifs,numberOfValidMotifs] = getEnergyFromEdges( projectionsOuterWater{i},innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,totalEdges{j},labelEdges{j});
-% 
-%                         if ~isempty(dataEnergy)
-% 
-%                             if strcmp(labelEdges{j},'transition')
-%                                 numberOfValidMotifsTransition=numberOfValidMotifs;
-%                             end
-% 
-%                             dataEnergy.nRand=nRand*ones(size(dataEnergy.outerH1,1),1);
-%                             dataEnergyOuterNonPreservedMotifs.nRand=nRand*ones(size(dataEnergyOuterNonPreservedMotifs.outerH1,1),1);
-%                             %filtering no transition data for each transition 
-%                             
-%                             %preserved motifs
-%                             sumTableEnergy=struct2table(dataEnergy);
-%                             nanIndex=(isnan(sumTableEnergy.innerH1) |  isnan(sumTableEnergy.outerH1));
-%                             sumTableEnergy=sumTableEnergy(~nanIndex,:);
-%                             %nonpreserved motifs
-%                             sumTableEnergyNonPreservedMotifs=struct2table(dataEnergyOuterNonPreservedMotifs);
-%                             nanIndexNonPreservedMotifs=(isnan(sumTableEnergyNonPreservedMotifs.outerH1));
-%                             sumTableEnergyNonPreservedMotifs=sumTableEnergyNonPreservedMotifs(~nanIndexNonPreservedMotifs,:);
-% 
-%                             if strcmp(labelEdges{j},'transition')
-%                                 tableTransitionEnergy=[tableTransitionEnergy;sumTableEnergy];
-%                                 tableTransitionEnergyNonPreservedMotifs=[tableTransitionEnergyNonPreservedMotifs;sumTableEnergyNonPreservedMotifs];
-%                             else
-%                                 if ~isempty(totalEdges{1}) && ~isempty(sumTableEnergy) && ~isempty(sumTableEnergy) && numberOfValidMotifsTransition>0
-%                                     %same number of no transitions than transitions
-%                                     pos = randperm(size(sumTableEnergy,1));
-%                                     if size(sumTableEnergy,1) > numberOfValidMotifsTransition
-%                                            pos = pos(1:numberOfValidMotifsTransition);
-%                                     end
-%                                     tableNoTransitionEnergyFilterRandom=[tableNoTransitionEnergyFilterRandom;sumTableEnergy(pos,:)];
-%                                 end
-%                                 tableNoTransitionEnergyTotal=[tableNoTransitionEnergyTotal;sumTableEnergy];
-%                                 tableNoTransitionEnergyTotalNonPreservedMotifs=[tableNoTransitionEnergyTotalNonPreservedMotifs;sumTableEnergyNonPreservedMotifs];
-%                             end 
-% 
-%                         else
-%                             if strcmp(labelEdges{j},'transition')
-%                                 totalEdges{1}=[];
-%                             end
-%                         end
-% 
-%                     end
-%                 end
-%             end
+            %loading mask central cells in projection
+            maskRoiInner=1-im2bw(imread([filePaths{nPath} 'maskInner.tif']));
+            for i=1:length(projectionsInnerWater)
+
+                %function for getting inner roi, edges, neighbours and valid cells
+                [innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,totalEdges,labelEdges]= checkingParametersFromRoi(maskRoiInner,projectionsInnerWater{i},projectionsOuterWater{i});
+
+                % Calculate energy if there is any transition
+                for j=1:2
+                    if ~isempty(totalEdges{j});
+
+                        [dataEnergy,dataEnergyOuterNonPreservedMotifs,numberOfValidMotifs] = getEnergyFromEdges( projectionsOuterWater{i},innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,totalEdges{j},labelEdges{j});
+
+                        if ~isempty(dataEnergy)
+
+                            if strcmp(labelEdges{j},'transition')
+                                numberOfValidMotifsTransition=numberOfValidMotifs;
+                            end
+
+                            dataEnergy.nRand=nRand*ones(size(dataEnergy.outerH1,1),1);
+                            dataEnergyOuterNonPreservedMotifs.nRand=nRand*ones(size(dataEnergyOuterNonPreservedMotifs.outerH1,1),1);
+                            %filtering no transition data for each transition 
+                            
+                            %preserved motifs
+                            sumTableEnergy=struct2table(dataEnergy);
+                            nanIndex=(isnan(sumTableEnergy.innerH1) |  isnan(sumTableEnergy.outerH1));
+                            sumTableEnergy=sumTableEnergy(~nanIndex,:);
+                            %nonpreserved motifs
+                            sumTableEnergyNonPreservedMotifs=struct2table(dataEnergyOuterNonPreservedMotifs);
+                            nanIndexNonPreservedMotifs=(isnan(sumTableEnergyNonPreservedMotifs.outerH1));
+                            sumTableEnergyNonPreservedMotifs=sumTableEnergyNonPreservedMotifs(~nanIndexNonPreservedMotifs,:);
+
+                            if strcmp(labelEdges{j},'transition')
+                                tableTransitionEnergy=[tableTransitionEnergy;sumTableEnergy];
+                                tableTransitionEnergyNonPreservedMotifs=[tableTransitionEnergyNonPreservedMotifs;sumTableEnergyNonPreservedMotifs];
+                            else
+                                if ~isempty(totalEdges{1}) && ~isempty(sumTableEnergy) && ~isempty(sumTableEnergy) && numberOfValidMotifsTransition>0
+                                    %same number of no transitions than transitions
+                                    pos = randperm(size(sumTableEnergy,1));
+                                    if size(sumTableEnergy,1) > numberOfValidMotifsTransition
+                                           pos = pos(1:numberOfValidMotifsTransition);
+                                    end
+                                    tableNoTransitionEnergyFilterRandom=[tableNoTransitionEnergyFilterRandom;sumTableEnergy(pos,:)];
+                                end
+                                tableNoTransitionEnergyTotal=[tableNoTransitionEnergyTotal;sumTableEnergy];
+                                tableNoTransitionEnergyTotalNonPreservedMotifs=[tableNoTransitionEnergyTotalNonPreservedMotifs;sumTableEnergyNonPreservedMotifs];
+                            end 
+
+                        else
+                            if strcmp(labelEdges{j},'transition')
+                                totalEdges{1}=[];
+                            end
+                        end
+
+                    end
+                end
+            end
 
             [filePaths{nPath} 'randomization ' num2str(nRand) '  -  ' splittedCellHeight(1:end-4)]
 
@@ -124,24 +124,24 @@ for nPath=1:length(filePaths)
         end
 
         
-%          mkdir([filePaths{nPath} 'energy\'])
-%          %saving tables
-%          if nCellHeight>1
-%             writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\energyTransitionEdges_' splittedCellHeight(1:end-4) '_' date '.xls'])
-%             writetable(tableNoTransitionEnergyTotal,[filePaths{nPath} 'energy\energyNoTransitionEdges_' splittedCellHeight(1:end-4) '_' date '.xls'])
-%             writetable(tableNoTransitionEnergyFilterRandom,[filePaths{nPath} 'energy\energyNoTransitionEdgesFilter_' splittedCellHeight(1:end-4) '_' date '.xls'])
-%             %non preserved motifs between apical and basal
-%             writetable(tableNoTransitionEnergyTotalNonPreservedMotifs,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_' splittedCellHeight(1:end-4) '_' date '.xls'])
-%             writetable(tableTransitionEnergyNonPreservedMotifs,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_' splittedCellHeight(1:end-4) '_' date '.xls'])
-% 
-%          else
-%             writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\energyTransitionEdges_' date '.xls'])
-%             writetable(tableNoTransitionEnergyTotal,[filePaths{nPath} 'energy\energyNoTransitionEdges_' date '.xls'])
-%             writetable(tableNoTransitionEnergyFilterRandom,[filePaths{nPath} 'energy\energyNoTransitionEdgesFilter_' date '.xls'])
-%             %non preserved motifs between apical and basal
-%             writetable(tableTransitionEnergyNonPreservedMotifs,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_' date '.xls'])
-%             writetable(tableNoTransitionEnergyTotalNonPreservedMotifs,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_' date '.xls'])
-%          end
+         mkdir([filePaths{nPath} 'energy\'])
+         %saving tables
+         if nCellHeight>1
+            writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\energyTransitionEdges_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            writetable(tableNoTransitionEnergyTotal,[filePaths{nPath} 'energy\energyNoTransitionEdges_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            writetable(tableNoTransitionEnergyFilterRandom,[filePaths{nPath} 'energy\energyNoTransitionEdgesFilter_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            %non preserved motifs between apical and basal
+            writetable(tableNoTransitionEnergyTotalNonPreservedMotifs,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            writetable(tableTransitionEnergyNonPreservedMotifs,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_' splittedCellHeight(1:end-4) '_' date '.xls'])
+
+         else
+            writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\energyTransitionEdges_' date '.xls'])
+            writetable(tableNoTransitionEnergyTotal,[filePaths{nPath} 'energy\energyNoTransitionEdges_' date '.xls'])
+            writetable(tableNoTransitionEnergyFilterRandom,[filePaths{nPath} 'energy\energyNoTransitionEdgesFilter_' date '.xls'])
+            %non preserved motifs between apical and basal
+            writetable(tableTransitionEnergyNonPreservedMotifs,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_' date '.xls'])
+            writetable(tableNoTransitionEnergyTotalNonPreservedMotifs,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_' date '.xls'])
+         end
     
 
     end
