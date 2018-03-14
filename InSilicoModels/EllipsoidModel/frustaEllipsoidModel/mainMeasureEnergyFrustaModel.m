@@ -34,6 +34,8 @@ for nPath=1:length(filePaths)
         tableNoTransitionEnergyFilterRandom=table();
         tableNoTransitionEnergyTotal=table();
         tableNoTransitionEnergyTotalNonPreservedMotifs=table();
+        tableTransitionEnergy = table();
+        tableTransitionEnergyNonPreservedMotifs = table();
 
         for nRand=1:numRandoms
             nRand
