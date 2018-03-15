@@ -1,9 +1,11 @@
-function [ uniqueValidCells, modelFrusta, modelVoronoi ] = getValidOfValidCells( modelFrusta, modelVoronoi, surfaceRatio )
+function [ uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( modelFrusta, modelVoronoi, surfaceRatio )
 %GETVALIDOFVALIDCELLS Summary of this function goes here
 %   Detailed explanation goes here
     
     maxRandoms = 20;
-    uniqueValidCells = cell(maxRandoms);
+    uniqueValidCells = cell(maxRandoms, 1);
+    frustaPolDist = zeros(maxRandoms, 5);
+    voronoiPolDist = zeros(maxRandoms, 5);
     for nRandom = 1:maxRandoms
         load(strcat('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiModel\expansion\512x1024_200seeds\Image_', num2str(nRandom), '_Diagram_5\Image_', num2str(nRandom),'_Diagram_5.mat'));
         
@@ -38,10 +40,33 @@ function [ uniqueValidCells, modelFrusta, modelVoronoi ] = getValidOfValidCells(
         end
         
         uniqueValidCells{nRandom} = oldValidCells(logical(validCells));
+        
+        sides_cellsFrusta = sides_cellsFrusta(logical(validCells));
+        sides_cellsVoronoi = sides_cellsVoronoi(logical(validCells));
+        
+        frustaPolDist(nRandom, :) = vertcat(sum(sides_cellsFrusta == 4), sum(sides_cellsFrusta == 5), sum(sides_cellsFrusta == 6), sum(sides_cellsFrusta == 7), sum(sides_cellsFrusta == 8)) / length(sides_cellsFrusta);
+        voronoiPolDist(nRandom, :) = vertcat(sum(sides_cellsVoronoi == 4), sum(sides_cellsVoronoi == 5), sum(sides_cellsVoronoi == 6), sum(sides_cellsVoronoi == 7), sum(sides_cellsVoronoi == 8)) / length(sides_cellsVoronoi);
+        
         motifsVoronoiIndices = find(modelVoronoi.nRand == nRandom);
-        modelVoronoi(motifsVoronoiIndices(all(ismember(motifsVoronoi, oldValidCells), 2) == 0), :) = [];
+        removingMotifs = any(ismember(motifsVoronoi, uniqueValidCells{nRandom}), 2) == 0;
+%         %
+%         l_original = listLOriginalProjection(listLOriginalProjection.surfaceRatio == surfaceRatio, :).L_originalProjection{1};
+%         figure;
+%         imshow(ismember(l_original, unique(motifsVoronoi(removingMotifs, :))))
+%         figure;
+%         imshow(ismember(l_original, uniqueValidCells{nRandom}))
+%         %
+        modelVoronoi(motifsVoronoiIndices(removingMotifs), :) = [];
         motifsFrustaIndices = find(modelFrusta.nRand == nRandom);
-        modelFrusta(motifsFrustaIndices(all(ismember(motifsFrusta, oldValidCells), 2) == 0), :) = [];
+        removingMotifs = any(ismember(motifsFrusta, uniqueValidCells{nRandom}), 2) == 0;
+%         %
+%         l_original = listLOriginalProjection(listLOriginalProjection.surfaceRatio == 1, :).L_originalProjection{1};
+%         figure;
+%         imshow(ismember(l_original, unique(motifsFrusta(removingMotifs, :))))
+%         figure;
+%         imshow(ismember(l_original, uniqueValidCells{nRandom}))
+%         %
+        modelFrusta(motifsFrustaIndices(removingMotifs), :) = [];
         
     end
     

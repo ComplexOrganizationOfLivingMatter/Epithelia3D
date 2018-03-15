@@ -190,7 +190,7 @@ ttestDifferences = @(x, y) ttest2(x(:, 1) - x(:, 2), y(:, 1) - y(:, 2));
 eggChamberStage4Trans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage4_transitions_19_02_2018.xlsx');
 eggChamberStage4NoTrans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage4_noTransitions_19_02_2018.xlsx');
 
-maxSamples = 51;
+maxSamples = size(eggChamberStage4Trans, 1);
 
 %randomIndicesNoTrans = randperm(size(eggChamberStage4NoTrans, 1), maxSamples);
 randomIndicesNoTrans = [72,58,34,16,67,49,65,21,47,8,36,73,25,81,20,75,35,52,79,51,62,69,22,57,9,80,43,55,3,39,38,76,78,74,13,12,61,31,19,59,7,29,11,30,5,60,71,2,18,37,40];
@@ -200,6 +200,25 @@ randomIndicesNoTrans = [72,58,34,16,67,49,65,21,47,8,36,73,25,81,20,75,35,52,79,
 
 [stage4Summary, stage4Energy] = getEnergyInfo(vertcat(eggChamberStage4Trans, eggChamberStage4NoTrans(randomIndicesNoTrans(1:maxSamples), :)));
 
+%% Ellipsoid Model Stage 4
+modelStage4NoTrans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\voronoiEllipsoidModel\docs\ellipsoidVoronoiModel_Stage4_energyNoTransitions_Filtered200measurements_06-Mar_2018.xlsx');
+modelStage4Trans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\voronoiEllipsoidModel\docs\ellipsoidVoronoiModel_Stage4_energyTransitions_Filtered200measurements_06-Mar_2018.xlsx');
+
+modelStage4NoTrans.Properties.VariableNames = cellfun(@(x) strrep(x, 'inner', 'apical'), modelStage4NoTrans.Properties.VariableNames, 'UniformOutput', false);
+modelStage4NoTrans.Properties.VariableNames = cellfun(@(x) strrep(x, 'outer', 'basal'), modelStage4NoTrans.Properties.VariableNames, 'UniformOutput', false);
+
+modelStage4Trans.Properties.VariableNames = cellfun(@(x) strrep(x, 'inner', 'apical'), modelStage4NoTrans.Properties.VariableNames, 'UniformOutput', false);
+modelStage4Trans.Properties.VariableNames = cellfun(@(x) strrep(x, 'outer', 'basal'), modelStage4NoTrans.Properties.VariableNames, 'UniformOutput', false);
+
+%idsFilter = 1:2:200;
+%idsFilter = randperm(200, maxSamples);
+idsFilter = [92,42,184,36,143,68,193,130,94,163,11,100,177,162,78,102,196,107,166,77,44,13,133,195,6,183,24,25,63,82,7,140,59,181,168,144,186,112,155,106,197,53,49,111,99,72,150,125,171,76,122];
+
+
+[modelStage4NoTransSummary, modelStage4NoTransEnergy] = getEnergyInfo(modelStage4NoTrans(idsFilter, :));
+[modelStage4TransSummary, modelStage4TransEnergy] = getEnergyInfo(modelStage4Trans(idsFilter, :));
+
+[modelStage4Summary, modelStage4Energy] = getEnergyInfo(vertcat(modelStage4NoTrans(idsFilter, :), modelStage4Trans(idsFilter, :)));
 %% Egg chamber Stage 8
 eggChamberStage8Trans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage8_transitions_19_02_2018.xlsx');
 eggChamberStage8NoTrans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage8_noTransitions_19_02_2018.xlsx');
@@ -215,8 +234,8 @@ randomIndicesNoTrans = [6,28,21,11,17,13,29,38,34,5,44,3,19,25,45,49,43,20,46,1,
 [stage8Summary, stage8Energy] = getEnergyInfo(vertcat(eggChamberStage8Trans, eggChamberStage8NoTrans(randomIndicesNoTrans(1:maxSamples), :)));
 
 %% Ellipsoid Modell Stage 8
-modelStage8NoTrans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\voronoiEllipsoidModel\docs\ellipsoidVoronoiModel_Stage4_energyNoTransitions_Filtered200measurements_06-Mar_2018.xlsx');
-modelStage8Trans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\voronoiEllipsoidModel\docs\ellipsoidVoronoiModel_Stage4_energyTransitions_Filtered200measurements_06-Mar_2018.xlsx');
+modelStage8NoTrans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\voronoiEllipsoidModel\docs\ellipsoidVoronoiModel_Stage8_energyNoTransitions_Filtered200measurements_06-Mar_2018.xlsx');
+modelStage8Trans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\voronoiEllipsoidModel\docs\ellipsoidVoronoiModel_Stage8_energyTransitions_Filtered200measurements_06-Mar_2018.xlsx');
 
 modelStage8NoTrans.Properties.VariableNames = cellfun(@(x) strrep(x, 'inner', 'apical'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
 modelStage8NoTrans.Properties.VariableNames = cellfun(@(x) strrep(x, 'outer', 'basal'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
@@ -224,28 +243,57 @@ modelStage8NoTrans.Properties.VariableNames = cellfun(@(x) strrep(x, 'outer', 'b
 modelStage8Trans.Properties.VariableNames = cellfun(@(x) strrep(x, 'inner', 'apical'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
 modelStage8Trans.Properties.VariableNames = cellfun(@(x) strrep(x, 'outer', 'basal'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
 
-[modelStage8NoTransSummary, modelStage8NoTransEnergy] = getEnergyInfo(modelStage8NoTrans);
-[modelStage8TransSummary, modelStage8TransEnergy] = getEnergyInfo(modelStage8Trans);
+%idsFilter = 1:2:200;
+idsFilter = [63,106,33,119,52,128,134,145,87,17,44,173,29,155,101,185,15,82,20,175,1,139,146,154,184,70,46,179,75,156,31,45,25,23,193,96,91,24,189,186,57,183];
+%idsFilter = randperm(200, maxSamples);
+%idsFilter = randperm(size(eggChamberStage8NoTrans, 1), maxSamples);
 
-[modelStage8Summary, modelStage8Energy] = getEnergyInfo(vertcat(modelStage8NoTrans, modelStage8Trans));
+[modelStage8NoTransSummary, modelStage8NoTransEnergy] = getEnergyInfo(modelStage8NoTrans(idsFilter, :));
+[modelStage8TransSummary, modelStage8TransEnergy] = getEnergyInfo(modelStage8Trans(idsFilter, :));
+
+[modelStage8Summary, modelStage8Energy] = getEnergyInfo(vertcat(modelStage8NoTrans(idsFilter, :), modelStage8Trans(idsFilter, :)));
+
 
 %% Voronoi Model & All frusta Model
 %Total cells
-surfaceRatio = '5';
+surfaceRatio = '1.25';
 voronoiModelBasal = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\voronoiModel\allMotifsPerSurfaceRatio\allMotifsEnergy_200seeds_surfaceRatio_', surfaceRatio, '_16-Feb-2018.xls'));
 voronoiModelApical = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\voronoiModel\allMotifsPerSurfaceRatio\allMotifsEnergy_200seeds_surfaceRatio_1_16-Feb-2018.xls'));
-%allFrustaModelApical = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\allFrusta\allFrustaEnergy_200seeds_surfaceRatio_1_13-Feb-2018.xls'));
 allFrustaModel = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\allFrusta\allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatio, '_13-Feb-2018.xls'));
 
-%[ voronoiModel ] = unifyApicalAndBasal( voronoiModelApical, voronoiModelBasal );
+% [ uniqueValidCells, allFrustaModel, voronoiModelBasal, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( allFrustaModel, voronoiModelBasal, str2num(surfaceRatio) );
+% length(vertcat(uniqueValidCells{:}))
+% size(allFrustaModel, 1)
+% size(voronoiModelBasal, 1)
+% mean(frustaPolDist)
+% mean(voronoiPolDist)
 
-[voronoiModelSummary, voronoiModelEnergy] = getEnergyInfo(voronoiModelBasal);
+%[voronoiModelApicalSummary, voronoiModelApicalEnergy] = getEnergyInfo(voronoiModelApical);
+
+disp('------------Frusta-------------');
+
+allFrustaModelNoFavorable = allFrustaModel(allFrustaModel.basalEdgeAngle >= 45, :);
+allFrustaModelFavorable = allFrustaModel(allFrustaModel.basalEdgeAngle <= 45, :);
+countUniqueCellsInMotif( allFrustaModelFavorable )
+countUniqueCellsInMotif( allFrustaModelNoFavorable )
+[allFrustaModelNoFavorableeSummary, allFrustaModelNoFavorableEnergy] = getEnergyInfo(allFrustaModelNoFavorable);
+[allFrustaModelFavorableSummary, allFrustaModelFavorableEnergy] = getEnergyInfo(allFrustaModelFavorable);
 [allFrustaModelSummary, allFrustaModelEnergy] = getEnergyInfo(allFrustaModel);
+
+disp('------------Voronoi-------------');
+
+voronoiModelBasalNoFavorable = voronoiModelBasal(voronoiModelBasal.EdgeAngle >= 45, :);
+voronoiModelBasalFavorable = voronoiModelBasal(voronoiModelBasal.EdgeAngle < 45, :);
+countUniqueCellsInMotif( voronoiModelBasalFavorable )
+countUniqueCellsInMotif( voronoiModelBasalNoFavorable )
+[voronoiModelNoFavorableSummary, voronoiModelNoFavorableEnergy] = getEnergyInfo(voronoiModelBasalNoFavorable);
+[voronoiModelFavorableSummary, voronoiModelFavorableEnergy] = getEnergyInfo(voronoiModelBasalFavorable);
+[voronoiModelSummary, voronoiModelEnergy] = getEnergyInfo(voronoiModelBasal);
 
 
 % Same cells in apical in both models
 % Matching cells
-surfaceRatio = '1.6667';
+surfaceRatio = '5';
 voronoiModelNoTrans = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\voronoiModel\matchingMotifsBasalApical\filtering200dataRandom\noTransitionEdges_200seeds_surfaceRatio_', surfaceRatio, '_filter200measurements_16-Feb-2018.xls'));
 voronoiModelTrans = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\voronoiModel\matchingMotifsBasalApical\filtering200dataRandom\transitionEdges_200seeds_surfaceRatio_', surfaceRatio, '_filter200measurements_16-Feb-2018.xls'));
 allFrustaModel = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\allFrusta\allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatio, '_13-Feb-2018.xls'));
@@ -260,9 +308,9 @@ allFrustaModel = readtable(horzcat('D:\TOTALenergyMeasurementsTubularModel\allFr
 % allFrustaModelApical = readtable(horzcat('D:\Pablo\Epithelia3D\docs\Tables\reductionAllMotifs\AllFrusta\allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatio,'_20-Feb-2018.xls'));
 % allFrustaModelBasal = readtable(horzcat('D:\Pablo\Epithelia3D\docs\Tables\reductionAllMotifs\AllFrusta\allFrustaEnergy_200seeds_surfaceRatio_1_20-Feb-2018.xls'));
 
-idsFilter = 1:2:200;
+%idsFilter = 1:2:200;
 %idsFilter = 1:31;
-%idsFilter = 1:52;
+idsFilter = 1:52;
 
 % allFrustaModelApical.Properties.VariableNames(5:end-3) = cellfun(@(x) strcat('apical', x), allFrustaModelApical.Properties.VariableNames(5:end-3), 'UniformOutput', false);
 % allFrustaModelBasal.Properties.VariableNames(5:end-3) = cellfun(@(x) strcat('basal', x), allFrustaModelBasal.Properties.VariableNames(5:end-3), 'UniformOutput', false);
