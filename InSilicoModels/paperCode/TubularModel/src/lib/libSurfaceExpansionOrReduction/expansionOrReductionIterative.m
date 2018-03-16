@@ -8,7 +8,7 @@ function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjecti
     listSeedsProjected=cell(length(listOfSurfaceRatios),2);
     listLOriginalProjection=cell(length(listOfSurfaceRatios),2);
 
-    parfor j=1:length(listOfSurfaceRatios)
+    for j=1:length(listOfSurfaceRatios)
             %% surface reduction implication - recalculate seeds and labelled images
             surfaceRatio=listOfSurfaceRatios(j);
             [H,W]=size(L_original);

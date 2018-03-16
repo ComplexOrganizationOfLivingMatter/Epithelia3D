@@ -1,8 +1,8 @@
 function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthOfEdges( L_basal,L_apical)
 
     %calculate neighbourings in apical and basal layers
-    [neighs_basal,~]=calculate_neighbours(L_basal);
-    [neighs_apical,~]=calculate_neighbours(L_apical);
+    [neighs_basal,~]=calculateNeighbours(L_basal);
+    [neighs_apical,~]=calculateNeighbours(L_apical);
 
     %classify neighbourings of basal
     pairOfNeighsBasal=(cellfun(@(x, y) [y*ones(length(x),1),x],neighs_basal',num2cell(1:size(neighs_basal,2))','UniformOutput',false));

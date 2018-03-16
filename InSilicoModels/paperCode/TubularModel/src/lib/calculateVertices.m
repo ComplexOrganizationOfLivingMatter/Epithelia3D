@@ -1,4 +1,4 @@
-function [ verticesInfo ] = calculateVertices( L_img, neighbours )
+function [ verticesInfo ] = calculateVertices( L_img, neighbours)
  
     % With a labelled image as input, the objective is get all vertex for each
     % cell
@@ -9,12 +9,17 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours )
 
     neighboursVertices = buildTripletsOfNeighs( neighbours );%intersect dilatation of each cell of triplet
     vertices = cell(size(neighboursVertices, 1), 1);
+    
+    
 
     % We first calculate the perimeter of the cell to improve efficiency
     % If the image is small, is better not to use bwperim
     % For larger images it improves a lot the efficiency
     
     dilatedCells=cell(max(max(L_img)),1);
+    
+    
+    
     for i=1:max(max(L_img))
         BW=zeros(size(L_img));
         BW(L_img==i)=1;
@@ -25,7 +30,7 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours )
     borderImg=zeros(size(L_img));
     borderImg(L_img==0)=1;
     for numTriplet = 1 : size(neighboursVertices,1)
-
+              
         BW1_dilate=dilatedCells{neighboursVertices(numTriplet, 1),1};
         BW2_dilate=dilatedCells{neighboursVertices(numTriplet, 2),1};
         BW3_dilate=dilatedCells{neighboursVertices(numTriplet, 3),1};
@@ -34,16 +39,42 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours )
         %It is better use '&' than '.*' in this function
         [row,col]=find((BW1_dilate.*BW2_dilate.*BW3_dilate.*borderImg)==1);
 
+        %in case of vertices in X extremes... expanding the image
+        if isempty(row) && isempty(col)
+            [row,col]=find((imdilate([BW1_dilate,BW1_dilate],[1,1;1,1]).*imdilate([BW2_dilate,BW2_dilate],[1,1;1,1]).*imdilate([BW3_dilate,BW3_dilate],[1,1;1,1]).*[borderImg,borderImg])==1);
+            if round(mean(col))>size(L_img,2)
+               col= size(L_img,2);
+               row=mean(row);
+            end
+        end
+        
         if length(row)>1
-            vertices{numTriplet} = round(mean([row,col]));
+            if ~ismember(round(mean(col)),col)
+                vertices{numTriplet,1}=round(mean([row(col > mean(col)),col(col > mean(col))]));
+                vertices{numTriplet,2}=round(mean([row(col < mean(col)),col(col < mean(col))]));
+            else
+                vertices{numTriplet} = round(mean([row,col]));
+            end
         else
             vertices{numTriplet} = [row,col];
         end
     end
+    
+    
+    
 
     verticesInfo.verticesPerCell = vertices;
     verticesInfo.verticesConnectCells = neighboursVertices;
 
+    notEmptyCells=cellfun(@(x) ~isempty(x),verticesInfo.verticesPerCell,'UniformOutput',true);
+    if size(verticesInfo.verticesPerCell,2)==2
+        verticesInfo.verticesPerCell=[verticesInfo.verticesPerCell(notEmptyCells(:,1),1);verticesInfo.verticesPerCell(notEmptyCells(:,2),2)];
+        verticesInfo.verticesConnectCells=[verticesInfo.verticesConnectCells(notEmptyCells(:,1),:);verticesInfo.verticesConnectCells(notEmptyCells(:,2),:)];
+    else
+        verticesInfo.verticesPerCell=verticesInfo.verticesPerCell(notEmptyCells,:);
+        verticesInfo.verticesConnectCells=verticesInfo.verticesConnectCells(notEmptyCells,:);
+    end
+    
 
 
 end

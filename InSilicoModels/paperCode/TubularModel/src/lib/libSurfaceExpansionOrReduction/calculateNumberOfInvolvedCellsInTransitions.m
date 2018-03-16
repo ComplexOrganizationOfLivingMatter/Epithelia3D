@@ -1,7 +1,7 @@
 function calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection,pathV5data,directory2save1,numOfSurfaceRatios,Hinitial,Winitial)
 
     numberOfRows=11;
-    directory2save=[directory2save1 '\' kindProjection '\' num2str(Winitial) 'x' num2str(Hinitial) '_' num2str(numSeeds) 'seeds\'];
+    directory2save=[directory2save1 kindProjection '\' num2str(Winitial) 'x' num2str(Hinitial) '_' num2str(numSeeds) 'seeds\'];
 
     listTransitionPerCell=zeros(numberOfRows,numOfSurfaceRatios,size(pathV5data,1));
     listWinningNeigh=zeros(numberOfRows,numOfSurfaceRatios,size(pathV5data,1));
@@ -15,7 +15,7 @@ function calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection,pat
 
         %load cylindrical Voronoi 5 data
         nameFile=pathV5data(i).name;
-        load([directory2save '\' nameFile(1:end-4) '\' nameFile],'listLOriginalProjection')
+        load([directory2save nameFile(1:end-4) '\' nameFile],'listLOriginalProjection')
 
         numberOfCellsWinning=zeros(1,size(listLOriginalProjection,1));
         numberOfCellsLossing=zeros(1,size(listLOriginalProjection,1));

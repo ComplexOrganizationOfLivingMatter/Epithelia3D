@@ -1,13 +1,20 @@
-function [edgeLength, edgeAngle] = edgeLengthAnglesCalculation(vertsEdge,W)
+function [edgeLength, edgeAngle] = edgeLengthAnglesCalculation(vertsEdge,borderCells,verticesBorderLeft,verticesBorderRight,verticesTotal,fourCellMotif,W)
 
+    indexCellsEdge=ismember(vertcat(verticesTotal.verticesPerCell{:}),vertsEdge,'rows');
+    CellsEdge=verticesTotal.verticesConnectCells(indexCellsEdge,:);
+    cellsEdge=intersect(CellsEdge(1,:),CellsEdge(2,:));
+    cellsToStudy=intersect(cellsEdge,fourCellMotif);
     
-    if abs(vertsEdge(2,2)-vertsEdge(1,2)) > W/2
-        [~,index]=min(vertsEdge(:,2));
-        vertsEdge(index,2)=vertsEdge(index,2)+W;
+    indexBorderCells=ismember(cellsToStudy,borderCells);
+    indexVertexBorderLeft=ismember(vertsEdge,vertcat(verticesBorderLeft{:}),'rows');
+    indexVertexBorderRight=ismember(vertsEdge,vertcat(verticesBorderRight{:}),'rows');
+    
+    if sum(indexVertexBorderLeft)==1 && sum(indexVertexBorderRight)==1 && sum(indexBorderCells)>=1
+        vertsEdge(indexVertexBorderLeft,2)=vertsEdge(indexVertexBorderLeft,2)+W;
     end
+      
     
-    
-%     plot(vertsEdge(:,2),vertsEdge(:,1))
+%       plot(vertsEdge(:,2),vertsEdge(:,1))
     
     directorEdgeVector=[vertsEdge(2,:)-vertsEdge(1,:),0];   
     %fixing axis X as director vector (axis X = columns)

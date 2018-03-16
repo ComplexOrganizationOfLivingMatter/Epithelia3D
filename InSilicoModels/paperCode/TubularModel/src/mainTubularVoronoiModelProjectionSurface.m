@@ -1,12 +1,18 @@
-function mainTubularVoronoiModelProjectionSurface(listSeeds,basalExpansions,apicalReductions,Hinitial,Winitial)
+function mainTubularVoronoiModelProjectionSurface(numSeeds,basalExpansions,apicalReductions,numRandoms,Hinitial,Winitial)
 
     kindProjection={'expansion','reduction'};
-    directory2save='data\tubularModelSurfaceProjection\';
+    if isempty(basalExpansions)
+        kindProjection={'reduction'};
+    else if isempty(apicalReductions)
+            kindProjection={'expansion'};
+         end
+    end
+    
+    directory2save='data\tubularVoronoiModel\';
 
     for typeP = 1 : length(kindProjection)
-        for numSeeds= listSeeds
 
-            nameOfFolder=[num2str(Hinitial) 'x' num2str(Winitial) '_' num2str(numSeeds) 'seeds\'];
+            nameOfFolder=[num2str(Winitial) 'x' num2str(Hinitial) '_' num2str(numSeeds) 'seeds\'];
             path3dVoronoi=['data\tubularCVT\Data\' nameOfFolder];
 
             pathV5data=dir([path3dVoronoi '*m_5*']);
@@ -21,11 +27,16 @@ function mainTubularVoronoiModelProjectionSurface(listSeeds,basalExpansions,apic
             end
 
             %carry out Voronoi surface projections
-            surfaceProjection(pathV5data,nameOfFolder,directory2save,path3dVoronoi,kindProjection{typeP},listOfSurfaceRatios,numSeeds)
+             surfaceProjection(pathV5data,nameOfFolder,directory2save,path3dVoronoi,kindProjection{typeP},listOfSurfaceRatios,numSeeds)
 
             %calculate the presence of scutoids
             calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection{typeP},pathV5data,directory2save,length(listOfSurfaceRatios),Hinitial,Winitial)
-        end
+            calculateNcellsAroundTrasversalSection(numSeeds,kindProjection{typeP},pathV5data,directory2save,length(listOfSurfaceRatios),Hinitial,Winitial)
+
+            
+            energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,length(listOfSurfaceRatios),numRandoms,kindProjection{typeP},numSeeds,basalExpansions,apicalReductions)
+            
+            
     end
 
 end

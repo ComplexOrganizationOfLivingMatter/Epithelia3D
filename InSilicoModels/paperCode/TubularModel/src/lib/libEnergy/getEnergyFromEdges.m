@@ -1,29 +1,22 @@
-function dataEnergy = getEnergyFromEdges( L_img,neighs,noValidCells,verticesApical,verticesProjection,surfaceRatio)
+function dataEnergy = getEnergyFromEdges( L_img,neighs,noValidCells,verticesApical,verticesProjection,surfaceRatio,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight)
 
-    neighsProjection=neighs;
     
     [~,W]=size(L_img);
     W_projection=round(W*surfaceRatio);
     %get couples of edges
-    pairCell=cellfun(@(x, y) [y*ones(length(x),1),x],neighs',num2cell(1:size(neighsProjection,2))','UniformOutput',false);
+    pairCell=cellfun(@(x, y) [y*ones(length(x),1),x],neighs',num2cell(1:size(neighs,2))','UniformOutput',false);
     pairCell=unique(vertcat(pairCell{:}),'rows');
     pairCell=unique([min(pairCell,[],2),max(pairCell,[],2)],'rows');   
     
     %all vertices in basal
     projectionVerticesPerCell=arrayfun(@(x) find(sum(x==verticesProjection.verticesConnectCells,2)), 1:max(max(L_img)), 'UniformOutput', false);
-    %all vertices in apical
-    verticesPerCell=arrayfun(@(x) find(sum(x==verticesApical.verticesConnectCells,2)), 1:max(max(L_img)), 'UniformOutput', false);
-        
+       
     %vertices of edges transition in basal
     verticesOfEdgesProjection=arrayfun(@(x,y) intersect(projectionVerticesPerCell{x},projectionVerticesPerCell{y}), pairCell(:,1),pairCell(:,2),'UniformOutput',false);
-       
     fourCellsMotifs=cellfun(@(x) unique(horzcat(verticesProjection.verticesConnectCells(x,:))),verticesOfEdgesProjection, 'UniformOutput', false);
     validPairs1=cell2mat(cellfun(@(x) isempty(intersect(noValidCells,x)) & length(x)==4 ,fourCellsMotifs,'UniformOutput',false));
-    
     fourCellsMotifsValidCells=fourCellsMotifs(validPairs1,:);
-    
     pairCellValidCells=pairCell(validPairs1,:);
-    
     cellsInMotifContactingCellsEdge=arrayfun(@(x) setdiff(fourCellsMotifsValidCells{x},pairCellValidCells(x,:))',1:size(pairCellValidCells,1), 'UniformOutput', false);
     
     %deleting incoherences with motif of 5 or 3 cells
@@ -44,7 +37,7 @@ function dataEnergy = getEnergyFromEdges( L_img,neighs,noValidCells,verticesApic
     %testing transition data
     dataEnergy.fourCellsMotif=[pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];
     
-    [dataEnergy.EdgeLength,dataEnergy.SumEdgesOfEnergy,dataEnergy.EdgeAngle,dataEnergy.H1,dataEnergy.H2,dataEnergy.W1,dataEnergy.W2,notEmptyIndexes]=capturingWidthHeightAndEnergy(projectionVerticesPerCell,verticesProjection,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_projection);
+    [dataEnergy.EdgeLength,dataEnergy.SumEdgesOfEnergy,dataEnergy.EdgeAngle,dataEnergy.H1,dataEnergy.H2,dataEnergy.W1,dataEnergy.W2,notEmptyIndexes]=capturingWidthHeightAndEnergy(projectionVerticesPerCell,verticesProjection,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_projection,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight);
    
     dataEnergy.fourCellsMotif=dataEnergy.fourCellsMotif(notEmptyIndexes,:);
     dataEnergy.H1=dataEnergy.H1(notEmptyIndexes);

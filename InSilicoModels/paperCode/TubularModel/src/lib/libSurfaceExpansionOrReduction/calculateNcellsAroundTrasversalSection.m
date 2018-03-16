@@ -1,18 +1,18 @@
-function calculateNcellsAroundTrasversalSection(numSeeds,kindProjection,pathV5data,directory2save1,numOfSurfaceRatios)
+function calculateNcellsAroundTrasversalSection(numSeeds,kindProjection,pathV5data,directory2save1,numOfSurfaceRatios,Hinitial,Winitial)
 
-    directory2save=[directory2save1 '\' kindProjection '\512x1024_' num2str(numSeeds) 'seeds\'];
+    directory2save=[directory2save1 kindProjection '\' num2str(Winitial) 'x' num2str(Hinitial) '_' num2str(numSeeds) 'seeds\'];
 
 
     acumN=cell(numOfSurfaceRatios,size(pathV5data,1));
 
-    for i=18:size(pathV5data,1)
+    for i=1:size(pathV5data,1)
 
         %load cylindrical Voronoi 5 data
         nameFile=pathV5data(i).name;
-        load([directory2save '\' nameFile(1:end-4) '\' nameFile],'listLOriginalProjection')
+        load([directory2save nameFile(1:end-4) '\' nameFile],'listLOriginalProjection')
 
         for j=1:numOfSurfaceRatios
-
+            [num2str(i),'-',num2str(j)]
             Img_cyl=listLOriginalProjection.L_originalProjection{j,1};
             %calculate neighbours of cells as cylinder model
             [neighs_cylModel,~]=calculateNeighbours(Img_cyl);
@@ -53,7 +53,7 @@ function calculateNcellsAroundTrasversalSection(numSeeds,kindProjection,pathV5da
                 if hCoordinatesFinal(indexZeroFinal)==H
                     cellsFinal(indexZeroFinal)=Img_planar(hCoordinatesFinal(indexZeroFinal)-1,end);
                 else
-                    cellsFinal=Img_planar(hCoordinatesFinal,1);
+                    cellsFinal=Img_planar(hCoordinatesFinal,W);
                 end
             end
             
