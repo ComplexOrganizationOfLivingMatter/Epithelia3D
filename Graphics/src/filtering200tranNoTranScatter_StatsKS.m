@@ -111,8 +111,8 @@ for i = 1 : length(setOfDistributions)
 %     createPolarHistogram(setOfDistributions{i}.anglesTransitionFilter, colourTrans, [titles{i} '- Transition']);
 %     createPolarHistogram(setOfDistributions{i}.anglesNoTransitionFilter, colourNoTrans, [titles{i} '- No transition']);
 %     createScatterPolar( setOfDistributions{i}.anglesTransitionFilter,setOfDistributions{i}.edgesTransitionFilter,setOfDistributions{i}.anglesNoTransitionFilter,setOfDistributions{i}.edgesNoTransitionFilter,titles{i})
-    [H_angles, pValue_angles]=kstest2(setOfDistributions{i}.anglesTransitionFilter,setOfDistributions{i}.anglesNoTransitionFilter);
-    [H_edges, pValue_edges]=kstest2(setOfDistributions{i}.edgesTransitionFilter,setOfDistributions{i}.edgesNoTransitionFilter);
+    [H_angles, pValue_angles]=kstest2(setOfDistributions{i}.anglesTransition,setOfDistributions{i}.anglesNoTransition);
+    [H_edges, pValue_edges]=kstest2(setOfDistributions{i}.edgesTransition,setOfDistributions{i}.edgesNoTransition);
 
     statsTubularModel(i,:)=[H_angles, pValue_angles,H_edges, pValue_edges];
     
