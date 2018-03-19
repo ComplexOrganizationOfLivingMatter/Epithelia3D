@@ -27,7 +27,7 @@ function mainTubularControlModelProjectionSurface(numSeeds,basalExpansions,apica
             colours = colorcube(nSeeds);
             colours = colours(randperm(nSeeds), :);
             
-            parfor nRand=1:numRandoms
+            for nRand=1:numRandoms
                 drawAndSaveVertices(relativePathVoronoi,nSeeds,nRand,numSurfaces,typeProjection,basalExpansions,apicalReductions,colours,H);
             end
             energyCalculationControlTubularModel(numSurfaces,relativePathVoronoi,numRandoms,typeProjection,nSeeds,basalExpansions,apicalReductions)
