@@ -14,11 +14,12 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
     disp('Getting vertices 3D');
     %Get vertices info on the apical layer
     
-    initialEllipsoid = getVertices3D( initialEllipsoid.img3DLayer, initialEllipsoid.neighbourhood, initialEllipsoid );
     if isfield(initialEllipsoid, 'neighbourhood')
         [initialEllipsoid] = calculate_neighbours3D(initialEllipsoid.img3DLayer, initialEllipsoid);
     end
     
+    initialEllipsoid = getVertices3D( initialEllipsoid.img3DLayer, initialEllipsoid.neighbourhood, initialEllipsoid );
+
     
     initialEllipsoid.resolutionFactor = ellipsoidInfo.resolutionFactor;
     initialEllipsoid.resolutionEllipse = 500;
