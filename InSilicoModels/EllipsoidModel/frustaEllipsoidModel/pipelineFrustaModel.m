@@ -7,7 +7,16 @@ ellipsoidFilesStage4 = resultFilesStage4(cellfun(@(x) isempty(strfind(x, '.mat')
 resultFilesStage8 = getAllFiles('../voronoiEllipsoidModel/results/Stage 8/');
 ellipsoidFilesStage8 = resultFilesStage8(cellfun(@(x) isempty(strfind(x, '.mat')) == 0 & isempty(strfind(x, 'ellipsoid_x')) == 0, resultFilesStage8));
 
-ellipsoidFiles=[ellipsoidFilesStage4;ellipsoidFilesStage8];
+resultFilesGlobe = getAllFiles('../voronoiEllipsoidModel/results/Globe/');
+resultFilesGlobe = resultFilesGlobe(cellfun(@(x) isempty(strfind(x, '.mat')) == 0 & isempty(strfind(x, 'ellipsoid_x')) == 0, resultFilesGlobe));
+
+resultFilesRugby = getAllFiles('../voronoiEllipsoidModel/results/Rugby/');
+resultFilesRugby = resultFilesRugby(cellfun(@(x) isempty(strfind(x, '.mat')) == 0 & isempty(strfind(x, 'ellipsoid_x')) == 0, resultFilesRugby));
+
+
+
+%ellipsoidFiles=[ellipsoidFilesStage4;ellipsoidFilesStage8];
+ellipsoidFiles=[resultFilesGlobe; resultFilesRugby];
 
 % stage8_ValidRandom = [1:5 7:8 10 13 15:17 19:20 22 25 26 29 30];
 % stage4_ValidRandom = [7 15 19 20 25 33 36 39 46 61:64 69 80 81 96 102 106 119 124 135 145 150 154 162 170:172 180];
