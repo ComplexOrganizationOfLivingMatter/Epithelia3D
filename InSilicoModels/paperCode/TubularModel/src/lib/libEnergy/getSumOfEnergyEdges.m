@@ -1,4 +1,4 @@
-function sumEdgesOfEnergy = getSumOfEnergyEdges(verticesCell_1_2,verticesCell_3,verticesCell_4,verticesTotal,W)
+function sumEdgesOfEnergy = getSumOfEnergyEdges(lengthCentralEdge,verticesCell_1_2,verticesCell_3,verticesCell_4,verticesTotal,borderCells,verticesBorderLeft,verticesBorderRight,fourCellsMotif,W)
 
 
         indexVertEdge1=ismember(verticesCell_3(:,1),verticesCell_1_2(:,:));
@@ -12,37 +12,18 @@ function sumEdgesOfEnergy = getSumOfEnergyEdges(verticesCell_1_2,verticesCell_3,
         vertsNeighEdge1=vertcat(verticesTotal.verticesPerCell{verticesCell_3(~indexVertEdge1)});
         vertsNeighEdge2=vertcat(verticesTotal.verticesPerCell{verticesCell_4(~indexVertEdge2)});
    
-
-        
-        %modify coordinate X of vertices if they are in both extremes of the images.
-        
-        if sum(abs(vertEdge1(1,2) - vertsNeighEdge1(:,2)) > W/2)  > 0
-            vert2modify= abs(vertEdge1(:,2) - vertsNeighEdge1(:,2)) > W/2;
-            
-            if vertsNeighEdge1(vert2modify,2) < vertEdge1(:,2)
-                vertsNeighEdge1(vert2modify,2)=vertsNeighEdge1(vert2modify,2)+W;
-            else
-                vertsNeighEdge1(vert2modify,2)=vertsNeighEdge1(vert2modify,2)-W;
-            end
-            
-        end
+        edge1=[vertEdge1;vertsNeighEdge1(1,:)];
+        edge2=[vertEdge1;vertsNeighEdge1(2,:)];
+        edge3=[vertEdge2;vertsNeighEdge2(1,:)];
+        edge4=[vertEdge2;vertsNeighEdge2(2,:)];
         
         
-        if sum(abs(vertEdge2(1,2) - vertsNeighEdge2(:,2)) > W/2)  > 0
-            vert2modify= abs(vertEdge2(:,2) - vertsNeighEdge2(:,2)) > W/2;
-            
-            if vertsNeighEdge2(vert2modify,2) < vertEdge2(:,2)
-                vertsNeighEdge2(vert2modify,2)=vertsNeighEdge2(vert2modify,2)+W;
-            else
-                vertsNeighEdge2(vert2modify,2)=vertsNeighEdge2(vert2modify,2)-W;
-            end
-            
-        end
-        
-        %distance between edge vertices and its neighbours
-        distVertEdge1 = pdist2(vertEdge1,vertsNeighEdge1);
-        distVertEdge2 = pdist2(vertEdge2,vertsNeighEdge2);
-        
-        sumEdgesOfEnergy=sum([distVertEdge1,distVertEdge2]);
+        [length1,~]=edgeLengthAnglesCalculation(edge1,borderCells,verticesBorderLeft,verticesBorderRight,verticesTotal,fourCellsMotif,W);
+        [length2,~]=edgeLengthAnglesCalculation(edge2,borderCells,verticesBorderLeft,verticesBorderRight,verticesTotal,fourCellsMotif,W);
+        [length3,~]=edgeLengthAnglesCalculation(edge3,borderCells,verticesBorderLeft,verticesBorderRight,verticesTotal,fourCellsMotif,W);
+        [length4,~]=edgeLengthAnglesCalculation(edge4,borderCells,verticesBorderLeft,verticesBorderRight,verticesTotal,fourCellsMotif,W);       
+       
+        sumEdgesOfEnergy=lengthCentralEdge+length1+length2+length3+length4;
+  
 end
         

@@ -60,7 +60,7 @@ function surfaceProjection( pathV5data,nameOfFolder,directory2save,path3dVoronoi
         name2save=name2save{1};
         save([directory2save kindProjection '\' nameOfFolder name2save '\'  name2save '.mat'],'listLOriginalProjection','listSeedsProjected','listTransitionsBySurfaceRatio','listDataAnglesTransitionMeasuredInBasal','listDataAnglesTransitionMeasuredInApical','listDataAnglesNoTransitionMeasuredInBasal','listDataAnglesNoTransitionMeasuredInApical')
 
-
+        [name2save ' completed']
 
     end
 
