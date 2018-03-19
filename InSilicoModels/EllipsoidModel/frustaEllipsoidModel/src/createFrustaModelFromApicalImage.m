@@ -14,7 +14,7 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
     disp('Getting vertices 3D');
     %Get vertices info on the apical layer
     
-    if isfield(initialEllipsoid, 'neighbourhood')
+    if isfield(initialEllipsoid, 'neighbourhood') == 0
         [initialEllipsoid] = calculate_neighbours3D(initialEllipsoid.img3DLayer, initialEllipsoid);
     end
     
