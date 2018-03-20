@@ -28,9 +28,13 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
     %New vertices on basal
     [ finalVerticesAugmented ] = getAugmentedCentroids( initialEllipsoid, vertcat(initialEllipsoid.verticesPerCell{:}), ellipsoidInfo.cellHeight);
 
-       
-    if isempty(outputNameFile.name)
-        
+    if isempty(outputNameFile)
+        goForward = 1;
+    elseif isempty(outputNameFile.name)
+        goForward = 1;
+    end
+    
+    if goForward == 1        
         allFrustaImage = initialEllipsoid.img3DLayer;
         
         %     colours = colorcube(size(initialEllipsoid.centroids, 1));
