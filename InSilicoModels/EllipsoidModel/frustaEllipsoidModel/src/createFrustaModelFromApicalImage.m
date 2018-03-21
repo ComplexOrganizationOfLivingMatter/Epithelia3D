@@ -28,6 +28,7 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
     %New vertices on basal
     [ finalVerticesAugmented ] = getAugmentedCentroids( initialEllipsoid, vertcat(initialEllipsoid.verticesPerCell{:}), ellipsoidInfo.cellHeight);
 
+    goForward = 0;
     if isempty(outputNameFile)
         goForward = 1;
     elseif isempty(outputNameFile.name)
@@ -78,7 +79,7 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
         %savefig(strcat(outputFileDirectory, '\frustaEllipsoidModel_OutterLayer_', date, '.fig'));
         
         save(strcat(outputFileDirectory, '\frustaEllipsoidModel_', date, '.mat'), 'allFrustaImage', '-v7.3');
-        
+        outputNameFile(1).name = strcat('frustaEllipsoidModel_', date, '.mat');
         %close outputFigure
         
         
