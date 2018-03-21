@@ -3,6 +3,7 @@ function calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection,pat
     numberOfRows=11;
     directory2save=[directory2save1 kindProjection '\' num2str(Winitial) 'x' num2str(Hinitial) '_' num2str(numSeeds) 'seeds\'];
 
+    %defining variables to storage the total data involved in transitions
     listTransitionPerCell=zeros(numberOfRows,numOfSurfaceRatios,size(pathV5data,1));
     listWinningNeigh=zeros(numberOfRows,numOfSurfaceRatios,size(pathV5data,1));
     listLossingNeigh=zeros(numberOfRows,numOfSurfaceRatios,size(pathV5data,1));
@@ -69,7 +70,6 @@ function calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection,pat
 
 
     %averages and std of total data
-
     finalListTransitionPerCell.average=mean(listTransitionPerCell,3)/numSeeds;
     finalListTransitionPerCell.standardDeviation=std(listTransitionPerCell,[],3)/numSeeds;
     finalListWinningNeigh.average=mean(listWinningNeigh,3)/numSeeds;

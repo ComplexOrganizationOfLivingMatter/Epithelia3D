@@ -13,11 +13,13 @@ function [borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight
            
     
     for nCell = borderCells
+        
         [indexes,~]=find(arrayProjectionCellVertices==nCell);
          indexes=sort(indexes);
                     
         V=vertcat(vertices.verticesPerCell{indexes,1});
         V=unique(V,'rows','stable');
+        V(V(:,2)>W)=W;
         V=round(V);
 
         [~,~,V1index]=checkVerticesBorder(nCell,L_img,V,W);

@@ -15,8 +15,7 @@ function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjecti
             seedsExpansion=[seedsOriginal(:,1:2),round(seedsOriginal(:,3)*surfaceRatio)];
             L_originalProjection=generateCylindricalVoronoi(seedsExpansion,H,round(W*surfaceRatio));
                 
-            %% Representations        
-
+            %% Representations of colourful images        
             name2save=pathV5data(i).name;
             name2save=strsplit(name2save,'.mat');
             name2save=name2save{1};

@@ -1,6 +1,6 @@
 function surfaceProjection( pathV5data,nameOfFolder,directory2save,path3dVoronoi,kindProjection,listOfSurfaceRatios,numSeeds)
 
-    %Define acummulative variables
+    %Define acummulative variables in which saving all data
     acumListTransitionBySurfaceRatio=zeros(length(listOfSurfaceRatios),size(pathV5data,1)*3);
     acumListDataAnglesTransitionInBasal=cell(size(pathV5data,1),1);
     acumListDataAnglesTransitionInApical=cell(size(pathV5data,1),1);
@@ -21,17 +21,11 @@ function surfaceProjection( pathV5data,nameOfFolder,directory2save,path3dVoronoi
         
         %load cylindrical Voronoi 5 data
         load([path3dVoronoi pathV5data(i).name])
-        
-        %% Diameter of cell calculation and estimate heigth of cell and 'lumen'
-        mask=L_original;
-        for j=1:length(border_cells)
-            mask(L_original==border_cells(j))=0;
-        end
-        
+                
         seedsOriginal=sortrows(seeds_values_before,1);
         numCells=size(seeds_values_before,1);
         
-        %% We apply ratio of surface to get in iterative way new layers in apical or basal surface
+        %% We apply surface ratio to get in an iterative way new layers in apical or basal surfaces
         [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjection,...
             listDataAnglesTransitionMeasuredInBasal,listDataAnglesTransitionMeasuredInApical,...
             totalAnglesTransitionMeasuredInBasal,totalAnglesTransitionMeasuredInApical,...

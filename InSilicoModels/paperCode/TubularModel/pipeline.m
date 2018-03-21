@@ -27,21 +27,26 @@ parfor i=1:length(setOfSeeds)
     n_seeds=setOfSeeds(i);
     flag=0;
     while flag<1
-        try 
-            %% 1 - Generation of tubular CVT from random seeds
-            mainTubularCVTGenerator(N_images,N_frames,H,W,n_seeds,distanceBetwSeeds)
+         try 
+            % 1 - Generation of tubular CVT from random seeds
+             mainTubularCVTGenerator(N_images,N_frames,H,W,n_seeds,distanceBetwSeeds)
 
             %% 2 - Projection of Voronoi seeds to another cylindrical surface and generation of Voronoi cells
-            %the next main, also carry out the edge length, angles and scutoids
-            %measurements
-            mainTubularVoronoiModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W)
+            %the next main, also carry out the measurements of edge length, edge angles and scutoids
+            %presence
+             mainTubularVoronoiModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W)
 
             %% 3 - Generation of all frusta cylinder (control tubular model) by projection of cell vertices
             mainTubularControlModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W)
-            flag=1
+            flag=1;
 
-        catch
+        catch ME
             disp(['error in number of seeds: ' num2str(n_seeds)])
+            ME.identifier
+            ME.stack.file
+            ME.stack.name
+            ME.stack.line
+
             flag=0;
         end
     end

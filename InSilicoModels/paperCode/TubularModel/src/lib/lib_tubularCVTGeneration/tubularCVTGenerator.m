@@ -1,9 +1,13 @@
 %Voronoi - Salivary gland model
 function [seeds,seeds_values_before,L_original,border_cells,valid_cells,pathToSaveData]=tubularCVTGenerator(i,j,H,W,seeds,seeds_values_before,folder2save,folderPath)
 
-        %% Generate Voronoi image
+        %% Generate Voronoi image. 
+        %The key is triplicating the image, aplying the Lloyd algorithm, and later capturing the central region.
+
+
         image=zeros(H,W); % Define image to assign seeds
         
+        %placing the seeds
         for k=1:size(seeds,1)
             image(seeds(k,1),seeds(k,2))=1;
         end
@@ -17,12 +21,11 @@ function [seeds,seeds_values_before,L_original,border_cells,valid_cells,pathToSa
         bgm_x3 = DL_x3 == 0;            % Cells = 0 , outline = 1.
                         
         Voronoi_x3=bgm_x3;
-
         L_original_x3=bwlabel(1-Voronoi_x3,8);  % Label cells
         
         
         
-        %% Label correctly cells of the lateral edges
+        %% Label correctly cells in lateral borders
         
         Voronoi_x2=Voronoi_x3(:,W+1:end);
         
@@ -57,23 +60,44 @@ function [seeds,seeds_values_before,L_original,border_cells,valid_cells,pathToSa
         L_original=bwlabel(aux);
         
         
-        %Label cells of right border with left border label
-            
+        %Label cells of right border with left border label. 
+        %It could appear a problem if the number of left and right cells is different. It is not usual, but may occur
+        %Here we delete false positives
+        if length(Cells_left) ~= length(Cells_right)  
+          mask1=zeros(size(L_original)) ;
+          mask2=zeros(size(L_original)) ;
+          for nCell = 1:max(max(L_original))
+               if ismember(nCell,Cells_left)
+                     mask1(L_original==nCell)=nCell;
+               end
+               if ismember(nCell,Cells_right)
+                     mask2(L_original==nCell)=nCell;
+               end
+          end 
+          newMask=[mask2,mask1];
+          newMaskRelab=bwlabel(newMask);
+          for nCell = 1:max(max(newMaskRelab))
+              borderCells=unique(newMask(newMaskRelab==nCell));
+              if length(borderCells)==1
+                  Cells_left(ismember(borderCells,Cells_left))=[];
+                  Cells_right(ismember(borderCells,Cells_right))=[];
+              end
+          end
+        end
+
+
+        %relabel joined border cells with the same label
         for f=1:length(Cells_left)
             L_original(L_original_x2(1:H,1:W)==Cells_right(f))=Cells_left(f);
         end
         
-        %% Update label in comparison with labelled diagram before if is a diagram higher than 1.
-        
+        %% Update label in comparison with the diagram labelled before, if is a diagram higher than 1.
         if j~=1
            aux_2=L_original;
-           
            for h=1:size(seeds_values_before,1)
                aux_2(L_original==L_original(seeds_values_before(h,2),seeds_values_before(h,3)))=seeds_values_before(h,1);
            end
-            
            L_original=aux_2; 
-           
         else
             seeds_values_before=0;           
         end

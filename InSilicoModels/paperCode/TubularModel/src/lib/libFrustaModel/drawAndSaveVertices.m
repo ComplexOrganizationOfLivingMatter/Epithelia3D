@@ -53,17 +53,24 @@ function drawAndSaveVertices(relativePath,nSeeds,nRand,numSurfaces,typeProjectio
 
             %get empty vertices to delete them
             arrayProjectionCellVertices=verticesProjection(:).verticesConnectCells;
-            arrayProjectionNoValidCellVertices=cell2mat(verticesProjectionNoValidCells(:).verticesConnectCells')';
-
+            try 
+                arrayProjectionNoValidCellVertices=cell2mat(verticesProjectionNoValidCells(:).verticesConnectCells')';
+            catch
+               'n of cells = 1'  
+               validIndexes=cellfun(@(x) length(x)==2, verticesProjectionNoValidCells.verticesConnectCells);
+               verticesProjectionNoValidCells.verticesConnectCells=verticesProjectionNoValidCells.verticesConnectCells(validIndexes,:);
+               arrayProjectionNoValidCellVertices=cell2mat(verticesProjectionNoValidCells(:).verticesConnectCells')';
+               verticesProjectionNoValidCells.verticesPerCell=verticesProjectionNoValidCells.verticesPerCell(validIndexes,:);
+            end
             borderCells=unique(L_img(:,[1 end]));
             borderCells=borderCells(borderCells~=0);
+            verticesBorderCells=cellfun(@(x) (x(1,2) == W_projection | x(1,2) == 1),vertices.verticesPerCell);
+            borderCells=unique([borderCells;unique(vertices.verticesConnectCells(verticesBorderCells,:))']);
 
-
-
-            figure('visible','off');    
+            figure('visible','on');    
             
             for j=1:max(max(L_img))
-
+                     try
                     [indexes,~]=find(arrayProjectionCellVertices==j);
                     indexes=sort(indexes);
                     [indexesNoValidCells,~]=find(arrayProjectionNoValidCellVertices==j);
@@ -75,7 +82,7 @@ function drawAndSaveVertices(relativePath,nSeeds,nRand,numSurfaces,typeProjectio
 
                     V=unique(V,'rows','stable');
                     V=round(V);
-                    if sum(j==borderCells)>0
+                    if ismember(j,borderCells)
 
                         if i==1
                             [V1,V2,V1index]=checkVerticesBorder(j,L_img,V,W_projection);
@@ -101,22 +108,25 @@ function drawAndSaveVertices(relativePath,nSeeds,nRand,numSurfaces,typeProjectio
                         plot(sortedVerticesV2(:,1),sortedVerticesV2(:,2));
 
 
-                        cellFigure = alphaShape(sortedVerticesV1(:,1), sortedVerticesV1(:,2), H);
+                        cellFigure = alphaShape(sortedVerticesV1(:,1), sortedVerticesV1(:,2), H*2);
                         plot(cellFigure, 'FaceColor', colours(j, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
-                        cellFigure = alphaShape(sortedVerticesV2(:,1), sortedVerticesV2(:,2), H);
+                        cellFigure = alphaShape(sortedVerticesV2(:,1), sortedVerticesV2(:,2), H*2);
                         plot(cellFigure, 'FaceColor', colours(j, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
 
                     else
                         orderVertices=convhull(V(:,1),V(:,2));
                         sortedVertices=V(orderVertices,:);
                         plot(sortedVertices(:,1),sortedVertices(:,2));
-                        cellFigure = alphaShape(sortedVertices(:,1), sortedVertices(:,2), H);
+                        cellFigure = alphaShape(sortedVertices(:,1), sortedVertices(:,2), H*2);
                         plot(cellFigure, 'FaceColor', colours(j, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
 
                         hold on;
 
                         indexesBorderVerticesLeftPerCell{j}=nan;
 
+                    end
+                    catch
+                       ['error in cell ' num2str(j)] 
                     end
 
             end

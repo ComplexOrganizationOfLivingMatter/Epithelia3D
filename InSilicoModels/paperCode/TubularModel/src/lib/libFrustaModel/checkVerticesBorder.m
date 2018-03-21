@@ -19,6 +19,7 @@ function [V1,V2,V1index]=checkVerticesBorder(numCell,L_img,V,W_projection)
         Vindex(i)=mask(V(i,1),V(i,2));
     end
        
+    %V1 are the vertices in left border and V2 on the right
     V1=V;
     V2=V;
     

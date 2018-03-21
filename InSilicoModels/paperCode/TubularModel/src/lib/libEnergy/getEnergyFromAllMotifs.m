@@ -4,9 +4,7 @@ function [ dataEnergy ] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairs
 
     %all vertices in basal
     verticesPerCell=arrayfun(@(x) find(sum(x==vertices.verticesConnectCells,2)), 1:max(max(L_basal)), 'UniformOutput', false);
-    
        
-    %% BASAL
     %vertices of edges transition in basal
     verticesOfEdges=arrayfun(@(x,y) intersect(verticesPerCell{x},verticesPerCell{y}), totalPairs(:,1),totalPairs(:,2),'UniformOutput',false);
     fourCellsMotifs=cellfun(@(x) unique(horzcat(vertices.verticesConnectCells(x,:))),verticesOfEdges, 'UniformOutput', false);
@@ -24,6 +22,7 @@ function [ dataEnergy ] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairs
     %testing transition data
     dataEnergy.fourCellsMotif=[pairCellValidCells,cellsInMotifContactingCellsEdge];
     
+    %calculation of energy
     [dataEnergy.EdgeLength,dataEnergy.SumEdgesOfEnergy,dataEnergy.EdgeAngle,dataEnergy.H1,dataEnergy.H2,dataEnergy.W1,dataEnergy.W2,notEmptyIndexes]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairCellValidCells,cellsInMotifContactingCellsEdge,W,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
     
     
