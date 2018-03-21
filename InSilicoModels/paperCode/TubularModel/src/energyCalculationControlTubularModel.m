@@ -4,7 +4,7 @@ function energyCalculationControlTubularModel(numSurfaces,relativePathVoronoi,nu
 
             for i=1:numSurfaces
                 tableNoTransitionEnergy=table();
-                tableNoTransitionEnergyFiltering200data=table();
+                tableNoTransitionEnergyFiltering100data=table();
 
                 for nRand=1:numRandoms
                     
@@ -33,25 +33,25 @@ function energyCalculationControlTubularModel(numSurfaces,relativePathVoronoi,nu
                     
                     
                     %get vertices in new basal
-                    dataEnergy = getEnergyFromEdges( L_img,neighs,noValidCells,vertices,verticesProjection,surfaceRatio,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight);
+                    dataEnergy = getEnergyFromEdgesInFrusta( L_img,neighs,noValidCells,vertices,verticesProjection,surfaceRatio,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight);
                     
 
                     dataEnergy.nRand=nRand*ones(size(dataEnergy.H1,1),1);
                     dataEnergy.numSeeds=nSeeds*ones(size(dataEnergy.H1,1),1);
                     dataEnergy.surfaceRatio=surfaceRatio*ones(size(dataEnergy.H1,1),1);
 
-                    %filtering 10 data for each realization  
+                    %filtering 5 data for each realization  
                     sumTableEnergy=struct2table(dataEnergy);
                     nanIndex=isnan(sumTableEnergy.H1);
                     sumTableEnergy=sumTableEnergy(~nanIndex,:);
                     pos = randperm(size(sumTableEnergy,1));
-                    if length(pos)>=10
-                        pos = pos(1:10);
+                    if length(pos)>=5
+                        pos = pos(1:5);
                     end
 
-                    %storing all data and filtered 10 data per realization (IF there are more than 10)
+                    %storing all data and filtered 5 data per realization (IF there are more than 5)
                     tableNoTransitionEnergy=[tableNoTransitionEnergy;sumTableEnergy];
-                    tableNoTransitionEnergyFiltering200data=[tableNoTransitionEnergyFiltering200data;sumTableEnergy(pos,:)];
+                    tableNoTransitionEnergyFiltering100data=[tableNoTransitionEnergyFiltering100data;sumTableEnergy(pos,:)];
 
 
                 end
@@ -61,7 +61,7 @@ function energyCalculationControlTubularModel(numSurfaces,relativePathVoronoi,nu
                 mkdir(directory2save);
 
                 writetable(tableNoTransitionEnergy,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_' date '.xls'])
-                writetable(tableNoTransitionEnergyFiltering200data,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_filter200measurements_' date '.xls'])
+                writetable(tableNoTransitionEnergyFiltering100data,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_filter100measurements_' date '.xls'])
 
 
             end

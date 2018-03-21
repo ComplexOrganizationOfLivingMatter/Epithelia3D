@@ -5,9 +5,9 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
 
     for i=1:numSurfaces
         tableNoTransitionEnergy=table();
-        tableNoTransitionEnergyFiltering200data=table();
+        tableNoTransitionEnergyFiltering100data=table();
         tableTransitionEnergy=table();
-        tableTransitionEnergyFiltering200data=table();
+        tableTransitionEnergyFiltering100data=table();
         tableEnergyAllMotifs=table();
         
 
@@ -67,22 +67,22 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                         dataEnergyMatchingMotifs.numSeeds=nSeeds*ones(size(dataEnergyMatchingMotifs.basalH1,1),1);
                         dataEnergyMatchingMotifs.surfaceRatio=surfaceRatio*ones(size(dataEnergyMatchingMotifs.basalH1,1),1);
                         
-                        %filtering 10 data for each realization  
+                        %filtering 5 data for each realization  
                         sumTableEnergyMatchingMotifs=struct2table(dataEnergyMatchingMotifs);
                         nanIndex=(isnan(sumTableEnergyMatchingMotifs.apicalH1) |  isnan(sumTableEnergyMatchingMotifs.basalH1));
                         sumTableEnergyMatchingMotifs=sumTableEnergyMatchingMotifs(~nanIndex,:);
                         pos = randperm(size(sumTableEnergyMatchingMotifs,1));
-                        if length(pos)>=10
-                            pos = pos(1:10);
+                        if length(pos)>=5
+                            pos = pos(1:5);
                         end
 
-                        %storing all data and filtered 10 data per realization (IF there are more than 10)
+                        %storing all data and filtered 5 data per realization (IF there are more than 5)
                         if strcmp(labelEdges{k},'transition');
                             tableTransitionEnergy=[tableTransitionEnergy;sumTableEnergyMatchingMotifs];
-                            tableTransitionEnergyFiltering200data=[tableTransitionEnergyFiltering200data;sumTableEnergyMatchingMotifs(pos,:)];
+                            tableTransitionEnergyFiltering100data=[tableTransitionEnergyFiltering100data;sumTableEnergyMatchingMotifs(pos,:)];
                         else
                             tableNoTransitionEnergy=[tableNoTransitionEnergy;sumTableEnergyMatchingMotifs];
-                            tableNoTransitionEnergyFiltering200data=[tableNoTransitionEnergyFiltering200data;sumTableEnergyMatchingMotifs(pos,:)];
+                            tableNoTransitionEnergyFiltering100data=[tableNoTransitionEnergyFiltering100data;sumTableEnergyMatchingMotifs(pos,:)];
                         end
                         
                     else
@@ -102,12 +102,10 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                     dataEnergyAllMotifs.numSeeds=nSeeds*ones(size(dataEnergyAllMotifs.H1,1),1);
                     dataEnergyAllMotifs.surfaceRatio=surfaceRatio*ones(size(dataEnergyAllMotifs.H1,1),1);
 
-                    %filtering 10 data for each realization  
                     sumTableEnergyAllMotifs=struct2table(dataEnergyAllMotifs);
                     nanIndex=(isnan(sumTableEnergyAllMotifs.H1));
                     sumTableEnergyAllMotifs=sumTableEnergyAllMotifs(~nanIndex,:);
 
-                    %storing all data and filtered 10 data per realization (IF there are more than 10)
                     tableEnergyAllMotifs=[tableEnergyAllMotifs;sumTableEnergyAllMotifs];
                 end
             end
@@ -122,8 +120,8 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
         
         writetable(tableTransitionEnergy,[energyDirectory 'transitionsMatching_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_' date  '.xls'])
         writetable(tableNoTransitionEnergy,[energyDirectory 'noTransitionEdgesMatching_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_' date '.xls'])
-        writetable(tableTransitionEnergyFiltering200data,[energyDirectory 'transitionEdgesMatching_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_filter200measurements_' date '.xls'])
-        writetable(tableNoTransitionEnergyFiltering200data,[energyDirectory 'noTransitionEdgesMatching_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_filter200measurements_' date '.xls'])
+        writetable(tableTransitionEnergyFiltering100data,[energyDirectory 'transitionEdgesMatching_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_filter100measurements_' date '.xls'])
+        writetable(tableNoTransitionEnergyFiltering100data,[energyDirectory 'noTransitionEdgesMatching_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_filter100measurements_' date '.xls'])
         writetable(tableEnergyAllMotifs,[energyDirectory 'allMotifsEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_' date '.xls'])
         
                 
