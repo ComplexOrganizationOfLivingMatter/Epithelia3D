@@ -21,13 +21,13 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                 L_apical=listLOriginalProjection.L_originalProjection{listLOriginalProjection.surfaceRatio==1};
                 surfaceRatio=basalExpansions(i);
                 L_basal=listLOriginalProjection.L_originalProjection{listLOriginalProjection.surfaceRatio==surfaceRatio};
-                ['Measuring Energy in voronoi tubular model: surface ratio(expansion) ' num2str(surfaceRatio) ' random ' num2str(nRand) ]
+                disp(['Measuring Energy in voronoi tubular model: surface ratio(expansion) ' num2str(surfaceRatio) ' number of seeds ' num2str(nSeeds) ' random ' num2str(nRand) ])
                 
             else
                 L_basal=listLOriginalApical.L_originalApical{listLOriginalProjection.surfaceRatio==1};
                 surfaceRatio=1/(1-apicalReductions(i));
                 L_apical=listLOriginalApical.L_originalApical{listLOriginalProjection.surfaceRatio==surfaceRatio};
-                ['Measuring Energy in voronoi tubular model: surface ratio(reduction)' num2str(surfaceRatio)  ' random ' num2str(nRand) ]
+                disp(['Measuring Energy in voronoi tubular model: surface ratio(reduction)' num2str(surfaceRatio)  ' number of seeds ' num2str(nSeeds) ' random ' num2str(nRand) ])
             end
             
             neighsBasal=calculateNeighbours(L_basal);
@@ -56,7 +56,7 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
             for k=1:2
                 %% Matching motifs energy both surfaces
                 if k == 1 && isempty(nTransitions)
-                    disp(['No transitions found: surface ratio' num2str(surfaceRatio) ' random ' num2str(nRand)])
+                    disp(['No transitions found: surface ratio' num2str(surfaceRatio) ' number of seeds ' num2str(nSeeds) ' random ' num2str(nRand)])
                 else
                     %Calculate the energy data for matching motifs between apical and basal layers.
                     dataEnergyMatchingMotifs = getEnergyFromEdgesMatchingMotifsBasalApical(L_basal,L_apical,neighsBasal,neighsApical,noValidCells,totalEdgesBasal{k},labelEdges{k},borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical);

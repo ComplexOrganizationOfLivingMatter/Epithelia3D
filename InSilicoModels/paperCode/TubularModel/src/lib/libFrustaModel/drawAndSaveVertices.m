@@ -13,11 +13,11 @@ function drawAndSaveVertices(relativePath,nSeeds,nRand,numSurfaces,typeProjectio
             surfaceRatio=basalExpansions(i);
             W_projection=round(size(L_img,2)*surfaceRatio);
 
-            disp(['Drawing vertices: surface ratio - expansion: ' num2str(surfaceRatio) ' __ number of randomization: ' num2str(nRand) ])  
+            disp(['Drawing vertices: surface ratio - expansion: ' num2str(surfaceRatio) ' number of seeds ' num2str(nSeeds) ' _ number of randomization: ' num2str(nRand) ])  
         else
             surfaceRatio=1/(1-apicalReductions(i));
             L_img=listLOriginalProjection.listLOriginalProjection{end};
-            disp(['Drawing vertices: surface ratio - reduction: ' num2str(surfaceRatio) ' __ number of randomization: ' num2str(nRand) ])
+            disp(['Drawing vertices: surface ratio - reduction: ' num2str(surfaceRatio) ' number of seeds ' num2str(nSeeds) ' _ number of randomization: ' num2str(nRand) ])
 
             W_projection=round(size(L_img,2)*(1-apicalReductions(i)));
         end    
@@ -56,7 +56,7 @@ function drawAndSaveVertices(relativePath,nSeeds,nRand,numSurfaces,typeProjectio
             try 
                 arrayProjectionNoValidCellVertices=cell2mat(verticesProjectionNoValidCells(:).verticesConnectCells')';
             catch
-               'n of cells = 1'  
+               disp('n of cells = 1'  )
                validIndexes=cellfun(@(x) length(x)==2, verticesProjectionNoValidCells.verticesConnectCells);
                verticesProjectionNoValidCells.verticesConnectCells=verticesProjectionNoValidCells.verticesConnectCells(validIndexes,:);
                arrayProjectionNoValidCellVertices=cell2mat(verticesProjectionNoValidCells(:).verticesConnectCells')';
@@ -126,7 +126,7 @@ function drawAndSaveVertices(relativePath,nSeeds,nRand,numSurfaces,typeProjectio
 
                     end
                     catch
-                       ['error in cell ' num2str(j)] 
+                       disp(['error in cell ' num2str(j)] )
                     end
 
             end

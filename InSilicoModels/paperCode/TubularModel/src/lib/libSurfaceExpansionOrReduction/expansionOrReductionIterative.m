@@ -63,7 +63,7 @@ function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjecti
             
     end
     
-    %store data of applying surface ratios
+    %store data after application of surface ratios
     acumListTransitionBySurfaceRatio(:,i)=listTransitionsBySurfaceRatio(:,2);
     acumListTransitionBySurfaceRatio(:,i+20)=listTransitionsBySurfaceRatio(:,3);
     acumListTransitionBySurfaceRatio(:,i+40)=listTransitionsBySurfaceRatio(:,4);

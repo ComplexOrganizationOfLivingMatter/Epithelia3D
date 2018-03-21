@@ -13,7 +13,7 @@ function mainTubularCVTGenerator(N_images,N_frames,H,W,nSeeds,distanceBetwSeeds)
                     [seeds,seeds_values_before,L_original,border_cells,valid_cells,pathToSaveData] = tubularCVTGenerator(indexImage,j,H,W,seeds,seeds_values_before,Folder2save,FolderPath);
                 end
 
-                ['Image ' num2str(indexImage) ' _ ' num2str(nSeeds) 'seeds _ completed ']
+                disp(['Image ' num2str(indexImage) ' _ ' num2str(nSeeds) 'seeds _ completed '])
 
         end
 
