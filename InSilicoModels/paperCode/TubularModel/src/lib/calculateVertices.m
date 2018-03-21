@@ -6,7 +6,6 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
     ratio=4;
     se=strel('disk',ratio);
 
-
     neighboursVertices = buildTripletsOfNeighs( neighbours );%intersect dilatation of each cell of triplet
     vertices = cell(size(neighboursVertices, 1), 1);
     
@@ -15,9 +14,8 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
     % We first calculate the perimeter of the cell to improve efficiency
     % If the image is small, is better not to use bwperim
     % For larger images it improves a lot the efficiency
-    
     dilatedCells=cell(max(max(L_img)),1);
-    
+    W=size(L_img,2);
     
     
     for i=1:max(max(L_img))
@@ -27,6 +25,7 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
         dilatedCells{i}=BW_dilated;
     end
     
+    %the overlapping between dilated cells will be the vertex
     borderImg=zeros(size(L_img));
     borderImg(L_img==0)=1;
     for numTriplet = 1 : size(neighboursVertices,1)
@@ -42,8 +41,8 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
         %in case of vertices in X extremes... expanding the image
         if isempty(row) && isempty(col)
             [row,col]=find((imdilate([BW1_dilate,BW1_dilate],[1,1;1,1]).*imdilate([BW2_dilate,BW2_dilate],[1,1;1,1]).*imdilate([BW3_dilate,BW3_dilate],[1,1;1,1]).*[borderImg,borderImg])==1);
-            if round(mean(col))>size(L_img,2)
-               col= size(L_img,2);
+            if round(mean(col))>W
+               col= W;
                row=mean(row);
             end
         end
@@ -58,11 +57,12 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
         else
             vertices{numTriplet} = [row,col];
         end
+        
     end
-    
-    
-    
 
+    
+    
+    %storing vertices and deleting artefacts
     verticesInfo.verticesPerCell = vertices;
     verticesInfo.verticesConnectCells = neighboursVertices;
 
@@ -75,7 +75,14 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
         verticesInfo.verticesConnectCells=verticesInfo.verticesConnectCells(notEmptyCells,:);
     end
     
-
-
+    indexes=cellfun(@(x) length(x)==2,verticesInfo.verticesPerCell);
+    verticesInfo.verticesPerCell=verticesInfo.verticesPerCell(indexes,:);
+    verticesInfo.verticesConnectCells=verticesInfo.verticesConnectCells(indexes,:);
+   
+    %test vertices higher than W
+    outOfRange = cellfun(@(x) x(:,2)>W , verticesInfo.verticesPerCell);
+    if sum(outOfRange)>0
+        verticesInfo.verticesPerCell{outOfRange}(1,2)=W;
+    end
 end
 

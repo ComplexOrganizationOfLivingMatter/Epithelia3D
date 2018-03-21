@@ -1,5 +1,6 @@
 function calculateNcellsAroundTrasversalSection(numSeeds,kindProjection,pathV5data,directory2save1,numOfSurfaceRatios,Hinitial,Winitial)
 
+    %function to calculate the average number of cells ('n') around the trasversal plane
     directory2save=[directory2save1 kindProjection '\' num2str(Winitial) 'x' num2str(Hinitial) '_' num2str(numSeeds) 'seeds\'];
 
 
@@ -33,7 +34,7 @@ function calculateNcellsAroundTrasversalSection(numSeeds,kindProjection,pathV5da
                 end
             end
 
-            %choose cells from borders to calculate shortest path between them
+            %choose cells from borders to calculate shortest path between them. To this aim we draw 10 paths per image, homogeneously distributed
             [H,W,~]=size(Img_cyl);
             hCoordinatesInitial=round(H*(0.1:0.1:0.9));
             hCoordinatesFinal=round(H*(0.1:0.1:0.9));
@@ -66,7 +67,7 @@ function calculateNcellsAroundTrasversalSection(numSeeds,kindProjection,pathV5da
                 for cellPath=1:length(pathNodes)
                     mask(Img_planar==pathNodes(cellPath))=1;
                 end
-                %do cells in shortest path binary and the rest 0's, afterthat
+                %do cells in shortest path binary and the rest 0's, after that
                 %multiplying by cylindermodel image.
                 nCellsSection(nPath)=length(unique(mask.*Img_cyl))-1;
 

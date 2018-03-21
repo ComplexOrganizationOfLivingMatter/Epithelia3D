@@ -8,7 +8,6 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     pairOfNeighsBasal=(cellfun(@(x, y) [y*ones(length(x),1),x],neighs_basal',num2cell(1:size(neighs_basal,2))','UniformOutput',false));
     uniquePairOfNeighBasal=unique(vertcat(pairOfNeighsBasal{:}),'rows');
     uniquePairOfNeighBasal=unique([min(uniquePairOfNeighBasal,[],2),max(uniquePairOfNeighBasal,[],2)],'rows');
-    [~,Wbasal]=size(L_basal);
     basalData=struct('edgeLength',zeros(size(uniquePairOfNeighBasal,1),1),'edgeAngle',zeros(size(uniquePairOfNeighBasal,1),1));
     
     %loop to get edge length and angle for each pair of neighborings
@@ -18,14 +17,10 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
         mask1(L_basal==uniquePairOfNeighBasal(i,1))=1;
         mask2(L_basal==uniquePairOfNeighBasal(i,2))=1;
         se=strel('disk',2);
-        mask3=imdilate(mask1,se).*imdilate(mask2,se);
+        mask3=bwlabel(imdilate(mask1,se).*imdilate(mask2,se));
         edge1=regionprops(mask3,'MajorAxisLength','Orientation');
-        if edge1.MajorAxisLength > Wbasal/2
-            mask4=[mask3(:,round(Wbasal/2)+1:end) mask3(:,1:round(Wbasal/2))];
-            edge1=regionprops(mask4,'MajorAxisLength','Orientation');
-        end
-        basalData(i).edgeLength=edge1(1).MajorAxisLength;
-        basalData(i).edgeAngle=edge1(1).Orientation;
+        basalData(i).edgeLength=sum(vertcat(edge1.MajorAxisLength));
+        basalData(i).edgeAngle=edge1.Orientation;
     end
     
     %get edges of transitions

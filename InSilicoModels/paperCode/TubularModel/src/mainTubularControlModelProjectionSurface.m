@@ -1,4 +1,4 @@
-function mainTubularControlModelProjectionSurface(numSeeds,basalExpansions,apicalReductions,numRandoms,H,W)
+function mainTubularControlModelProjectionSurface(nSeeds,basalExpansions,apicalReductions,numRandoms,H,W)
 
     %main
     %we analyse the energy measurements from the expanded cylindrical voronoi
@@ -22,17 +22,19 @@ function mainTubularControlModelProjectionSurface(numSeeds,basalExpansions,apica
             numSurfaces=length(apicalReductions);
         end
 
-        for nSeeds=numSeeds
 
-            colours = colorcube(nSeeds);
-            colours = colours(randperm(nSeeds), :);
-            
-            for nRand=1:numRandoms
-                drawAndSaveVertices(relativePathVoronoi,nSeeds,nRand,numSurfaces,typeProjection,basalExpansions,apicalReductions,colours,H);
-            end
-            energyCalculationControlTubularModel(numSurfaces,relativePathVoronoi,numRandoms,typeProjection,nSeeds,basalExpansions,apicalReductions)
+        %defining colours to draw the frusta diagrams
+        colours = colorcube(nSeeds);
+        colours = colours(randperm(nSeeds), :);
 
+        for nRand=1:numRandoms
+            %drawing frusta expansions diagrams and saving the vertices
+            drawAndSaveVertices(relativePathVoronoi,nSeeds,nRand,numSurfaces,typeProjection,basalExpansions,apicalReductions,colours,H);
         end
+
+        %calculation of energy in frusta model
+        energyCalculationControlTubularModel(numSurfaces,relativePathVoronoi,numRandoms,typeProjection,nSeeds,basalExpansions,apicalReductions)
+
 
     end
 end

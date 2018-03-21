@@ -1,8 +1,8 @@
 function [ numberOfTransitions,nWin,nLoss ] = testingNeighsExchange(L_original,L_originalApical)
-    %UNTITLED Summary of this function goes here
-    %   Detailed explanation goes here
-
+    
+    %neighbours in basal layer
     [neighs_basal,~]=calculateNeighbours(L_original);
+    %neighbours in apical layer
     [neighs_apical,~]=calculateNeighbours(L_originalApical);
 
 
@@ -11,6 +11,7 @@ function [ numberOfTransitions,nWin,nLoss ] = testingNeighsExchange(L_original,L
      nWin=0;
      nLoss=0;
 
+     %testing winning and lossing neighbours between layers
      for i=1:length(neighs_basal)
          Lossing = setdiff(neighs_basal{i},neighs_apical{i});
          Winning = setdiff(neighs_apical{i},neighs_basal{i});

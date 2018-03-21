@@ -1,14 +1,20 @@
 function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Length,notEmptyIndex]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight)
-    
+    %In this function we calculate the source data for the line tension model
 
+
+    %initial four cells motifs
     fourCellsMotifs=[pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];
 
     %cell 1 and 2, are the cells in contact. Cell 3 and 4 are not touching between them into the four cell motif.
+    %neighbourings-> cell 1-[2,3,4] ; cell 2- [1,3,4]; cell 3- [1,2]; cell 4- [1,2];
+
+    %vertices shared by cells 1 and 2
     verticesCell_1_2=arrayfun(@(x,y) intersect(verticesPerCell{x},verticesPerCell{y}), pairValidCellsPreserved(:,1),pairValidCellsPreserved(:,2),'UniformOutput',false);
     allVerticesCell_1_2=arrayfun(@(x,y) unique([verticesPerCell{x}',verticesPerCell{y}']), pairValidCellsPreserved(:,1),pairValidCellsPreserved(:,2),'UniformOutput',false);
     
-   
+    %vertices shared between cell 3 and cells 1 & 2
     verticesCell_3=cellfun(@(x,y) intersect(x,verticesPerCell{y}),allVerticesCell_1_2,table2cell(array2table((cellsInMotifNoContactValidCellsPreserved(:,1)))),'UniformOutput', false);
+    %vertices shared between cell 4 and cells 1 & 2
     verticesCell_4=cellfun(@(x,y) intersect(x,verticesPerCell{y}),allVerticesCell_1_2,table2cell(array2table((cellsInMotifNoContactValidCellsPreserved(:,2)))),'UniformOutput', false);
     
     %H1, H2, W1 and W2 default, calculation
@@ -35,16 +41,14 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
     
     
     
-    %testing the angles to consider with edge is w and h
+    %initializing variables
     edgeLength=zeros(length(verticesCell_1_2),1);
     edgeAngle=zeros(length(verticesCell_1_2),1);
-    
     H1Length=zeros(length(verticesCell_1_2),1);
     H2Length=zeros(length(verticesCell_1_2),1);
     W1Length=zeros(length(verticesCell_1_2),1);
     W2Length=zeros(length(verticesCell_1_2),1);
     sumEdgesOfEnergy=zeros(length(verticesCell_1_2),1);
-    
     verticesBorderLeft=vertices.verticesPerCell(logical(arrayValidVerticesBorderLeft));
     verticesBorderRight=vertices.verticesPerCell(logical(arrayValidVerticesBorderRight));
     
@@ -58,9 +62,10 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
         
             try
         
-                
+                %length and angle in central edge
                 [edgeLength(i), edgeAngle(i)] = edgeLengthAnglesCalculation([vertices.verticesPerCell{verticesCell_1_2{i}(1,1)};vertices.verticesPerCell{verticesCell_1_2{i}(2,1)}],borderCells,verticesBorderLeft,verticesBorderRight,vertices,fourCellsMotifs(i,:),W);
 
+                %length and angle in sourrounding edges
                 [edge1Length, edge1Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertH1default{i}(1,1)};vertices.verticesPerCell{vertH1default{i}(2,1)}],borderCells,verticesBorderLeft,verticesBorderRight,vertices,fourCellsMotifs(i,:),W);
                 [edge2Length, edge2Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertH2default{i}(1,1)};vertices.verticesPerCell{vertH2default{i}(2,1)}],borderCells,verticesBorderLeft,verticesBorderRight,vertices,fourCellsMotifs(i,:),W);
                 [edge3Length, edge3Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertW1default{i}(1,1)};vertices.verticesPerCell{vertW1default{i}(2,1)}],borderCells,verticesBorderLeft,verticesBorderRight,vertices,fourCellsMotifs(i,:),W);
@@ -80,7 +85,7 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
                 end
 
                 %get sum of energies
-                 sumEdgesOfEnergy(i) = getSumOfEnergyEdges(edgeLength(i),verticesCell_1_2{i},verticesCell_3{i},verticesCell_4{i},vertices,borderCells,verticesBorderLeft,verticesBorderRight,fourCellsMotifs(i,:),W);
+                sumEdgesOfEnergy(i) = getSumOfEnergyEdges(edgeLength(i),verticesCell_1_2{i},verticesCell_3{i},verticesCell_4{i},vertices,borderCells,verticesBorderLeft,verticesBorderRight,fourCellsMotifs(i,:),W);
 
             catch
                 edgeLength(i)=NaN;

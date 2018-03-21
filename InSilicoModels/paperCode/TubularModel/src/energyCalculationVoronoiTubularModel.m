@@ -35,7 +35,7 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
             verticesBasal=calculateVertices(L_basal,neighsBasal);
             verticesApical=calculateVertices(L_apical,neighsApical);
                         
-            
+            %it is necessary testing the vertices and cells at borders, for next steps
             [borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal]=checkingVerticesAndCellsInBorders(L_basal,verticesBasal);
             [borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical]=checkingVerticesAndCellsInBorders(L_apical,verticesApical);
 
@@ -58,7 +58,8 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                 if k == 1 && isempty(nTransitions)
                     disp(['No transitions found: surface ratio' num2str(surfaceRatio) ' random ' num2str(nRand)])
                 else
-                     dataEnergyMatchingMotifs = getEnergyFromEdgesMatchingMotifsBasalApical(L_basal,L_apical,neighsBasal,neighsApical,noValidCells,totalEdgesBasal{k},labelEdges{k},borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical);
+                    %Calculate the energy data for matching motifs between apical and basal layers.
+                    dataEnergyMatchingMotifs = getEnergyFromEdgesMatchingMotifsBasalApical(L_basal,L_apical,neighsBasal,neighsApical,noValidCells,totalEdgesBasal{k},labelEdges{k},borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical);
 
                     %energy in edges (transition and no transition)
                     if ~isempty(dataEnergyMatchingMotifs.basalH1)
@@ -93,7 +94,7 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                     
                 
                 end
-                %% All motifs energy in basal
+                %% All motifs energy in basal, without taking into account if the motifs match between basal and apical...
                 if k == 1
                     dataEnergyAllMotifs = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairsBasal,verticesBasal,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
                 
