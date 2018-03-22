@@ -8,7 +8,7 @@ function [innerRoiProjection,outerRoiProjection,neighsOuter,neighsInner,noValidC
             noValidCellsInner=unique(imdilate((1-maskRoiInner(1:size(projectionsInnerWater,1),1:size(projectionsInnerWater,2))),se).*innerRoiProjection);
 
             % Calculation neighbours
-            [neighsOuter,~]=calculateNeighbours(outerRoiProjection);
+            [neighsOuter,~]=calculateNeighbours(projectionsOuterWater);
             [neighsInner,~]=calculateNeighbours(innerRoiProjection);
 
             if length(neighsOuter)< length(neighsInner)
