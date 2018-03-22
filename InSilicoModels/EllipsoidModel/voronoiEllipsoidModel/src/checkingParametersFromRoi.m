@@ -1,35 +1,37 @@
-function [innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,totalEdges,labelEdges]= checkingParametersFromRoi(maskRoiInner,projectionsInnerWater,projectionsOuterWater)
+function [innerRoiProjection,outerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,totalEdges,labelEdges]= checkingParametersFromRoi(maskRoiInner,projectionsInnerWater,projectionsOuterWater)
 
-                    % Calculation valid cells per roi
-                    se=strel('disk',4);
-                    innerRoiProjection=maskRoiInner(1:size(projectionsInnerWater,1),1:size(projectionsInnerWater,2)).*projectionsInnerWater;
-                    noValidCellsInner=unique(imdilate((1-maskRoiInner(1:size(projectionsInnerWater,1),1:size(projectionsInnerWater,2))),se).*innerRoiProjection);
+            % Calculation valid cells per roi
+            se=strel('disk',4);
+            innerRoiProjection=maskRoiInner(1:size(projectionsInnerWater,1),1:size(projectionsInnerWater,2)).*projectionsInnerWater;
+            outerRoiProjection=maskRoiInner(1:size(projectionsOuterWater,1),1:size(projectionsOuterWater,2)).*projectionsOuterWater;
 
-                    % Calculation neighbours
-                    [neighsOuter,~]=calculateNeighbours(projectionsOuterWater);
-                    [neighsInner,~]=calculateNeighbours(innerRoiProjection);
+            noValidCellsInner=unique(imdilate((1-maskRoiInner(1:size(projectionsInnerWater,1),1:size(projectionsInnerWater,2))),se).*innerRoiProjection);
 
-                    if length(neighsOuter)< length(neighsInner)
-                        neighsInnerFilter=neighsInner(1:length(neighsOuter));
-                        neighsOuterFilter=neighsOuter;
-                    else
-                        neighsInnerFilter=neighsInner;
-                        neighsOuterFilter=neighsOuter(1:length(neighsInner));
-                    end
+            % Calculation neighbours
+            [neighsOuter,~]=calculateNeighbours(outerRoiProjection);
+            [neighsInner,~]=calculateNeighbours(innerRoiProjection);
 
-                    %getting total valid and no valid cells
-                    notMatchingCellsROI=~cellfun(@(x,y) (~isempty(x) && ~isempty(y)) || (isempty(x) && isempty(y)),neighsInnerFilter,neighsOuterFilter);
-                    notPresentCellsInProjection=find(cellfun(@(x,y) (isempty(x) && isempty(y)),neighsInnerFilter,neighsOuterFilter)==1);
-                    noValidCells=unique([noValidCellsInner;find(notMatchingCellsROI==1)']);
-                    validCells=setdiff(1:length(notMatchingCellsROI),unique([notPresentCellsInProjection,noValidCells']));
+            if length(neighsOuter)< length(neighsInner)
+                neighsInnerFilter=neighsInner(1:length(neighsOuter));
+                neighsOuterFilter=neighsOuter;
+            else
+                neighsInnerFilter=neighsInner;
+                neighsOuterFilter=neighsOuter(1:length(neighsInner));
+            end
 
-                    neighsInnerFilter(notMatchingCellsROI)={[]};
-                    neighsOuterFilter(notMatchingCellsROI)={[]};
+            %getting total valid and no valid cells
+            notMatchingCellsROI=~cellfun(@(x,y) (~isempty(x) && ~isempty(y)) || (isempty(x) && isempty(y)),neighsInnerFilter,neighsOuterFilter);
+            notPresentCellsInProjection=find(cellfun(@(x,y) (isempty(x) && isempty(y)),neighsInnerFilter,neighsOuterFilter)==1);
+            noValidCells=unique([noValidCellsInner;find(notMatchingCellsROI==1)']);
+            validCells=setdiff(1:length(notMatchingCellsROI),unique([notPresentCellsInProjection,noValidCells']));
 
-                    %get edges of transitions
-                    pairTransitions=cellfun(@(x,y) setdiff(x,y),neighsOuterFilter,neighsInnerFilter,'UniformOutput',false);
-                    pairNoTransitions=cellfun(@(x,y) intersect(x,y),neighsOuterFilter,neighsInnerFilter,'UniformOutput',false);
+            neighsInnerFilter(notMatchingCellsROI)={[]};
+            neighsOuterFilter(notMatchingCellsROI)={[]};
 
+            %get edges of transitions
+            pairTransitions=cellfun(@(x,y) setdiff(x,y),neighsOuterFilter,neighsInnerFilter,'UniformOutput',false);
+            pairNoTransitions=cellfun(@(x,y) intersect(x,y),neighsOuterFilter,neighsInnerFilter,'UniformOutput',false);
 
-                    totalEdges={pairTransitions,pairNoTransitions};
-                    labelEdges={'transition','noTransition'};
+            totalEdges={pairTransitions,pairNoTransitions};
+            labelEdges={'transition','noTransition'};
+end
