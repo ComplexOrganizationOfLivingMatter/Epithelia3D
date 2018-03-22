@@ -11,7 +11,12 @@ filePathFrustaStage4='results\Stage 4\';
 filePathVoronoiStage8='..\voronoiEllipsoidModel\results\Stage 8\';
 filePathVoronoiStage4='..\voronoiEllipsoidModel\results\Stage 4\';
 
-filePaths={filePathFrustaStage4,filePathFrustaStage8};
+filePathFrustaGlobe = 'results\Globe\';
+filePathFrustaRugby = 'results\Rugby\';
+filePathVoronoiGlobe = '..\voronoiEllipsoidModel\results\Globe\';
+filePathVoronoiRugby = '..\voronoiEllipsoidModel\results\Rugby\';
+
+filePaths={filePathFrustaStage4,filePathFrustaStage8, filePathFrustaGlobe, filePathFrustaRugby};
     
 for nPath=1:length(filePaths)
     
