@@ -101,11 +101,11 @@ function drawAndSaveVertices(relativePath,nSeeds,nRand,numSurfaces,typeProjectio
 
                         orderVerticesV1=convhull(V1(:,1),V1(:,2));
                         sortedVerticesV1=V1(orderVerticesV1,:);
-                        plot(sortedVerticesV1(:,1),sortedVerticesV1(:,2));
+                        plot(sortedVerticesV1(:,1),sortedVerticesV1(:,2),'black');
                         hold on;
                         orderVerticesV2=convhull(V2(:,1),V2(:,2));
                         sortedVerticesV2=V2(orderVerticesV2,:);
-                        plot(sortedVerticesV2(:,1),sortedVerticesV2(:,2));
+                        plot(sortedVerticesV2(:,1),sortedVerticesV2(:,2),'black');
 
 
                         cellFigure = alphaShape(sortedVerticesV1(:,1), sortedVerticesV1(:,2), H*2);
@@ -116,7 +116,7 @@ function drawAndSaveVertices(relativePath,nSeeds,nRand,numSurfaces,typeProjectio
                     else
                         orderVertices=convhull(V(:,1),V(:,2));
                         sortedVertices=V(orderVertices,:);
-                        plot(sortedVertices(:,1),sortedVertices(:,2));
+                        plot(sortedVertices(:,1),sortedVertices(:,2),'black');
                         cellFigure = alphaShape(sortedVertices(:,1), sortedVertices(:,2), H*2);
                         plot(cellFigure, 'FaceColor', colours(j, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
 
