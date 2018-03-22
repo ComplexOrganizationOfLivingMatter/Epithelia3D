@@ -31,7 +31,22 @@ function [innerRoiProjection,outerRoiProjection,neighsOuter,neighsInner,noValidC
             %get edges of transitions
             pairTransitions=cellfun(@(x,y) setdiff(x,y),neighsOuterFilter,neighsInnerFilter,'UniformOutput',false);
             pairNoTransitions=cellfun(@(x,y) intersect(x,y),neighsOuterFilter,neighsInnerFilter,'UniformOutput',false);
-
+            
+            cellsOuterRoiProjection=unique(innerRoiProjection);
+            cellsOuterRoiProjection=cellsOuterRoiProjection(cellsOuterRoiProjection~=0);
+            outerRoiProjection=zeros(size(projectionsOuterWater));
+            logicalValidCellOuterRoi=zeros(size(projectionsOuterWater));
+            
+            for nCell=cellsOuterRoiProjection'
+                if ismember(nCell,validCells)
+                    logicalValidCellOuterRoi(projectionsOuterWater==nCell)=1;
+                end
+                outerRoiProjection(projectionsOuterWater==nCell)=nCell;
+            end
+            
+            se=strel('disk',3);
+            outerRoiProjection=imdilate(logicalValidCellOuterRoi,se).*outerRoiProjection;
+            
             totalEdges={pairTransitions,pairNoTransitions};
             labelEdges={'transition','noTransition'};
 end
