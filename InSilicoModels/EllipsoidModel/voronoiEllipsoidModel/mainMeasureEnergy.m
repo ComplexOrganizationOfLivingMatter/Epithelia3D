@@ -81,7 +81,8 @@ for nPath=4%1:length(filePaths)
             end
 
             %loading mask central cells in projection
-            maskRoiInner=1-im2bw(imread([filePaths{nPath} 'maskInner.tif']));
+            maskImg = imread([filePaths{nPath} 'maskInner.tif']);
+            maskRoiInner=1-logical(maskImg(:, :, 1));
             for i=1:length(projectionsInnerWater)
 
                 %function for getting inner roi, edges, neighbours and valid cells
