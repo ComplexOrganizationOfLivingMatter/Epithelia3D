@@ -52,7 +52,7 @@ for nPath=1:length(filePaths)
                 splittedCellHeight=splittedPath{end};
                 [projectionsInnerWater,projectionsOuterWater,projectionsInnerVertices,projectionsOuterVertices,projectionsCellsConnectedToVertex] = checkMaxProjectionExist(ellipsoidPath,filePaths,nRand,nCellHeight,splittedCellHeight,nPath,cellHeight);
                 
-                [ tableTransitionEnergy, tableTransitionEnergyNonPreservedMotifsOuter, tableNoTransitionEnergyTotalNonPreservedMotifsInner, tableNoTransitionEnergyFilterRandom] = getEnergyFromProjections( filePaths, nPath, projectionsInnerWater,  projectionsOuterWater, tableTransitionEnergy, tableTransitionEnergyNonPreservedMotifsOuter, tableNoTransitionEnergyTotalNonPreservedMotifsInner, tableNoTransitionEnergyFilterRandom, nRand, projectionsOuterVertices,projectionsCellsConnectedToVertex);
+                [ tableTransitionEnergy, tableTransitionEnergyNonPreservedMotifsOuter, tableNoTransitionEnergyTotalNonPreservedMotifsInner, tableNoTransitionEnergyFilterRandom, tableNoTransitionEnergyTotal, tableNoTransitionEnergyTotalNonPreservedMotifsOuter] = getEnergyFromProjections( filePaths, nPath, projectionsInnerWater,  projectionsOuterWater, tableTransitionEnergy, tableTransitionEnergyNonPreservedMotifsOuter, tableNoTransitionEnergyTotalNonPreservedMotifsInner, tableNoTransitionEnergyFilterRandom, nRand, projectionsOuterVertices,projectionsCellsConnectedToVertex, tableNoTransitionEnergyTotal, tableNoTransitionEnergyTotalNonPreservedMotifsOuter);
 
                 [filePaths{nPath} 'randomization ' num2str(nRand) '  -  ' splittedCellHeight(1:end-4)]
                 
