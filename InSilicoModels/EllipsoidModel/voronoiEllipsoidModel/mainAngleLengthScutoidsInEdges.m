@@ -46,7 +46,7 @@ for nPath=1:length(filePaths)
         distributionLossingNeigh=zeros(numRandoms,11);
         distributionTransitionsPerCell=zeros(numRandoms,11);
         
-        for nRand=1:numRandoms           
+        parfor nRand=1:numRandoms           
             
             [totalCellsInRois(nRand),totalProportionScutoids(nRand),totalProportionWinNeigh(nRand),...
                 totalProportionLossNeigh(nRand),totalProportionOfCellsInNoTransitions(nRand),...
