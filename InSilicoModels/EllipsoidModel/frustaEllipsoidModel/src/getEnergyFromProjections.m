@@ -1,4 +1,4 @@
-function [ tableTransitionEnergy, tableTransitionEnergyNonPreservedMotifsOuter, tableNoTransitionEnergyTotalNonPreservedMotifsInner, tableNoTransitionEnergyFilterRandom] = getEnergyFromProjections( filePaths, nPath, projectionsInnerWater,  projectionsOuterWater,  tableTransitionEnergy, tableTransitionEnergyNonPreservedMotifsOuter, tableNoTransitionEnergyTotalNonPreservedMotifsInner, tableNoTransitionEnergyFilterRandom, nRand, projectionOuterVertices,projectionsCellsConnectedToVertex)
+function [ tableTransitionEnergy, tableTransitionEnergyNonPreservedMotifsOuter, tableNoTransitionEnergyTotalNonPreservedMotifsInner, tableNoTransitionEnergyFilterRandom, tableNoTransitionEnergyTotal, tableNoTransitionEnergyTotalNonPreservedMotifsOuter] = getEnergyFromProjections( filePaths, nPath, projectionsInnerWater,  projectionsOuterWater,  tableTransitionEnergy, tableTransitionEnergyNonPreservedMotifsOuter, tableNoTransitionEnergyTotalNonPreservedMotifsInner, tableNoTransitionEnergyFilterRandom, nRand, projectionOuterVertices,projectionsCellsConnectedToVertex, tableNoTransitionEnergyTotal, tableNoTransitionEnergyTotalNonPreservedMotifsOuter)
 %GETENERGYFROMPROJECTIONS Summary of this function goes here
 %   Detailed explanation goes here
 %loading mask central cells in projection
@@ -14,6 +14,7 @@ function [ tableTransitionEnergy, tableTransitionEnergyNonPreservedMotifsOuter, 
         
         totalEdges = {totalEdges{2}};
         labelEdges = {'noTransition'};
+        numberOfValidMotifsTransition = 0;
 
         % Calculate energy if there is any transition
         for j=1:length(labelEdges)
