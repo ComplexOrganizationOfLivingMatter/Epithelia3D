@@ -58,27 +58,7 @@ function [ L_original ] = generateCylindricalVoronoi(seeds_values,H,W)
         %Label cells of right border with left border label. 
         %It could appear a problem if the number of left and right cells is different. It is not usual, but may occur
         %Here we delete false positives
-        if length(Cells_left) ~= length(Cells_right)  
-          mask1=zeros(size(L_original)) ;
-          mask2=zeros(size(L_original)) ;
-          for nCell = 1:max(max(L_original))
-               if ismember(nCell,Cells_left)
-                     mask1(L_original==nCell)=nCell;
-               end
-               if ismember(nCell,Cells_right)
-                     mask2(L_original==nCell)=nCell;
-               end
-          end 
-          newMask=[mask2,mask1];
-          newMaskRelab=bwlabel(newMask);
-          for nCell = 1:max(max(newMaskRelab))
-              borderCells=unique(newMask(newMaskRelab==nCell));
-              if length(borderCells)==1
-                  Cells_left(ismember(borderCells,Cells_left))=[];
-                  Cells_right(ismember(borderCells,Cells_right))=[];
-              end
-          end
-        end
+        [L_original_x2,L_original,Cells_left,Cells_right] = testingRealBorderCells( Cells_right,Cells_left,L_original,L_original_x2,H,W);      
         
         %Label cells of right border with left border label
         for i=1:length(Cells_left)
