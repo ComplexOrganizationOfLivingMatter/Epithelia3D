@@ -47,13 +47,13 @@ function [seeds,seeds_values_before,L_original,border_cells,valid_cells,pathToSa
         Cells_left_sorted=sortrows(Lef,2);
         Cells_left=Cells_left_sorted(:,1);
         
-        %Asigg 0 to right cells in L_original because could generate
+        %Asign 0 to right cells in L_original because could generate
         %errors, due to the reassignation. So, we need relabel L_original
         %to get a really sorted labelled image.
         
         aux=L_original_x2(1:H,1:W);
         
-        for k=1:length(Cells_left)
+        for k=1:length(Cells_right)
             aux(aux==Cells_right(k))=0;
         end
         
