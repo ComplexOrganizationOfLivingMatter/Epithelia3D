@@ -1,15 +1,15 @@
 addpath(genpath('..'))
 
-% relativePath='..\..\InSilicoModels\TubularModel\data\voronoiModel\expansion\512x1024_200seeds\';
+% relativePathTubularModel='..\..\InSilicoModels\TubularModel\data\voronoiModel\expansion\512x1024_200seeds\';
 % 
 % transitionsFile='summaryAverageTransitionsMeasuredInBasal_Transitions';
 % noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
 % 
 % %% Loading 200 seeds data
-% load([relativePath transitionsFile],'acumAngles','acumEdges')
+% load([relativePathTubularModel transitionsFile],'acumAngles','acumEdges')
 % acumAnglesTransition200seeds=acumAngles;
 % acumEdgesTransition200seeds=acumEdges;
-% load([relativePath noTransitionsFile],'acumAngles','acumEdges')
+% load([relativePathTubularModel noTransitionsFile],'acumAngles','acumEdges')
 % acumAnglesNoTransition200seeds=acumAngles;
 % acumEdgesNoTransition200seeds=acumEdges;
 % 
@@ -66,14 +66,11 @@ addpath(genpath('..'))
 % surfaceRatio5_200seeds.anglesNoTransitionFilter=surfaceRatio5_200seeds.anglesNoTransition(p);
 % surfaceRatio5_200seeds.edgesNoTransitionFilter=surfaceRatio5_200seeds.edgesNoTransition(p);
 % 
-% 
-% 
-% 
 % %% Loading 60 seeds data
-% load([strrep(relativePath,'512x1024_200','512x4096_60') transitionsFile],'acumAngles','acumEdges')
+% load([strrep(relativePathTubularModel,'512x1024_200','512x4096_60') transitionsFile],'acumAngles','acumEdges')
 % acumAnglesTransition60seeds=acumAngles;
 % acumEdgesTransition60seeds=acumEdges;
-% load([strrep(relativePath,'512x1024_200','512x4096_60') noTransitionsFile],'acumAngles','acumEdges')
+% load([strrep(relativePathTubularModel,'512x1024_200','512x4096_60') noTransitionsFile],'acumAngles','acumEdges')
 % acumAnglesNoTransition60seeds=acumAngles;
 % acumEdgesNoTransition60seeds=acumEdges;
 % 
@@ -94,7 +91,25 @@ addpath(genpath('..'))
 % 
 % 
 % save('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels.mat','surfaceRatio125_200seeds','surfaceRatio1667_200seeds','surfaceRatio2_200seeds','surfaceRatio5_200seeds','surfaceRatio6667_60seeds')
+% 
+% relativePathEllipsoidModel='..\..\InSilicoModels\EllipsoidModel\voronoiEllipsoidModel\results\';
+% load([relativePathEllipsoidModel 'stage 4\dataAngleLengthEdges.mat'],'totalLengthTransition','totalLengthNoTransition','totalAnglesTransition','totalAnglesNoTransition')
+% p = randperm(length(totalAnglesTransition),200);
+% ellipsoidStage4.anglesTransitionFilter=totalAnglesTransition(p);
+% ellipsoidStage4.lengthTransitionFilter=totalLengthTransition(p);
+% ellipsoidStage4.anglesNoTransitionFilter=totalAnglesNoTransition(p);
+% ellipsoidStage4.lengthNoTransitionFilter=totalLengthNoTransition(p);
+% 
+% load([relativePathEllipsoidModel 'stage 8\dataAngleLengthEdges.mat'],'totalLengthTransition','totalLengthNoTransition','totalAnglesTransition','totalAnglesNoTransition')
+% p = randperm(length(totalAnglesTransition),200);
+% ellipsoidStage8.anglesTransitionFilter=totalAnglesTransition(p);
+% ellipsoidStage8.lengthTransitionFilter=totalLengthTransition(p);
+% ellipsoidStage8.anglesNoTransitionFilter=totalAnglesNoTransition(p);
+% ellipsoidStage8.lengthNoTransitionFilter=totalLengthNoTransition(p);
+% 
+% save('..\lengthAnglesEdges_Transition_NoTransition_voronoiEllipsoidModels.mat','ellipsoidStage8','ellipsoidStage4');
 
+load('..\lengthAnglesEdges_Transition_NoTransition_voronoiEllipsoidModels.mat','ellipsoidStage8','ellipsoidStage4');
 load('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels.mat','surfaceRatio125_200seeds','surfaceRatio1667_200seeds','surfaceRatio2_200seeds','surfaceRatio5_200seeds','surfaceRatio6667_60seeds')
 
 
