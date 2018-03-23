@@ -3,7 +3,6 @@ function [innerRoiProjection,outerRoiProjection,neighsOuter,neighsInner,noValidC
             % Calculation valid cells per roi
             se=strel('disk',4);
             innerRoiProjection=maskRoiInner(1:size(projectionsInnerWater,1),1:size(projectionsInnerWater,2)).*projectionsInnerWater;
-            outerRoiProjection=maskRoiInner(1:size(projectionsOuterWater,1),1:size(projectionsOuterWater,2)).*projectionsOuterWater;
 
             noValidCellsInner=unique(imdilate((1-maskRoiInner(1:size(projectionsInnerWater,1),1:size(projectionsInnerWater,2))),se).*innerRoiProjection);
 

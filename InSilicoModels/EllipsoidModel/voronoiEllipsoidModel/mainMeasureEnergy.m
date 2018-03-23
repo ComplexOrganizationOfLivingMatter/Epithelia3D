@@ -16,7 +16,7 @@ filePathRugby='results\Rugby\';
 
 filePaths={filePathVoronoiStage8,filePathVoronoiStage4,filePathFrustaStage8,filePathFrustaStage4,filePathGlobe,filePathRugby,filePathSphere};
     
-for nPath=4%1:length(filePaths)
+for nPath=5:6%length(filePaths)
     
     
     
@@ -158,16 +158,20 @@ for nPath=4%1:length(filePaths)
             writetable(tableNoTransitionEnergyTotal,[filePaths{nPath} 'energy\energyNoTransitionEdges_' splittedCellHeight(1:end-4) '_' date '.xls'])
             writetable(tableNoTransitionEnergyFilterRandom,[filePaths{nPath} 'energy\energyNoTransitionEdgesFilter_' splittedCellHeight(1:end-4) '_' date '.xls'])
             %non preserved motifs between apical and basal
-            writetable(tableNoTransitionEnergyTotalNonPreservedMotifs,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_' splittedCellHeight(1:end-4) '_' date '.xls'])
-            writetable(tableTransitionEnergyNonPreservedMotifs,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            writetable(tableNoTransitionEnergyTotalNonPreservedMotifsOuter,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_Outer_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            writetable(tableNoTransitionEnergyTotalNonPreservedMotifsInner,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_Inner_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            writetable(tableTransitionEnergyNonPreservedMotifsOuter,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_Outer_' splittedCellHeight(1:end-4) '_' date '.xls'])
+            writetable(tableTransitionEnergyNonPreservedMotifsInner,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_Inner_' splittedCellHeight(1:end-4) '_' date '.xls'])
 
          else
             writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\energyTransitionEdges_' date '.xls'])
             writetable(tableNoTransitionEnergyTotal,[filePaths{nPath} 'energy\energyNoTransitionEdges_' date '.xls'])
             writetable(tableNoTransitionEnergyFilterRandom,[filePaths{nPath} 'energy\energyNoTransitionEdgesFilter_' date '.xls'])
             %non preserved motifs between apical and basal
-            writetable(tableTransitionEnergyNonPreservedMotifs,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_' date '.xls'])
-            writetable(tableNoTransitionEnergyTotalNonPreservedMotifs,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_' date '.xls'])
+            writetable(tableNoTransitionEnergyTotalNonPreservedMotifsOuter,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_Outer_' date '.xls'])
+            writetable(tableNoTransitionEnergyTotalNonPreservedMotifsInner,[filePaths{nPath} 'energy\energyNoTransitionEdgesNonPreservedMotifs_Inner_' date '.xls'])
+            writetable(tableTransitionEnergyNonPreservedMotifsOuter,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_Outer_' date '.xls'])
+            writetable(tableTransitionEnergyNonPreservedMotifsInner,[filePaths{nPath} 'energy\energyTransitionEdgesNonPreservedMotifs_Inner_' date '.xls'])
          end
     
 

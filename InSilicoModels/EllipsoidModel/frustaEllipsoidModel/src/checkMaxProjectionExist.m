@@ -12,6 +12,9 @@ function [projectionsInnerWater,projectionsOuterWater,projectionsInnerVertices,p
         ellipsoidPath=dir([strrep(filePaths{nPath},'results','..\voronoiEllipsoidModel\results') 'random_' num2str(nRand) '\*llipsoid*' ]);
         load([strrep(filePaths{nPath},'results','..\voronoiEllipsoidModel\results') 'random_' num2str(nRand) '\' ellipsoidPath(cellHeight).name],'initialEllipsoid','ellipsoidInfo')
         ellipsoidInfo.img3DLayer=allFrustaImage;
+        
+%         verticesOuter.verticesConnectCells = verticesConnectCellsInitial;
+%         verticesOuter.verticesPerCell = verticesPerCellInitial;
 
         %getting 4 projections from 3d ellipsoid
         tic

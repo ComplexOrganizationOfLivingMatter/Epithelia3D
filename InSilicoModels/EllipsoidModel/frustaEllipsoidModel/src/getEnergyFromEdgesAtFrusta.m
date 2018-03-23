@@ -1,4 +1,4 @@
-function [dataEnergy,dataEnergyOuterNonPreservedMotifs,numberOfValidMotifs, dataEnergyInnerNonPreservedMotifs] = getEnergyFromEdgesAtFrusta( outerProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,pairsOfCells,flag, verticeInner)
+function [dataEnergy,dataEnergyOuterNonPreservedMotifs,numberOfValidMotifs] = getEnergyFromEdgesAtFrusta( outerProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,pairsOfCells,flag, verticesInner)
 
 
     [~,W_outer]=size(outerProjection);
