@@ -31,6 +31,7 @@ for nPath=1:length(filePaths)
         totalProportionWinNeigh=zeros(numRandoms,1);
         totalProportionLossNeigh=zeros(numRandoms,1);
         totalProportionOfCellsInNoTransitions=zeros(numRandoms,1);
+        totalCellsInRois=zeros(numRandoms,1);
         proportionAnglesTransition=zeros(numRandoms,6);
         proportionAnglesNoTransition=zeros(numRandoms,6);
         totalAnglesTransition=cell(numRandoms);
@@ -42,16 +43,17 @@ for nPath=1:length(filePaths)
         distributionTransitionsPerCell=zeros(numRandoms,11);
         
         for nRand=1:numRandoms           
-            ellipsoidPath=dir([filePaths{nPath} 'random_' num2str(nRand) '\*llipsoid*' ]);
+            ellipsoidPath=dir([filePaths{nPath} 'randomizations\random_' num2str(nRand) '\*llipsoid*' ]);
             splittedPath=strsplit(ellipsoidPath(cellHeight).name,'_');
             splittedCellHeight=splittedPath{end};
             if nCellHeight>1
-                load([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')
+                load([filePaths{nPath} 'randomizations\random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')
             else
-                load([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
+                load([filePaths{nPath} 'randomizations\random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
             end
             %loading mask central cells in projection
-            maskRoiInner=1-im2bw(imread([filePaths{nPath} 'maskInner.tif']));
+            maskRoiInner=imread([filePaths{nPath} 'maskInner.tif']);
+            maskRoiInner=1-im2bw(maskRoiInner(:,:,1));
             neighsInner=cell(length(projectionsInnerWater),1);
             noValidCells=cell(length(projectionsInnerWater),1);
             neighsOuter=cell(length(projectionsInnerWater),1);
@@ -69,6 +71,7 @@ for nPath=1:length(filePaths)
                 cellNeighsInner(i,1:size(neighsInner{i},2))=neighsInner{i};
             end
             globalValidCells=unique(horzcat(validCells{:}));
+            totalCellsInRois(nRand)=length(globalValidCells);
             globalNeighsOuter=cellfun(@(a,b,c,d) unique([a;b;c;d]),cellNeighsOuter(1,:),cellNeighsOuter(2,:),cellNeighsOuter(3,:),cellNeighsOuter(4,:),'UniformOutput',false);
             globalNeighsInner=cellfun(@(a,b,c,d) unique([a;b;c;d]),cellNeighsInner(1,:),cellNeighsInner(2,:),cellNeighsInner(3,:),cellNeighsInner(4,:),'UniformOutput',false);
             
@@ -90,7 +93,11 @@ for nPath=1:length(filePaths)
             totalAnglesNoTransition{nRand}=dataNoTransition.edgeAngle;
             totalLengthTransition{nRand}=dataTransition.edgeLength;
             totalLengthNoTransition{nRand}=dataNoTransition.edgeLength;
+            
+            disp([filePaths{nPath} ' cell height ' num2str(cellHeight) '/' num2str(nCellHeight) ' random ' num2str(nRand)])
         end
+        
+        
         
         %storage of scutoids and chenge of neighs
         meanNumberOfTransitionsPerCell=mean(distributionTransitionsPerCell);
@@ -118,19 +125,22 @@ for nPath=1:length(filePaths)
         totalLengthTransition=vertcat(totalLengthTransition{:});
         totalLengthNoTransition=vertcat(totalLengthNoTransition{:});
         
+        %total cells in ROIs
+        meanTotalCellsInRois=mean(totalCellsInRois);
+        stdTotalCellsInRois=std(totalCellsInRois);
 
         %organizing data in tables
-        labelProportions={'firstfifteenDegrees','secondfifteenDegrees','thirdfifteenDegrees','fourthfifteenDegrees','fifthfifteenDegrees','sixthfifteenDegrees'};
+        namesColumns={'firstfifteenDegrees','secondfifteenDegrees','thirdfifteenDegrees','fourthfifteenDegrees','fifthfifteenDegrees','sixthfifteenDegrees'};
         namesRows={'meanAnglesTransition','stdAnglesTransition','meanAnglesNoTransition','stdAnglesNoTransition'};
-        tableProportionOfAngles=array2table([meanProportionAnglesTransition;stdProportionAnglesTransition;meanProportionAnglesNoTransition;stdProportionAnglesNoTransition],'VariableNames',labelProportions,'RowNames',namesRows);
+        tableProportionOfAngles=array2table([meanProportionAnglesTransition;stdProportionAnglesTransition;meanProportionAnglesNoTransition;stdProportionAnglesNoTransition],'VariableNames',namesColumns,'RowNames',namesRows);
         
-        labelProportions={'zero','one','two','three','four','five','six','seven','eight','nine','ten'};
+        namesColumns={'zero','one','two','three','four','five','six','seven','eight','nine','ten'};
         namesRows={'meanTransitionsPerCell','stdTransitionsPerCell','meanWinningPerCell','stdWinningPerCell','meanLossingPerCell','stdLossingPerCell'};
-        tableProportionOfPresencesPerCell=array2table([meanNumberOfTransitionsPerCell;stdNumberOfTransitionsPerCell;meanNumberOfWinningNeighPerCell;stdNumberOfWinningNeighPerCell;meanNumberOfLossingNeighPerCell;stdNumberOfLossingNeighPerCell],'VariableNames',labelProportions,'RowNames',namesRows);
+        tableProportionOfPresencesPerCell=array2table([meanNumberOfTransitionsPerCell;stdNumberOfTransitionsPerCell;meanNumberOfWinningNeighPerCell;stdNumberOfWinningNeighPerCell;meanNumberOfLossingNeighPerCell;stdNumberOfLossingNeighPerCell],'VariableNames',namesColumns,'RowNames',namesRows);
        	
-        labelColumns={'mean','standardDeviation'};
-        namesRows={'scutoidsProportion','frustaProportion','winningNeighboursProportion','lossingNeighboursProportion'};
-        tableProportionScutoids=array2table([meanProportionScutoids,stdProportionScutoids;meanProportionCellsNoScutoids,stdProportionCellsNoScutoids;meanProportionWinningNeighs,stdProportionWinningNeighs;meanProportionLossingNeighs,stdProportionLossingNeighs],'VariableNames',labelColumns,'RowNames',namesRows);
+        namesColumns={'mean','standardDeviation'};
+        namesRows={'scutoidsProportion','frustaProportion','winningNeighboursProportion','lossingNeighboursProportion','numberOfCellsInROI'};
+        tableProportionScutoids=array2table([meanProportionScutoids,stdProportionScutoids;meanProportionCellsNoScutoids,stdProportionCellsNoScutoids;meanProportionWinningNeighs,stdProportionWinningNeighs;meanProportionLossingNeighs,stdProportionLossingNeighs;meanTotalCellsInRois,stdTotalCellsInRois],'VariableNames',namesColumns,'RowNames',namesRows);
 
         
         if nCellHeight>1
@@ -145,6 +155,7 @@ for nPath=1:length(filePaths)
             writetable(tableProportionScutoids,[filePaths{nPath} 'tableScutoidsProportions_' date '.xls'],'WriteRowNames',true)
         end
         
+         disp([filePaths{nPath} ' cell height ' cellHeight '/' nCellHeight ' completed'])
         
 
         
