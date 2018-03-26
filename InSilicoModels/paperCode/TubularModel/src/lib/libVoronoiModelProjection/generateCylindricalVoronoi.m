@@ -46,14 +46,19 @@ function [ L_original ] = generateCylindricalVoronoi(seeds_values,H,W)
         Cells_left_sorted=sortrows(Lef,2);
         Cells_left=Cells_left_sorted(:,1);
         
-        %Asigg 0 to right cells in L_original because could generate
+        %Asign 0 to right cells in L_original because could generate
         %errors, due to the reassignation. So, we need relabel L_original
         %to get a really sorted labelled image.
         aux=L_original_x2(1:H,1:W);
-        for i=1:length(Cells_left)
-            aux(aux==Cells_right(i))=0;
+        for k=1:length(Cells_right)
+            aux(aux==Cells_right(k))=0;
         end
         L_original=bwlabel(aux);
+        
+        %Label cells of right border with left border label. 
+        %It could appear a problem if the number of left and right cells is different. It is not usual, but may occur
+        %Here we delete false positives
+        [L_original_x2,L_original,Cells_left,Cells_right] = testingRealBorderCells( Cells_right,Cells_left,L_original,L_original_x2,H,W);      
         
         %Label cells of right border with left border label
         for i=1:length(Cells_left)

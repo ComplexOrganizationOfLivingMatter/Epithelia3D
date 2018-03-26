@@ -96,24 +96,24 @@ addpath(genpath('..'))
 % load([relativePathEllipsoidModel 'stage 4\dataAngleLengthEdges.mat'],'totalLengthTransition','totalLengthNoTransition','totalAnglesTransition','totalAnglesNoTransition')
 % p = randperm(length(totalAnglesTransition),200);
 % ellipsoidStage4.anglesTransition=totalAnglesTransition;
-% ellipsoidStage4.lengthTransition=totalLengthTransition;
+% ellipsoidStage4.edgeTransition=totalLengthTransition;
 % ellipsoidStage4.anglesNoTransition=totalAnglesNoTransition;
-% ellipsoidStage4.lengthNoTransition=totalLengthNoTransition;
+% ellipsoidStage4.edgeNoTransition=totalLengthNoTransition;
 % ellipsoidStage4.anglesTransitionFilter=totalAnglesTransition(p);
-% ellipsoidStage4.lengthTransitionFilter=totalLengthTransition(p);
+% ellipsoidStage4.edgeTransitionFilter=totalLengthTransition(p);
 % ellipsoidStage4.anglesNoTransitionFilter=totalAnglesNoTransition(p);
-% ellipsoidStage4.lengthNoTransitionFilter=totalLengthNoTransition(p);
+% ellipsoidStage4.edgeNoTransitionFilter=totalLengthNoTransition(p);
 % 
 % load([relativePathEllipsoidModel 'stage 8\dataAngleLengthEdges.mat'],'totalLengthTransition','totalLengthNoTransition','totalAnglesTransition','totalAnglesNoTransition')
 % p = randperm(length(totalAnglesTransition),200);
 % ellipsoidStage8.anglesTransition=totalAnglesTransition;
-% ellipsoidStage8.lengthTransition=totalLengthTransition;
+% ellipsoidStage8.edgeTransition=totalLengthTransition;
 % ellipsoidStage8.anglesNoTransition=totalAnglesNoTransition;
-% ellipsoidStage8.lengthNoTransition=totalLengthNoTransition;
+% ellipsoidStage8.edgeNoTransition=totalLengthNoTransition;
 % ellipsoidStage8.anglesTransitionFilter=totalAnglesTransition(p);
-% ellipsoidStage8.lengthTransitionFilter=totalLengthTransition(p);
+% ellipsoidStage8.edgeTransitionFilter=totalLengthTransition(p);
 % ellipsoidStage8.anglesNoTransitionFilter=totalAnglesNoTransition(p);
-% ellipsoidStage8.lengthNoTransitionFilter=totalLengthNoTransition(p);
+% ellipsoidStage8.edgeNoTransitionFilter=totalLengthNoTransition(p);
 % 
 % save('..\lengthAnglesEdges_Transition_NoTransition_voronoiEllipsoidModels.mat','ellipsoidStage8','ellipsoidStage4');
 
@@ -129,17 +129,17 @@ colourNoTrans = [1 102/255 0];
 
 statsTubularModel=zeros(length(setOfDistributions),4);
 
-for i = 1 : length(setOfDistributions)
+for i = length(setOfDistributions)-1 : length(setOfDistributions)
    
-    createPolarHistogram(setOfDistributions{i}.anglesTransitionFilter, colourTrans, [titles{i} '- Transition']);
-    createPolarHistogram(setOfDistributions{i}.anglesNoTransitionFilter, colourNoTrans, [titles{i} '- No transition']);
-    close
-    createScatterPolar( setOfDistributions{i}.anglesTransitionFilter,setOfDistributions{i}.edgesTransitionFilter,setOfDistributions{i}.anglesNoTransitionFilter,setOfDistributions{i}.edgesNoTransitionFilter,titles{i})
-%     [H_angles, pValue_angles]=kstest2(setOfDistributions{i}.anglesTransition,setOfDistributions{i}.anglesNoTransition);
-%     [H_edges, pValue_edges]=kstest2(setOfDistributions{i}.edgesTransition,setOfDistributions{i}.edgesNoTransition);
-%     statsTubularModel(i,:)=[H_angles, pValue_angles,H_edges, pValue_edges];
+%     createPolarHistogram(setOfDistributions{i}.anglesTransitionFilter, colourTrans, [titles{i} '- Transition']);
+%     createPolarHistogram(setOfDistributions{i}.anglesNoTransitionFilter, colourNoTrans, [titles{i} '- No transition']);
+%     close
+%     createScatterPolar( setOfDistributions{i}.anglesTransitionFilter,setOfDistributions{i}.edgesTransitionFilter,setOfDistributions{i}.anglesNoTransitionFilter,setOfDistributions{i}.edgesNoTransitionFilter,titles{i})
+    [H_angles, pValue_angles]=kstest2(setOfDistributions{i}.anglesTransition,setOfDistributions{i}.anglesNoTransition);
+    [H_edges, pValue_edges]=kstest2(setOfDistributions{i}.lengthTransition,setOfDistributions{i}.lengthNoTransition);
+    statsTubularModel(i,:)=[H_angles, pValue_angles,H_edges, pValue_edges];
 
-%     [H_anglesFilter, pValue_anglesFilter]=kstest2(setOfDistributions{i}.anglesTransition,setOfDistributions{i}.anglesNoTransition);
-%     [H_edgesFilter, pValue_edgesFilter]=kstest2(setOfDistributions{i}.edgesTransition,setOfDistributions{i}.edgesNoTransition);
-%     statsTubularModelFilter(i,:)=[H_anglesFilter, pValue_anglesFilter,H_edgesFilter, pValue_edgesFilter];     
+    [H_anglesFilter, pValue_anglesFilter]=kstest2(setOfDistributions{i}.anglesTransitionFilter,setOfDistributions{i}.anglesNoTransitionFilter);
+    [H_edgesFilter, pValue_edgesFilter]=kstest2(setOfDistributions{i}.lengthTransitionFilter,setOfDistributions{i}.lengthNoTransitionFilter);
+    statsTubularModelFilter(i,:)=[H_anglesFilter, pValue_anglesFilter,H_edgesFilter, pValue_edgesFilter];     
 end
