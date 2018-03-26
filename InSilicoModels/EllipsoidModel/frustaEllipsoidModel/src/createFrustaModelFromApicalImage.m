@@ -7,6 +7,9 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
     outputFileDirectory = strjoin(outputFileSplitted(1:end-1), '\');
     mkdir(outputFileDirectory)
     
+    outputFileName = strsplit(inputFile, '\');
+    outputFileName = strrep(outputFileName{end}, 'ellipsoid', 'frusta');
+    
     outputNameFile=dir([outputFileDirectory '\frusta*']);
         
     load(inputFile);
@@ -78,8 +81,8 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
         
         %savefig(strcat(outputFileDirectory, '\frustaEllipsoidModel_OutterLayer_', date, '.fig'));
         
-        save(strcat(outputFileDirectory, '\frustaEllipsoidModel_', date, '.mat'), 'allFrustaImage', '-v7.3');
-        outputNameFile(1).name = strcat('frustaEllipsoidModel_', date, '.mat');
+        save(strcat(outputFileDirectory, '\', outputFileName), 'allFrustaImage', '-v7.3');
+        outputNameFile(1).name = outputFileName;
         %close outputFigure
         
         
