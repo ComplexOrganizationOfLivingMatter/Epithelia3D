@@ -15,16 +15,18 @@ function [borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight
     for nCell = borderCells
         
         [indexes,~]=find(arrayProjectionCellVertices==nCell);
-         indexes=sort(indexes);
-                    
-        V=vertcat(vertices.verticesPerCell{indexes,1});
-        V=unique(V,'rows','stable');
-        V(V(:,2)>W)=W;
-        V=round(V);
+        if ~isempty(indexes)
+            indexes=sort(indexes);
 
-        [~,~,V1index]=checkVerticesBorder(nCell,L_img,V,W);
-        arrayValidVerticesBorderLeft(indexes(V1index))=1;
-        arrayValidVerticesBorderRight(indexes(~V1index))=1;
+            V=vertcat(vertices.verticesPerCell{indexes,1});
+            V=unique(V,'rows','stable');
+            V(V(:,2)>W)=W;
+            V=round(V);
+
+            [~,~,V1index]=checkVerticesBorder(nCell,L_img,V,W);
+            arrayValidVerticesBorderLeft(indexes(V1index))=1;
+            arrayValidVerticesBorderRight(indexes(~V1index))=1;
+        end
     end
 
 end
