@@ -19,6 +19,7 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     
     %loop to get edge length and angle for each pair of neighborings
     indexesPassingTreshold=zeros(size(uniquePairOfNeighBasal,1),1)==1;
+    resolutionTreshold=4;
     for i=1:size(uniquePairOfNeighBasal,1)
         if any(ismember(uniquePairOfNeighBasal(i,:),validCells))
             maskOuter=bwlabel(totalCellsDilatedOuter{uniquePairOfNeighBasal(i,1)}.*totalCellsDilatedOuter{uniquePairOfNeighBasal(i,2)});
@@ -32,6 +33,7 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
                 lengthEdgeInner=min(min(distCellsApical));
                 %treshold to measure a motif due to lack of resolution = 5 pixels
                 if ~isempty(lengthEdgeInner) && ~isempty(lengthEdgeOuter(i))
+                    if (lengthEdgeInner==2 || lengthEdgeInner >resolutionTreshold) && (lengthEdgeOuter(i) > (resolutionTreshold+2))
                         angleEdgeOuter(i)=edge1Outer(indexMax).Orientation;
                         indexesPassingTreshold(i)=1;
                     end
