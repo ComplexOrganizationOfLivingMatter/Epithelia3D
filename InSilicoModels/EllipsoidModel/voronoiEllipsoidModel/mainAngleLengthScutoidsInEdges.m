@@ -46,7 +46,7 @@ for nPath=1:length(filePaths)
         distributionLossingNeigh=zeros(numRandoms,11);
         distributionTransitionsPerCell=zeros(numRandoms,11);
         
-        parfor nRand=1:numRandoms           
+        for nRand=1:numRandoms           
             
             [totalCellsInRois(nRand),totalProportionScutoids(nRand),totalProportionWinNeigh(nRand),...
                 totalProportionLossNeigh(nRand),totalProportionOfCellsInNoTransitions(nRand),...
@@ -58,8 +58,7 @@ for nPath=1:length(filePaths)
            
         end
         
-        
-        
+       
         %storage of scutoids and chenge of neighs
         meanNumberOfTransitionsPerCell=mean(distributionTransitionsPerCell);
         stdNumberOfTransitionsPerCell=std(distributionTransitionsPerCell);
@@ -105,12 +104,12 @@ for nPath=1:length(filePaths)
 
         
         if nCellHeight>1
-            save([filePaths{nPath} 'dataAngleLengthEdges_' splittedCellHeight],'totalAnglesTransition','totalAnglesNoTransition','totalLengthTransition','totalLengthNoTransition','tableProportionOfAngles')
+            save([filePaths{nPath} 'dataAngleLengthEdges_' splittedCellHeight(1:end-4) date '.mat'],'totalAnglesTransition','totalAnglesNoTransition','totalLengthTransition','totalLengthNoTransition','tableProportionOfAngles')
             writetable(tableProportionOfAngles,[filePaths{nPath} 'tableDistributionAngleEdges_' splittedCellHeight(1:end-4) '_' date '.xls'],'WriteRowNames',true);
             writetable(tableProportionOfPresencesPerCell,[filePaths{nPath} 'tableNumberOfTransitionsWinningLossing_' splittedCellHeight(1:end-4) '_' date '.xls'],'WriteRowNames',true);
             writetable(tableProportionScutoids,[filePaths{nPath} 'tableScutoidsProportions_' splittedCellHeight(1:end-4) '_' date '.xls'],'WriteRowNames',true)
         else
-            save([filePaths{nPath} 'dataAngleLengthEdges.mat'],'totalAnglesTransition','totalAnglesNoTransition','totalLengthTransition','totalLengthNoTransition','tableProportionOfAngles')
+            save([filePaths{nPath} 'dataAngleLengthEdges_' date '.mat'],'totalAnglesTransition','totalAnglesNoTransition','totalLengthTransition','totalLengthNoTransition','tableProportionOfAngles')
             writetable(tableProportionOfAngles,[filePaths{nPath} 'tableDistributionAngleEdges_' date '.xls'],'WriteRowNames',true);
             writetable(tableProportionOfPresencesPerCell,[filePaths{nPath} 'tableNumberOfTransitionsWinningLossing_' date '.xls'],'WriteRowNames',true);
             writetable(tableProportionScutoids,[filePaths{nPath} 'tableScutoidsProportions_' date '.xls'],'WriteRowNames',true)

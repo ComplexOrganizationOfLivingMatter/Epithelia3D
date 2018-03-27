@@ -25,7 +25,7 @@ function [totalCellsInRois,totalProportionScutoids,totalProportionWinNeigh,...
             projectionsOuter=cell(length(projectionsInnerWater),1);
             nCells=zeros(length(projectionsInnerWater),1);
             for i=1:length(projectionsInnerWater)                
-                [~,projectionsOuter{i},neighsOuter{i},neighsInner{i},noValidCells{i},validCells{i},~,~]= checkingParametersFromRoi(maskRoiInner,projectionsInnerWater{i},projectionsOuterWater{i});
+                [projectionsInner{i},projectionsOuter{i},neighsOuter{i},neighsInner{i},noValidCells{i},validCells{i},~,~]= checkingParametersFromRoi(maskRoiInner,projectionsInnerWater{i},projectionsOuterWater{i});
                 nCells(i)=size(neighsOuter{i},2);               
             end
             cellNeighsOuter=cell(4,max(nCells));
@@ -39,24 +39,28 @@ function [totalCellsInRois,totalProportionScutoids,totalProportionWinNeigh,...
             globalNeighsOuter=cellfun(@(a,b,c,d) unique([a;b;c;d]),cellNeighsOuter(1,:),cellNeighsOuter(2,:),cellNeighsOuter(3,:),cellNeighsOuter(4,:),'UniformOutput',false);
             globalNeighsInner=cellfun(@(a,b,c,d) unique([a;b;c;d]),cellNeighsInner(1,:),cellNeighsInner(2,:),cellNeighsInner(3,:),cellNeighsInner(4,:),'UniformOutput',false);
             
-            %calculate proportions of scutoids
-            [totalProportionScutoids,totalProportionWinNeigh,totalProportionLossNeigh,totalProportionOfCellsInNoTransitions,...
-                distributionWinningNeigh,distributionLossingNeigh,distributionTransitionsPerCell]...
-                =calculateNumberOfCellsInvolvedInTransitions(globalNeighsInner,globalNeighsOuter,globalValidCells);
-              
             %get all the projections together
             outerOverlaped=horzcat([projectionsOuter{:}]);
+            innerOverlaped=horzcat([projectionsInner{:}]);
             
             %measured angles and length discriminating between transition
             %and no transition
-            [dataTransition,dataNoTransition]=measureAnglesAndLengthOfEdges(outerOverlaped,globalNeighsInner,globalNeighsOuter,globalValidCells);
+            [dataTransitionOuter,dataNoTransitionOuter]=measureAnglesAndLengthOfEdges(innerOverlaped,outerOverlaped,globalNeighsInner,globalNeighsOuter,globalValidCells);
+            [dataTransitionInner,~]=measureAnglesAndLengthOfEdges(outerOverlaped,innerOverlaped,globalNeighsOuter,globalNeighsInner,globalValidCells);
             
-            proportionAnglesTransition=[dataTransition.proportionAnglesLess15deg,dataTransition.proportionAnglesBetween15_30deg,dataTransition.proportionAnglesBetween30_45deg,dataTransition.proportionAnglesBetween45_60deg,dataTransition.proportionAnglesBetween60_75deg,dataTransition.proportionAnglesBetween75_90deg];
-            proportionAnglesNoTransition=[dataNoTransition.proportionAnglesLess15deg,dataNoTransition.proportionAnglesBetween15_30deg,dataNoTransition.proportionAnglesBetween30_45deg,dataNoTransition.proportionAnglesBetween45_60deg,dataNoTransition.proportionAnglesBetween60_75deg,dataNoTransition.proportionAnglesBetween75_90deg];
-            totalAnglesTransition=dataTransition.edgeAngle;
-            totalAnglesNoTransition=dataNoTransition.edgeAngle;
-            totalLengthTransition=dataTransition.edgeLength;
-            totalLengthNoTransition=dataNoTransition.edgeLength;
+            %calculate proportions of scutoids
+            [totalProportionScutoids,totalProportionWinNeigh,totalProportionLossNeigh,totalProportionOfCellsInNoTransitions,...
+                distributionWinningNeigh,distributionLossingNeigh,distributionTransitionsPerCell]...
+                =calculateNumberOfCellsInvolvedInTransitions(dataTransitionOuter,dataTransitionInner,globalValidCells);
+              
+            
+            
+            proportionAnglesTransition=[dataTransitionOuter.proportionAnglesLess15deg,dataTransitionOuter.proportionAnglesBetween15_30deg,dataTransitionOuter.proportionAnglesBetween30_45deg,dataTransitionOuter.proportionAnglesBetween45_60deg,dataTransitionOuter.proportionAnglesBetween60_75deg,dataTransitionOuter.proportionAnglesBetween75_90deg];
+            proportionAnglesNoTransition=[dataNoTransitionOuter.proportionAnglesLess15deg,dataNoTransitionOuter.proportionAnglesBetween15_30deg,dataNoTransitionOuter.proportionAnglesBetween30_45deg,dataNoTransitionOuter.proportionAnglesBetween45_60deg,dataNoTransitionOuter.proportionAnglesBetween60_75deg,dataNoTransitionOuter.proportionAnglesBetween75_90deg];
+            totalAnglesTransition=dataTransitionOuter.edgeAngle;
+            totalAnglesNoTransition=dataNoTransitionOuter.edgeAngle;
+            totalLengthTransition=dataTransitionOuter.edgeLength;
+            totalLengthNoTransition=dataNoTransitionOuter.edgeLength;
             
             disp([filePath ' cell height ' num2str(cellHeight) '/' num2str(nCellHeight) ' random ' num2str(nRand)])
 
