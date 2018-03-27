@@ -10,7 +10,7 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
     outputFileName = strsplit(inputFile, '\');
     outputFileName = strrep(outputFileName{end}, 'ellipsoid', 'frusta');
     
-    outputNameFile=dir([outputFileDirectory '\frusta*']);
+    outputNameFile=dir([outputFileDirectory '\' outputFileName]);
         
     load(inputFile);
 
