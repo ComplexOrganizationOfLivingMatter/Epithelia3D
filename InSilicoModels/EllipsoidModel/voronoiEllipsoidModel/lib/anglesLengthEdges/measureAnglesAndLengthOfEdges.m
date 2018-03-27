@@ -29,11 +29,12 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
                 [x2,y2]=find(L_apical==uniquePairOfNeighBasal(i,1));
                 [x1,y1]=find(L_apical==uniquePairOfNeighBasal(i,2));
                 [distCellsApical]=pdist2([x1,y1],[x2,y2]);
-                lengthEdgeApical=min(min(distCellsApical));
+                lengthEdgeInner=min(min(distCellsApical));
                 %treshold to measure a motif due to lack of resolution = 5 pixels
-                if (lengthEdgeApical==2 || lengthEdgeApical >4) && (lengthEdgeOuter(i) > 5)
-                    angleEdgeOuter(i)=edge1Outer(indexMax).Orientation;
-                    indexesPassingTreshold(i)=1;
+                if ~isempty(lengthEdgeInner) && ~isempty(lengthEdgeOuter(i))
+                        angleEdgeOuter(i)=edge1Outer(indexMax).Orientation;
+                        indexesPassingTreshold(i)=1;
+                    end
                 end
             end
         end

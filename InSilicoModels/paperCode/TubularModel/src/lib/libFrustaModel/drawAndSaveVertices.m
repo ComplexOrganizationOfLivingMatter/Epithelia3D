@@ -65,12 +65,13 @@ function drawAndSaveVertices(relativePath,nSeeds,nRand,numSurfaces,typeProjectio
             borderCells=unique(L_img(:,[1 end]));
             borderCells=borderCells(borderCells~=0);
             verticesBorderCells=cellfun(@(x) (x(1,2) == W_projection | x(1,2) == 1),vertices.verticesPerCell);
-            borderCells=unique([borderCells;unique(vertices.verticesConnectCells(verticesBorderCells,:))']);
+            newBorderCells=unique(vertices.verticesConnectCells(verticesBorderCells,:));
+            borderCells=unique(vertcat(borderCells,[newBorderCells(:)]));
 
-            figure('visible','on');    
+            figure('visible','off');    
             
             for j=1:max(max(L_img))
-                     try
+                try
                     [indexes,~]=find(arrayProjectionCellVertices==j);
                     indexes=sort(indexes);
                     [indexesNoValidCells,~]=find(arrayProjectionNoValidCellVertices==j);
@@ -125,9 +126,9 @@ function drawAndSaveVertices(relativePath,nSeeds,nRand,numSurfaces,typeProjectio
                         indexesBorderVerticesLeftPerCell{j}=nan;
 
                     end
-                    catch
-                       disp(['error in cell ' num2str(j)] )
-                    end
+                catch
+                   disp(['error in cell ' num2str(j)] )
+                end
 
             end
 

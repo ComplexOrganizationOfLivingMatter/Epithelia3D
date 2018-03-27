@@ -26,7 +26,7 @@ function [proportionOfScutoids,proportionOfCellsWinning,proportionOfCellsLossing
     winningPerCell = histc(scutoidsInner,uniqueInnerCells);
     
     uniqueTotalCells = unique([scutoidsOuter;scutoidsInner]);
-    motifsTransitionPerCell = histc(uniqueTotalCells,[scutoidsOuter;scutoidsInner]);
+    motifsTransitionPerCell = histc([scutoidsOuter;scutoidsInner],uniqueTotalCells);
     
     proportionWinningNeigh=[length(setdiff(validCells,uniqueInnerCells)),sum(winningPerCell==1),sum(winningPerCell==2),sum(winningPerCell==3),sum(winningPerCell==4)...
         sum(winningPerCell==5),sum(winningPerCell==6),sum(winningPerCell==7),sum(winningPerCell==8),sum(winningPerCell==9),sum(winningPerCell==10)]/length(validCells);
