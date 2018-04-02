@@ -75,8 +75,7 @@ function energyCalculationControlTubularModel(numSurfaces,relativePathVoronoi,nu
 
                 end
             
-
-                directory2save=['data\tubularControlModel\' typeProjection '\' num2str(nSeeds) 'seeds\energy\'];
+                directory2save=[relativePathControl num2str(nSeeds) 'seeds\energy\'];
                 mkdir(directory2save);
 
                 writetable(tableEnergy,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_' date '.xls'])
