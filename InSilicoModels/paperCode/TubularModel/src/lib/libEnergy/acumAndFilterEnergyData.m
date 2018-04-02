@@ -1,4 +1,4 @@
-function [tableTransitionEnergy,tableTransitionEnergyFiltering100data,tableNoTransitionEnergy,tableNoTransitionEnergyFiltering100data ] = acumAndFilterEnergyData( dataEnergy, labelEdges,tableTransitionEnergy,tableTransitionEnergyFiltering100data,tableNoTransitionEnergy,tableNoTransitionEnergyFiltering100data )
+function [tableTransitionEnergy,tableTransitionEnergyFiltering100data,tableNoTransitionEnergy,tableNoTransitionEnergyFiltering100data ] = acumAndFilterEnergyData( dataEnergy, labelEdges,tableTransitionEnergy,tableTransitionEnergyFiltering100data,tableNoTransitionEnergy,tableNoTransitionEnergyFiltering100data,nRand,nSeeds,surfaceRatio)
     
     if ~isempty(dataEnergy.basalH1)
         dataEnergy.nRand=nRand*ones(size(dataEnergy.basalH1,1),1);

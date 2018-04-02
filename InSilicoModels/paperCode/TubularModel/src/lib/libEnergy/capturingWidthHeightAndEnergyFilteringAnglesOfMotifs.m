@@ -70,7 +70,7 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
 
                 %detecting who is W and who H depending on its angle
                 if (mean([edge1Angle,edge2Angle]) < 30 && mean([edge3Angle,edge4Angle]) > 60) || ...
-                        (mean([edge1Angle,edge2Angle]) > 60 && mean([edge3Angle,edge4Angle]) > 60)
+                        (mean([edge1Angle,edge2Angle]) > 60 && mean([edge3Angle,edge4Angle]) < 30)
                     if (edge1Angle+edge2Angle)>(edge3Angle+edge4Angle)
                         W1Length(i)=edge1Length;
                         W2Length(i)=edge2Length;

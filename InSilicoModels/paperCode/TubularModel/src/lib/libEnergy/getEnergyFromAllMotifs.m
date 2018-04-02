@@ -1,4 +1,4 @@
-function [ dataEnergy ] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairs,vertices,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal)
+function [ dataEnergy,dataEnergyFilterByAngle ] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairs,vertices,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal)
 
     [~,W]=size(L_basal);
 
