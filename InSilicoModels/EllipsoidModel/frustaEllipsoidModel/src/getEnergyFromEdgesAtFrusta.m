@@ -1,10 +1,10 @@
-function [dataEnergy,dataEnergyOuterNonPreservedMotifs,numberOfValidMotifs] = getEnergyFromEdgesAtFrusta( outerProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,pairsOfCells,flag, verticesInner)
+function [dataEnergy,dataEnergyOuterNonPreservedMotifs,numberOfValidMotifs] = getEnergyFromEdgesAtFrusta( outerProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,pairsOfCells,flag, verticesOuter)
 
 
     [~,W_outer]=size(outerProjection);
     [~,W_inner]=size(innerRoiProjection);
     
-    verticesOuter = verticesInner;
+    %verticesOuter = verticesInner;
     
 
     %all vertices in outer surface
@@ -12,7 +12,7 @@ function [dataEnergy,dataEnergyOuterNonPreservedMotifs,numberOfValidMotifs] = ge
     outerVerticesPerCell=arrayfun(@(x) find(sum(x==verticesOuter.verticesConnectCells,2)), 1:max(max(outerProjection)), 'UniformOutput', false);
     
     %all vertices in inner surface
-    %[verticesInner]=calculateVertices(innerRoiProjection,neighsInner);
+    [verticesInner]=calculateVertices(innerRoiProjection,neighsInner);
     innerVerticesPerCell=arrayfun(@(x) find(sum(x==verticesInner.verticesConnectCells,2)), 1:max(max(innerRoiProjection)), 'UniformOutput', false);
     
     pairCell=cellfun(@(x, y) [y*ones(length(x),1),x],pairsOfCells',num2cell(1:length(pairsOfCells))','UniformOutput',false);

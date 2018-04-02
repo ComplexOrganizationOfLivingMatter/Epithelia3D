@@ -7,9 +7,14 @@ function [ unifyModel ] = unifyApicalAndBasal( apicalInfo, basalInfo )
     apicalIds = table2array(apicalInfo(:, [1:4 12]));
     basalIds = table2array(basalInfo(:, [1:4 12]));
 
-    [~, correspondanceIdBasalApical] = ismember(basalIds, apicalIds, 'rows');
+    [basalFilter, correspondanceIdBasalApical] = ismember(basalIds, apicalIds, 'rows');
     
-    unifyModel = horzcat(apicalInfo(:, 1:end-3), basalInfo(correspondanceIdBasalApical, 5:end));
+    if sum(correspondanceIdBasalApical == 0) > 0
+        warning('Found motifs without correspondance between apical and basal')
+    end
+    correspondanceIdBasalApical(correspondanceIdBasalApical == 0) = [];
+    
+    unifyModel = horzcat(apicalInfo(correspondanceIdBasalApical, 1:end-3), basalInfo(basalFilter, 5:end));
 
 end
 
