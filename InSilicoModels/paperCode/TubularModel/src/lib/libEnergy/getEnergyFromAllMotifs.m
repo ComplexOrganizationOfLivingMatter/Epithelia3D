@@ -1,4 +1,4 @@
-function [ dataEnergy ] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairs,vertices,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal)
+function [ dataEnergy,dataEnergyFilterByAngle ] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairs,vertices,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal)
 
     [~,W]=size(L_basal);
 
@@ -17,7 +17,6 @@ function [ dataEnergy ] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairs
     validPairs2=cell2mat(cellfun(@(x) length(x)==2,cellsInMotifContactingCellsEdge,'UniformOutput',false))';
     cellsInMotifContactingCellsEdge=cell2mat(cellsInMotifContactingCellsEdge(validPairs2)');
     pairCellValidCells=pairCellValidCells(validPairs2,:);
-
     
     %testing transition data
     dataEnergy.fourCellsMotif=[pairCellValidCells,cellsInMotifContactingCellsEdge];
@@ -25,6 +24,8 @@ function [ dataEnergy ] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairs
     %calculation of energy
     [dataEnergy.EdgeLength,dataEnergy.SumEdgesOfEnergy,dataEnergy.EdgeAngle,dataEnergy.H1,dataEnergy.H2,dataEnergy.W1,dataEnergy.W2,notEmptyIndexes]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairCellValidCells,cellsInMotifContactingCellsEdge,W,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
     
+     %calculation of energy filtered by angle
+    [dataEnergyFilterByAngle.EdgeLength,dataEnergyFilterByAngle.SumEdgesOfEnergy,dataEnergyFilterByAngle.EdgeAngle,dataEnergyFilterByAngle.H1,dataEnergyFilterByAngle.H2,dataEnergyFilterByAngle.W1,dataEnergyFilterByAngle.W2,notEmptyIndexesFilterByAngle]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(verticesPerCell,vertices,pairCellValidCells,cellsInMotifContactingCellsEdge,W,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
     
 
 end
