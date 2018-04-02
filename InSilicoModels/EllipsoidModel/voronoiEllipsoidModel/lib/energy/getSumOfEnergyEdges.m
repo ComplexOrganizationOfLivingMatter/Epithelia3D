@@ -1,4 +1,4 @@
-function sumEdgesOfEnergy = getSumOfEnergyEdges(verticesCell_1_2,verticesCell_3,verticesCell_4,verticesTotal,W)
+function sumEdgesOfEnergy = getSumOfEnergyEdges(verticesCell_1_2,verticesCell_3,verticesCell_4,verticesTotal)
 
 
         indexVertEdge1=ismember(verticesCell_3(:,1),verticesCell_1_2(:,:));

@@ -1,6 +1,5 @@
 function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Length,validIndex]=capturingWidthHeightAndEnergyAngleThreshold(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved)
     
-
     %cell 1 and 2, are the cells in contact. Cell 3 and 4 are not touching between them into the four cell motif.
     verticesCell_1_2=arrayfun(@(x,y) intersect(verticesPerCell{x},verticesPerCell{y}), pairValidCellsPreserved(:,1),pairValidCellsPreserved(:,2),'UniformOutput',false);
     allVerticesCell_1_2=arrayfun(@(x,y) unique([verticesPerCell{x}',verticesPerCell{y}']), pairValidCellsPreserved(:,1),pairValidCellsPreserved(:,2),'UniformOutput',false);
@@ -56,20 +55,23 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
                 [edge4Length, edge4Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertW2default{i}(1,1)};vertices.verticesPerCell{vertW2default{i}(2,1)}]);
 
                 %detecting who is W and who H depending on its angle
-                if (edge1Angle+edge2Angle)>(edge3Angle+edge4Angle)
-                    W1Length(i)=edge1Length;
-                    W2Length(i)=edge2Length;
-                    H1Length(i)=edge3Length;
-                    H2Length(i)=edge4Length;
-                else
-                    W1Length(i)=edge3Length;
-                    W2Length(i)=edge4Length;
-                    H1Length(i)=edge1Length;
-                    H2Length(i)=edge2Length;
-                end
+                if (mean([edge1Angle,edge2Angle]) < 30 && mean([edge3Angle,edge4Angle]) > 60) || ...
+                        (mean([edge1Angle,edge2Angle]) > 60 && mean([edge3Angle,edge4Angle]) < 30)
+                    if (edge1Angle+edge2Angle)>(edge3Angle+edge4Angle)
+                        W1Length(i)=edge1Length;
+                        W2Length(i)=edge2Length;
+                        H1Length(i)=edge3Length;
+                        H2Length(i)=edge4Length;
+                    else
+                        W1Length(i)=edge3Length;
+                        W2Length(i)=edge4Length;
+                        H1Length(i)=edge1Length;
+                        H2Length(i)=edge2Length;
+                    end
 
-                %get sum of energies
-                sumEdgesOfEnergy(i) = getSumOfEnergyEdges(verticesCell_1_2{i},verticesCell_3{i},verticesCell_4{i},vertices);
+                    %get sum of energies
+                    sumEdgesOfEnergy(i) = getSumOfEnergyEdges(verticesCell_1_2{i},verticesCell_3{i},verticesCell_4{i},vertices);
+                end
             catch
                 disp(['skip measurement of energy in vertex ' num2str(i)])
             end

@@ -1,16 +1,13 @@
-function [dataEnergy,dataEnergyNonPreservedMotifs,numberOfValidMotifs] = getEnergyFromEdges( outerProjection,innerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,pairsOfCells,flag)
-
-
-    [~,W_outer]=size(outerProjection);
-    [~,W_inner]=size(innerRoiProjection);
+function [dataEnergy,dataEnergyNonPreservedMotifs,dataEnergyAngleThreshold,dataEnergyNonPreservedMotifsAngleThreshold,numberOfValidMotifs] = getEnergyFromEdges( outerProjection,innerProjection,neighsOuter,neighsInner,noValidCells,validCells,pairsOfCells,flag)
 
     %all vertices in outer surface
     [verticesOuter]=calculateVertices(outerProjection,neighsOuter);
     outerVerticesPerCell=arrayfun(@(x) find(sum(x==verticesOuter.verticesConnectCells,2)), 1:max(max(outerProjection)), 'UniformOutput', false);
-    
-    %all vertices in inner surface
-    [verticesInner]=calculateVertices(innerRoiProjection,neighsInner);
-    innerVerticesPerCell=arrayfun(@(x) find(sum(x==verticesInner.verticesConnectCells,2)), 1:max(max(innerRoiProjection)), 'UniformOutput', false);
+        
+    %all vertices in outer surface
+    [verticesInner]=calculateVertices(innerProjection,neighsInner);
+    innerVerticesPerCell=arrayfun(@(x) find(sum(x==verticesInner.verticesConnectCells,2)), 1:max(max(outerProjection)), 'UniformOutput', false);
+        
     
     pairCell=cellfun(@(x, y) [y*ones(length(x),1),x],pairsOfCells',num2cell(1:length(pairsOfCells))','UniformOutput',false);
     pairCell=unique(vertcat(pairCell{:}),'rows');
@@ -57,53 +54,20 @@ function [dataEnergy,dataEnergyNonPreservedMotifs,numberOfValidMotifs] = getEner
     cellsInMotifNoContactValidCellsPreserved=cellsInMotifNoContactValidCells(preservedMotifsInInner,:);
     
 
-    %testing transition data
-    dataEnergy.fourCellsMotif=[pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];
-    dataEnergyNonPreservedMotifs.fourCellsMotif=[pairCellValidCells,cellsInMotifNoContactValidCells];
 
+    %getting energy in the preserved motifs
+    [ dataEnergy ] = getEnergyInPreservedMotifs(innerVerticesPerCell,verticesInner,outerVerticesPerCell,verticesOuter,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,flag);
+    %getting energy in the non preserved motifs
+    [ dataEnergyNonPreservedMotifs ] = getEnergyInNonPreservedMotifs( outerVerticesPerCell,verticesOuter,pairCellValidCells,cellsInMotifNoContactValidCells );
     
-    [dataEnergy.outerEdgeLength,dataEnergy.outerSumEdgesOfEnergy,dataEnergy.outerEdgeAngle,dataEnergy.outerH1,dataEnergy.outerH2,dataEnergy.outerW1,dataEnergy.outerW2,notEmptyIndexesOuter]=capturingWidthHeightAndEnergy(outerVerticesPerCell,verticesOuter,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved);
-    if strcmp(flag,'transition')
-        [dataEnergy.innerEdgeLength,dataEnergy.innerSumEdgesOfEnergy,dataEnergy.innerEdgeAngle,dataEnergy.innerH1,dataEnergy.innerH2,dataEnergy.innerW1,dataEnergy.innerW2,noEmptyIndexesInner]=capturingWidthHeightAndEnergy(innerVerticesPerCell,verticesInner,cellsInMotifNoContactValidCellsPreserved,pairCellValidCellsPreserved);        
-    else
-        [dataEnergy.innerEdgeLength,dataEnergy.innerSumEdgesOfEnergy,dataEnergy.innerEdgeAngle,dataEnergy.innerH1,dataEnergy.innerH2,dataEnergy.innerW1,dataEnergy.innerW2,noEmptyIndexesInner]=capturingWidthHeightAndEnergy(innerVerticesPerCell,verticesInner,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved);
-    end
+    %getting energy in the preserved motifs with angle threshold
+    [ dataEnergyAngleThreshold ] = getEnergyInPreservedMotifsAngleThreshold(innerVerticesPerCell,verticesInner,outerVerticesPerCell,verticesOuter,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,flag);
+    %getting energy in the non preserved motifs
+    [ dataEnergyNonPreservedMotifsAngleThreshold ] = getEnergyInNonPreservedMotifsAngleThreshold( outerVerticesPerCell,verticesOuter,pairCellValidCells,cellsInMotifNoContactValidCells );
     
-    %testing transitions data (without filtering with preserved in inner)
-    [dataEnergyNonPreservedMotifs.outerEdgeLength,dataEnergyNonPreservedMotifs.outerSumEdgesOfEnergy,dataEnergyNonPreservedMotifs.outerEdgeAngle,dataEnergyNonPreservedMotifs.outerH1,dataEnergyNonPreservedMotifs.outerH2,dataEnergyNonPreservedMotifs.outerW1,dataEnergyNonPreservedMotifs.outerW2,notEmptyIndexesOuterTransitions]=capturingWidthHeightAndEnergy(outerVerticesPerCell,verticesOuter,pairCellValidCells,cellsInMotifNoContactValidCells);
     
-    if sum(notEmptyIndexesOuter)< length(notEmptyIndexesOuter) || sum(noEmptyIndexesInner)< length(noEmptyIndexesInner)
-        
-        notEmptyIndexes=(noEmptyIndexesInner & notEmptyIndexesOuter);
-        
-        dataEnergy.fourCellsMotif=dataEnergy.fourCellsMotif(notEmptyIndexes,:);
-        dataEnergy.innerH1=dataEnergy.innerH1(notEmptyIndexes);
-        dataEnergy.innerH2=dataEnergy.innerH2(notEmptyIndexes);
-        dataEnergy.innerW1=dataEnergy.innerW1(notEmptyIndexes);
-        dataEnergy.innerW2=dataEnergy.innerW2(notEmptyIndexes);
-        dataEnergy.innerSumEdgesOfEnergy=dataEnergy.innerSumEdgesOfEnergy(notEmptyIndexes);
-        dataEnergy.innerEdgeLength=dataEnergy.innerEdgeLength(notEmptyIndexes);
-        dataEnergy.innerEdgeAngle=dataEnergy.innerEdgeAngle(notEmptyIndexes);
-
-        dataEnergy.outerH1=dataEnergy.outerH1(notEmptyIndexes);
-        dataEnergy.outerH2=dataEnergy.outerH2(notEmptyIndexes);
-        dataEnergy.outerW1=dataEnergy.outerW1(notEmptyIndexes);
-        dataEnergy.outerW2=dataEnergy.outerW2(notEmptyIndexes);
-        dataEnergy.outerSumEdgesOfEnergy=dataEnergy.outerSumEdgesOfEnergy(notEmptyIndexes);
-        dataEnergy.outerEdgeLength=dataEnergy.outerEdgeLength(notEmptyIndexes);
-        dataEnergy.outerEdgeAngle=dataEnergy.outerEdgeAngle(notEmptyIndexes);
-    end
+   
     
-    if sum(notEmptyIndexesOuterTransitions)< length(notEmptyIndexesOuterTransitions)
-        dataEnergyNonPreservedMotifs.fourCellsMotif=dataEnergyNonPreservedMotifs.fourCellsMotif(notEmptyIndexesOuterTransitions,:);
-        dataEnergyNonPreservedMotifs.outerH1=dataEnergyNonPreservedMotifs.outerH1(notEmptyIndexesOuterTransitions);
-        dataEnergyNonPreservedMotifs.outerH2=dataEnergyNonPreservedMotifs.outerH2(notEmptyIndexesOuterTransitions);
-        dataEnergyNonPreservedMotifs.outerW1=dataEnergyNonPreservedMotifs.outerW1(notEmptyIndexesOuterTransitions);
-        dataEnergyNonPreservedMotifs.outerW2=dataEnergyNonPreservedMotifs.outerW2(notEmptyIndexesOuterTransitions);
-        dataEnergyNonPreservedMotifs.outerSumEdgesOfEnergy=dataEnergyNonPreservedMotifs.outerSumEdgesOfEnergy(notEmptyIndexesOuterTransitions);
-        dataEnergyNonPreservedMotifs.outerEdgeLength=dataEnergyNonPreservedMotifs.outerEdgeLength(notEmptyIndexesOuterTransitions);
-        dataEnergyNonPreservedMotifs.outerEdgeAngle=dataEnergyNonPreservedMotifs.outerEdgeAngle(notEmptyIndexesOuterTransitions);
-    end
     
     
 end
