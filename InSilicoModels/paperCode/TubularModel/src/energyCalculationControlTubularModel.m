@@ -81,8 +81,8 @@ function energyCalculationControlTubularModel(numSurfaces,relativePathVoronoi,nu
                 writetable(tableEnergy,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_' date '.xls'])
                 writetable(tableEnergyFiltering100data,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_filtered_' date '.xls'])
 
-                writetable(tableEnergyFilterByAngle,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_AngleTreshold_' date '.xls'])
-                writetable(tableEnergyFiltering100dataFilterByAngle,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_filtered_AngleTreshold_' date '.xls'])
+                writetable(tableEnergyFilterByAngle,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_AngleThreshold_' date '.xls'])
+                writetable(tableEnergyFiltering100dataFilterByAngle,[directory2save 'allFrustaEnergy_' num2str(nSeeds) 'seeds_surfaceRatio_' num2str(surfaceRatio) '_filtered_AngleThreshold_' date '.xls'])
 
 
             end

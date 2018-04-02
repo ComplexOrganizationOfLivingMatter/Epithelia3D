@@ -111,11 +111,11 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
         writetable(tableEnergyAllMotifs,[energyDirectory 'allMotifsEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_' date '.xls'])
         
         %Same order than before, but in this case it were measured the energy in motifs with an angle treshold
-        writetable(tableTransitionEnergyFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_AngleTreshold_' date  '.xls'])
-        writetable(tableNoTransitionEnergyFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_AngleTreshold_' date  '.xls'])
-        writetable(tableTransitionEnergyFiltering100dataFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_filtered_AngleTreshold_' date '.xls'])
-        writetable(tableNoTransitionEnergyFiltering100dataFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_filtered_AngleTreshold_' date '.xls'])
-        writetable(tableEnergyAllMotifsFilterByAngle,[energyDirectory 'allMotifsEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_AngleTreshold_' date '.xls'])
+        writetable(tableTransitionEnergyFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_AngleThreshold_' date  '.xls'])
+        writetable(tableNoTransitionEnergyFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_AngleThreshold_' date  '.xls'])
+        writetable(tableTransitionEnergyFiltering100dataFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_filtered_AngleThreshold_' date '.xls'])
+        writetable(tableNoTransitionEnergyFiltering100dataFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_filtered_AngleThreshold_' date '.xls'])
+        writetable(tableEnergyAllMotifsFilterByAngle,[energyDirectory 'allMotifsEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_AngleThreshold_' date '.xls'])
         
                 
     end
