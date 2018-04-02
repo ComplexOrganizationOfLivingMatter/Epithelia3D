@@ -73,7 +73,7 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                 end
                 %% All motifs energy in basal, without taking into account if the motifs match between basal and apical...
                 if nLab == 1
-                    dataEnergyAllMotifs = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairsBasal,verticesBasal,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
+                    [dataEnergyAllMotifs,dataEnergyAllMotifsFilterByAngle] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairsBasal,verticesBasal,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
                 
                     dataEnergyAllMotifs.nRand=nRand*ones(size(dataEnergyAllMotifs.H1,1),1);
                     dataEnergyAllMotifs.numSeeds=nSeeds*ones(size(dataEnergyAllMotifs.H1,1),1);
@@ -84,8 +84,6 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                     tableEnergyAllMotifs=[tableEnergyAllMotifs;sumTableEnergyAllMotifs];
                     
                     %angle treshold H ~ (0-30º) and W ~ (60-90º)
-                    dataEnergyAllMotifsFilterByAngle = getEnergyFromAllMotifsFilteringByAngle(L_basal,noValidCells,totalPairsBasal,verticesBasal,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
-
                     dataEnergyAllMotifsFilterByAngle.nRand=nRand*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
                     dataEnergyAllMotifsFilterByAngle.numSeeds=nSeeds*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
                     dataEnergyAllMotifsFilterByAngle.surfaceRatio=surfaceRatio*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
