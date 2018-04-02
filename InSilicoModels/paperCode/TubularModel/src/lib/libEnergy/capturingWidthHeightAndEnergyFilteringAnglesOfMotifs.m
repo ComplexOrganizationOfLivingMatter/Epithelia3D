@@ -1,4 +1,4 @@
-function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Length,validIndex]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight)
+function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Length,validIndex]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight)
     %In this function we calculate the source data for the line tension model
 
 
@@ -38,6 +38,8 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
         verticesCell_4(noValidIndex,:)={NaN};
     end
     
+    
+    
     %initializing variables
     edgeLength=nan(length(verticesCell_1_2),1);
     edgeAngle=nan(length(verticesCell_1_2),1);
@@ -45,13 +47,15 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
     H2Length=nan(length(verticesCell_1_2),1);
     W1Length=nan(length(verticesCell_1_2),1);
     W2Length=nan(length(verticesCell_1_2),1);
-    sumEdgesOfEnergy=zeros(length(verticesCell_1_2),1);
+    sumEdgesOfEnergy=nan(length(verticesCell_1_2),1);
     verticesBorderLeft=vertices.verticesPerCell(logical(arrayValidVerticesBorderLeft));
     verticesBorderRight=vertices.verticesPerCell(logical(arrayValidVerticesBorderRight));
-
+    
+    
+    
     %testing angle and edge length
     for i=1:length(verticesCell_1_2)
-        
+       
         if ~isnan(verticesCell_1_2{i}) 
         
             try
@@ -64,26 +68,31 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
                 [edge3Length, edge3Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertW1default{i}(1,1)};vertices.verticesPerCell{vertW1default{i}(2,1)}],borderCells,verticesBorderLeft,verticesBorderRight,vertices,fourCellsMotifs(i,:),W);
                 [edge4Length, edge4Angle] = edgeLengthAnglesCalculation([vertices.verticesPerCell{vertW2default{i}(1,1)};vertices.verticesPerCell{vertW2default{i}(2,1)}],borderCells,verticesBorderLeft,verticesBorderRight,vertices,fourCellsMotifs(i,:),W);
 
-                if (edge1Angle+edge2Angle)>(edge3Angle+edge4Angle)
-                    W1Length(i)=edge1Length;
-                    W2Length(i)=edge2Length;
-                    H1Length(i)=edge3Length;
-                    H2Length(i)=edge4Length;
-                else
-                    W1Length(i)=edge3Length;
-                    W2Length(i)=edge4Length;
-                    H1Length(i)=edge1Length;
-                    H2Length(i)=edge2Length;
+                %detecting who is W and who H depending on its angle
+                if (mean([edge1Angle,edge2Angle]) < 30 && mean([edge3Angle,edge4Angle]) > 60) || ...
+                        (mean([edge1Angle,edge2Angle]) > 60 && mean([edge3Angle,edge4Angle]) > 60)
+                    if (edge1Angle+edge2Angle)>(edge3Angle+edge4Angle)
+                        W1Length(i)=edge1Length;
+                        W2Length(i)=edge2Length;
+                        H1Length(i)=edge3Length;
+                        H2Length(i)=edge4Length;
+                    else
+                        W1Length(i)=edge3Length;
+                        W2Length(i)=edge4Length;
+                        H1Length(i)=edge1Length;
+                        H2Length(i)=edge2Length;
+                    end
+
+                    %get sum of energies
+                    sumEdgesOfEnergy(i) = getSumOfEnergyEdges(edgeLength(i),verticesCell_1_2{i},verticesCell_3{i},verticesCell_4{i},vertices,borderCells,verticesBorderLeft,verticesBorderRight,fourCellsMotifs(i,:),W);
                 end
-                %get sum of energies
-                sumEdgesOfEnergy(i) = getSumOfEnergyEdges(edgeLength(i),verticesCell_1_2{i},verticesCell_3{i},verticesCell_4{i},vertices,borderCells,verticesBorderLeft,verticesBorderRight,fourCellsMotifs(i,:),W);
             catch
                 disp(['skip measurement of energy in vertex ' num2str(i)])
             end
         end
     end
     
-    validIndex = ~isnan(edgeLength);
+    validIndex=~isnan(edgeLength);
         
 end
 
