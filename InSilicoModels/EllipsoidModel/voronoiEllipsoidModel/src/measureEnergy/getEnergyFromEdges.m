@@ -38,6 +38,8 @@ function [dataEnergy,dataEnergyNonPreservedMotifs,dataEnergyAngleThreshold,dataE
     if sum(pairCellValidCells)==0
         dataEnergy=[];
         dataEnergyNonPreservedMotifs=[];
+        dataEnergyAngleThreshold=[];
+        dataEnergyNonPreservedMotifsAngleThreshold=[];
         numberOfValidMotifs=0;
         return
     else

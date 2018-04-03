@@ -18,8 +18,13 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
     notEmptyIndex=cell2mat(cellfun(@(x,y,z,zz,zzz) (length(x)==2 & length(y)==2 & length(z)==2 & length(zz)==2 & ~isempty(zzz)),vertH1default,vertH2default,vertW1default,vertW2default,verticesCell_1_2,'UniformOutput',false));
     indexEdges3CellsMotifs=cellfun(@(x) (length(x) > 2),verticesCell_1_2);
     
-    noValidIndex = ~notEmptyIndex | indexEdges3CellsMotifs;
-    if sum(noValidIndex)>0 
+    if isempty(notEmptyIndex) || isempty(indexEdges3CellsMotifs)
+        noValidIndex=0;
+    else
+        noValidIndex = ~notEmptyIndex | indexEdges3CellsMotifs;
+    end
+
+    if sum(noValidIndex)>0
         verticesCell_1_2(noValidIndex,:)={NaN};
         vertH1default(noValidIndex,:)={NaN};
         vertH2default(noValidIndex,:)={NaN};

@@ -13,7 +13,7 @@ filePathRugby='results\Rugby\';
 
 filePaths={filePathVoronoiStage8,filePathVoronoiStage4,filePathGlobe,filePathRugby,filePathSphere};
     
-for nPath=1:2%length(filePaths)
+for nPath=2%length(filePaths)
     
     
     if nPath==1 
@@ -42,32 +42,15 @@ for nPath=1:2%length(filePaths)
 
         for nRand=1:numRandoms
 
-            try
+%             try
                 ellipsoidPath=dir([filePaths{nPath} '\randomizations\random_' num2str(nRand) '\*llipsoid*' ]);
                 %if projectins are just created...load, else run the
                 %zProjections program
 
                 splittedPath=strsplit(ellipsoidPath(cellHeight).name,'_');
                 splittedCellHeight=splittedPath{end};
-
-                if exist([filePaths{nPath} 'randomizations\random_' num2str(nRand) '\roiProjections.mat'],'file') || exist([filePaths{nPath} 'random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'file')
-                    if nCellHeight>1
-                        load([filePaths{nPath} 'randomizations\random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')
-                    else
-                        load([filePaths{nPath} 'randomizations\random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
-                    end
-                else
-
-                    load([filePaths{nPath} '\randomizations\random_' num2str(nRand) '\' ellipsoidPath(cellHeight).name],'ellipsoidInfo','initialEllipsoid')
-                    %getting 4 projections from 3d ellipsoid
-                    [projectionsInner,projectionsOuter,projectionsInnerWater,projectionsOuterWater]=maxProjectionEllipsoid( ellipsoidInfo,initialEllipsoid);
-                    if nCellHeight>1
-                        save([filePaths{nPath} 'randomizations\random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')
-                    else
-                        save([filePaths{nPath} 'randomizations\random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
-                    end
-
-                end
+                
+                [ projectionsInnerWater,projectionsOuterWater ] = checkMaxProjectionExist( filePaths{nPath}, nRand, nCellHeight, splittedCellHeight );
 
                 %loading mask central cells in projection
                 maskImg = imread([filePaths{nPath} 'maskInner.tif']);
@@ -91,9 +74,9 @@ for nPath=1:2%length(filePaths)
 
                 [filePaths{nPath} 'randomization ' num2str(nRand) '  -  ' splittedCellHeight(1:end-4)]
 
-            catch
-                  ['randomization ERROR:' num2str(nRand) '  -  ' filePaths{nPath} '-' splittedCellHeight(1:end-4)]
-            end
+%             catch
+%                   ['randomization ERROR:' num2str(nRand) '  -  ' filePaths{nPath} '-' splittedCellHeight(1:end-4)]
+%             end
 
 
         end

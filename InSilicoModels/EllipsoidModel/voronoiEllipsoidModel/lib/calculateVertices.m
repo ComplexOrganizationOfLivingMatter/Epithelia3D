@@ -25,7 +25,6 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours )
     borderImg=zeros(size(L_img));
     borderImg(L_img==0)=1;
     for numTriplet = 1 : size(neighboursVertices,1)
-
         BW1_dilate=dilatedCells{neighboursVertices(numTriplet, 1),1};
         BW2_dilate=dilatedCells{neighboursVertices(numTriplet, 2),1};
         BW3_dilate=dilatedCells{neighboursVertices(numTriplet, 3),1};
