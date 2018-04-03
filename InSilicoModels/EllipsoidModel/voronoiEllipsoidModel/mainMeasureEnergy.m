@@ -74,9 +74,19 @@ for nPath=2%length(filePaths)
 
                 [filePaths{nPath} 'randomization ' num2str(nRand) '  -  ' splittedCellHeight(1:end-4)]
 
-%             catch
-%                   ['randomization ERROR:' num2str(nRand) '  -  ' filePaths{nPath} '-' splittedCellHeight(1:end-4)]
-%             end
+            catch err
+                disp('-------------ERROR--------------');
+                fid = fopen('logFile','a+');
+                % write the error to file
+                % first line: message
+                fprintf(fid,'%s\r\n',['randomization ERROR:' num2str(nRand) '  -  ' filePaths{nPath} '-' splittedCellHeight(1:end-4)]);
+                fprintf(fid,'%s\r\n',err.message);
+
+                fprintf(fid, '%s', err.getReport('extended', 'hyperlinks','off'));
+
+                % close file
+                fclose(fid);
+            end
 
 
         end

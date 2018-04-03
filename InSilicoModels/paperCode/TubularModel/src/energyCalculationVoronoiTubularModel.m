@@ -99,6 +99,7 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
        
         %directory to save
         energyDirectory=[directory2save typeProjection '\' nameOfFolder 'energy\'];
+        energyDirectory=strrep(energyDirectory,directory2save,'C:\Users\Luisma\Desktop\');
         mkdir(energyDirectory);
         
         %energy measured matching motifs between basal and apical; filtered
