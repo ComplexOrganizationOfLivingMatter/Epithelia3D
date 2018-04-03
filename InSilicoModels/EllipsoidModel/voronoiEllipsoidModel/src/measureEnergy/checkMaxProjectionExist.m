@@ -8,7 +8,7 @@ function [ projectionsInnerWater,projectionsOuterWater ] = checkMaxProjectionExi
             end
         else
 
-            load([filePath '\randomizations\random_' num2str(nRand) '\' ellipsoidPath(cellHeight).name],'ellipsoidInfo','initialEllipsoid')
+            load([filePath '\randomizations\random_' num2str(nRand) '\' ellipsoidPath(nCellHeight).name],'ellipsoidInfo','initialEllipsoid')
             %getting 4 projections from 3d ellipsoid
             [projectionsInner,projectionsOuter,projectionsInnerWater,projectionsOuterWater]=maxProjectionEllipsoid( ellipsoidInfo,initialEllipsoid);
             if nCellHeight>1
