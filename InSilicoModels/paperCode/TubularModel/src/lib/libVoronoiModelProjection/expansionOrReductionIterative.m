@@ -1,4 +1,4 @@
-function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjection,listDataAnglesTransitionMeasuredInBasal,listDataAnglesTransitionMeasuredInApical,totalAnglesTransitionMeasuredInBasal,totalAnglesTransitionMeasuredInApical,acumListTransitionBySurfaceRatio,acumListDataAnglesTransitionInBasal,acumListDataAnglesNoTransitionInBasal,acumListDataAnglesTransitionInApical,acumListDataAnglesNoTransitionInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical,listDataAnglesNoTransitionMeasuredInBasal,listDataAnglesNoTransitionMeasuredInApical,totalAnglesNoTransitionMeasuredInBasal,totalAnglesNoTransitionMeasuredInApical,totalEdgesNoTransitionMeasuredInBasal,totalEdgesNoTransitionMeasuredInApical] = expansionOrReductionIterative(listOfSurfaceRatios,seedsOriginal,L_original,numCells,pathV5data,directory2save,kindProjection,nameOfFolder,i,totalAnglesTransitionMeasuredInBasal,totalAnglesTransitionMeasuredInApical,acumListTransitionBySurfaceRatio,acumListDataAnglesTransitionInBasal,acumListDataAnglesNoTransitionInBasal,acumListDataAnglesTransitionInApical,acumListDataAnglesNoTransitionInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical,totalAnglesNoTransitionMeasuredInBasal,totalAnglesNoTransitionMeasuredInApical,totalEdgesNoTransitionMeasuredInBasal,totalEdgesNoTransitionMeasuredInApical)
+function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjection,listDataAnglesTransitionMeasuredInBasal,listDataAnglesTransitionMeasuredInApical,totalAnglesTransitionMeasuredInBasal,totalAnglesTransitionMeasuredInApical,acumListDataAnglesTransitionInBasal,acumListDataAnglesNoTransitionInBasal,acumListDataAnglesTransitionInApical,acumListDataAnglesNoTransitionInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical,listDataAnglesNoTransitionMeasuredInBasal,listDataAnglesNoTransitionMeasuredInApical,totalAnglesNoTransitionMeasuredInBasal,totalAnglesNoTransitionMeasuredInApical,totalEdgesNoTransitionMeasuredInBasal,totalEdgesNoTransitionMeasuredInApical] = expansionOrReductionIterative(listOfSurfaceRatios,seedsOriginal,L_original,numCells,pathV5data,directory2save,kindProjection,nameOfFolder,i,totalAnglesTransitionMeasuredInBasal,totalAnglesTransitionMeasuredInApical,acumListDataAnglesTransitionInBasal,acumListDataAnglesNoTransitionInBasal,acumListDataAnglesTransitionInApical,acumListDataAnglesNoTransitionInApical,totalEdgesTransitionMeasuredInBasal,totalEdgesTransitionMeasuredInApical,totalAnglesNoTransitionMeasuredInBasal,totalAnglesNoTransitionMeasuredInApical,totalEdgesNoTransitionMeasuredInBasal,totalEdgesNoTransitionMeasuredInApical)
         
     listTransitionsBySurfaceRatio=zeros(length(listOfSurfaceRatios),4);
     listDataAnglesTransitionMeasuredInBasal=zeros(length(listOfSurfaceRatios),7);
@@ -29,7 +29,13 @@ function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjecti
                 L_basal=L_original;
                 L_apical=L_originalProjection;
             end
-           [numberOfTransitionsBasApi,nWinBasApi,nLossBasApi] = testingNeighsExchange(L_basal,L_apical);
+            
+             %neighbours in basal layer
+            [neighs_basal,~]=calculateNeighbours(L_basal);
+            %neighbours in apical layer
+            [neighs_apical,~]=calculateNeighbours(L_apical);
+            %number of winning neighbourings in basal 
+            nWinBasApi=sum(cellfun(@(x,y) ~isempty(setdiff(x,y)),neighs_apical,neighs_basal));
 
             
             %% Measure and store angles of edges
@@ -55,7 +61,6 @@ function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjecti
                                
             end
             
-            listTransitionsBySurfaceRatio(j,:)=[surfaceRatio,nWinBasApi,nLossBasApi,numberOfTransitionsBasApi];
             listSeedsProjected(j,:)=[{surfaceRatio},{seedsExpansion}];
             listLOriginalProjection(j,:)=[{surfaceRatio},{L_originalProjection}];
             close all
@@ -64,11 +69,7 @@ function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjecti
     end
     
     %store data after application of surface ratios
-    acumListTransitionBySurfaceRatio(:,i)=listTransitionsBySurfaceRatio(:,2);
-    acumListTransitionBySurfaceRatio(:,i+20)=listTransitionsBySurfaceRatio(:,3);
-    acumListTransitionBySurfaceRatio(:,i+40)=listTransitionsBySurfaceRatio(:,4);
-
-    
+        
     %transition data
     acumListDataAnglesTransitionInBasal{i,1}=listDataAnglesTransitionMeasuredInBasal;
     acumListDataAnglesTransitionInApical{i,1}=listDataAnglesTransitionMeasuredInApical;
@@ -86,8 +87,6 @@ function [listTransitionsBySurfaceRatio,listSeedsProjected,listLOriginalProjecti
     listDataAnglesNoTransitionMeasuredInApical.Properties.VariableNames={'numOfEdges','proportionAnglesLess15deg','proportionAnglesBetween15_30deg','proportionAnglesBetween30_45deg','proportionAnglesBetween45_60deg','proportionAnglesBetween60_75deg','proportionAnglesBetween75_90deg'};
     
     %projection data
-    listTransitionsBySurfaceRatio=array2table(listTransitionsBySurfaceRatio);
-    listTransitionsBySurfaceRatio.Properties.VariableNames = {'surfaceRatio','nWins', 'nLoss','nTransitions'};
     listSeedsProjected=cell2table(listSeedsProjected);
     listSeedsProjected.Properties.VariableNames = {'surfaceRatio','seedsApical'};
     listLOriginalProjection=cell2table(listLOriginalProjection);
