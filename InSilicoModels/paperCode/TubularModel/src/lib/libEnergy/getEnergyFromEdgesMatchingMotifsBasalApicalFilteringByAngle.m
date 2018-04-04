@@ -1,23 +1,11 @@
 function dataEnergy = getEnergyFromEdgesMatchingMotifsBasalApicalFilteringByAngle(L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,pairsOfCells,flag,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical)
     
     %initializate
-    dataEnergy.fourCellsMotif=nan;
-    dataEnergy.apicalEdgeLength=nan;
-    dataEnergy.apicalSumEdgesOfEnergy=nan;
-    dataEnergy.apicalEdgeAngle=nan;            
-    dataEnergy.apicalH1=nan;
-    dataEnergy.apicalH2=nan;
-    dataEnergy.apicalW1=nan;
-    dataEnergy.apicalW2=nan;
-
-    dataEnergy.basalEdgeLength=nan;
-    dataEnergy.basalSumEdgesOfEnergy=nan;
-    dataEnergy.basalEdgeAngle=nan;
-    dataEnergy.basalH1=nan;
-    dataEnergy.basalH2=nan;
-    dataEnergy.basalW1=nan;
-    dataEnergy.basalW2=nan;
-
+    dataEnergy = struct('fourCellsMotif',nan,'basalEdgeLength',nan,'basalSumEdgesOfEnergy',nan,...
+        'basalEdgeAngle',nan,'basalH1',nan,'basalH2',nan,'basalW1',nan,'basalW2',nan,...
+        'apicalEdgeLength',nan,'apicalSumEdgesOfEnergy',nan,'apicalEdgeAngle',nan,...
+        'apicalH1',nan,'apicalH2',nan,'apicalW1',nan,'apicalW2',nan);
+    
     [~,W_basal]=size(L_basal);
     [~,W_apical]=size(L_apical);
 
