@@ -5,10 +5,15 @@ function [ tableTransitionEnergy,tableTransitionEnergyNonPreservedMotifs,tableNo
 
         dataEnergy.nRand=nRand*ones(size(dataEnergy.outerH1,1),1);
         dataEnergyOuterNonPreservedMotifs.nRand=nRand*ones(size(dataEnergyOuterNonPreservedMotifs.outerH1,1),1);
-        %filtering no transition data for each transition 
-
+        %filtering no transition data for each transition
+        
         %preserved motifs
         sumTableEnergy=struct2table(dataEnergy);
+        
+        %Removing duplicated motifs
+        [~, firstOcurrence] = unique(sumTableEnergy(:, 1), 'rows');
+        sumTableEnergy = sumTableEnergy(firstOcurrence, :);
+        
         nanIndex=(isnan(sumTableEnergy.innerH1) |  isnan(sumTableEnergy.outerH1));
         sumTableEnergy=sumTableEnergy(~nanIndex,:);
         %nonpreserved motifs

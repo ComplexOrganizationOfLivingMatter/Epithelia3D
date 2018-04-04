@@ -42,7 +42,7 @@ for nPath=2%length(filePaths)
 
         for nRand=1:numRandoms
 
-%             try
+            try
                 ellipsoidPath=dir([filePaths{nPath} '\randomizations\random_' num2str(nRand) '\*llipsoid*' ]);
                 %if projectins are just created...load, else run the
                 %zProjections program
