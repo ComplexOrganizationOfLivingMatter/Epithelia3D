@@ -16,7 +16,7 @@ delete(gcp);
 parpool(3);
 
 for numCombination = 1:size(allCombinations, 1)
-    
+    rng('shuffle');
     
     fileName = allCombinations{numCombination, 5};
     outputDirGlobal= ['results\' fileName];
