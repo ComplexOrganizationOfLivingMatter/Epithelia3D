@@ -1,4 +1,4 @@
-function [V1,V2,V1index]=checkVerticesBorder(numCell,L_img,V,W_projection)
+function [V1,V2,V1index,V2index]=checkVerticesBorder(numCell,L_img,V,W_projection)
     
     %check in which part of the divided cells are the vertices
     
@@ -15,8 +15,17 @@ function [V1,V2,V1index]=checkVerticesBorder(numCell,L_img,V,W_projection)
     end
     
     Vindex=zeros(size(V,1),1);
-    for i=1:size(V,1)
-        Vindex(i)=mask(V(i,1),V(i,2));
+    if length(difCells)>1
+        for i=1:size(V,1)
+            Vindex(i)=mask(V(i,1),V(i,2));
+        end
+    else
+        if length(unique(mask(:,end)))>1
+            Vindex(:)=2;
+        end
+        if length(unique(mask(:,1)))>1
+            Vindex(:)=1;
+        end
     end
        
     %V1 are the vertices in left border and V2 on the right
@@ -25,8 +34,9 @@ function [V1,V2,V1index]=checkVerticesBorder(numCell,L_img,V,W_projection)
     
     
     V1index = Vindex==1 ;
+    V2index = Vindex==2 ;
     V1(V1index,2)=V(V1index,2)+W_projection; 
-    V2(~V1index,2)=V(~V1index,2)-W_projection; 
+    V2(V2index,2)=V(V2index,2)-W_projection; 
     
     
 end

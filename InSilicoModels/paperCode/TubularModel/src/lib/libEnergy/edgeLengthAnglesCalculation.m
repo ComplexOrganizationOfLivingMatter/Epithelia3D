@@ -8,7 +8,7 @@ function [edgeLength, edgeAngle] = edgeLengthAnglesCalculation(vertsEdge,borderC
     indexBorderCells=ismember(cellsToStudy,borderCells);
     indexVertexBorderLeft=ismember(vertsEdge,vertcat(verticesBorderLeft{:}),'rows');
     indexVertexBorderRight=ismember(vertsEdge,vertcat(verticesBorderRight{:}),'rows');
-    
+        
     if sum(indexVertexBorderLeft)==1 && sum(indexVertexBorderRight)==1 && sum(indexBorderCells)>=1
         vertsEdge(indexVertexBorderLeft,2)=vertsEdge(indexVertexBorderLeft,2)+W;
     end

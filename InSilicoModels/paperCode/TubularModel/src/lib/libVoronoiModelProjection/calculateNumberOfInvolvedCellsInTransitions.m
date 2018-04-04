@@ -11,6 +11,7 @@ function calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection,pat
     listNumberOfCellsLossing=zeros(numOfSurfaceRatios,size(pathV5data,1));
     listNumberOfCellsLossingOrWinning=zeros(numOfSurfaceRatios,size(pathV5data,1));
     listNumberOfCellsInNoTransitions=zeros(numOfSurfaceRatios,size(pathV5data,1));
+    listFrequencyOfChangesPerCell=zeros(numOfSurfaceRatios,size(pathV5data,1));
 
     for i=1:size(pathV5data,1)
 
@@ -22,15 +23,22 @@ function calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection,pat
         numberOfCellsLossing=zeros(1,size(listLOriginalProjection,1));
         numberOfCellsLossingOrWinning=zeros(1,size(listLOriginalProjection,1));
         numberOfCellsInNoTransitions=zeros(1,size(listLOriginalProjection,1));
+        frequencyOfChangesPerCell=zeros(1,size(listLOriginalProjection,1));
         winningNeigh=zeros(size(listLOriginalProjection,1),numberOfRows);
         lossingNeigh=zeros(size(listLOriginalProjection,1),numberOfRows);
         transitionPerCell=zeros(size(listLOriginalProjection,1),numberOfRows);
 
         for j=1:size(listLOriginalProjection,1)
-            L_basal=listLOriginalProjection.L_originalProjection{1,1};
-            L_apical=listLOriginalProjection.L_originalProjection{j,1};
+            
+            if strcmp(kindProjection,'expansion')
+                L_apical=listLOriginalProjection.L_originalProjection{listLOriginalProjection.surfaceRatio==1,1};
+                L_basal=listLOriginalProjection.L_originalProjection{j,1};
+            else
+                L_basal=listLOriginalProjection.L_originalProjection{listLOriginalProjection.surfaceRatio==1,1};
+                L_apical=listLOriginalProjection.L_originalProjection{j,1};
+            end
             %calculate no valid cells
-            noValidCells=unique(L_basal([1 end],:),L_apical([1 end],:));
+            noValidCells=unique([L_basal([1 end],:),L_apical([1 end],:)]);
             noValidCells=noValidCells(noValidCells~=0);
             validCells=(setdiff(1:max(max(L_apical)),noValidCells));
             
@@ -49,10 +57,11 @@ function calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection,pat
             motifsTransitionPerCell=cell2mat(cellfun(@(x,y) length(unique([x; y])),LossingValidCells,WinningValidCells,'UniformOutput',false));
 
             %number of presences
-            numberOfCellsWinning(1,j)=sum(winningPerCell>0);
-            numberOfCellsLossing(1,j)=sum(lossingPerCell>0);
-            numberOfCellsLossingOrWinning(1,j)=sum(motifsTransitionPerCell>0);
-            numberOfCellsInNoTransitions(1,j)=max(max(L_basal))-numberOfCellsLossingOrWinning(1,j);
+            numberOfCellsWinning(1,j)=sum(winningPerCell>0)/length(validCells);
+            numberOfCellsLossing(1,j)=sum(lossingPerCell>0)/length(validCells);
+            numberOfCellsLossingOrWinning(1,j)=sum(motifsTransitionPerCell>0)/length(validCells);
+            numberOfCellsInNoTransitions(1,j)=(1-numberOfCellsLossingOrWinning(1,j));
+            frequencyOfChangesPerCell(1,j)=mean(motifsTransitionPerCell);
 
             %Data for histograms
             winningNeigh(j,:)=[sum(winningPerCell==0),sum(winningPerCell==1),sum(winningPerCell==2),sum(winningPerCell==3),sum(winningPerCell==4)...
@@ -62,35 +71,45 @@ function calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection,pat
             transitionPerCell(j,:)=[sum(motifsTransitionPerCell==0),sum(motifsTransitionPerCell==1),sum(motifsTransitionPerCell==2),sum(motifsTransitionPerCell==3),sum(motifsTransitionPerCell==4)...
                 sum(motifsTransitionPerCell==5),sum(motifsTransitionPerCell==6),sum(motifsTransitionPerCell==7),sum(motifsTransitionPerCell==8),sum(motifsTransitionPerCell==9),sum(motifsTransitionPerCell==10)]/length(validCells);
 
-
-
         end
-            %Acum data
-            listTransitionPerCell(:,:,i)=transitionPerCell';
-            listWinningNeigh(:,:,i)=winningNeigh';
-            listLossingNeigh(:,:,i)=lossingNeigh';
-            listNumberOfCellsWinning(:,i)=numberOfCellsWinning'/length(validCells);
-            listNumberOfCellsLossing(:,i)=numberOfCellsLossing'/length(validCells);
-            listNumberOfCellsLossingOrWinning(:,i)=numberOfCellsLossingOrWinning'/length(validCells);
-            listNumberOfCellsInNoTransitions(:,i)=numberOfCellsInNoTransitions'/length(validCells);
+        
+        %Acum data
+        listTransitionPerCell(:,:,i)=transitionPerCell';
+        listWinningNeigh(:,:,i)=winningNeigh';
+        listLossingNeigh(:,:,i)=lossingNeigh';
+        listNumberOfCellsWinning(:,i)=numberOfCellsWinning';
+        listNumberOfCellsLossing(:,i)=numberOfCellsLossing';
+        listNumberOfCellsLossingOrWinning(:,i)=numberOfCellsLossingOrWinning';
+        listNumberOfCellsInNoTransitions(:,i)=numberOfCellsInNoTransitions';
+        listFrequencyOfChangesPerCell(:,i)=frequencyOfChangesPerCell';
     end
 
-
     %averages and std of total data
-    finalListTransitionPerCell.average=mean(listTransitionPerCell,3);
-    finalListTransitionPerCell.standardDeviation=std(listTransitionPerCell,[],3);
-    finalListWinningNeigh.average=mean(listWinningNeigh,3);
-    finalListWinningNeigh.standardDeviation=std(listWinningNeigh,[],3);
-    finalListLossingNeigh.average=mean(listLossingNeigh,3);
-    finalListLossingNeigh.standardDeviation=std(listLossingNeigh,[],3);
-    finalListNumberOfCellsWinning.average=mean(listNumberOfCellsWinning,2);
-    finalListNumberOfCellsWinning.standardDeviation=std(listNumberOfCellsWinning,[],2);
-    finalListNumberOfCellsLossing.average=mean(listNumberOfCellsLossing,2);
-    finalListNumberOfCellsLossing.standardDeviation=std(listNumberOfCellsLossing,[],2);
-    finalListNumberOfCellsLossingOrWinning.average=mean(listNumberOfCellsLossingOrWinning,2);
-    finalListNumberOfCellsLossingOrWinning.standardDeviation=std(listNumberOfCellsLossingOrWinning,[],2);
-    finalListNumberOfCellsInNoTransitions.average=mean(listNumberOfCellsInNoTransitions,2);
-    finalListNumberOfCellsInNoTransitions.standardDeviation=std(listNumberOfCellsInNoTransitions,[],2);
+  
+    %table of scutoids presence
+    colNames={'meanScutoids','stdScutoids','meanFrusta','stdFrusta','meanWinningNeighbouringBasal',...
+        'stdWinningNeighbouringBasal','meanLossingNeighbouringBasal','stdLossingNeighbouringBasal','meanScutoidalEdgesPerCell','stdScutoidalEdgesPerCell'};
+    rowNames=arrayfun(@(x) ['surfaceRatio' num2str(x)],listLOriginalProjection.surfaceRatio,'UniformOutput',false);
+    tableProportionOfScutoids=array2table([mean(listNumberOfCellsLossingOrWinning,2),std(listNumberOfCellsLossingOrWinning,[],2),...
+        mean(listNumberOfCellsInNoTransitions,2),std(listNumberOfCellsInNoTransitions,[],2),...
+        mean(listNumberOfCellsWinning,2),std(listNumberOfCellsWinning,[],2),...
+        mean(listNumberOfCellsLossing,2),std(listNumberOfCellsLossing,[],2),...
+        mean(listFrequencyOfChangesPerCell,2),std(listFrequencyOfChangesPerCell,[],2)],'VariableNames',colNames,'RowNames',rowNames);
+    
+    colNames={'zero','one','two','three','four','five','six','seven','eight','nine','ten'};
 
-    save([directory2save 'dataCellsInTransitionMotifs.mat'],'finalListTransitionPerCell','finalListWinningNeigh','finalListLossingNeigh','finalListNumberOfCellsWinning','finalListNumberOfCellsLossing','finalListNumberOfCellsLossingOrWinning','finalListNumberOfCellsInNoTransitions')
+    %distribution of scutoids repetitions, per surface ratio and per cell
+    scutoidsDistribution.average=array2table(mean(listTransitionPerCell,3)','VariableNames',colNames,'RowNames',rowNames);
+    scutoidsDistribution.std=array2table(std(listTransitionPerCell,[],3)','VariableNames',colNames,'RowNames',rowNames);
+    winningNeighDistribution.average=array2table(mean(listWinningNeigh,3)','VariableNames',colNames,'RowNames',rowNames);
+    winningNeighDistribution.std=array2table(std(listWinningNeigh,[],3)','VariableNames',colNames,'RowNames',rowNames);
+    lossingNeighDistribution.average=array2table(mean(listLossingNeigh,3)','VariableNames',colNames,'RowNames',rowNames);
+    lossingNeighDistribution.std=array2table(std(listLossingNeigh,[],3)','VariableNames',colNames,'RowNames',rowNames);
+
+
+    writetable(tableProportionOfScutoids, [directory2save 'scutoidsProportion_' date '.xls'],'WriteRowNames',true);
+    save([directory2save 'distributionScutoidsPerCell_' date '.mat'],'scutoidsDistribution','winningNeighDistribution','lossingNeighDistribution');
+
+    disp(['Presence of scutoids calculated: ' kindProjection '-' num2str(Winitial) 'x' num2str(Hinitial) '_' num2str(numSeeds) 'seeds'])
+
 end
