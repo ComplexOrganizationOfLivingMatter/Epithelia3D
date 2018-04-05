@@ -53,8 +53,7 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
     for i=1:length(verticesCell_1_2)
         
         if ~isnan(verticesCell_1_2{i}) 
-        
-            try
+             try
                 %length and angle in central edge
                 [edgeLength(i), edgeAngle(i)] = edgeLengthAnglesCalculation([vertices.verticesPerCell{verticesCell_1_2{i}(1,1)};vertices.verticesPerCell{verticesCell_1_2{i}(2,1)}],borderCells,verticesBorderLeft,verticesBorderRight,vertices,fourCellsMotifs(i,:),W);
 
@@ -86,4 +85,3 @@ function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Len
     validIndex = ~isnan(edgeLength);
         
 end
-
