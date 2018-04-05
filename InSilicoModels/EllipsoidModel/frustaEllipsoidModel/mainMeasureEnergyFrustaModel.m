@@ -21,13 +21,13 @@ filePaths={filePathFrustaStage4,filePathFrustaStage8, filePathFrustaGlobe, fileP
 for nPath=1:length(filePaths)
     
     if nPath==1
-       numRandoms=180;
+       numRandoms=[1:10,61:130];
        nCellHeight=1;
     else if nPath==2
-       numRandoms=30; 
+       numRandoms=1:30; 
        nCellHeight=1;
         else
-            numRandoms=10;
+            numRandoms=1:10;
             nCellHeight=3;
         end
     end
@@ -42,10 +42,10 @@ for nPath=1:length(filePaths)
         tableTransitionEnergyNonPreservedMotifsOuter = table();
         tableTransitionEnergyNonPreservedMotifsInner = table();
 
-        for nRand=1:numRandoms
-            nRand
+        for nRand=numRandoms
+            
             try
-                ellipsoidPath=dir([filePaths{nPath} 'random_' num2str(nRand) '\*llipsoid*' ]);
+                ellipsoidPath=dir([filePaths{nPath} '\randomizations\random_' num2str(nRand) '\*llipsoid*' ]);
                 %if projectins are just created...load, else run the
                 %maxProjections program
                 splittedPath=strsplit(ellipsoidPath(cellHeight).name,'_');
@@ -54,7 +54,7 @@ for nPath=1:length(filePaths)
                 
                 [ tableTransitionEnergy, tableTransitionEnergyNonPreservedMotifsOuter, tableNoTransitionEnergyTotalNonPreservedMotifsInner, tableNoTransitionEnergyFilterRandom, tableNoTransitionEnergyTotal, tableNoTransitionEnergyTotalNonPreservedMotifsOuter] = getEnergyFromProjections( filePaths, nPath, projectionsInnerWater,  projectionsOuterWater, tableTransitionEnergy, tableTransitionEnergyNonPreservedMotifsOuter, tableNoTransitionEnergyTotalNonPreservedMotifsInner, tableNoTransitionEnergyFilterRandom, nRand, projectionsOuterVertices,projectionsCellsConnectedToVertex, tableNoTransitionEnergyTotal, tableNoTransitionEnergyTotalNonPreservedMotifsOuter);
 
-                [filePaths{nPath} 'randomization ' num2str(nRand) '  -  ' splittedCellHeight(1:end-4)]
+                disp([filePaths{nPath} 'randomization ' num2str(nRand) '  -  ' splittedCellHeight(1:end-4)])
                 
             catch err
                 fid = fopen('logFile','a+');

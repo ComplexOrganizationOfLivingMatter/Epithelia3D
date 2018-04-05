@@ -13,17 +13,17 @@ filePathRugby='results\Rugby\';
 
 filePaths={filePathVoronoiStage8,filePathVoronoiStage4,filePathGlobe,filePathRugby,filePathSphere};
     
-for nPath=2%length(filePaths)
+for nPath=1:length(filePaths)
     
     
     if nPath==1 
-       numRandoms=30;
+       numRandoms=1:30;
        nCellHeight=1;
     else if nPath==2 
-       numRandoms=180; 
+       numRandoms=[1:10,61:130]; 
        nCellHeight=1;
         else
-            numRandoms=10;
+            numRandoms=1:10;
             nCellHeight=3;
         end
     end
@@ -40,7 +40,7 @@ for nPath=2%length(filePaths)
         tableTransitionEnergyNonPreservedMotifsAngleThreshold=table();
         tableNoTransitionEnergyNonPreservedMotifsAngleThreshold=table();
 
-        for nRand=1:numRandoms
+        for nRand=numRandoms
 
             try
                 ellipsoidPath=dir([filePaths{nPath} '\randomizations\random_' num2str(nRand) '\*llipsoid*' ]);
