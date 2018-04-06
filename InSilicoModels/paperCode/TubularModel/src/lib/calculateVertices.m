@@ -82,7 +82,8 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
     %test vertices higher than W
     outOfRange = cellfun(@(x) x(:,2)>W , verticesInfo.verticesPerCell);
     if sum(outOfRange)>0
-        verticesInfo.verticesPerCell{outOfRange}(1,2)=W;
+        verticesPerCellOutlayerCorrected=cellfun(@(x) [x(1),W] ,verticesInfo.verticesPerCell(outOfRange),'UniformOutput',false);
+        verticesInfo.verticesPerCell(outOfRange)=verticesPerCellOutlayerCorrected;
     end
 end
 
