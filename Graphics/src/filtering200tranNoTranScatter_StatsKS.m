@@ -4,7 +4,7 @@ relativePathTubularModel='..\..\InSilicoModels\paperCode\TubularModel\data\tubul
 
 transitionsFile='summaryAverageTransitionsMeasuredInBasal_Transitions';
 noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
-% 
+
 % %% Loading 800 seeds data
 % load([relativePathTubularModel transitionsFile],'acumAngles','acumEdges')
 % acumAnglesTransition800seeds=acumAngles;
@@ -19,10 +19,10 @@ noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
 % surfaceRatio125_800seeds.edgesTransition=acumEdgesTransition800seeds{3};
 % surfaceRatio125_800seeds.edgesNoTransition=acumEdgesNoTransition800seeds{3};
 % 
-% p = randperm(length(surfaceRatio125_800seeds.anglesTransition),800);
+% p = randperm(length(surfaceRatio125_800seeds.anglesTransition),200);
 % surfaceRatio125_800seeds.anglesTransitionFilter=surfaceRatio125_800seeds.anglesTransition(p);
 % surfaceRatio125_800seeds.edgesTransitionFilter=surfaceRatio125_800seeds.edgesTransition(p);
-% p = randperm(length(surfaceRatio125_800seeds.anglesNoTransition),800);
+% p = randperm(length(surfaceRatio125_800seeds.anglesNoTransition),200);
 % surfaceRatio125_800seeds.anglesNoTransitionFilter=surfaceRatio125_800seeds.anglesNoTransition(p);
 % surfaceRatio125_800seeds.edgesNoTransitionFilter=surfaceRatio125_800seeds.edgesNoTransition(p);
 % 
@@ -33,10 +33,10 @@ noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
 % surfaceRatio1667_800seeds.edgesTransition=acumEdgesTransition800seeds{5};
 % surfaceRatio1667_800seeds.edgesNoTransition=acumEdgesNoTransition800seeds{5};
 % 
-% p = randperm(length(surfaceRatio1667_800seeds.anglesTransition),800);
+% p = randperm(length(surfaceRatio1667_800seeds.anglesTransition),200);
 % surfaceRatio1667_800seeds.anglesTransitionFilter=surfaceRatio1667_800seeds.anglesTransition(p);
 % surfaceRatio1667_800seeds.edgesTransitionFilter=surfaceRatio1667_800seeds.edgesTransition(p);
-% p = randperm(length(surfaceRatio1667_800seeds.anglesNoTransition),800);
+% p = randperm(length(surfaceRatio1667_800seeds.anglesNoTransition),200);
 % surfaceRatio1667_800seeds.anglesNoTransitionFilter=surfaceRatio1667_800seeds.anglesNoTransition(p);
 % surfaceRatio1667_800seeds.edgesNoTransitionFilter=surfaceRatio1667_800seeds.edgesNoTransition(p);
 % 
@@ -46,10 +46,10 @@ noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
 % surfaceRatio2_800seeds.edgesTransition=acumEdgesTransition800seeds{6};
 % surfaceRatio2_800seeds.edgesNoTransition=acumEdgesNoTransition800seeds{6};
 % 
-% p = randperm(length(surfaceRatio2_800seeds.anglesTransition),800);
+% p = randperm(length(surfaceRatio2_800seeds.anglesTransition),200);
 % surfaceRatio2_800seeds.anglesTransitionFilter=surfaceRatio2_800seeds.anglesTransition(p);
 % surfaceRatio2_800seeds.edgesTransitionFilter=surfaceRatio2_800seeds.edgesTransition(p);
-% p = randperm(length(surfaceRatio2_800seeds.anglesNoTransition),800);
+% p = randperm(length(surfaceRatio2_800seeds.anglesNoTransition),200);
 % surfaceRatio2_800seeds.anglesNoTransitionFilter=surfaceRatio2_800seeds.anglesNoTransition(p);
 % surfaceRatio2_800seeds.edgesNoTransitionFilter=surfaceRatio2_800seeds.edgesNoTransition(p);
 % 
