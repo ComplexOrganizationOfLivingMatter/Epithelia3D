@@ -1,76 +1,76 @@
 addpath(genpath('..'))
 
-% relativePathTubularModel='..\..\InSilicoModels\TubularModel\data\voronoiModel\expansion\512x1024_200seeds\';
+relativePathTubularModel='..\..\InSilicoModels\paperCode\TubularModel\data\tubularVoronoiModel\expansion\512x4096_800seeds\';
+
+transitionsFile='summaryAverageTransitionsMeasuredInBasal_Transitions';
+noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
 % 
-% transitionsFile='summaryAverageTransitionsMeasuredInBasal_Transitions';
-% noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
-% 
-% %% Loading 200 seeds data
+% %% Loading 800 seeds data
 % load([relativePathTubularModel transitionsFile],'acumAngles','acumEdges')
-% acumAnglesTransition200seeds=acumAngles;
-% acumEdgesTransition200seeds=acumEdges;
+% acumAnglesTransition800seeds=acumAngles;
+% acumEdgesTransition800seeds=acumEdges;
 % load([relativePathTubularModel noTransitionsFile],'acumAngles','acumEdges')
-% acumAnglesNoTransition200seeds=acumAngles;
-% acumEdgesNoTransition200seeds=acumEdges;
+% acumAnglesNoTransition800seeds=acumAngles;
+% acumEdgesNoTransition800seeds=acumEdges;
 % 
-% %transitios angles and length 200 seeds SR 1.25
-% surfaceRatio125_200seeds.anglesTransition=acumAnglesTransition200seeds{3};
-% surfaceRatio125_200seeds.anglesNoTransition=acumAnglesNoTransition200seeds{3};
-% surfaceRatio125_200seeds.edgesTransition=acumEdgesTransition200seeds{3};
-% surfaceRatio125_200seeds.edgesNoTransition=acumEdgesNoTransition200seeds{3};
+% %transitios angles and length 800 seeds SR 1.25
+% surfaceRatio125_800seeds.anglesTransition=acumAnglesTransition800seeds{3};
+% surfaceRatio125_800seeds.anglesNoTransition=acumAnglesNoTransition800seeds{3};
+% surfaceRatio125_800seeds.edgesTransition=acumEdgesTransition800seeds{3};
+% surfaceRatio125_800seeds.edgesNoTransition=acumEdgesNoTransition800seeds{3};
 % 
-% p = randperm(length(surfaceRatio125_200seeds.anglesTransition),200);
-% surfaceRatio125_200seeds.anglesTransitionFilter=surfaceRatio125_200seeds.anglesTransition(p);
-% surfaceRatio125_200seeds.edgesTransitionFilter=surfaceRatio125_200seeds.edgesTransition(p);
-% p = randperm(length(surfaceRatio125_200seeds.anglesNoTransition),200);
-% surfaceRatio125_200seeds.anglesNoTransitionFilter=surfaceRatio125_200seeds.anglesNoTransition(p);
-% surfaceRatio125_200seeds.edgesNoTransitionFilter=surfaceRatio125_200seeds.edgesNoTransition(p);
+% p = randperm(length(surfaceRatio125_800seeds.anglesTransition),800);
+% surfaceRatio125_800seeds.anglesTransitionFilter=surfaceRatio125_800seeds.anglesTransition(p);
+% surfaceRatio125_800seeds.edgesTransitionFilter=surfaceRatio125_800seeds.edgesTransition(p);
+% p = randperm(length(surfaceRatio125_800seeds.anglesNoTransition),800);
+% surfaceRatio125_800seeds.anglesNoTransitionFilter=surfaceRatio125_800seeds.anglesNoTransition(p);
+% surfaceRatio125_800seeds.edgesNoTransitionFilter=surfaceRatio125_800seeds.edgesNoTransition(p);
 % 
 % 
-% %transitios angles and length 200 seeds SR 1.667
-% surfaceRatio1667_200seeds.anglesTransition=acumAnglesTransition200seeds{5};
-% surfaceRatio1667_200seeds.anglesNoTransition=acumAnglesNoTransition200seeds{5};
-% surfaceRatio1667_200seeds.edgesTransition=acumEdgesTransition200seeds{5};
-% surfaceRatio1667_200seeds.edgesNoTransition=acumEdgesNoTransition200seeds{5};
+% %transitios angles and length 800 seeds SR 1.667
+% surfaceRatio1667_800seeds.anglesTransition=acumAnglesTransition800seeds{5};
+% surfaceRatio1667_800seeds.anglesNoTransition=acumAnglesNoTransition800seeds{5};
+% surfaceRatio1667_800seeds.edgesTransition=acumEdgesTransition800seeds{5};
+% surfaceRatio1667_800seeds.edgesNoTransition=acumEdgesNoTransition800seeds{5};
 % 
-% p = randperm(length(surfaceRatio1667_200seeds.anglesTransition),200);
-% surfaceRatio1667_200seeds.anglesTransitionFilter=surfaceRatio1667_200seeds.anglesTransition(p);
-% surfaceRatio1667_200seeds.edgesTransitionFilter=surfaceRatio1667_200seeds.edgesTransition(p);
-% p = randperm(length(surfaceRatio1667_200seeds.anglesNoTransition),200);
-% surfaceRatio1667_200seeds.anglesNoTransitionFilter=surfaceRatio1667_200seeds.anglesNoTransition(p);
-% surfaceRatio1667_200seeds.edgesNoTransitionFilter=surfaceRatio1667_200seeds.edgesNoTransition(p);
+% p = randperm(length(surfaceRatio1667_800seeds.anglesTransition),800);
+% surfaceRatio1667_800seeds.anglesTransitionFilter=surfaceRatio1667_800seeds.anglesTransition(p);
+% surfaceRatio1667_800seeds.edgesTransitionFilter=surfaceRatio1667_800seeds.edgesTransition(p);
+% p = randperm(length(surfaceRatio1667_800seeds.anglesNoTransition),800);
+% surfaceRatio1667_800seeds.anglesNoTransitionFilter=surfaceRatio1667_800seeds.anglesNoTransition(p);
+% surfaceRatio1667_800seeds.edgesNoTransitionFilter=surfaceRatio1667_800seeds.edgesNoTransition(p);
 % 
-% %transitios angles and length 200 seeds SR 2
-% surfaceRatio2_200seeds.anglesTransition=acumAnglesTransition200seeds{6};
-% surfaceRatio2_200seeds.anglesNoTransition=acumAnglesNoTransition200seeds{6};
-% surfaceRatio2_200seeds.edgesTransition=acumEdgesTransition200seeds{6};
-% surfaceRatio2_200seeds.edgesNoTransition=acumEdgesNoTransition200seeds{6};
+% %transitios angles and length 800 seeds SR 2
+% surfaceRatio2_800seeds.anglesTransition=acumAnglesTransition800seeds{6};
+% surfaceRatio2_800seeds.anglesNoTransition=acumAnglesNoTransition800seeds{6};
+% surfaceRatio2_800seeds.edgesTransition=acumEdgesTransition800seeds{6};
+% surfaceRatio2_800seeds.edgesNoTransition=acumEdgesNoTransition800seeds{6};
 % 
-% p = randperm(length(surfaceRatio2_200seeds.anglesTransition),200);
-% surfaceRatio2_200seeds.anglesTransitionFilter=surfaceRatio2_200seeds.anglesTransition(p);
-% surfaceRatio2_200seeds.edgesTransitionFilter=surfaceRatio2_200seeds.edgesTransition(p);
-% p = randperm(length(surfaceRatio2_200seeds.anglesNoTransition),200);
-% surfaceRatio2_200seeds.anglesNoTransitionFilter=surfaceRatio2_200seeds.anglesNoTransition(p);
-% surfaceRatio2_200seeds.edgesNoTransitionFilter=surfaceRatio2_200seeds.edgesNoTransition(p);
+% p = randperm(length(surfaceRatio2_800seeds.anglesTransition),800);
+% surfaceRatio2_800seeds.anglesTransitionFilter=surfaceRatio2_800seeds.anglesTransition(p);
+% surfaceRatio2_800seeds.edgesTransitionFilter=surfaceRatio2_800seeds.edgesTransition(p);
+% p = randperm(length(surfaceRatio2_800seeds.anglesNoTransition),800);
+% surfaceRatio2_800seeds.anglesNoTransitionFilter=surfaceRatio2_800seeds.anglesNoTransition(p);
+% surfaceRatio2_800seeds.edgesNoTransitionFilter=surfaceRatio2_800seeds.edgesNoTransition(p);
 % 
-% %transitios angles and length 200 seeds SR 5
-% surfaceRatio5_200seeds.anglesTransition=acumAnglesTransition200seeds{9};
-% surfaceRatio5_200seeds.anglesNoTransition=acumAnglesNoTransition200seeds{9};
-% surfaceRatio5_200seeds.edgesTransition=acumEdgesTransition200seeds{9};
-% surfaceRatio5_200seeds.edgesNoTransition=acumEdgesNoTransition200seeds{9};
+% %transitios angles and length 800 seeds SR 5
+% surfaceRatio5_800seeds.anglesTransition=acumAnglesTransition800seeds{9};
+% surfaceRatio5_800seeds.anglesNoTransition=acumAnglesNoTransition800seeds{9};
+% surfaceRatio5_800seeds.edgesTransition=acumEdgesTransition800seeds{9};
+% surfaceRatio5_800seeds.edgesNoTransition=acumEdgesNoTransition800seeds{9};
 % 
-% p = randperm(length(surfaceRatio5_200seeds.anglesTransition),200);
-% surfaceRatio5_200seeds.anglesTransitionFilter=surfaceRatio5_200seeds.anglesTransition(p);
-% surfaceRatio5_200seeds.edgesTransitionFilter=surfaceRatio5_200seeds.edgesTransition(p);
-% p = randperm(length(surfaceRatio5_200seeds.anglesNoTransition),200);
-% surfaceRatio5_200seeds.anglesNoTransitionFilter=surfaceRatio5_200seeds.anglesNoTransition(p);
-% surfaceRatio5_200seeds.edgesNoTransitionFilter=surfaceRatio5_200seeds.edgesNoTransition(p);
+% p = randperm(length(surfaceRatio5_800seeds.anglesTransition),200);
+% surfaceRatio5_800seeds.anglesTransitionFilter=surfaceRatio5_800seeds.anglesTransition(p);
+% surfaceRatio5_800seeds.edgesTransitionFilter=surfaceRatio5_800seeds.edgesTransition(p);
+% p = randperm(length(surfaceRatio5_800seeds.anglesNoTransition),200);
+% surfaceRatio5_800seeds.anglesNoTransitionFilter=surfaceRatio5_800seeds.anglesNoTransition(p);
+% surfaceRatio5_800seeds.edgesNoTransitionFilter=surfaceRatio5_800seeds.edgesNoTransition(p);
 % 
 % %% Loading 60 seeds data
-% load([strrep(relativePathTubularModel,'512x1024_200','512x4096_60') transitionsFile],'acumAngles','acumEdges')
+% load([strrep(relativePathTubularModel,'512x4096_800','512x4096_60') transitionsFile],'acumAngles','acumEdges')
 % acumAnglesTransition60seeds=acumAngles;
 % acumEdgesTransition60seeds=acumEdges;
-% load([strrep(relativePathTubularModel,'512x1024_200','512x4096_60') noTransitionsFile],'acumAngles','acumEdges')
+% load([strrep(relativePathTubularModel,'512x4096_800','512x4096_60') noTransitionsFile],'acumAngles','acumEdges')
 % acumAnglesNoTransition60seeds=acumAngles;
 % acumEdgesNoTransition60seeds=acumEdges;
 % 
@@ -89,8 +89,8 @@ addpath(genpath('..'))
 % 
 % 
 % 
-% 
-% save('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels.mat','surfaceRatio125_200seeds','surfaceRatio1667_200seeds','surfaceRatio2_200seeds','surfaceRatio5_200seeds','surfaceRatio6667_60seeds')
+% save('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels800seeds.mat','surfaceRatio125_800seeds','surfaceRatio1667_800seeds','surfaceRatio2_800seeds','surfaceRatio5_800seeds')
+% save('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels60seeds.mat','surfaceRatio6667_60seeds');
 % 
 % relativePathEllipsoidModel='..\..\InSilicoModels\EllipsoidModel\voronoiEllipsoidModel\results\';
 % load([relativePathEllipsoidModel 'stage 4\dataAngleLengthEdges.mat'],'totalLengthTransition','totalLengthNoTransition','totalAnglesTransition','totalAnglesNoTransition')
@@ -118,10 +118,10 @@ addpath(genpath('..'))
 % save('..\lengthAnglesEdges_Transition_NoTransition_voronoiEllipsoidModels.mat','ellipsoidStage8','ellipsoidStage4');
 
 load('..\lengthAnglesEdges_Transition_NoTransition_voronoiEllipsoidModels.mat','ellipsoidStage8','ellipsoidStage4');
-load('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels.mat','surfaceRatio125_200seeds','surfaceRatio1667_200seeds','surfaceRatio2_200seeds','surfaceRatio5_200seeds','surfaceRatio6667_60seeds')
+load('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels800seeds.mat','surfaceRatio125_800seeds','surfaceRatio1667_800seeds','surfaceRatio2_800seeds','surfaceRatio5_800seeds')
+load('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels60seeds.mat','surfaceRatio6667_60seeds')
 
-
-setOfDistributions={surfaceRatio125_200seeds,surfaceRatio1667_200seeds,surfaceRatio2_200seeds,surfaceRatio5_200seeds,surfaceRatio6667_60seeds,ellipsoidStage4,ellipsoidStage8};
+setOfDistributions={surfaceRatio125_800seeds,surfaceRatio1667_800seeds,surfaceRatio2_800seeds,surfaceRatio5_800seeds,surfaceRatio6667_60seeds,ellipsoidStage4,ellipsoidStage8};
 titles={'Tubular Model 1.25','Tubular Model 1.667','Tubular Model 2', 'Tubular Model 5', 'Tubular Model like Salivary Gland','Ellipsoid model stage 4','Ellipsoid model stage 8'};
 
 colourTrans = [102 204 204]/255;
