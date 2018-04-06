@@ -20,6 +20,7 @@ function [ dataEnergy,dataEnergyFilterByAngle ] = getEnergyFromAllMotifs(L_basal
     
     %testing transition data
     dataEnergy.fourCellsMotif=[pairCellValidCells,cellsInMotifContactingCellsEdge];
+    dataEnergyFilterByAngle.fourCellsMotif=[pairCellValidCells,cellsInMotifContactingCellsEdge];
     
     %calculation of energy
     [dataEnergy.EdgeLength,dataEnergy.SumEdgesOfEnergy,dataEnergy.EdgeAngle,dataEnergy.H1,dataEnergy.H2,dataEnergy.W1,dataEnergy.W2,notEmptyIndexes]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairCellValidCells,cellsInMotifContactingCellsEdge,W,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
