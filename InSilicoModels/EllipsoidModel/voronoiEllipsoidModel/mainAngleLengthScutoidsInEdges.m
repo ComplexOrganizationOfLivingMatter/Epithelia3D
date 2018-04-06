@@ -14,17 +14,17 @@ for nPath=1:length(filePaths)
     
     switch nPath
         case 1
-            numRandoms=30;
+            numRandoms=1:30;
             nCellHeight=1;
         case 2
-            numRandoms=180;
+            numRandoms=[1:10,61:130];
             nCellHeight=1;
         case 5
-            numRandoms=3;
+            numRandoms=1:3;
             nCellHeight=3;
             listCellHeight=[0.5 1 2];
         otherwise
-            numRandoms=10;
+            numRandoms=1:10;
             nCellHeight=3;
             listCellHeight=[0.5 1 2];
     end
@@ -33,22 +33,22 @@ for nPath=1:length(filePaths)
         
         %initializing parameters to store the data of scutoids, angle and
         %lenth edges
-        totalProportionScutoids=zeros(numRandoms,1);
-        totalProportionWinNeigh=zeros(numRandoms,1);
-        totalProportionLossNeigh=zeros(numRandoms,1);
-        totalProportionOfCellsInNoTransitions=zeros(numRandoms,1);
-        totalCellsInRois=zeros(numRandoms,1);
-        proportionAnglesTransition=zeros(numRandoms,6);
-        proportionAnglesNoTransition=zeros(numRandoms,6);
-        totalAnglesTransition=cell(numRandoms);
-        totalAnglesNoTransition=cell(numRandoms);
-        totalLengthTransition=cell(numRandoms);
-        totalLengthNoTransition=cell(numRandoms);
-        distributionWinningNeigh=zeros(numRandoms,11);
-        distributionLossingNeigh=zeros(numRandoms,11);
-        distributionTransitionsPerCell=zeros(numRandoms,11);
+        totalProportionScutoids=zeros(length(numRandoms),1);
+        totalProportionWinNeigh=zeros(length(numRandoms),1);
+        totalProportionLossNeigh=zeros(length(numRandoms),1);
+        totalProportionOfCellsInNoTransitions=zeros(length(numRandoms),1);
+        totalCellsInRois=zeros(length(numRandoms),1);
+        proportionAnglesTransition=zeros(length(numRandoms),6);
+        proportionAnglesNoTransition=zeros(length(numRandoms),6);
+        totalAnglesTransition=cell(length(numRandoms));
+        totalAnglesNoTransition=cell(length(numRandoms));
+        totalLengthTransition=cell(length(numRandoms));
+        totalLengthNoTransition=cell(length(numRandoms));
+        distributionWinningNeigh=zeros(length(numRandoms),11);
+        distributionLossingNeigh=zeros(length(numRandoms),11);
+        distributionTransitionsPerCell=zeros(length(numRandoms),11);
         
-        parfor nRand=1:numRandoms           
+        parfor nRand=numRandoms           
             
             [totalCellsInRois(nRand),totalProportionScutoids(nRand),totalProportionWinNeigh(nRand),...
                 totalProportionLossNeigh(nRand),totalProportionOfCellsInNoTransitions(nRand),...
