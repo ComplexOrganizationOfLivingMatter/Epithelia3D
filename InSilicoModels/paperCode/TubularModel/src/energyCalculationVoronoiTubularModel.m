@@ -24,13 +24,13 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
             if ~isempty(strfind(typeProjection,'expansion'))
                 L_apical=listLOriginalProjection.L_originalProjection{listLOriginalProjection.surfaceRatio==1};
                 surfaceRatio=basalExpansions(nSurf);
-                L_basal=listLOriginalProjection.L_originalProjection{listLOriginalProjection.surfaceRatio==surfaceRatio};
+                L_basal=listLOriginalProjection.L_originalProjection{round(listLOriginalProjection.surfaceRatio,1)==round(surfaceRatio,1)};
                 disp(['Measuring Energy in voronoi tubular model: surface ratio(expansion) ' num2str(surfaceRatio) ' number of seeds ' num2str(nSeeds) ' random ' num2str(nRand) ])
                 
             else
                 L_basal=listLOriginalApical.L_originalApical{listLOriginalProjection.surfaceRatio==1};
                 surfaceRatio=1/(1-apicalReductions(nSurf));
-                L_apical=listLOriginalApical.L_originalApical{listLOriginalProjection.surfaceRatio==surfaceRatio};
+                L_apical=listLOriginalApical.L_originalApical{round(listLOriginalProjection.surfaceRatio,1)==round(surfaceRatio,1)};
                 disp(['Measuring Energy in voronoi tubular model: surface ratio(reduction)' num2str(surfaceRatio)  ' number of seeds ' num2str(nSeeds) ' random ' num2str(nRand) ])
             end
             
