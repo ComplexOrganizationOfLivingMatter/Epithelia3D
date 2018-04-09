@@ -105,17 +105,18 @@ for nPath=length(filePaths):-1:1
         namesRows={'scutoidsProportion','frustaProportion','winningNeighboursProportion','lossingNeighboursProportion','numberOfCellsInROI'};
         tableProportionScutoids=array2table([meanProportionScutoids,stdProportionScutoids;meanProportionCellsNoScutoids,stdProportionCellsNoScutoids;meanProportionWinningNeighs,stdProportionWinningNeighs;meanProportionLossingNeighs,stdProportionLossingNeighs;meanTotalCellsInRois,stdTotalCellsInRois],'VariableNames',namesColumns,'RowNames',namesRows);
 
-        
+        folderResThreshold=[filePaths{nPath} 'resolutionThreshold' num2str(resolutionTreshold) '\'];
+        mkdir(folderResThreshold)
         if nCellHeight>1
-            save([filePaths{nPath} 'dataAngleLengthEdges_cellHeight' num2str(listCellHeight(cellHeight)) '_' date '.mat'],'totalAnglesTransition','totalAnglesNoTransition','totalLengthTransition','totalLengthNoTransition','tableProportionOfAngles')
-            writetable(tableProportionOfAngles,[filePaths{nPath} 'tableDistributionAngleEdges_cellHeight' num2str(listCellHeight(cellHeight)) '_' date '.xls'],'WriteRowNames',true);
-            writetable(tableProportionOfPresencesPerCell,[filePaths{nPath} 'tableNumberOfTransitionsWinningLossing_cellHeight' num2str(listCellHeight(cellHeight)) '_' date '.xls'],'WriteRowNames',true);
-            writetable(tableProportionScutoids,[filePaths{nPath} 'tableScutoidsProportions_cellHeight' num2str(listCellHeight(cellHeight)) '_' date '.xls'],'WriteRowNames',true)
+            save([folderResThreshold 'dataAngleLengthEdges_cellHeight' num2str(listCellHeight(cellHeight)) '_' date '.mat'],'totalAnglesTransition','totalAnglesNoTransition','totalLengthTransition','totalLengthNoTransition','tableProportionOfAngles')
+            writetable(tableProportionOfAngles,[folderResThreshold 'tableDistributionAngleEdges_cellHeight' num2str(listCellHeight(cellHeight)) '_' date '.xls'],'WriteRowNames',true);
+            writetable(tableProportionOfPresencesPerCell,[folderResThreshold 'tableNumberOfTransitionsWinningLossing_cellHeight' num2str(listCellHeight(cellHeight)) '_' date '.xls'],'WriteRowNames',true);
+            writetable(tableProportionScutoids,[folderResThreshold 'tableScutoidsProportions_cellHeight' num2str(listCellHeight(cellHeight)) '_' date '.xls'],'WriteRowNames',true)
         else
             save([filePaths{nPath} 'dataAngleLengthEdges_' date '.mat'],'totalAnglesTransition','totalAnglesNoTransition','totalLengthTransition','totalLengthNoTransition','tableProportionOfAngles')
-            writetable(tableProportionOfAngles,[filePaths{nPath} 'tableDistributionAngleEdges_' date '.xls'],'WriteRowNames',true);
-            writetable(tableProportionOfPresencesPerCell,[filePaths{nPath} 'tableNumberOfTransitionsWinningLossing_' date '.xls'],'WriteRowNames',true);
-            writetable(tableProportionScutoids,[filePaths{nPath} 'tableScutoidsProportions_' date '.xls'],'WriteRowNames',true)
+            writetable(tableProportionOfAngles,[folderResThreshold 'tableDistributionAngleEdges_' date '.xls'],'WriteRowNames',true);
+            writetable(tableProportionOfPresencesPerCell,[folderResThreshold 'tableNumberOfTransitionsWinningLossing_' date '.xls'],'WriteRowNames',true);
+            writetable(tableProportionScutoids,[folderResThreshold 'tableScutoidsProportions_' date '.xls'],'WriteRowNames',true)
         end
         
          disp([filePaths{nPath} ' cell height ' num2str(listCellHeight(cellHeight)) '/' num2str(listCellHeight(end)) ' completed'])
