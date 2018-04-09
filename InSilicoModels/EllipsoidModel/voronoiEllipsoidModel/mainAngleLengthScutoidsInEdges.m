@@ -18,13 +18,11 @@ for resolutionTreshold=resolutionTresholds
             case 1
                 numRandoms=1:30;
                 nCellHeight=1;
+                listCellHeight=[1];
             case 2
                 numRandoms=[1:10,61:130];
                 nCellHeight=1;
-            case 5
-                numRandoms=1:3;
-                nCellHeight=3;
-                listCellHeight=[0.5 1 2];
+                listCellHeight=[1];
             otherwise
                 numRandoms=1:10;
                 nCellHeight=3;
