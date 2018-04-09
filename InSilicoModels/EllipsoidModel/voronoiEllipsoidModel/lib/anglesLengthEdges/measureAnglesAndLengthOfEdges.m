@@ -1,4 +1,4 @@
-function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthOfEdges( L_apical,L_basal,neighsApical,neighsBasal,validCells)
+function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthOfEdges( L_apical,L_basal,neighsApical,neighsBasal,validCells,resolutionTreshold)
 
     %classify neighbourings of basal
     pairOfNeighsBasal=(cellfun(@(x, y) [y*ones(length(x),1),x],neighsBasal',num2cell(1:size(neighsBasal,2))','UniformOutput',false));
@@ -19,7 +19,6 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     
     %loop to get edge length and angle for each pair of neighborings
     indexesPassingTreshold=zeros(size(uniquePairOfNeighBasal,1),1)==1;
-    resolutionTreshold=4;
     for i=1:size(uniquePairOfNeighBasal,1)
         if any(ismember(uniquePairOfNeighBasal(i,:),validCells))
             maskOuter=bwlabel(totalCellsDilatedOuter{uniquePairOfNeighBasal(i,1)}.*totalCellsDilatedOuter{uniquePairOfNeighBasal(i,2)});

@@ -5,7 +5,7 @@ function [totalCellsInRois,totalProportionScutoids,totalProportionWinNeigh,...
                 proportionAnglesNoTransition,totalAnglesTransition,...
                 totalAnglesNoTransition,totalLengthTransition,totalLengthNoTransition] ...
                 ...
-                = calculationAngleLengthScutoidsInEdges(filePath,nRand,cellHeight,nCellHeight)
+                = calculationAngleLengthScutoidsInEdges(filePath,nRand,cellHeight,nCellHeight,resolutionTreshold)
 
             ellipsoidPath=dir([filePath 'randomizations\random_' num2str(nRand) '\*llipsoid*' ]);
             splittedPath=strsplit(ellipsoidPath(cellHeight).name,'_');
@@ -45,8 +45,8 @@ function [totalCellsInRois,totalProportionScutoids,totalProportionWinNeigh,...
             
             %measured angles and length discriminating between transition
             %and no transition
-            [dataTransitionOuter,dataNoTransitionOuter]=measureAnglesAndLengthOfEdges(innerOverlaped,outerOverlaped,globalNeighsInner,globalNeighsOuter,globalValidCells);
-            [dataTransitionInner,~]=measureAnglesAndLengthOfEdges(outerOverlaped,innerOverlaped,globalNeighsOuter,globalNeighsInner,globalValidCells);
+            [dataTransitionOuter,dataNoTransitionOuter]=measureAnglesAndLengthOfEdges(innerOverlaped,outerOverlaped,globalNeighsInner,globalNeighsOuter,globalValidCells,resolutionTreshold);
+            [dataTransitionInner,~]=measureAnglesAndLengthOfEdges(outerOverlaped,innerOverlaped,globalNeighsOuter,globalNeighsInner,globalValidCells,resolutionTreshold);
             
             %calculate proportions of scutoids
             [totalProportionScutoids,totalProportionWinNeigh,totalProportionLossNeigh,totalProportionOfCellsInNoTransitions,...

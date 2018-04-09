@@ -8,9 +8,10 @@ filePathVoronoiStage4='results\Stage 4\';
 filePathGlobe='results\Globe\';
 filePathRugby='results\Rugby\';
 filePathSphere='results\Sphere\';
+resolutionTreshold=4;
 
 filePaths={filePathVoronoiStage8,filePathVoronoiStage4,filePathGlobe,filePathRugby,filePathSphere};
-for nPath=1:length(filePaths)
+for nPath=length(filePaths):-1:1
     
     switch nPath
         case 1
@@ -56,7 +57,7 @@ for nPath=1:length(filePaths)
                 distributionTransitionsPerCell(nRand,:),proportionAnglesTransition(nRand,:),...
                 proportionAnglesNoTransition(nRand,:),totalAnglesTransition{nRand},...
                 totalAnglesNoTransition{nRand},totalLengthTransition{nRand},totalLengthNoTransition{nRand}]...
-                =calculationAngleLengthScutoidsInEdges(filePaths{nPath},nRand,cellHeight,nCellHeight);
+                =calculationAngleLengthScutoidsInEdges(filePaths{nPath},nRand,cellHeight,nCellHeight,resolutionTreshold);
            
         end
         
