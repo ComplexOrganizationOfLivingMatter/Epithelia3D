@@ -1,4 +1,4 @@
-function [proportionOfScutoids,proportionOfCellsWinning,proportionOfCellsLossing,proportionOfCellsInNoTransitions,proportionWinningNeigh,proportionLossingNeigh,proportionTransitionsPerCell]=calculateNumberOfCellsInvolvedInTransitions(DataTransitionOuter,DataTransitionInner,validCells)
+function [proportionOfScutoids,proportionOfCellsWinning,proportionOfCellsLossing,proportionOfFrusta,proportionWinningNeigh,proportionLossingNeigh,proportionTransitionsPerCell]=calculateNumberOfCellsInvolvedInTransitions(DataTransitionOuter,DataTransitionInner,validCells)
 %Calculation of scutoids (using lossing or winngin of neighbours)
 
     if isempty(DataTransitionOuter) 
@@ -37,7 +37,7 @@ function [proportionOfScutoids,proportionOfCellsWinning,proportionOfCellsLossing
 
     %number of scutoids
     proportionOfScutoids=length(uniqueTotalCells)/length(validCells);
-    proportionOfCellsInNoTransitions=1-proportionOfScutoids;
+    proportionOfFrusta=1-proportionOfScutoids;
     
 end
 
