@@ -17,11 +17,11 @@ function [proportionOfScutoids,proportionOfCellsWinning,proportionOfCellsLossing
     
     %Data for histograms 
     %number of lossing            
-    proportionOfCellsLossing=(length(scutoidsOuter)/2)/length(validCells);
+    proportionOfCellsLossing=(length(scutoidsOuter))/length(validCells);
     uniqueOuterCells = unique(scutoidsOuter); 
     lossingPerCell = unique(uniqueOuterCells); 
     %number of winning             
-    proportionOfCellsWinning=(length(scutoidsInner)/2)/length(validCells);
+    proportionOfCellsWinning=(length(scutoidsInner))/length(validCells);
     uniqueInnerCells = unique(scutoidsInner); 
     winningPerCell = histc(scutoidsInner,uniqueInnerCells);
     
