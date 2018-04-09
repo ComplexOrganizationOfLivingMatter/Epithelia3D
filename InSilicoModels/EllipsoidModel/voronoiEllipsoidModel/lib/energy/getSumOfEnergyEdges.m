@@ -15,7 +15,7 @@ function sumEdgesOfEnergy = getSumOfEnergyEdges(verticesCell_1_2,verticesCell_3,
         %distance between edge vertices and its neighbours
         distVertEdge1 = pdist2(vertEdge1,vertsNeighEdge1);
         distVertEdge2 = pdist2(vertEdge2,vertsNeighEdge2);
-        
-        sumEdgesOfEnergy=sum([distVertEdge1,distVertEdge2]);
+        distCentralEdge=pdist2(vertEdge1,vertEdge2);
+        sumEdgesOfEnergy=sum([distVertEdge1,distVertEdge2,distCentralEdge]);
 end
         
