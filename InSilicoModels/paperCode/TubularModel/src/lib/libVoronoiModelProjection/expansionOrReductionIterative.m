@@ -21,8 +21,9 @@ function [listSeedsProjected,listLOriginalProjection,listDataAnglesTransitionMea
     totalCellsMotifsNoTransitionMeasuredInBasal=cell(length(listOfSurfaceRatios),1);
     totalCellsMotifsNoTransitionMeasuredInApical=cell(length(listOfSurfaceRatios),1);
     
+    name2save=strrep(name2save,'.mat','');
 
-    for j=1:length(listOfSurfaceRatios)
+    parfor j=1:length(listOfSurfaceRatios)
             %% surface reduction implication - recalculate seeds and labelled images
             surfaceRatio=listOfSurfaceRatios(j);
             [H,W]=size(L_original);
@@ -30,7 +31,7 @@ function [listSeedsProjected,listLOriginalProjection,listDataAnglesTransitionMea
             L_originalProjection=generateCylindricalVoronoi(seedsExpansion,H,round(W*surfaceRatio));
                 
             %% Representations of colourful images        
-            name2save=strrep(name2save,'.mat','');
+            
             representAndSaveFigureWithColourfulCells(L_originalProjection,numCells,seedsExpansion(:,2:3),[directory2save kindProjection '\' nameOfFolder],name2save, ['_' kindProjection '_' num2str(surfaceRatio)])
 
             %% Testing neighs exchanges
@@ -75,29 +76,26 @@ function [listSeedsProjected,listLOriginalProjection,listDataAnglesTransitionMea
                 totalCellsMotifsNoTransitionMeasuredInBasal{j,1}=dataAnglesAndLengthEdgesNoTransitionMeasuredInBasal.cellularMotifs;
                 totalCellsMotifsNoTransitionMeasuredInApical{j,1}=dataAnglesAndLengthEdgesNoTransitionMeasuredInApical.cellularMotifs;               
             end
-            
-            totalAngles.TransitionInBasal=totalAnglesTransitionMeasuredInBasal;
-            totalAngles.TransitionInApical=totalAnglesTransitionMeasuredInApical;
-            totalAngles.NoTransitionInBasal=totalAnglesNoTransitionMeasuredInBasal;
-            totalAngles.NoTransitionInApical=totalAnglesNoTransitionMeasuredInApical;
-            totalEdges.TransitionInBasal=totalEdgesTransitionMeasuredInBasal;
-            totalEdges.TransitionInApical=totalEdgesTransitionMeasuredInApical;
-            totalEdges.NoTransitionInBasal=totalEdgesNoTransitionMeasuredInBasal;
-            totalEdges.NoTransitionInApical=totalEdgesNoTransitionMeasuredInApical;
-            totalCellMotifs.TransitionInBasal=totalCellsMotifsTransitionMeasuredInBasal;
-            totalCellMotifs.TransitionInApical=totalCellsMotifsTransitionMeasuredInApical;
-            totalCellMotifs.NoTransitionInBasal=totalCellsMotifsNoTransitionMeasuredInBasal;
-            totalCellMotifs.NoTransitionInApical=totalCellsMotifsNoTransitionMeasuredInApical;
-            
             listSeedsProjected(j,:)=[{surfaceRatio},{seedsExpansion}];
             listLOriginalProjection(j,:)=[{surfaceRatio},{L_originalProjection}];
             close all
-
-            
     end
     
+    
     %store data after application of surface ratios
-        
+    totalAngles.TransitionInBasal=totalAnglesTransitionMeasuredInBasal;
+    totalAngles.TransitionInApical=totalAnglesTransitionMeasuredInApical;
+    totalAngles.NoTransitionInBasal=totalAnglesNoTransitionMeasuredInBasal;
+    totalAngles.NoTransitionInApical=totalAnglesNoTransitionMeasuredInApical;
+    totalEdges.TransitionInBasal=totalEdgesTransitionMeasuredInBasal;
+    totalEdges.TransitionInApical=totalEdgesTransitionMeasuredInApical;
+    totalEdges.NoTransitionInBasal=totalEdgesNoTransitionMeasuredInBasal;
+    totalEdges.NoTransitionInApical=totalEdgesNoTransitionMeasuredInApical;
+    totalCellMotifs.TransitionInBasal=totalCellsMotifsTransitionMeasuredInBasal;
+    totalCellMotifs.TransitionInApical=totalCellsMotifsTransitionMeasuredInApical;
+    totalCellMotifs.NoTransitionInBasal=totalCellsMotifsNoTransitionMeasuredInBasal;
+    totalCellMotifs.NoTransitionInApical=totalCellsMotifsNoTransitionMeasuredInApical;
+
     %transition data
     acumListDataAngles.TransitionInBasal=listDataAnglesTransitionMeasuredInBasal;
     acumListDataAngles.TransitionInApical=listDataAnglesTransitionMeasuredInApical;
