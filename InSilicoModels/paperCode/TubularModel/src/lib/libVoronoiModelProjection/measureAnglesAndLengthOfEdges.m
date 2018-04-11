@@ -10,15 +10,19 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     uniquePairOfNeighBasal=unique([min(uniquePairOfNeighBasal,[],2),max(uniquePairOfNeighBasal,[],2)],'rows');
     basalData=struct('edgeLength',zeros(size(uniquePairOfNeighBasal,1),1),'edgeAngle',zeros(size(uniquePairOfNeighBasal,1),1));
     
+    %loop dilating all cells
+    cellsDilated=cell(max(max(uniquePairOfNeighBasal)),1);
+    se=strel('disk',2);
+    for i=1:max(max(uniquePairOfNeighBasal))
+     mask1=zeros(size(L_basal));
+     mask1(L_basal==uniquePairOfNeighBasal(i,1))=1;
+     cellsDilated{i}=imdilate(mask1,se);
+    end
+    
     %loop to get edge length and angle for each pair of neighborings
     for i=1:size(uniquePairOfNeighBasal,1)
-        mask1=zeros(size(L_basal));
-        mask2=zeros(size(L_basal));
-        mask1(L_basal==uniquePairOfNeighBasal(i,1))=1;
-        mask2(L_basal==uniquePairOfNeighBasal(i,2))=1;
-        se=strel('disk',2);
-        mask3=bwlabel(imdilate(mask1,se).*imdilate(mask2,se));
-        edge1=regionprops(mask3,'MajorAxisLength','Orientation');
+        mask2=cellsDilated{uniquePairOfNeighBasal(i,1)}.*cellsDilated{uniquePairOfNeighBasal(i,2)};
+        edge1=regionprops(mask2,'MajorAxisLength','Orientation');
         basalData(i).edgeLength=sum(vertcat(edge1.MajorAxisLength));
         basalData(i).edgeAngle=edge1.Orientation;
     end
@@ -40,11 +44,10 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     %define no transition transition edge length and angle
     basalDataNoTransition.edgeLength=cat(1,basalData(logical(1-indexesEdgesTransition)).edgeLength);
     basalDataNoTransition.edgeAngle=abs(cat(1,basalData(logical(1-indexesEdgesTransition)).edgeAngle));
-
+    
     %basalDataTransition
     anglesTransition=cat(1,basalDataTransition(:).edgeAngle);
     basalDataTransition.cellularMotifs=uniquePairOfNeighBasal(indexesEdgesTransition,:);
-    basalDataTransition.angles=anglesTransition;
     basalDataTransition.numOfEdges=length(anglesTransition);
     basalDataTransition.proportionAnglesLess15deg=sum(anglesTransition<=15)/length(anglesTransition);
     basalDataTransition.proportionAnglesBetween15_30deg=sum(anglesTransition>15 & anglesTransition <= 30)/length(anglesTransition);
@@ -56,7 +59,6 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     %basalDataNoTransition
     anglesNoTransition=cat(1,basalDataNoTransition(:).edgeAngle);
     basalDataNoTransition.cellularMotifs=uniquePairOfNeighBasal(logical(1-indexesEdgesTransition),:);
-    basalDataNoTransition.angles=anglesNoTransition;
     basalDataNoTransition.numOfEdges=length(anglesNoTransition);
     basalDataNoTransition.proportionAnglesLess15deg=sum(anglesNoTransition<=15)/length(anglesNoTransition);
     basalDataNoTransition.proportionAnglesBetween15_30deg=sum(anglesNoTransition>15 & anglesNoTransition <= 30)/length(anglesNoTransition);

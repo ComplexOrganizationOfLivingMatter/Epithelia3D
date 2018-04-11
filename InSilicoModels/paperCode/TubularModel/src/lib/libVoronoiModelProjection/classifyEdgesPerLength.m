@@ -1,8 +1,7 @@
-function [meanListLengthEdges,stdListLengthEdges]=classifyEdgesPerLength(totalEdgesTransition,totalEdgesNoTransition,listAcumTransitions)
+function [meanListLengthEdges,stdListLengthEdges]=classifyEdgesPerLength(totalEdgesTransition,totalEdgesNoTransition,listOfSurfaceRatios)
 
     totalEdgesPerImage=cellfun(@(x,y) sort([x;y]),totalEdgesTransition,totalEdgesNoTransition,'UniformOutput',false);
     %normalize measured edges in basal by expansion ratio
-    listOfSurfaceRatios=listAcumTransitions.apicalReduction;
 %     proportionEdges=cell(size(totalEdgesTransition,1),size(totalEdgesTransition,2));
     for i=2:size(totalEdgesPerImage,1)
         allEdgesPerSurfaceRatio=sort(vertcat(totalEdgesPerImage{i,:}));
