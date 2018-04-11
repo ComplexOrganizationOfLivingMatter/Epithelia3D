@@ -7,10 +7,12 @@ function [totalCellsInRois,totalProportionScutoids,totalProportionWinNeigh,...
                 ...
                 = calculationAngleLengthScutoidsInEdges(filePath,nRand,cellHeight,nCellHeight,resolutionTreshold)
 
-            ellipsoidPath=dir([filePath 'randomizations\random_' num2str(nRand) '\*llipsoid*' ]);
-            splittedPath=strsplit(ellipsoidPath(cellHeight).name,'_');
-            splittedCellHeight=splittedPath{end};
+            
             if nCellHeight>1
+                numberCellHeight = num2str(cellHeight);
+                ellipsoidPath=dir([filePath 'randomizations\random_' num2str(nRand) '\*llipsoid*_cellHeight' numberCellHeight(1) '*' ]);
+                splittedPath=strsplit(ellipsoidPath(1).name,'_');
+                splittedCellHeight=splittedPath{end};
                 load([filePath 'randomizations\random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')
             else
                 load([filePath 'randomizations\random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
