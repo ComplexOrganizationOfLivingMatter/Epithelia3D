@@ -15,7 +15,7 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     se=strel('disk',2);
     for i=1:max(max(uniquePairOfNeighBasal))
      mask1=zeros(size(L_basal));
-     mask1(L_basal==uniquePairOfNeighBasal(i,1))=1;
+     mask1(L_basal==i)=1;
      cellsDilated{i}=imdilate(mask1,se);
     end
     
