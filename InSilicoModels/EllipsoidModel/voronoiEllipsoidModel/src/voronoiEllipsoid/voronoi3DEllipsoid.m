@@ -129,7 +129,6 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             [ellipsoidInfo] = calculate_neighbours3D(img3DOutterLayer, ellipsoidInfo);
             ellipsoidInfo.cellArea = calculate_volumeOrArea(img3DOutterLayer);
             ellipsoidInfo.cellVolume = calculate_volumeOrArea(img3DLabelled);
-            if isempty(initialEllipsoid.neighbourhood)
             if isempty(initialEllipsoid.surfaceIndices)
                 disp('Getting info of vertices and neighbours: inner layer');
                 
