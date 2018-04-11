@@ -5,14 +5,14 @@ relativePathTubularModel='..\..\InSilicoModels\paperCode\TubularModel\data\tubul
 transitionsFile='summaryAverageTransitionsMeasuredInBasal_Transitions';
 noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
 
-% %% Loading 800 seeds data
+%% Loading 800 seeds data
 % load([relativePathTubularModel transitionsFile],'acumAngles','acumEdges')
 % acumAnglesTransition800seeds=acumAngles;
 % acumEdgesTransition800seeds=acumEdges;
 % load([relativePathTubularModel noTransitionsFile],'acumAngles','acumEdges')
 % acumAnglesNoTransition800seeds=acumAngles;
 % acumEdgesNoTransition800seeds=acumEdges;
-% 
+
 % %transitios angles and length 800 seeds SR 1.25
 % surfaceRatio125_800seeds.anglesTransition=acumAnglesTransition800seeds{3};
 % surfaceRatio125_800seeds.anglesNoTransition=acumAnglesNoTransition800seeds{3};
@@ -65,6 +65,20 @@ noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
 % p = randperm(length(surfaceRatio5_800seeds.anglesNoTransition),200);
 % surfaceRatio5_800seeds.anglesNoTransitionFilter=surfaceRatio5_800seeds.anglesNoTransition(p);
 % surfaceRatio5_800seeds.edgesNoTransitionFilter=surfaceRatio5_800seeds.edgesNoTransition(p);
+
+% %transitios angles and length 800 seeds SR 10
+% surfaceRatio10_800seeds.anglesTransition=acumAnglesTransition800seeds{10};
+% surfaceRatio10_800seeds.anglesNoTransition=acumAnglesNoTransition800seeds{10};
+% surfaceRatio10_800seeds.edgesTransition=acumEdgesTransition800seeds{10};
+% surfaceRatio10_800seeds.edgesNoTransition=acumEdgesNoTransition800seeds{10};
+% 
+% p = randperm(length(surfaceRatio10_800seeds.anglesTransition),200);
+% surfaceRatio10_800seeds.anglesTransitionFilter=surfaceRatio10_800seeds.anglesTransition(p);
+% surfaceRatio10_800seeds.edgesTransitionFilter=surfaceRatio10_800seeds.edgesTransition(p);
+% p = randperm(length(surfaceRatio10_800seeds.anglesNoTransition),200);
+% surfaceRatio10_800seeds.anglesNoTransitionFilter=surfaceRatio10_800seeds.anglesNoTransition(p);
+% surfaceRatio10_800seeds.edgesNoTransitionFilter=surfaceRatio10_800seeds.edgesNoTransition(p);
+
 % 
 % %% Loading 60 seeds data
 % load([strrep(relativePathTubularModel,'512x4096_800','512x4096_60') transitionsFile],'acumAngles','acumEdges')
@@ -89,7 +103,7 @@ noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
 % 
 % 
 % 
-% save('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels800seeds.mat','surfaceRatio125_800seeds','surfaceRatio1667_800seeds','surfaceRatio2_800seeds','surfaceRatio5_800seeds')
+% save('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels800seeds.mat','surfaceRatio125_800seeds','surfaceRatio1667_800seeds','surfaceRatio2_800seeds','surfaceRatio5_800seeds','surfaceRatio10_800seeds')
 % save('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels60seeds.mat','surfaceRatio6667_60seeds');
 % 
 % relativePathEllipsoidModel='..\..\InSilicoModels\EllipsoidModel\voronoiEllipsoidModel\results\';
@@ -118,18 +132,18 @@ noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
 % save('..\lengthAnglesEdges_Transition_NoTransition_voronoiEllipsoidModels.mat','ellipsoidStage8','ellipsoidStage4');
 
 load('..\lengthAnglesEdges_Transition_NoTransition_voronoiEllipsoidModels.mat','ellipsoidStage8','ellipsoidStage4');
-load('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels800seeds.mat','surfaceRatio125_800seeds','surfaceRatio1667_800seeds','surfaceRatio2_800seeds','surfaceRatio5_800seeds')
+load('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels800seeds.mat','surfaceRatio125_800seeds','surfaceRatio1667_800seeds','surfaceRatio2_800seeds','surfaceRatio5_800seeds','surfaceRatio10_800seeds')
 load('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels60seeds.mat','surfaceRatio6667_60seeds')
 
-setOfDistributions={surfaceRatio125_800seeds,surfaceRatio1667_800seeds,surfaceRatio2_800seeds,surfaceRatio5_800seeds,surfaceRatio6667_60seeds,ellipsoidStage4,ellipsoidStage8};
-titles={'Tubular Model 1.25','Tubular Model 1.667','Tubular Model 2', 'Tubular Model 5', 'Tubular Model like Salivary Gland','Ellipsoid model stage 4','Ellipsoid model stage 8'};
+setOfDistributions={surfaceRatio125_800seeds,surfaceRatio1667_800seeds,surfaceRatio2_800seeds,surfaceRatio5_800seeds,surfaceRatio10_800seeds,surfaceRatio6667_60seeds,ellipsoidStage4,ellipsoidStage8};
+titles={'Tubular Model 1.25','Tubular Model 1.667','Tubular Model 2', 'Tubular Model 5','Tubular Model 10', 'Tubular Model like Salivary Gland','Ellipsoid model stage 4','Ellipsoid model stage 8'};
 
 colourTrans = [102 204 204]/255;
 colourNoTrans = [1 102/255 0];
 
 statsTubularModel=zeros(length(setOfDistributions),4);
 
-for i = length(setOfDistributions)-1 : length(setOfDistributions)
+for i = 1 : length(setOfDistributions)
    
 %     createPolarHistogram(setOfDistributions{i}.anglesTransitionFilter, colourTrans, [titles{i} '- Transition']);
 %     createPolarHistogram(setOfDistributions{i}.anglesNoTransitionFilter, colourNoTrans, [titles{i} '- No transition']);
