@@ -16,7 +16,7 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     for i=1:max(max(uniquePairOfNeighBasal))
      mask1=zeros(size(L_basal));
      mask1(L_basal==i)=1;
-     cellsDilated{i}=imdilate(mask1,se);
+     cellsDilated{i}=logical(imdilate(mask1,se));
     end
     
     %loop to get edge length and angle for each pair of neighborings

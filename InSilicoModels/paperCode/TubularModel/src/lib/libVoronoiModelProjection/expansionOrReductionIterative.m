@@ -23,7 +23,7 @@ function [listSeedsProjected,listLOriginalProjection,listDataAnglesTransitionMea
     
     name2save=strrep(name2save,'.mat','');
 
-    parfor j=1:length(listOfSurfaceRatios)
+    parfor j=1:length(listOfSurfaceRatios) %parfor
             %% surface reduction implication - recalculate seeds and labelled images
             surfaceRatio=listOfSurfaceRatios(j);
             [H,W]=size(L_original);
