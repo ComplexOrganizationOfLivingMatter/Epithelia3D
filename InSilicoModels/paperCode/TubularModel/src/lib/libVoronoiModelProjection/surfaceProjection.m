@@ -49,7 +49,7 @@ function surfaceProjection( pathV5data,nameOfFolder,directory2save,path3dVoronoi
         acumListDataAnglesNoTransitionInApical{i}=acumListDataAngles.NoTransitionInApical;
                    
         %save data for each random
-        name2save=strrep(pathV5data(i).name,'mat','');
+        name2save=strrep(pathV5data(i).name,'.mat','');
         save([directory2save kindProjection '\' nameOfFolder name2save '\'  name2save '.mat'],'listLOriginalProjection','listSeedsProjected','listDataAnglesTransitionMeasuredInBasal','listDataAnglesTransitionMeasuredInApical','listDataAnglesNoTransitionMeasuredInBasal','listDataAnglesNoTransitionMeasuredInApical','totalEdges','totalAngles','totalCellMotifs')
 
         disp(['Projections of ' kindProjection ' ' nameOfFolder name2save ' completed'])
