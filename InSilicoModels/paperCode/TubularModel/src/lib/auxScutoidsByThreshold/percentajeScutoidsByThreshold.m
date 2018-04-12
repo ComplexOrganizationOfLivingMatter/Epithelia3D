@@ -69,10 +69,13 @@ for nRand = 1:totalRandom
 
             %calculateNeighs in apical with a distance equal to the threshold,
             %to discard transition motifs that were captured in basal
-            neighsApicalThres=calculateNeighboursByThreshold(L_apical,thresholdRes);
-            pairOfNeighsApicalThreshold=(cellfun(@(x, y) [y*ones(length(x),1),x],neighsApicalThres',num2cell(1:size(neighsApicalThres,2))','UniformOutput',false));
-            uniquePairOfNeighApicalThreshold=unique(vertcat(pairOfNeighsApicalThreshold{:}),'rows');
-            uniquePairOfNeighApicalThreshold=unique([min(uniquePairOfNeighApicalThreshold,[],2),max(uniquePairOfNeighApicalThreshold,[],2)],'rows');
+            if nSurfRat==1
+                neighsApicalThres=calculateNeighboursByThreshold(L_apical,thresholdRes);
+                pairOfNeighsApicalThreshold=(cellfun(@(x, y) [y*ones(length(x),1),x],neighsApicalThres',num2cell(1:size(neighsApicalThres,2))','UniformOutput',false));
+                uniquePairOfNeighApicalThreshold=unique(vertcat(pairOfNeighsApicalThreshold{:}),'rows');
+                uniquePairOfNeighApicalThreshold=unique([min(uniquePairOfNeighApicalThreshold,[],2),max(uniquePairOfNeighApicalThreshold,[],2)],'rows');
+            end
+
 
             indexToDeleteInBasal=ismember(cellPairsBasal,uniquePairOfNeighApicalThreshold,'rows');
 
