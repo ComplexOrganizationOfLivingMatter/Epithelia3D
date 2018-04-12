@@ -20,7 +20,7 @@ for resolutionTreshold=resolutionTresholds
                 nCellHeight=1;
                 listCellHeight=[1];
             case 2
-                numRandoms=[1:10,61:130];
+                numRandoms=1:130;
                 nCellHeight=1;
                 listCellHeight=[1];
             otherwise
