@@ -16,16 +16,15 @@ filePaths={filePathVoronoiStage8,filePathVoronoiStage4,filePathGlobe,filePathRug
 for nPath=1:length(filePaths)
     
     
-    if nPath==1 
-       numRandoms=1:30;
-       nCellHeight=1;
-    else if nPath==2 
-       numRandoms=[1:10,61:130]; 
-       nCellHeight=1;
-        else
-            numRandoms=1:10;
-            nCellHeight=3;
-        end
+    if nPath==1
+        numRandoms=1:30;
+        nCellHeight=1;
+    elseif nPath==2
+        numRandoms=1:130;
+        nCellHeight=1;
+    else
+        numRandoms=1:10;
+        nCellHeight=3;
     end
   
             
@@ -96,8 +95,8 @@ for nPath=1:length(filePaths)
          nameFile=nameFile{2};
          %saving tables
          if nCellHeight>1
-            writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\spheroidVoronoiModelEnergy_' nameFile '_Transition_' date '.xls'])
-            writetable(tableNoTransitionEnergy,[filePaths{nPath} 'energy\spheroidVoronoiModelEnergy_' nameFile '_NoTransition_' date '.xls'])
+            writetable(tableTransitionEnergy,[filePaths{nPath} 'energy\spheroidVoronoiModelEnergy_' nameFile '_Transition_'  splittedCellHeight(1:end-4) '_' date '.xls'])
+            writetable(tableNoTransitionEnergy,[filePaths{nPath} 'energy\spheroidVoronoiModelEnergy_' nameFile '_NoTransition_'  splittedCellHeight(1:end-4) '_' date '.xls'])
             %non preserved motifs between apical and basal
             writetable(tableTransitionEnergyNonPreservedMotifs,[filePaths{nPath} 'energy\spheroidVoronoiModelEnergy_' nameFile '_Transition_NonPreservedMotifs_' splittedCellHeight(1:end-4) '_' date '.xls'])
             writetable(tableNoTransitionEnergyNonPreservedMotifs,[filePaths{nPath} 'energy\spheroidVoronoiModelEnergy_' nameFile '_NoTransition_NonPreservedMotifs_' splittedCellHeight(1:end-4) '_' date '.xls'])
