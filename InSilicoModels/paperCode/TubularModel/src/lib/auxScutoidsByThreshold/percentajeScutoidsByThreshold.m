@@ -102,6 +102,8 @@ for nRand = 1:totalRandom
                 sum(lossingPerCell(validCells)==5),sum(lossingPerCell(validCells)==6),sum(lossingPerCell(validCells)==7),sum(lossingPerCell(validCells)==8),sum(lossingPerCell(validCells)==9),sum(lossingPerCell(validCells)==10)]/length(validCells);
             transitionPerCell(nSurfRat,:)=[sum(motifsTransitionPerCell(validCells)==0),sum(motifsTransitionPerCell(validCells)==1),sum(motifsTransitionPerCell(validCells)==2),sum(motifsTransitionPerCell(validCells)==3),sum(motifsTransitionPerCell(validCells)==4)...
                 sum(motifsTransitionPerCell(validCells)==5),sum(motifsTransitionPerCell(validCells)==6),sum(motifsTransitionPerCell(validCells)==7),sum(motifsTransitionPerCell(validCells)==8),sum(motifsTransitionPerCell(validCells)==9),sum(motifsTransitionPerCell(validCells)==10)]/length(validCells);
+        else
+            numberOfCellsInNoTransitions(1,nSurfRat)=1;
         end
         
         
