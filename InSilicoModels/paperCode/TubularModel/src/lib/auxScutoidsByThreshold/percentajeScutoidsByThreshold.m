@@ -1,14 +1,8 @@
-
-pathTube='D:\Pedro\Epithelia3D\InSilicoModels\paperCode\TubularModel\data\tubularVoronoiModel\';
-numSeeds=800;
-H=512; 
-W=4096;
-totalRandom=20;
-projection='expansion';
-thresholdRes=4;
+function percentajeScutoidsByThreshold(pathTube,numSeeds,H,W,totalRandom,projection,thresholdRes)
 
 numberOfRows=11;
-load([pathTube projection '\' num2str(H) 'x' num2str(W) '_' num2str(numSeeds) 'seeds\Image_10_Diagram_5\Image_10_Diagram_5.mat'],'listLOriginalProjection')
+path2load=[pathTube projection '\' num2str(H) 'x' num2str(W) '_' num2str(numSeeds) 'seeds\'];
+load([path2load 'Image_1_Diagram_5\Image_1_Diagram_5.mat'],'listLOriginalProjection')
 listSurfaceRatios=listLOriginalProjection.surfaceRatio;
     
 numOfSurfaceRatios=length(listSurfaceRatios);
@@ -23,12 +17,10 @@ listNumberOfScutoids=zeros(numOfSurfaceRatios,totalRandom);
 listNumberOfFrusta=zeros(numOfSurfaceRatios,totalRandom);
 listFrequencyOfChangesPerCell=zeros(numOfSurfaceRatios,totalRandom);
 
-directory2save='D:\Pedro\Epithelia3D\docs\paper&Figures\second SUBMISSION NATURE COMMS\excels\percentajeScutoidsWithThresholdVoronoiTube\';
-
 
 for nRand = 1:totalRandom
     
-    load([pathTube projection '\' num2str(H) 'x' num2str(W) '_' num2str(numSeeds) 'seeds\Image_' num2str(nRand) '_Diagram_5\Image_' num2str(nRand) '_Diagram_5.mat'],'listLOriginalProjection','totalCellMotifs','totalEdges')
+    load([path2load 'Image_' num2str(nRand) '_Diagram_5\Image_' num2str(nRand) '_Diagram_5.mat'],'listLOriginalProjection','totalCellMotifs','totalEdges')
        
     numberOfCellsWinning=zeros(1,size(listLOriginalProjection,1));
     numberOfCellsLossing=zeros(1,size(listLOriginalProjection,1));
@@ -57,6 +49,17 @@ for nRand = 1:totalRandom
         %filtering by overthreshold
         cellPairsApical=cellPairsApical(indexesOverThresholdApical,:);
         cellPairsBasal=cellPairsBasal(indexesOverThresholdBasal,:);
+        
+        %calculateNeighs in apical with a distance equal to the threshold,
+        %to discard transition motifs that were captured in basal
+        if nSurfRat==1
+            neighsApicalThres=calculateNeighboursByThreshold(L_apical,thresholdRes);
+            pairOfNeighsApicalThreshold=(cellfun(@(x, y) [y*ones(length(x),1),x],neighsApicalThres',num2cell(1:size(neighsApicalThres,2))','UniformOutput',false));
+            uniquePairOfNeighApicalThreshold=unique(vertcat(pairOfNeighsApicalThreshold{:}),'rows');
+            uniquePairOfNeighApicalThreshold=unique([min(uniquePairOfNeighApicalThreshold,[],2),max(uniquePairOfNeighApicalThreshold,[],2)],'rows');
+        end
+        
+        
         if ~isempty(cellPairsApical) && ~isempty(cellPairsApical)
             %calculateNeighs in basal with a distance equal to the threshold,
             %to discard transition motifs that were captured in apical
@@ -66,17 +69,6 @@ for nRand = 1:totalRandom
             uniquePairOfNeighBasalThreshold=unique([min(uniquePairOfNeighBasalThreshold,[],2),max(uniquePairOfNeighBasalThreshold,[],2)],'rows');
         
             indexToDeleteInApical=ismember(cellPairsApical,uniquePairOfNeighBasalThreshold,'rows');
-
-            %calculateNeighs in apical with a distance equal to the threshold,
-            %to discard transition motifs that were captured in basal
-            if nSurfRat==1
-                neighsApicalThres=calculateNeighboursByThreshold(L_apical,thresholdRes);
-                pairOfNeighsApicalThreshold=(cellfun(@(x, y) [y*ones(length(x),1),x],neighsApicalThres',num2cell(1:size(neighsApicalThres,2))','UniformOutput',false));
-                uniquePairOfNeighApicalThreshold=unique(vertcat(pairOfNeighsApicalThreshold{:}),'rows');
-                uniquePairOfNeighApicalThreshold=unique([min(uniquePairOfNeighApicalThreshold,[],2),max(uniquePairOfNeighApicalThreshold,[],2)],'rows');
-            end
-
-
             indexToDeleteInBasal=ismember(cellPairsBasal,uniquePairOfNeighApicalThreshold,'rows');
 
             winningNeighCells=cellPairsApical(~indexToDeleteInApical,:);
@@ -92,8 +84,8 @@ for nRand = 1:totalRandom
             winningNeighCells(ismember(winningNeighCells,noValidCells))=[];
             lossingNeighCells(ismember(lossingNeighCells,noValidCells))=[];
 
-            winningPerCell=cell2mat(arrayfun(@(x) sum(ismember(winningNeighCells,x)),1:numSeeds,'UniformOutput',false));
-            lossingPerCell=cell2mat(arrayfun(@(x) sum(ismember(lossingNeighCells,x)),1:numSeeds,'UniformOutput',false));
+            winningPerCell=cell2mat(arrayfun(@(x) sum(sum(ismember(winningNeighCells,x))),1:numSeeds,'UniformOutput',false));
+            lossingPerCell=cell2mat(arrayfun(@(x) sum(sum(ismember(lossingNeighCells,x))),1:numSeeds,'UniformOutput',false));
             motifsTransitionPerCell=cell2mat(arrayfun(@(x,y) sum([x,y]),winningPerCell,lossingPerCell,'UniformOutput',false));
 
             %number of presences
@@ -110,11 +102,15 @@ for nRand = 1:totalRandom
                 sum(lossingPerCell(validCells)==5),sum(lossingPerCell(validCells)==6),sum(lossingPerCell(validCells)==7),sum(lossingPerCell(validCells)==8),sum(lossingPerCell(validCells)==9),sum(lossingPerCell(validCells)==10)]/length(validCells);
             transitionPerCell(nSurfRat,:)=[sum(motifsTransitionPerCell(validCells)==0),sum(motifsTransitionPerCell(validCells)==1),sum(motifsTransitionPerCell(validCells)==2),sum(motifsTransitionPerCell(validCells)==3),sum(motifsTransitionPerCell(validCells)==4)...
                 sum(motifsTransitionPerCell(validCells)==5),sum(motifsTransitionPerCell(validCells)==6),sum(motifsTransitionPerCell(validCells)==7),sum(motifsTransitionPerCell(validCells)==8),sum(motifsTransitionPerCell(validCells)==9),sum(motifsTransitionPerCell(validCells)==10)]/length(validCells);
+        else
+            numberOfCellsInNoTransitions(1,nSurfRat)=1;
         end
         
-    
+        
     end
     
+    disp(['Completed % scutoids in ' num2str(H) 'x' num2str(W) '_' num2str(numSeeds) 'seeds - rand' num2str(nRand)])
+
     %Acum data
     listTransitionPerCell(:,:,nRand)=transitionPerCell';
     listWinningNeigh(:,:,nRand)=winningNeigh';
@@ -148,5 +144,5 @@ lossingNeighDistribution.average=array2table(mean(listLossingNeigh,3)','Variable
 lossingNeighDistribution.std=array2table(std(listLossingNeigh,[],3)','VariableNames',colNames,'RowNames',rowNames);
 
 
-writetable(tableProportionOfScutoids, [directory2save 'scutoidsProportion_threshold' num2str(thresholdRes) '_' date '.xls'],'WriteRowNames',true);
-save([directory2save 'distributionScutoidsPerCell_threshold' num2str(thresholdRes) '_' date '.mat'],'scutoidsDistribution','winningNeighDistribution','lossingNeighDistribution');
+writetable(tableProportionOfScutoids, [path2load 'scutoidsProportion_threshold' num2str(thresholdRes) '_' date '.xls'],'WriteRowNames',true);
+save([path2load 'distributionScutoidsPerCell_threshold' num2str(thresholdRes) '_' date '.mat'],'scutoidsDistribution','winningNeighDistribution','lossingNeighDistribution');

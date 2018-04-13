@@ -19,7 +19,7 @@ function summaryAndSaveFinalData(listOfSurfaceRatios,acumListDataAngles,totalEdg
     [meanListLengthEdges,stdListLengthEdges]=classifyEdgesPerLength(totalEdgesTransition,totalEdgesNoTransition,listOfSurfaceRatios);
         
     %save
-    save([directory2save kindProjection '\' nameOfFolder 'edgeLengthAngleMeasuredIn' typeSurface '_' date '.mat'],'meanListDataAngles','stdListDataAngles','acumAngles','acumEdges','acumCellsMotif','totalAngles','totalEdgesTransition','totalEdgesTransition','meanListLengthEdges','stdListLengthEdges')
+    save([directory2save kindProjection '\' nameOfFolder 'edgeLengthAngleMeasuredIn' typeSurface '_' date '.mat'],'meanListDataAngles','stdListDataAngles','acumAngles','acumEdges','totalAngles','totalEdgesTransition','totalEdgesTransition','meanListLengthEdges','stdListLengthEdges')
 
 end
 
