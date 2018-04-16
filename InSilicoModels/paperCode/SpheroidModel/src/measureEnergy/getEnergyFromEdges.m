@@ -1,4 +1,6 @@
 function [dataEnergy,dataEnergyNonPreservedMotifs,dataEnergyAngleThreshold,dataEnergyNonPreservedMotifsAngleThreshold,numberOfValidMotifs] = getEnergyFromEdges( outerProjection,innerProjection,neighsOuter,neighsInner,noValidCells,validCells,pairsOfCells,flag)
+%GETENERGYFROMEDGES Get energy from edges
+% 
 
     %all vertices in outer surface
     [verticesOuter]=calculateVertices(outerProjection,neighsOuter);

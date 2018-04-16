@@ -1,4 +1,5 @@
 function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthOfEdges( L_apical,L_basal,neighsApical,neighsBasal,validCells,resolutionTreshold)
+%MEASUREANGLESANDLENGTHOFEDGES
 
     %classify neighbourings of basal
     pairOfNeighsBasal=(cellfun(@(x, y) [y*ones(length(x),1),x],neighsBasal',num2cell(1:size(neighsBasal,2))','UniformOutput',false));

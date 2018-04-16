@@ -1,7 +1,6 @@
 function [ projectionsInnerWater,projectionsOuterWater ] = checkMaxProjectionExist( filePath, nRand, nCellHeight, splittedCellHeight )
-%CHECKMAXPROJECTIONEXIST
+%CHECKMAXPROJECTIONEXIST If the projection does not exist, it creates it.
 % 
-
     if exist([filePath 'randomizations\random_' num2str(nRand) '\roiProjections.mat'],'file') || exist([filePath 'randomizations\random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'file')
         if nCellHeight>1
             load([filePath 'randomizations\random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')

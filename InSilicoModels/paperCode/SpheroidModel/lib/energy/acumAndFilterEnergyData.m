@@ -1,19 +1,20 @@
 function [ tableTransitionEnergy,tableTransitionEnergyNonPreservedMotifs,tableNoTransitionEnergyTotal,tableNoTransitionEnergyTotalNonPreservedMotifs,totalEdges ] = acumAndFilterEnergyData( tableTransitionEnergy,tableTransitionEnergyNonPreservedMotifs,tableNoTransitionEnergyTotal,tableNoTransitionEnergyTotalNonPreservedMotifs,dataEnergy,dataEnergyOuterNonPreservedMotifs,totalEdges,labelEdges,nRand)
-
+%ACUMANDFILTERENERGYDATA 
+% 
 
     if ~isempty(dataEnergy)
 
         dataEnergy.nRand=nRand*ones(size(dataEnergy.outerH1,1),1);
         dataEnergyOuterNonPreservedMotifs.nRand=nRand*ones(size(dataEnergyOuterNonPreservedMotifs.outerH1,1),1);
         %filtering no transition data for each transition
-        
+
         %preserved motifs
         sumTableEnergy=struct2table(dataEnergy);
-        
+
         %Removing duplicated motifs
         [~, firstOcurrence] = unique(sumTableEnergy(:, 1), 'rows');
         sumTableEnergy = sumTableEnergy(firstOcurrence, :);
-        
+
         nanIndex=(isnan(sumTableEnergy.innerH1) |  isnan(sumTableEnergy.outerH1));
         sumTableEnergy=sumTableEnergy(~nanIndex,:);
         %nonpreserved motifs
@@ -27,14 +28,12 @@ function [ tableTransitionEnergy,tableTransitionEnergyNonPreservedMotifs,tableNo
         else
             tableNoTransitionEnergyTotal=[tableNoTransitionEnergyTotal;sumTableEnergy];
             tableNoTransitionEnergyTotalNonPreservedMotifs=[tableNoTransitionEnergyTotalNonPreservedMotifs;sumTableEnergyNonPreservedMotifs];
-        end 
+        end
 
     else
         if strcmp(labelEdges,'transition')
             totalEdges{1}=[];
         end
     end
-
-
 end
 

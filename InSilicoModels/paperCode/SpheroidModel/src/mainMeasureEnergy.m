@@ -63,6 +63,7 @@ for nPath=1:length(filePaths)
                 [filePaths{nPath} 'randomization ' num2str(nRand) '  -  ' splittedCellHeight(1:end-4)]
                 
             catch err
+                % If an error exists, caputure it and save it on a logfile
                 disp('-------------ERROR--------------');
                 fid = fopen('logFile','a+');
                 % write the error to file
