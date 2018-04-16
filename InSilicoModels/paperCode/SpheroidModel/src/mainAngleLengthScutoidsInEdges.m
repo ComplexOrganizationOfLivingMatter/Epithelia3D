@@ -1,8 +1,4 @@
-
-
-addpath(genpath('src'))
-addpath(genpath('lib'))
-
+%% 
 filePathVoronoiStage8='results\Stage 8\';
 filePathVoronoiStage4='results\Stage 4\';
 filePathGlobe='results\Globe\';
@@ -12,8 +8,8 @@ resolutionTresholds=[4, 0];
 
 filePaths={filePathVoronoiStage8,filePathVoronoiStage4,filePathGlobe,filePathRugby, filePathSphere};
 for resolutionTreshold=resolutionTresholds
-    for nPath=5%length(filePaths)
-
+    for nPath=1:length(filePaths)
+        
         switch nPath
             case 1
                 numRandoms=1:30;
@@ -28,9 +24,9 @@ for resolutionTreshold=resolutionTresholds
                 nCellHeight=3;
                 listCellHeight=[0.5 1 2];
         end
-
+        
         for cellHeight=1:nCellHeight
-
+            
             %initializing parameters to store the data of scutoids, angle and
             %lenth edges
             totalProportionScutoids=zeros(length(numRandoms),1);
@@ -47,7 +43,7 @@ for resolutionTreshold=resolutionTresholds
             distributionWinningNeigh=zeros(length(numRandoms),11);
             distributionLossingNeigh=zeros(length(numRandoms),11);
             distributionTransitionsPerCell=zeros(length(numRandoms),11);
-
+            
             parfor numnRand=1:length(numRandoms)
                 nRand = numRandoms(numnRand);
                 [totalCellsInRois(numnRand),totalProportionScutoids(numnRand),totalProportionWinNeigh(numnRand),...
@@ -58,8 +54,8 @@ for resolutionTreshold=resolutionTresholds
                     totalAnglesNoTransition{numnRand},totalLengthTransition{numnRand},totalLengthNoTransition{numnRand}]...
                     =calculationAngleLengthScutoidsInEdges(filePaths{nPath},nRand,listCellHeight(cellHeight),nCellHeight,resolutionTreshold);
             end
-
-
+            
+            
             %storage of scutoids and chenge of neighs
             meanNumberOfTransitionsPerCell=mean(distributionTransitionsPerCell);
             stdNumberOfTransitionsPerCell=std(distributionTransitionsPerCell);
@@ -75,7 +71,7 @@ for resolutionTreshold=resolutionTresholds
             stdProportionWinningNeighs=std(totalProportionWinNeigh);
             meanProportionLossingNeighs=mean(totalProportionLossNeigh);
             stdProportionLossingNeighs=std(totalProportionLossNeigh);
-
+            
             %storing angles and length
             proportionAnglesTransition(isnan(proportionAnglesTransition)) = 0;
             meanProportionAnglesTransition=mean(proportionAnglesTransition);
@@ -86,24 +82,24 @@ for resolutionTreshold=resolutionTresholds
             totalAnglesNoTransition=vertcat(totalAnglesNoTransition{:});
             totalLengthTransition=vertcat(totalLengthTransition{:});
             totalLengthNoTransition=vertcat(totalLengthNoTransition{:});
-
+            
             %total cells in ROIs
             meanTotalCellsInRois=mean(totalCellsInRois);
             stdTotalCellsInRois=std(totalCellsInRois);
-
+            
             %organizing data in tables
             namesColumns={'firstfifteenDegrees','secondfifteenDegrees','thirdfifteenDegrees','fourthfifteenDegrees','fifthfifteenDegrees','sixthfifteenDegrees'};
             namesRows={'meanAnglesTransition','stdAnglesTransition','meanAnglesNoTransition','stdAnglesNoTransition'};
             tableProportionOfAngles=array2table([meanProportionAnglesTransition;stdProportionAnglesTransition;meanProportionAnglesNoTransition;stdProportionAnglesNoTransition],'VariableNames',namesColumns,'RowNames',namesRows);
-
+            
             namesColumns={'zero','one','two','three','four','five','six','seven','eight','nine','ten'};
             namesRows={'meanTransitionsPerCell','stdTransitionsPerCell','meanWinningPerCell','stdWinningPerCell','meanLossingPerCell','stdLossingPerCell'};
             tableProportionOfPresencesPerCell=array2table([meanNumberOfTransitionsPerCell;stdNumberOfTransitionsPerCell;meanNumberOfWinningNeighPerCell;stdNumberOfWinningNeighPerCell;meanNumberOfLossingNeighPerCell;stdNumberOfLossingNeighPerCell],'VariableNames',namesColumns,'RowNames',namesRows);
-
+            
             namesColumns={'mean','standardDeviation'};
             namesRows={'scutoidsProportion','frustaProportion','winningNeighboursProportion','lossingNeighboursProportion','numberOfCellsInROI'};
             tableProportionScutoids=array2table([meanProportionScutoids,stdProportionScutoids;meanProportionCellsNoScutoids,stdProportionCellsNoScutoids;meanProportionWinningNeighs,stdProportionWinningNeighs;meanProportionLossingNeighs,stdProportionLossingNeighs;meanTotalCellsInRois,stdTotalCellsInRois],'VariableNames',namesColumns,'RowNames',namesRows);
-
+            
             folderResThreshold=[filePaths{nPath} 'resolutionThreshold' num2str(resolutionTreshold) '\'];
             mkdir(folderResThreshold)
             if nCellHeight>1
@@ -117,10 +113,9 @@ for resolutionTreshold=resolutionTresholds
                 writetable(tableProportionOfPresencesPerCell,[folderResThreshold 'tableNumberOfTransitionsWinningLossing_' date '.xls'],'WriteRowNames',true);
                 writetable(tableProportionScutoids,[folderResThreshold 'tableScutoidsProportions_' date '.xls'],'WriteRowNames',true)
             end
-
-             disp([filePaths{nPath} ' cell height ' num2str(listCellHeight(cellHeight)) '/' num2str(listCellHeight(end)) ' completed'])
-
+            
+            disp([filePaths{nPath} ' cell height ' num2str(listCellHeight(cellHeight)) '/' num2str(listCellHeight(end)) ' completed'])
+            
         end
-
     end
 end
