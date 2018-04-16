@@ -1,4 +1,4 @@
-function percentajeScutoidsByThreshold(pathTube,numSeeds,H,W,totalRandom,projection,thresholdRes)
+function calculatePercentajeScutoidsByThreshold(pathTube,numSeeds,H,W,totalRandom,projection,thresholdRes)
 
 numberOfRows=11;
 path2load=[pathTube projection '\' num2str(H) 'x' num2str(W) '_' num2str(numSeeds) 'seeds\'];
