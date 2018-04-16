@@ -232,18 +232,20 @@ colourTrans = [102 204 204]/255;
 colourNoTrans = [1 102/255 0];
 
 statsTubularModel=zeros(length(setOfDistributions),4);
-
+statsTubularModelFilter=zeros(length(setOfDistributions),4);
 for i = 1 : length(setOfDistributions)
    
 %     createPolarHistogram(setOfDistributions{i}.anglesTransitionFilter, colourTrans, [titles{i} '- Transition']);
 %     createPolarHistogram(setOfDistributions{i}.anglesNoTransitionFilter, colourNoTrans, [titles{i} '- No transition']);
 %     close
-    createScatterPolar( setOfDistributions{i}.anglesTransitionFilter,setOfDistributions{i}.edgesTransitionFilter,setOfDistributions{i}.anglesNoTransitionFilter,setOfDistributions{i}.edgesNoTransitionFilter,titles{i})
-%     [H_angles, pValue_angles]=kstest2(setOfDistributions{i}.anglesTransition,setOfDistributions{i}.anglesNoTransition);
-%     [H_edges, pValue_edges]=kstest2(setOfDistributions{i}.lengthTransition,setOfDistributions{i}.lengthNoTransition);
-%     statsTubularModel(i,:)=[H_angles, pValue_angles,H_edges, pValue_edges];
-% 
-%     [H_anglesFilter, pValue_anglesFilter]=kstest2(setOfDistributions{i}.anglesTransitionFilter,setOfDistributions{i}.anglesNoTransitionFilter);
-%     [H_edgesFilter, pValue_edgesFilter]=kstest2(setOfDistributions{i}.lengthTransitionFilter,setOfDistributions{i}.lengthNoTransitionFilter);
-%     statsTubularModelFilter(i,:)=[H_anglesFilter, pValue_anglesFilter,H_edgesFilter, pValue_edgesFilter];     
+%     createScatterPolar( setOfDistributions{i}.anglesTransitionFilter,setOfDistributions{i}.edgesTransitionFilter,setOfDistributions{i}.anglesNoTransitionFilter,setOfDistributions{i}.edgesNoTransitionFilter,titles{i})
+%     close
+
+    [H_angles, pValue_angles]=kstest2(setOfDistributions{i}.anglesTransition,setOfDistributions{i}.anglesNoTransition);
+    [H_edges, pValue_edges]=kstest2(setOfDistributions{i}.edgesTransition,setOfDistributions{i}.edgesNoTransition);
+    statsTubularModel(i,:)=[H_angles, pValue_angles,H_edges, pValue_edges];
+
+    [H_anglesFilter, pValue_anglesFilter]=kstest2(setOfDistributions{i}.anglesTransitionFilter,setOfDistributions{i}.anglesNoTransitionFilter);
+    [H_edgesFilter, pValue_edgesFilter]=kstest2(setOfDistributions{i}.edgesTransitionFilter,setOfDistributions{i}.edgesNoTransitionFilter);
+    statsTubularModelFilter(i,:)=[H_anglesFilter, pValue_anglesFilter,H_edgesFilter, pValue_edgesFilter];     
 end
