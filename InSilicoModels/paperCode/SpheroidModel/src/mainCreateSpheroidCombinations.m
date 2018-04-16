@@ -1,8 +1,15 @@
+% Create any ellipsoid voronoi. Though, in our article we have created only
+% spheroids.
+
+% Combinations of spheroids that we have used in the article.
 % X should be the greater number. Z should be the axis with the greater
 % curvature.
 allCombinations = {
-    1.5 1 1 [0.5, 1, 2] 'Ball' 200
-    2 1 1 [0.5, 1, 2] 'Rugby' 200
+    %Columns are disposed on this order:
+    %X radius; Y radius; Z radius; Cell heights; Name of the spheroid;
+    %number of Cells
+    1.5 1 1 [0.5, 1, 2] 'Globe' 200
+    2 1 1 [0.5, 1, 2] 'Zepellin' 200
     1 1 1 [0.5, 1, 2] 'Sphere' 200
     36-5.369186755	29.59784615-5.369186755 29.59784615-5.369186755	5.369186755 'Stage 4' 200
     97.46-6.145760671 48.32738462-6.145760671 48.32738462-6.145760671 6.145760671 'Stage 8' 450
@@ -28,6 +35,7 @@ for numCombination = 1:size(allCombinations, 1)
         outputDirActual = [outputDirGlobal '\random_', num2str(numRandomization)];
         mkdir(outputDirActual);
         
+        %Make every measure to the unit
         if min([radiusX, radiusY, radiusZ]) ~= 1
             radiusInModelY = 1;
             radiusZ = (radiusZ * radiusInModelY)/radiusY;
@@ -36,39 +44,12 @@ for numCombination = 1:size(allCombinations, 1)
             radiusY = radiusInModelY;
         end
         
+        %Create the voronoi 3D ellipsoid.
         randomEllipsoidInfo = voronoi3DEllipsoid([radiusX+max(hCell)+0.01 radiusY+max(hCell)+0.01 radiusZ+max(hCell)+0.01], [radiusX radiusY radiusZ], numCells, outputDirActual, hCell);
         
         randomizationsInfo(numRandomization) = {randomEllipsoidInfo};
         
         ['randomization ' num2str(numRandomization) ' - finished']
     end
-    
-    rowTransitionOuter=cell(max(maxRandoms)*length(allCombinations{numCombination, 4}),2);
-    rowNoTransitionOuter=cell(max(maxRandoms)*length(allCombinations{numCombination, 4}),2);
-    rowTransitionInner=cell(max(maxRandoms)*length(allCombinations{numCombination, 4}),2);
-    rowNoTransitionInner=cell(max(maxRandoms)*length(allCombinations{numCombination, 4}),2);
-    
-    for numEllipsoid = maxRandoms
-        randomEllipsoidInfo = randomizationsInfo{numEllipsoid};
-        for numHeight = 1:length(allCombinations{numCombination, 4})
-            for numBorders=1:length(randomEllipsoidInfo.edgeTransitionMeasuredOuter)
-                numRow = (length(allCombinations{numCombination, 4}) * (numEllipsoid - 1)) + numHeight;
-                rowTransitionOuter{numRow,numBorders}=randomEllipsoidInfo.edgeTransitionMeasuredOuter{numHeight, numBorders};
-                rowNoTransitionOuter{numRow,numBorders}=randomEllipsoidInfo.edgeNoTransitionMeasuredOuter{numHeight, numBorders};
-                rowTransitionInner{numRow,numBorders}=randomEllipsoidInfo.edgeTransitionMeasuredInner{numHeight, numBorders};
-                rowNoTransitionInner{numRow,numBorders}=randomEllipsoidInfo.edgeNoTransitionMeasuredInner{numHeight, numBorders};
-            end
-        end
-    end
-    
-    for numBorders=1:size(rowTransitionOuter,2)
-        borderLimit=rowTransitionOuter{maxRandoms(1),numBorders}.bordersSituatedAt(1);
-        writetable(vertcat(rowTransitionOuter{:,numBorders}), [outputDirGlobal '\transitionsOuterBorder' num2str(borderLimit) '_' fileName '_' date '.xls']);
-        writetable(vertcat(rowNoTransitionOuter{:,numBorders}), [outputDirGlobal '\noTransitionsOuterBorder' num2str(borderLimit) '_' fileName '_' date '.xls']);
-        writetable(vertcat(rowTransitionInner{:,numBorders}), [outputDirGlobal  '\transitionsInnerBorder' num2str(borderLimit) '_' fileName '_' date '.xls']);
-        writetable(vertcat(rowNoTransitionInner{:,numBorders}), [outputDirGlobal '\noTransitionsInnerBorder' num2str(borderLimit) '_' fileName '_' date '.xls']);
-    end
-    save(strcat(outputDirGlobal, '\randomizationsInfo_', date), 'randomizationsInfo');
-    close all
 end
 

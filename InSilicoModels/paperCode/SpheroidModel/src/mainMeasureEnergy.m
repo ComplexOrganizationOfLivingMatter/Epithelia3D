@@ -20,6 +20,7 @@ for nPath=1:length(filePaths)
     
     for cellHeight=nCellHeight
         
+        %Initialize tables to export
         tableTransitionEnergy=table();
         tableNoTransitionEnergy=table();
         tableTransitionEnergyNonPreservedMotifs=table();
