@@ -57,8 +57,7 @@ for i = 1 : length(filePaths)
             
             %testing curvatures
             parfor j=1:size(xyzEllipsoid,1)
-                [R1(j),R2(j),k1(j),k2(j)] = testingCurvatureInEllipsoidCoordinate(xyzEllipsoid(j,1),xyzEllipsoid(j,2), xyzEllipsoid(j,3),a,b,c);
-                
+                [R1(j),R2(j),k1(j),k2(j)] = calculateCurvatureInEllipsoidCoordinate(xyzEllipsoid(j,1),xyzEllipsoid(j,2), xyzEllipsoid(j,3),a,b,c);
             end
             
             R1=R1(~isnan(R1));

@@ -1,5 +1,5 @@
 function [proportionOfScutoids,proportionOfCellsWinning,proportionOfCellsLossing,proportionOfFrusta,proportionWinningNeigh,proportionLossingNeigh,proportionTransitionsPerCell]=calculateNumberOfCellsInvolvedInTransitions(DataTransitionOuter,DataTransitionInner,validCells)
-%Calculation of scutoids (using lossing or winngin of neighbours)
+%CALCULATENUMBEROFCELLSINVOLVEDINTRANSITIONS Calculation of scutoids (using lossing or winngin of neighbours)
 
     if isempty(DataTransitionOuter) 
         scutoidsOuter=[];
