@@ -1,6 +1,8 @@
-addpath(genpath('..'))
+addpath(genpath('polarHistograms'))
+addpath(genpath('ScatterPolar'))
+addpath(genpath('src'))
 
-relativePathTubularModel='..\..\InSilicoModels\paperCode\TubularModel\data\tubularVoronoiModel\expansion\512x4096_800seeds\';
+relativePathTubularModel='..\InSilicoModels\paperCode\TubularModel\data\tubularVoronoiModel\expansion\512x4096_800seeds\';
 
 transitionsFile='summaryAverageTransitionsMeasuredInBasal_Transitions';
 noTransitionsFile='summaryAverageTransitionsMeasuredInBasal_NoTransitions';
@@ -103,11 +105,11 @@ edgeLengthThreshold=4;
 % surfaceRatio6667_60seeds.anglesNoTransitionFilter=surfaceRatio6667_60seeds.anglesNoTransition(p);
 % surfaceRatio6667_60seeds.edgesNoTransitionFilter=surfaceRatio6667_60seeds.edgesNoTransition(p);
 % 
-% save('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels800seeds.mat','surfaceRatio125_800seeds','surfaceRatio1667_800seeds','surfaceRatio2_800seeds','surfaceRatio5_800seeds','surfaceRatio10_800seeds')
-% save('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels60seeds.mat','surfaceRatio6667_60seeds');
+% save('lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels800seeds.mat','surfaceRatio125_800seeds','surfaceRatio1667_800seeds','surfaceRatio2_800seeds','surfaceRatio5_800seeds','surfaceRatio10_800seeds')
+% save('lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels60seeds.mat','surfaceRatio6667_60seeds');
 % 
 % %load and save ellipsoids measurements
-% relativePathEllipsoidModel='..\..\InSilicoModels\EllipsoidModel\voronoiEllipsoidModel\results\';
+% relativePathEllipsoidModel='..\InSilicoModels\EllipsoidModel\voronoiEllipsoidModel\results\';
 % load([relativePathEllipsoidModel 'stage 4\resolutionThreshold4\dataAngleLengthEdges_12-Apr-2018.mat'],'totalLengthTransition','totalLengthNoTransition','totalAnglesTransition','totalAnglesNoTransition')
 % p1 = randperm(length(totalAnglesTransition > edgeLengthThreshold),200);
 % p2 = randperm(length(totalAnglesNoTransition > edgeLengthThreshold),200);
@@ -219,11 +221,11 @@ edgeLengthThreshold=4;
 % ellipsoidRugby05.edgeNoTransitionFilter=totalLengthNoTransition(p2);
 % 
 % 
-% save('..\lengthAnglesEdges_Transition_NoTransition_voronoiEllipsoidModels.mat','ellipsoidStage8','ellipsoidStage4','ellipsoidGlobe05','ellipsoidGlobe1','ellipsoidGlobe2','ellipsoidRugby05','ellipsoidRugby1','ellipsoidRugby2');
+% save('lengthAnglesEdges_Transition_NoTransition_voronoiEllipsoidModels.mat','ellipsoidStage8','ellipsoidStage4','ellipsoidGlobe05','ellipsoidGlobe1','ellipsoidGlobe2','ellipsoidRugby05','ellipsoidRugby1','ellipsoidRugby2');
 
-load('..\lengthAnglesEdges_Transition_NoTransition_voronoiEllipsoidModels.mat','ellipsoidStage8','ellipsoidStage4','ellipsoidGlobe05','ellipsoidGlobe1','ellipsoidGlobe2','ellipsoidRugby05','ellipsoidRugby1','ellipsoidRugby2');
-load('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels800seeds.mat','surfaceRatio125_800seeds','surfaceRatio1667_800seeds','surfaceRatio2_800seeds','surfaceRatio5_800seeds','surfaceRatio10_800seeds')
-load('..\lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels60seeds.mat','surfaceRatio6667_60seeds')
+load('lengthAnglesEdges_Transition_NoTransition_voronoiEllipsoidModels.mat','ellipsoidStage8','ellipsoidStage4','ellipsoidGlobe05','ellipsoidGlobe1','ellipsoidGlobe2','ellipsoidRugby05','ellipsoidRugby1','ellipsoidRugby2');
+load('lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels800seeds.mat','surfaceRatio125_800seeds','surfaceRatio1667_800seeds','surfaceRatio2_800seeds','surfaceRatio5_800seeds','surfaceRatio10_800seeds')
+load('lengthAnglesEdges_Transition_NoTransition_voronoiTubularModels60seeds.mat','surfaceRatio6667_60seeds')
 
 setOfDistributions={surfaceRatio125_800seeds,surfaceRatio1667_800seeds,surfaceRatio2_800seeds,surfaceRatio5_800seeds,surfaceRatio10_800seeds,surfaceRatio6667_60seeds,ellipsoidStage4,ellipsoidStage8,ellipsoidGlobe05,ellipsoidGlobe1,ellipsoidGlobe2,ellipsoidRugby05,ellipsoidRugby1,ellipsoidRugby2};
 titles={'Tubular Model 1.25','Tubular Model 1.667','Tubular Model 2', 'Tubular Model 5','Tubular Model 10', 'Tubular Model like Salivary Gland','Spheroid model stage 4','Spheroid model stage 8','Spheroid model Globe 0.5','Spheroid model Globe 1','Spheroid model Globe 2','Spheroid model zepellin 0.5','Spheroid model zepellin 1','Spheroid model zepellin 2'};
