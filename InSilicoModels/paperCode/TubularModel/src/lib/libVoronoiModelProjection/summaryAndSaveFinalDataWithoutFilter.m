@@ -1,4 +1,4 @@
-function summaryAndSaveFinalData(listOfSurfaceRatios,acumListDataAngles,totalEdgesTransition,totalEdgesNoTransition,totalAngles,directory2save,kindProjection,nameOfFolder,typeSurface)
+function summaryAndSaveFinalDataWithoutFilter(listOfSurfaceRatios,acumListDataAngles,totalEdgesTransition,totalEdgesNoTransition,totalAngles,directory2save,kindProjection,nameOfFolder,typeSurface)
     
     acumListDataAngles=cat(3,acumListDataAngles{:});
     acumListDataAngles(isnan(acumListDataAngles))=0;

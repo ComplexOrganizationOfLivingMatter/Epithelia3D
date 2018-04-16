@@ -1,8 +1,5 @@
 function [ L_original ] = generateCylindricalVoronoi(seeds_values,H,W)
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
-
-%% Generate Voronoi image
+% Generate Voronoi image
         
         seeds=seeds_values(:,2:3);
         seeds(seeds==0)=1;
