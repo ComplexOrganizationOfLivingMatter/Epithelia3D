@@ -1,5 +1,6 @@
 % Create any ellipsoid voronoi. Though, in our article we have created only
-% spheroids.
+% spheroids. 
+% NOTE: Be aware of the RAM. It is very space consuming.
 
 % Combinations of spheroids that we have used in the article.
 % X should be the greater number. Z should be the axis with the greater
