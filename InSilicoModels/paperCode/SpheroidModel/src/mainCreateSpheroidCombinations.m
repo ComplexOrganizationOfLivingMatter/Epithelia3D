@@ -31,7 +31,7 @@ for numCombination = 1:size(allCombinations, 1)
         hCell = allCombinations{numCombination, 4};
         numCells = allCombinations{numCombination, 6};
         
-        outputDirActual = [outputDirGlobal '\random_', num2str(numRandomization)];
+        outputDirActual = [outputDirGlobal '\randomizations\random_', num2str(numRandomization)];
         mkdir(outputDirActual);
         
         %Make every measure to the unit
