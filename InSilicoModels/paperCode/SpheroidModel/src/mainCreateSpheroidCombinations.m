@@ -22,8 +22,6 @@ for numCombination = 1:size(allCombinations, 1)
     fileName = allCombinations{numCombination, 5};
     outputDirGlobal= ['results\' fileName];
     
-    randomizationsInfo = cell(max(maxRandoms), 1);
-    
     parfor numRandomization = maxRandoms
         
         radiusX = allCombinations{numCombination, 1};
@@ -45,10 +43,8 @@ for numCombination = 1:size(allCombinations, 1)
         end
         
         %Create the voronoi 3D ellipsoid.
-        randomEllipsoidInfo = voronoi3DEllipsoid([radiusX+max(hCell)+0.01 radiusY+max(hCell)+0.01 radiusZ+max(hCell)+0.01], [radiusX radiusY radiusZ], numCells, outputDirActual, hCell);
-        
-        randomizationsInfo(numRandomization) = {randomEllipsoidInfo};
-        
+        voronoi3DEllipsoid([radiusX+max(hCell)+0.01 radiusY+max(hCell)+0.01 radiusZ+max(hCell)+0.01], [radiusX radiusY radiusZ], numCells, outputDirActual, hCell);
+
         ['randomization ' num2str(numRandomization) ' - finished']
     end
 end

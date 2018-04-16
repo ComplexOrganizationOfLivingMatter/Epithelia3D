@@ -14,10 +14,7 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     % matrices. The implemented methods for the N-D sparse matrix are weak
     % and not sufficient (ndSparse).
     img3D = zeros(round(max(augmentedCentroids)) + ((ellipsoidInfo.resolutionFactor)/10), 'uint8');
-
-    %%img3D = ndSparse.build(max(augmentedCentroids)+1);
     
-    %[allXs2, allYs2, allZs2] = findND(img3D == 0); %% BIGGEST RAM PROBLEM
     pixelsPerX = {};
     xs = ones(size(img3D, 2)*size(img3D, 1), 1, 'uint16');
     for numZ = 1:size(img3D, 3)
@@ -43,7 +40,6 @@ function [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoi
     disp('Reconstruct voronoi cells')
     img3DLabelled = uint16(watershed(imgWithDistances, 26));
     img3DLabelledWithoutFilter=img3DLabelled;
-    %novalidIndices = sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0));
             
     %Removing invalid regions of img3DLabelled
     img3DLabelled(validPxs == 0) = 0;

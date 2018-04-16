@@ -1,11 +1,32 @@
 function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipsoidDimensions, maxNumberOfCellsInVoronoi, outputDir, hCellsPredefined )
-%VORONOIONELLIPSOIDSURFACE Summary of this function goes here
-%   Detailed explanation goes here
+%VORONOIONELLIPSOIDSURFACE Create an Ellipsoidal Voronoi model
+%   The pipeline follows these steps: 1) We put N seeds on the apical 
+%   surface with a minimum distance between them (depending on the surface 
+%   area), this distance avoided the overlapping and homogenized the seeds 
+%   distribution along the ellipsoid. Note that this N represents the 
+%   maximum number of seeds because, in some cases, the surface cannot be 
+%   filled by all the seeds and fulfil the restriction of the minimum 
+%   distance between them at the same time. Thus, a lesser number of seeds 
+%   may be used. 2) We extrapolated the seeds to the basal surface using 
+%   the ellipsoid equation:
 %
+%   x/a+y/b+z/c=1
+%
+%   It comes from the geometrical definition of the ellipsoid, and their 
+%   parameters are: a, b and c, that represent the radii along the X, Y 
+%   and Z axes of the ellipsoid respectively; x, y and z correspond with 
+%   the coordinates X, Y and Z of the point located in the ellipsoid 
+%   surface respectively. However, in the case of the spheroid, b and c 
+%   are equal. 3) We drew a line between the seeds in apical and its 
+%   correspondent in basal, creating a segment. 4) We computed the Voronoi 
+%   algorithm, in the three-dimensional space, taking as seeds the 
+%   mentioned apico-basal segments. From each segment a Voronoi cell 
+%   appeared, filling the space entirely. 5) We applied again the ellipsoid
+%   equation, capturing only the surfaces of interest (apical and basal).
 
     %In case you want to debug
-%    s = RandStream('mcg16807','Seed',0);
-%    RandStream.setGlobalStream(s);
+    %    s = RandStream('mcg16807','Seed',0);
+    %    RandStream.setGlobalStream(s);
 
     if hCellsPredefined == -1
         hCellsPredefined = 0.5:0.5:(min(ellipsoidDimensions)-0.1);
@@ -19,7 +40,7 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
     ellipsoidInfo.xRadius = ellipsoidDimensions(1);
     ellipsoidInfo.yRadius = ellipsoidDimensions(2);
     ellipsoidInfo.zRadius = ellipsoidDimensions(3);
-    
+
     ellipsoidInfo.bordersSituatedAt = [2/3, 1/2];
 
     ellipsoidInfo.maxNumberOfCellsInVoronoi = maxNumberOfCellsInVoronoi;
@@ -34,12 +55,6 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
     ellipsoidInfo.resolutionEllipse = 300; %300 seems to be a good number
     [x, y, z] = ellipsoid(ellipsoidInfo.xCenter, ellipsoidInfo.yCenter, ellipsoidInfo.zCenter, ellipsoidInfo.xRadius, ellipsoidInfo.yRadius, ellipsoidInfo.zRadius, ellipsoidInfo.resolutionEllipse);
 
-%     figure
-%     surf(x, y, z)
-%     xlabel('x')
-%     ylabel('y')
-%     zlabel('z')
-%     axis equal
     totalNumberOfPossibleCentroids = size(x, 1) * size(x, 1);
 
     %% Generate Random Centroids
@@ -73,138 +88,107 @@ function [ transitionsCSVInfo ] = voronoi3DEllipsoid( centerOfEllipsoid, ellipso
             finalCentroids(numberOfCentroids, :) = randomCentroid;
         end
     end
-    
+
     clearvars randomCentroid indexRandomCentroid x y z
-    
+
     disp('End Random centroids')
-    
-%     try
-        transitionsCSVInfo = struct();
-        ellipsoidInfo.centroids = finalCentroids;
-        initialEllipsoid = ellipsoidInfo;
-        [ ellipsoidInfo.centroids ] = getAugmentedCentroids( ellipsoidInfo, finalCentroids, max(hCellsPredefined));
-        
-        %Paint the ellipsoid voronoi
-        disp('Creating Random voronoi')
-        [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoiFromCentroids(initialEllipsoid.centroids, ellipsoidInfo.centroids, max(hCellsPredefined), ellipsoidInfo, outputDir);
-        initialEllipsoid.centroids = initialEllipsoid.centroids(newOrderOfCentroids, :);
-        close
-        disp('Random voronoi created')
-        
-        initialEllipsoid.surfaceIndices = [];
-        
-        % Get all the pixels of the image
-        [allXs, allYs, allZs] = findND(img3DLabelled > 0);
-        allXs = uint16(allXs);
-        allYs = uint16(allYs);
-        allZs = uint16(allZs);
-        numException = 0;
-        
-        
-        %Predefining parameters to save
-        transitionsCSVInfoTransitionsMeasuredOuter=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
-        transitionsCSVInfoTransitionsMeasuredInner=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
-        transitionsCSVInfoNoTransitionsMeasuredOuter=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
-        transitionsCSVInfoNoTransitionsMeasuredInner=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
-        countOfHeights=1;
-        
-        for cellHeight = hCellsPredefined
-            cellHeight
-            ellipsoidInfo.xRadius = initialEllipsoid.xRadius;
-            ellipsoidInfo.yRadius = initialEllipsoid.yRadius;
-            ellipsoidInfo.zRadius = initialEllipsoid.zRadius;
-            ellipsoidInfo.cellHeight = cellHeight;
-            
-            [ validPxs, innerLayerPxs, outerLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
-            img3DLabelledActual = img3DLabelled;
-            novalidIndices = uint64(sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0)));
-            img3DLabelledActual(novalidIndices) = 0;
-            img3DOutterLayer = zeros(size(img3DLabelled), 'uint16');
-            outterLayerIndices = uint64(sub2ind(size(img3DLabelled), allXs(outerLayerPxs), allYs(outerLayerPxs), allZs(outerLayerPxs)));
-            img3DOutterLayer(outterLayerIndices) = img3DLabelledActual(outterLayerIndices);
-            
-            disp('Getting info of vertices and neighbours: outter layer');
-            ellipsoidInfo.img3DLayer = img3DOutterLayer;
-            ellipsoidInfo.surfaceIndices = outterLayerIndices;
-            [ellipsoidInfo] = calculate_neighbours3D(img3DOutterLayer, ellipsoidInfo);
-            ellipsoidInfo.cellArea = calculate_volumeOrArea(img3DOutterLayer);
-            ellipsoidInfo.cellVolume = calculate_volumeOrArea(img3DLabelled);
-            if isempty(initialEllipsoid.surfaceIndices)
-                disp('Getting info of vertices and neighbours: inner layer');
-                
-                img3DInnerLayer = zeros(size(img3DLabelled), 'uint16');
-                innerLayerIndices = uint64(sub2ind(size(img3DLabelled), allXs(innerLayerPxs), allYs(innerLayerPxs), allZs(innerLayerPxs)));
-                img3DInnerLayer(innerLayerIndices) = img3DLabelledActual(innerLayerIndices);
-                initialEllipsoid.surfaceIndices = innerLayerIndices;
-                initialEllipsoid.img3DLayer = img3DInnerLayer;
-                [initialEllipsoid] = calculate_neighbours3D(img3DInnerLayer, initialEllipsoid);
-                initialEllipsoid.cellArea = calculate_volumeOrArea(img3DInnerLayer);
-            end
-%                 figure;
-%                 for i = [0, 5, 15, 4, 11]
-%                     i
-%                     [x,y,z] = findND(ellipsoidInfo.img3DLayer(outterLayerIndices) == i);
-%                     colours = colorcube(200);
-%                     plot3(x, y, z,'*', 'MarkerFaceColor', colours(i, :))
-%                     hold on;
-%                 end
-            
-            exchangeNeighboursPerCell = cellfun(@(x, y) size(setxor(y, x), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
-            %[ellipsoidInfo] = calculate_neighbours3D(img3DOutterLayer, ellipsoidInfo); [initialEllipsoid] = calculate_neighbours3D(img3DInnerLayer, initialEllipsoid);
-                
-            winnigNeighboursPerCell = cellfun(@(x, y) size(setdiff(y, x), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
-            losingNeighboursPerCell = cellfun(@(x, y) size(setdiff(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
-            
-            if sum(winnigNeighboursPerCell - losingNeighboursPerCell) == 0
-                %error ('incorrectNeighbours', 'There should be the same number of winning and losing neighbours')
-            end
-            
-            
-            ellipsoidInfo.xRadius = initialEllipsoid.xRadius + cellHeight;
-            ellipsoidInfo.yRadius = initialEllipsoid.yRadius + cellHeight;
-            ellipsoidInfo.zRadius = initialEllipsoid.zRadius + cellHeight;
-            
-            newRowTableMeasuredOuter = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell);
-            newRowTableMeasuredInner = createExcel( initialEllipsoid, ellipsoidInfo, exchangeNeighboursPerCell);
-            
-            cellsTransition = find(cellfun(@(x, y) size(setxor(x, y), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood)>0, 1);
-            
-            tableDataAnglesTransitionsEdgesOuter=[];
-            tableDataAnglesNoTransitionsEdgesOuter=[];
-            tableDataAnglesTransitionsEdgesInner=[];
-            tableDataAnglesNoTransitionsEdgesInner=[];
-            
-%             if ~isempty(cellsTransition)
-                [tableDataAnglesTransitionsEdgesOuter, tableDataAnglesNoTransitionsEdgesOuter] = getAnglesLengthAndTranstionFromTheEdges( initialEllipsoid, ellipsoidInfo);
-                close
-                [tableDataAnglesTransitionsEdgesInner, tableDataAnglesNoTransitionsEdgesInner] = getAnglesLengthAndTranstionFromTheEdges( ellipsoidInfo, initialEllipsoid);
-                close
-%             end
-            
-           
-            %Saving info
-            save(strcat(outputDir, '\ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'initialEllipsoid', 'tableDataAnglesTransitionsEdgesOuter','tableDataAnglesNoTransitionsEdgesOuter','tableDataAnglesTransitionsEdgesInner','tableDataAnglesNoTransitionsEdgesInner', '-v7.3');
-            
-            
-            fieldsNoSavedInCSV={'edgeLength','edgeAngle','edgeVertices','cellularMotifs'};
-            for numBorders=1:length(newRowTableMeasuredOuter)               
-                
-                
-                
-                transitionsCSVInfoTransitionsMeasuredOuter(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredOuter{numBorders}), struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
-                transitionsCSVInfoTransitionsMeasuredInner(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredInner{numBorders}), struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
-                transitionsCSVInfoNoTransitionsMeasuredOuter(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredOuter{numBorders}), struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
-                transitionsCSVInfoNoTransitionsMeasuredInner(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredInner{numBorders}), struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
-                
-            end
-            countOfHeights=countOfHeights+1;
-           
+
+    transitionsCSVInfo = struct();
+    ellipsoidInfo.centroids = finalCentroids;
+    initialEllipsoid = ellipsoidInfo;
+    [ ellipsoidInfo.centroids ] = getAugmentedCentroids( ellipsoidInfo, finalCentroids, max(hCellsPredefined));
+
+    %Paint the ellipsoid voronoi
+    disp('Creating Random voronoi')
+    [ img3DLabelled, ellipsoidInfo, newOrderOfCentroids ] = create3DVoronoiFromCentroids(initialEllipsoid.centroids, ellipsoidInfo.centroids, max(hCellsPredefined), ellipsoidInfo, outputDir);
+    initialEllipsoid.centroids = initialEllipsoid.centroids(newOrderOfCentroids, :);
+    close
+    disp('Random voronoi created')
+
+    initialEllipsoid.surfaceIndices = [];
+
+    % Get all the pixels of the image
+    [allXs, allYs, allZs] = findND(img3DLabelled > 0);
+    allXs = uint16(allXs);
+    allYs = uint16(allYs);
+    allZs = uint16(allZs);
+    numException = 0;
+
+
+    %Predefining parameters to save
+    transitionsCSVInfoTransitionsMeasuredOuter=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
+    transitionsCSVInfoTransitionsMeasuredInner=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
+    transitionsCSVInfoNoTransitionsMeasuredOuter=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
+    transitionsCSVInfoNoTransitionsMeasuredInner=cell(length(hCellsPredefined),length(ellipsoidInfo.bordersSituatedAt));
+    countOfHeights=1;
+
+    %Go through all the cells heights
+    for cellHeight = hCellsPredefined
+        cellHeight
+        ellipsoidInfo.xRadius = initialEllipsoid.xRadius;
+        ellipsoidInfo.yRadius = initialEllipsoid.yRadius;
+        ellipsoidInfo.zRadius = initialEllipsoid.zRadius;
+        ellipsoidInfo.cellHeight = cellHeight;
+
+        [ validPxs, innerLayerPxs, outerLayerPxs ] = getValidPixels(allXs, allYs, allZs, ellipsoidInfo, cellHeight);
+        img3DLabelledActual = img3DLabelled;
+        novalidIndices = uint64(sub2ind(size(img3DLabelled), allXs(validPxs == 0), allYs(validPxs == 0), allZs(validPxs == 0)));
+        img3DLabelledActual(novalidIndices) = 0;
+        img3DOutterLayer = zeros(size(img3DLabelled), 'uint16');
+        outterLayerIndices = uint64(sub2ind(size(img3DLabelled), allXs(outerLayerPxs), allYs(outerLayerPxs), allZs(outerLayerPxs)));
+        img3DOutterLayer(outterLayerIndices) = img3DLabelledActual(outterLayerIndices);
+
+        disp('Getting info of vertices and neighbours: outter layer');
+        ellipsoidInfo.img3DLayer = img3DOutterLayer;
+        ellipsoidInfo.surfaceIndices = outterLayerIndices;
+        [ellipsoidInfo] = calculate_neighbours3D(img3DOutterLayer, ellipsoidInfo);
+        ellipsoidInfo.cellArea = calculate_volumeOrArea(img3DOutterLayer);
+        ellipsoidInfo.cellVolume = calculate_volumeOrArea(img3DLabelled);
+        if isempty(initialEllipsoid.surfaceIndices)
+            disp('Getting info of vertices and neighbours: inner layer');
+
+            img3DInnerLayer = zeros(size(img3DLabelled), 'uint16');
+            innerLayerIndices = uint64(sub2ind(size(img3DLabelled), allXs(innerLayerPxs), allYs(innerLayerPxs), allZs(innerLayerPxs)));
+            img3DInnerLayer(innerLayerIndices) = img3DLabelledActual(innerLayerIndices);
+            initialEllipsoid.surfaceIndices = innerLayerIndices;
+            initialEllipsoid.img3DLayer = img3DInnerLayer;
+            [initialEllipsoid] = calculate_neighbours3D(img3DInnerLayer, initialEllipsoid);
+            initialEllipsoid.cellArea = calculate_volumeOrArea(img3DInnerLayer);
         end
-        transitionsCSVInfo.edgeTransitionMeasuredOuter=transitionsCSVInfoTransitionsMeasuredOuter;
-        transitionsCSVInfo.edgeTransitionMeasuredInner=transitionsCSVInfoTransitionsMeasuredInner;
-        transitionsCSVInfo.edgeNoTransitionMeasuredOuter=transitionsCSVInfoNoTransitionsMeasuredOuter;
-        transitionsCSVInfo.edgeNoTransitionMeasuredInner=transitionsCSVInfoNoTransitionsMeasuredInner;
+
+        exchangeNeighboursPerCell = cellfun(@(x, y) size(setxor(y, x), 1), ellipsoidInfo.neighbourhood, initialEllipsoid.neighbourhood);
+
+        ellipsoidInfo.xRadius = initialEllipsoid.xRadius + cellHeight;
+        ellipsoidInfo.yRadius = initialEllipsoid.yRadius + cellHeight;
+        ellipsoidInfo.zRadius = initialEllipsoid.zRadius + cellHeight;
+
+        newRowTableMeasuredOuter = createExcel( ellipsoidInfo, initialEllipsoid, exchangeNeighboursPerCell);
+        newRowTableMeasuredInner = createExcel( initialEllipsoid, ellipsoidInfo, exchangeNeighboursPerCell);
+
+        [tableDataAnglesTransitionsEdgesOuter, tableDataAnglesNoTransitionsEdgesOuter] = getAnglesLengthAndTranstionFromTheEdges( initialEllipsoid, ellipsoidInfo);
+        close
+        [tableDataAnglesTransitionsEdgesInner, tableDataAnglesNoTransitionsEdgesInner] = getAnglesLengthAndTranstionFromTheEdges( ellipsoidInfo, initialEllipsoid);
+        close
+
+        %Saving info
+        save(strcat(outputDir, '\ellipsoid_x', strrep(num2str(ellipsoidInfo.xRadius), '.', ''), '_y', strrep(num2str(ellipsoidInfo.yRadius), '.', ''), '_z', strrep(num2str(ellipsoidInfo.zRadius), '.', ''), '_cellHeight', strrep(num2str(cellHeight), '.', '')), 'ellipsoidInfo', 'initialEllipsoid', 'tableDataAnglesTransitionsEdgesOuter','tableDataAnglesNoTransitionsEdgesOuter','tableDataAnglesTransitionsEdgesInner','tableDataAnglesNoTransitionsEdgesInner', '-v7.3');
+
+        fieldsNoSavedInCSV={'edgeLength','edgeAngle','edgeVertices','cellularMotifs'};
         
-        %You can see the figures:
-        %set(get(0,'children'),'visible','on')
+        for numBorders=1:length(newRowTableMeasuredOuter)
+            transitionsCSVInfoTransitionsMeasuredOuter(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredOuter{numBorders}), struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesOuter.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
+            transitionsCSVInfoTransitionsMeasuredInner(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredInner{numBorders}), struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesTransitionsEdgesInner.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
+            transitionsCSVInfoNoTransitionsMeasuredOuter(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredOuter{numBorders}), struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesOuter.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
+            transitionsCSVInfoNoTransitionsMeasuredInner(countOfHeights,numBorders) = {horzcat(struct2table(newRowTableMeasuredInner{numBorders}), struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.TotalRegion,fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.LeftRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.RightRegion(numBorders),fieldsNoSavedInCSV)),struct2table(rmfield(tableDataAnglesNoTransitionsEdgesInner.CentralRegion(numBorders),fieldsNoSavedInCSV)))};
+        end
+        countOfHeights=countOfHeights+1;
+
+    end
+    transitionsCSVInfo.edgeTransitionMeasuredOuter=transitionsCSVInfoTransitionsMeasuredOuter;
+    transitionsCSVInfo.edgeTransitionMeasuredInner=transitionsCSVInfoTransitionsMeasuredInner;
+    transitionsCSVInfo.edgeNoTransitionMeasuredOuter=transitionsCSVInfoNoTransitionsMeasuredOuter;
+    transitionsCSVInfo.edgeNoTransitionMeasuredInner=transitionsCSVInfoNoTransitionsMeasuredInner;
+
+    %You can see the figures:
+    %set(get(0,'children'),'visible','on')
 end

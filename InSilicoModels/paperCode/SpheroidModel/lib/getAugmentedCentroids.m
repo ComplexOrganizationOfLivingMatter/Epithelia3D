@@ -1,5 +1,5 @@
 function [ finalCentroidsAugmented ] = getAugmentedCentroids( ellipsoidInfo, initialCentroids, cellHeight )
-%GETAUGMENTEDCENTROIDS Summary of this function goes here
+%GETAUGMENTEDCENTROIDS Extrapolate centroids to a certain cell height
 %   Detailed explanation goes here
     
     
