@@ -67,6 +67,8 @@ function [] = mainCurvatureInEllipsoidSurface()
 
                 R1=R1(~isnan(R1));
                 R2=R2(~isnan(R2));
+                k1=k1(~isnan(k1));
+                k2=k2(~isnan(k2));
 
                 R1_mean=mean(R1);
                 R1_std=std(R1);
