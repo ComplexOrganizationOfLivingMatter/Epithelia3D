@@ -18,7 +18,11 @@ function [totalCellsInRois,totalProportionScutoids,totalProportionWinNeigh,...
                 load([filePath 'randomizations\random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
             end
             %loading mask central cells in projection
-            maskRoiInner=imread([filePath 'maskInner.tif']);
+            if nRand > 10 && nRand < 61 && ~isempty(strfind(filePath,'Stage 4'))
+                maskRoiInner=imread([filePath 'maskInner_11_60.tif']);
+            else
+                maskRoiInner=imread([filePath 'maskInner.tif']);
+            end
             maskRoiInner=1-im2bw(maskRoiInner(:,:,1));
             neighsInner=cell(length(projectionsInnerWater),1);
             noValidCells=cell(length(projectionsInnerWater),1);
