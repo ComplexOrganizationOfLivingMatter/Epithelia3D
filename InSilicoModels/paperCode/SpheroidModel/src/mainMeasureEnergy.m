@@ -5,7 +5,7 @@ function [] = mainMeasureEnergy()
     filePaths = dir(originalDir);
     filePaths = {filePaths(3:end).name};
 
-    for nPath=length(filePaths)
+    for nPath=1:length(filePaths)
         actualDir = strcat(originalDir, '\', filePaths{nPath}, '\');
 
         randomDirectories = dir(strcat(actualDir, '\randomizations\random_*'));
@@ -38,8 +38,26 @@ function [] = mainMeasureEnergy()
                     [ projectionsInnerWater,projectionsOuterWater ] = checkMaxProjectionExist( actualDir, nRand, nCellHeight, splittedCellHeight );
 
                     %loading mask central cells in projection
-                    maskImg = imread([actualDir 'maskInner.tif']);
+                    maskFile = strcat(actualDir, 'maskInner.tif');
+                    if exist(maskFile, 'file') 
+                        maskImg = imread(maskFile);
+                    else
+                        h = figure; imshow(projectionsInnerWater{1})
+                        disp('Select the ROI you want to analyze');
+                        disp('When you finish, double click on the ellipsoid');
+                        e = imellipse(gca);
+                        wait(e);
+                        maskImg = createMask(e);
+                        close(h)
+                        imwrite(maskImg, maskFile);
+                    end
+                    
+                    if sum(size(maskImg) == size(projectionsInnerWater{1})) ~= 2
+                        maskImg = imresize(maskImg, size(projectionsInnerWater{1}));
+                    end
+                    
                     maskRoiInner=1-logical(maskImg(:, :, 1));
+                    
                     for nProj=1:length(projectionsInnerWater)
 
                         %function for getting inner roi, edges, neighbours and valid cells
