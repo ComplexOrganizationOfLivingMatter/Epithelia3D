@@ -10,15 +10,12 @@ function [totalCellsInRois,totalProportionScutoids,totalProportionWinNeigh,...
 % 
 
 
-    if nCellHeight>1
-        numberCellHeight = num2str(cellHeight);
-        ellipsoidPath=dir([filePath 'randomizations\random_' num2str(nRand) '\*llipsoid*_cellHeight' numberCellHeight(1) '*' ]);
-        splittedPath=strsplit(ellipsoidPath(1).name,'_');
-        splittedCellHeight=splittedPath{end};
-        load([filePath 'randomizations\random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')
-    else
-        load([filePath 'randomizations\random_' num2str(nRand) '\roiProjections.mat'],'projectionsInnerWater','projectionsOuterWater')
-    end
+    numberCellHeight = cellHeight;
+    ellipsoidPath=dir([filePath 'randomizations\random_' num2str(nRand) '\*llipsoid*_cellHeight' numberCellHeight '*' ]);
+    splittedPath=strsplit(ellipsoidPath(1).name,'_');
+    splittedCellHeight=splittedPath{end};
+    load([filePath 'randomizations\random_' num2str(nRand) '\roiProjections_' splittedCellHeight],'projectionsInnerWater','projectionsOuterWater')
+
     
     %loading mask central cells in projection
     maskRoiInner=imread([filePath 'maskInner.tif']);
@@ -68,5 +65,5 @@ function [totalCellsInRois,totalProportionScutoids,totalProportionWinNeigh,...
     totalLengthTransition=dataTransitionOuter.edgeLength;
     totalLengthNoTransition=dataNoTransitionOuter.edgeLength;
 
-    disp([filePath ' cell height ' num2str(cellHeight) '/' num2str(nCellHeight) ' random ' num2str(nRand)])
+    disp([filePath ' cell height ' numberCellHeight '/' num2str(nCellHeight) ' random ' num2str(nRand)])
 end
