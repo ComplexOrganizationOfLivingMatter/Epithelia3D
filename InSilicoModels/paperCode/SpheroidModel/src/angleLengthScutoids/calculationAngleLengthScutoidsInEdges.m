@@ -20,6 +20,10 @@ function [totalCellsInRois,totalProportionScutoids,totalProportionWinNeigh,...
     %loading mask central cells in projection
     maskRoiInner=imread([filePath 'maskInner.tif']);
     
+    if sum(size(maskRoiInner) == size(projectionsInnerWater{1})) ~= 2
+        maskRoiInner = imresize(maskRoiInner, size(projectionsInnerWater{1}));
+    end
+    
     maskRoiInner=1-im2bw(maskRoiInner(:,:,1));
     neighsInner=cell(length(projectionsInnerWater),1);
     noValidCells=cell(length(projectionsInnerWater),1);
