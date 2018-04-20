@@ -14,12 +14,17 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
             se=strel('disk',2);
             maskOuter=zeros(size(L_basal));
             maskOuter(L_basal==nCell)=1;
-            totalCellsDilatedOuter{nCell}=imdilate(maskOuter,se);
+            totalCellsDilatedOuter{nCell}=logical(bwperim(imdilate(maskOuter,se)));
         end
     end
     
+    %calculation of neighbours in apical, applying a 'strel' shape with a
+    %similar size to the resolutionTreshold
+    neighsApicalThres=calculateNeighboursByThreshold(L_apical,resolutionTreshold);
+    
     %loop to get edge length and angle for each pair of neighborings
     indexesPassingTreshold=zeros(size(uniquePairOfNeighBasal,1),1)==1;
+    
     for i=1:size(uniquePairOfNeighBasal,1)
         if any(ismember(uniquePairOfNeighBasal(i,:),validCells))
             maskOuter=bwlabel(totalCellsDilatedOuter{uniquePairOfNeighBasal(i,1)}.*totalCellsDilatedOuter{uniquePairOfNeighBasal(i,2)});
@@ -27,16 +32,10 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
             edge1Outer=regionprops(maskOuter,'MajorAxisLength','Orientation');
             if ~isempty(edge1Outer)
                 [lengthEdgeOuter(i),indexMax]=max(vertcat(edge1Outer.MajorAxisLength));
-                [x2,y2]=find(L_apical==uniquePairOfNeighBasal(i,1));
-                [x1,y1]=find(L_apical==uniquePairOfNeighBasal(i,2));
-                [distCellsApical]=pdist2([x1,y1],[x2,y2]);
-                lengthEdgeInner=min(min(distCellsApical));
-                %treshold to measure a motif due to lack of resolution = 5 pixels
-                if ~isempty(lengthEdgeInner) && ~isempty(lengthEdgeOuter(i))
-                    if (lengthEdgeInner==2 || lengthEdgeInner >resolutionTreshold) && (lengthEdgeOuter(i) > (resolutionTreshold+2))
-                        angleEdgeOuter(i)=edge1Outer(indexMax).Orientation;
-                        indexesPassingTreshold(i)=1;
-                    end
+                %treshold to measure a motif due to lack of resolution = 4 pixels
+                if (lengthEdgeOuter(i) > (resolutionTreshold+2)) && ismember(uniquePairOfNeighBasal(i,2),neighsApicalThres{uniquePairOfNeighBasal(i,1)})==0
+                    angleEdgeOuter(i)=edge1Outer(indexMax).Orientation;
+                    indexesPassingTreshold(i)=1;
                 end
             end
         end

@@ -5,7 +5,7 @@ function [] = mainCreateSpheroidCombinations()
 
     % Combinations of spheroids that we have used in the article.
     % X should be the greater number. Z should be the axis with the greater
-    % curvature.
+    % curvature, and the minor radius.
     allCombinations = {
         %Columns are disposed on this order:
         %X radius; Y radius; Z radius; Cell heights; Name of the spheroid;

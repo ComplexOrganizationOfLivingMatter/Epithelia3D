@@ -51,7 +51,7 @@ function [] = mainAngleLengthScutoidsInEdges()
                 end
 
 
-                %storage of scutoids and chenge of neighs
+                %storage of scutoids and exchange of neighs
                 meanNumberOfTransitionsPerCell=mean(distributionTransitionsPerCell);
                 stdNumberOfTransitionsPerCell=std(distributionTransitionsPerCell);
                 meanNumberOfWinningNeighPerCell=mean(distributionWinningNeigh);

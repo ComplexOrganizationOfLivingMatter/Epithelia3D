@@ -78,7 +78,7 @@ function [] = mainMeasureEnergy()
                     [actualDir 'randomization ' num2str(nRand) '  -  ' splittedCellHeight(1:end-4)]
 
                 catch err
-                    % If an error exists, caputure it and save it on a logfile
+                    % If an error exists, capture it and save it on a logfile
                     disp('-------------ERROR--------------');
                     fid = fopen('logFile','a+');
                     % write the error to file
