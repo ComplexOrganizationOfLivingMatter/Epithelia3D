@@ -1,5 +1,6 @@
 function [ dataEnergy,dataEnergyFilterByAngle ] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairs,vertices,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal)
-
+%GETENERGYFROMALLMOTIFS get the energy of all motifs without discriminate
+%between transition or not
     [~,W]=size(L_basal);
 
     %all vertices in basal

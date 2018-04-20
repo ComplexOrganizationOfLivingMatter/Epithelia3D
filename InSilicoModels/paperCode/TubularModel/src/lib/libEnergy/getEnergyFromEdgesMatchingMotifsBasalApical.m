@@ -1,7 +1,7 @@
 function dataEnergy = getEnergyFromEdgesMatchingMotifsBasalApical( L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,pairsOfCells,flag,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical)
-
+%GETENERGYFROMEDGESMATCHINGMOTIFSBASALAPICAL get the energy from the
+%cellular motifs present in both surfaces
     %initializate
-    
     dataEnergy = struct('fourCellsMotif',nan,'basalEdgeLength',nan,'basalSumEdgesOfEnergy',nan,...
         'basalEdgeAngle',nan,'basalH1',nan,'basalH2',nan,'basalW1',nan,'basalW2',nan,...
         'apicalEdgeLength',nan,'apicalSumEdgesOfEnergy',nan,'apicalEdgeAngle',nan,...
@@ -39,23 +39,15 @@ function dataEnergy = getEnergyFromEdgesMatchingMotifsBasalApical( L_basal,L_api
     validPairs2=cell2mat(cellfun(@(x) length(x)==2,cellsInMotifContactingCellsEdge,'UniformOutput',false))';
     cellsInMotifContactingCellsEdge=cell2mat(cellsInMotifContactingCellsEdge(validPairs2)');
     pairCellValidCells=pairCellValidCells(validPairs2,:);
-       
     
-    if sum(validPairs2)>0
-        
-    
+    if sum(validPairs2)>0   
         %check if the 4 cells motif are preserved in apical
         preservedMotifsInApical=cell2mat(arrayfun(@(x,y,z,zz) (sum(ismember(neighs_apical{x},[z,zz]))+sum(ismember(neighs_apical{y},[z,zz])))==4,...
             cellsInMotifContactingCellsEdge(:,1),cellsInMotifContactingCellsEdge(:,2),pairCellValidCells(:,1),pairCellValidCells(:,2),'UniformOutput',false));
 
-
         %we filter with the motifs that they are in contact in apical.
         pairCellValidCellsPreserved=pairCellValidCells(preservedMotifsInApical,:);
         cellsInMotifNoContactValidCellsPreserved=cellsInMotifContactingCellsEdge(preservedMotifsInApical,:);
-
-    %     figure;
-    %     imshow(L_basal)
-    %     hold on
 
         if size(pairCellValidCellsPreserved,1)>0
             %testing transition data

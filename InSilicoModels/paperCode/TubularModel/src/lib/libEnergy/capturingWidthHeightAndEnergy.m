@@ -1,6 +1,6 @@
 function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Length,validIndex]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight)
-    %In this function we calculate the source data for the line tension model
-
+%CAPTURINGWIDTHHEIGHTANDENERGY In this function we 
+%calculate the source data for the line tension model.
 
     %initial four cells motifs
     fourCellsMotifs=[pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];

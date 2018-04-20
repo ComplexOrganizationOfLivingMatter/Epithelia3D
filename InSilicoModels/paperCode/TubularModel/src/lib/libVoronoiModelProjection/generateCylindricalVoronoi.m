@@ -1,5 +1,5 @@
 function [ L_original ] = generateCylindricalVoronoi(seeds_values,H,W)
-% Generate Voronoi image
+%GENERATECYLINDRICALVORONOI from projected seeds, a Voronoi diagram is generating along a tubular surface
         
         seeds=seeds_values(:,2:3);
         seeds(seeds==0)=1;

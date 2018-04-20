@@ -1,5 +1,6 @@
 function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthOfEdges( L_basal,L_apical)
-
+%MEASUREANGLESANDLENGTHOFEDGES calculate the edge length and angle from all
+%the possible edges classifing between transition and non-transition edges
     %calculate neighbourings in apical and basal layers
     [neighs_basal,~]=calculateNeighbours(L_basal);
     [neighs_apical,~]=calculateNeighbours(L_apical);

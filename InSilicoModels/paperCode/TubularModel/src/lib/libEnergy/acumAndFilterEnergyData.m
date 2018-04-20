@@ -1,5 +1,5 @@
 function [tableTransitionEnergy,tableTransitionEnergyFiltering100data,tableNoTransitionEnergy,tableNoTransitionEnergyFiltering100data ] = acumAndFilterEnergyData( dataEnergy, labelEdges,tableTransitionEnergy,tableTransitionEnergyFiltering100data,tableNoTransitionEnergy,tableNoTransitionEnergyFiltering100data,nRand,nSeeds,surfaceRatio)
-    
+%ACUMANDFILTERENERGYDATA get 100 samples from the total data as maximum    
     if ~isempty(dataEnergy.basalH1)
         dataEnergy.nRand=nRand*ones(size(dataEnergy.basalH1,1),1);
         dataEnergy.numSeeds=nSeeds*ones(size(dataEnergy.basalH1,1),1);

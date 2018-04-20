@@ -1,5 +1,5 @@
 function summaryAndSaveFinalDataWithoutFilter(listOfSurfaceRatios,acumListDataAngles,totalEdgesTransition,totalEdgesNoTransition,totalAngles,directory2save,kindProjection,nameOfFolder,typeSurface)
-    
+%SUMMARYANDSAVEFINALDATAWITHOUTFILTER save the raw edges measurements    
     acumListDataAngles=cat(3,acumListDataAngles{:});
     acumListDataAngles(isnan(acumListDataAngles))=0;
     meanListDataAngles=array2table(mean(acumListDataAngles,3));

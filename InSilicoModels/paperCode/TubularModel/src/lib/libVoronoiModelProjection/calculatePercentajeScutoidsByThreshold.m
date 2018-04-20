@@ -1,5 +1,6 @@
 function calculatePercentajeScutoidsByThreshold(pathTube,numSeeds,H,W,totalRandom,projection,thresholdRes)
-
+%CALCULATEPERCENTAJESCUTOIDSBYTHRESHOLD calculate the presence of scutoids
+%that pass the edge length threshold in both layers (apical and basal)
 numberOfRows=11;
 path2load=[pathTube projection '\' num2str(H) 'x' num2str(W) '_' num2str(numSeeds) 'seeds\'];
 load([path2load 'Image_1_Diagram_5\Image_1_Diagram_5.mat'],'listLOriginalProjection')
@@ -20,8 +21,10 @@ listFrequencyOfChangesPerCell=zeros(numOfSurfaceRatios,totalRandom);
 
 for nRand = 1:totalRandom
     
+    %Load projections data
     load([path2load 'Image_' num2str(nRand) '_Diagram_5\Image_' num2str(nRand) '_Diagram_5.mat'],'listLOriginalProjection','totalCellMotifs','totalEdges')
        
+    %initiallize variables
     numberOfCellsWinning=zeros(1,size(listLOriginalProjection,1));
     numberOfCellsLossing=zeros(1,size(listLOriginalProjection,1));
     numberOfCellsLossingOrWinning=zeros(1,size(listLOriginalProjection,1));
@@ -32,6 +35,8 @@ for nRand = 1:totalRandom
     transitionPerCell=zeros(size(listLOriginalProjection,1),numberOfRows);
 
     for nSurfRat=1:length(listSurfaceRatios)
+        %defining the basal and the apical layer depending on the type of
+        %projection
         if strcmp(projection,'expansion')
             L_basal=listLOriginalProjection.L_originalProjection{listSurfaceRatios==listSurfaceRatios(nSurfRat)};
             L_apical=listLOriginalProjection.L_originalProjection{listSurfaceRatios==1};

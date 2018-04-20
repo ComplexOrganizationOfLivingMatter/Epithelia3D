@@ -1,5 +1,6 @@
 function calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection,pathV5data,directory2save1,numOfSurfaceRatios,Hinitial,Winitial)
-
+%CALCULATENUMBEROFINVOLVEDCELLSINTRANSITIONS calculate the presence of
+%scutoids without any edge length threshold
     numberOfRows=11;
     directory2save=[directory2save1 kindProjection '\' num2str(Winitial) 'x' num2str(Hinitial) '_' num2str(numSeeds) 'seeds\'];
 

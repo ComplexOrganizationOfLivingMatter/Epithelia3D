@@ -1,4 +1,6 @@
 function representAndSaveFigureWithColourfulCells( L_original,numCells,seeds,directory,name2save,extension)
+%REPRESENTANDSAVEFIGUREWITHCOLOURFULCELLS represent with different colours
+%and labels the projected Voronoi cells
 
     figure('Visible','off');
     colormap(colorcube(numCells));

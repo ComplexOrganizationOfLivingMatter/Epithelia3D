@@ -1,5 +1,7 @@
 function [borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight]=checkingVerticesAndCellsInBorders(L_img,vertices)
-
+%CHECKINGVERTICESANDCELLSINBORDERS label the vertices of border cells two
+%know how join the vertices for knowing the edge length. This function
+%minimize the presence of outlayer.
     borderCells=unique([L_img(:,1);L_img(:,end)]);
     borderCells=borderCells(borderCells~=0)';
 

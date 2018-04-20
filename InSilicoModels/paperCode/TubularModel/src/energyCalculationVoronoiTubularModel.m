@@ -1,8 +1,18 @@
 function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSurfaces,numRandoms,typeProjection,nSeeds,basalExpansions,apicalReductions)
+%ENERGYCALCULATIONVORONOITUBULARMODEL calculate all the parameters
+%neccesary for the line-tension minimization model in different tables:
+% TableTransitionEnergy: all motifs with transitions
+% TableNoTransitionEnergy: all motifs with no transitions       
+% TableTransitionEnergy100filter: 100 samples of TableTransitionEnergy
+% TableNoTransitionEnergy100filter: 100 samples of TableNoTransitionEnergy
+% TableAllMotifs:all motifs without discriminate between transition or not
+% and another set applying a filter depending of the angle in H and W. 
+% Angle threshold H ~ (0-30º) and W ~ (60-90º)
 
-        
-
-
+%THIS PROGRAM CAN PROVIDE YOU SOME OUTLAYERS DUE TO FAKE EDGES BECAUSE THE
+%UNION OF TWO VERTICES IN DIFFERENT EXTREMES OF THE UNFOLDED CYLINDER. The
+%number of outlayer is minimum (0.5% of motifs aproximately). This motifs
+%should be deleted by hand
     for nSurf=1:numSurfaces
         tableNoTransitionEnergy=table();
         tableNoTransitionEnergyFiltering100data=table();
@@ -83,7 +93,7 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                     sumTableEnergyAllMotifs=sumTableEnergyAllMotifs(~nanIndex,:);
                     tableEnergyAllMotifs=[tableEnergyAllMotifs;sumTableEnergyAllMotifs];
                     
-                    %angle treshold H ~ (0-30º) and W ~ (60-90º)
+                    %angle threshold H ~ (0-30º) and W ~ (60-90º)
                     dataEnergyAllMotifsFilterByAngle.nRand=nRand*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
                     dataEnergyAllMotifsFilterByAngle.numSeeds=nSeeds*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
                     dataEnergyAllMotifsFilterByAngle.surfaceRatio=surfaceRatio*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
@@ -97,9 +107,9 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
         end
             
        
-        %directory to save
+        %directory to save (be careful with the directory length, an error could appear due to the long filename)
         energyDirectory=[directory2save typeProjection '\' nameOfFolder 'energy\'];
-        energyDirectory=strrep(energyDirectory,directory2save,'C:\Users\Luisma\Desktop\');
+%         energyDirectory=strrep(energyDirectory,directory2save,'C:\Users\USERNAME\Desktop\');
         mkdir(energyDirectory);
         
         %energy measured matching motifs between basal and apical; filtered

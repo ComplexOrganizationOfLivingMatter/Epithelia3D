@@ -1,5 +1,9 @@
 function [listSeedsProjected,listLOriginalProjection,listDataAnglesTransitionMeasuredInBasal,listDataAnglesTransitionMeasuredInApical,listDataAnglesNoTransitionMeasuredInBasal,listDataAnglesNoTransitionMeasuredInApical,totalAngles,totalEdges,totalCellMotifs,acumListDataAngles] = expansionOrReductionIterative(listOfSurfaceRatios,seedsOriginal,L_original,numCells,name2save,directory2save,kindProjection,nameOfFolder)
-        
+%EXPANSIONORREDUCTIONITERATIVE project the seeds over cylinder with 
+%different radii, generate a Voronoi diagram over the surface,and provide 
+%us of information respect to the presence of transition, the angles and 
+%length, measured in both surfaces (basal and apical)      
+
     %Define acummulative variables in which saving all data
     listDataAnglesTransitionMeasuredInBasal=zeros(length(listOfSurfaceRatios),7);
     listDataAnglesTransitionMeasuredInApical=zeros(length(listOfSurfaceRatios),7);
@@ -23,16 +27,17 @@ function [listSeedsProjected,listLOriginalProjection,listDataAnglesTransitionMea
     
     name2save=strrep(name2save,'.mat','');
 
-    parfor j=1:length(listOfSurfaceRatios) %parfor
-            %% surface reduction implication - recalculate seeds and labelled images
+    for j=1:length(listOfSurfaceRatios) %parfor
+            %surface reduction implication - recalculate seeds and labelled images
             surfaceRatio=listOfSurfaceRatios(j);
             [H,W]=size(L_original);
-            seedsExpansion=[seedsOriginal(:,1:2),round(seedsOriginal(:,3)*surfaceRatio)];
-            L_originalProjection=generateCylindricalVoronoi(seedsExpansion,H,round(W*surfaceRatio));
+            %Get seeds projected
+            seedsProjected=[seedsOriginal(:,1:2),round(seedsOriginal(:,3)*surfaceRatio)];
+            %Generation of cylinder voronoi from projected seeds
+            L_originalProjection=generateCylindricalVoronoi(seedsProjected,H,round(W*surfaceRatio));
                 
-            %% Representations of colourful images        
-            
-            representAndSaveFigureWithColourfulCells(L_originalProjection,numCells,seedsExpansion(:,2:3),[directory2save kindProjection '\' nameOfFolder],name2save, ['_' kindProjection '_' num2str(surfaceRatio)])
+            % Representations of colourful images        
+            representAndSaveFigureWithColourfulCells(L_originalProjection,numCells,seedsProjected(:,2:3),[directory2save kindProjection '\' nameOfFolder],name2save, ['_' kindProjection '_' num2str(surfaceRatio)])
 
             %% Testing neighs exchanges
             if strcmp(kindProjection,'expansion')
@@ -76,7 +81,7 @@ function [listSeedsProjected,listLOriginalProjection,listDataAnglesTransitionMea
                 totalCellsMotifsNoTransitionMeasuredInBasal{j,1}=dataAnglesAndLengthEdgesNoTransitionMeasuredInBasal.cellularMotifs;
                 totalCellsMotifsNoTransitionMeasuredInApical{j,1}=dataAnglesAndLengthEdgesNoTransitionMeasuredInApical.cellularMotifs;               
             end
-            listSeedsProjected(j,:)=[{surfaceRatio},{seedsExpansion}];
+            listSeedsProjected(j,:)=[{surfaceRatio},{seedsProjected}];
             listLOriginalProjection(j,:)=[{surfaceRatio},{L_originalProjection}];
             close all
     end

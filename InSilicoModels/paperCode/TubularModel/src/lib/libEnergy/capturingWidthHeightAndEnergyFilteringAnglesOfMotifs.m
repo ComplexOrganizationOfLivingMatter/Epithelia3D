@@ -1,5 +1,8 @@
 function [edgeLength,sumEdgesOfEnergy,edgeAngle,H1Length,H2Length,W1Length,W2Length,validIndex]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(verticesPerCell,vertices,pairValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight)
-    %In this function we calculate the source data for the line tension model
+ %CAPTURINGWIDTHHEIGHTANDENERGYFILTERINGANGLESOFMOTIFS In this function we 
+ %calculate the source data for the line tension model. Here, in
+ %particular, we discard the motifs in which H and W have angles between
+ %30-60º.
 
 
     %initial four cells motifs

@@ -1,4 +1,7 @@
 function mainTubularVoronoiModelProjectionSurface(numSeeds,basalExpansions,apicalReductions,numRandoms,Hinitial,Winitial,thresholdRes)
+%MAINTUBULARVORONOIMODELPROJECTIONSURFACE get all the information used in
+%the manuscript regarding tue tubular voronoi model. This code is divide in
+%4 principal functions that are explained below.
 
     kindProjection={'expansion','reduction'};
     if isempty(basalExpansions)

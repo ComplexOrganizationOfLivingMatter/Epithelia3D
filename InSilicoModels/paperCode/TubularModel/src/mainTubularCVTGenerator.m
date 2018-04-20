@@ -1,4 +1,4 @@
-function mainTubularCVTGenerator(N_images,N_frames,H,W,nSeeds,distanceBetwSeeds);
+function mainTubularCVTGenerator(N_images,N_frames,H,W,nSeeds,distanceBetwSeeds)
 
         Folder2save=[num2str(W) 'x' num2str(H) '_' num2str(nSeeds) 'seeds'];
         FolderPath='data\tubularCVT\';

@@ -1,4 +1,8 @@
 function surfaceProjection( pathV5data,nameOfFolder,directory2save,path3dVoronoi,kindProjection,listOfSurfaceRatios)
+%SURFACEPROJECTION project the seeds over cylinder with 
+%different radii, generate a Voronoi diagram over the surface,and provide 
+%us of information respect to the presence of transition, the angles and 
+%length, measured in both surfaces (basal and apical)    
 
     %Define acummulative variables in which saving all data
     acumListDataAnglesTransitionInBasal=cell(size(pathV5data,1),1);

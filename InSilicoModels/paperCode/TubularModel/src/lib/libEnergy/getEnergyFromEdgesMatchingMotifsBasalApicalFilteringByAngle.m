@@ -1,5 +1,7 @@
 function dataEnergy = getEnergyFromEdgesMatchingMotifsBasalApicalFilteringByAngle(L_basal,L_apical,neighs_basal,neighs_apical,noValidCells,pairsOfCells,flag,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical)
-    
+%GETENERGYFROMEDGESMATCHINGMOTIFSBASALAPICALFILTERINGBYANGLE capture the energy
+%in motifs presentin both apical and basal layers, and this motifs should
+%pass the angle threshold for H and W measurements
     %initializate
     dataEnergy = struct('fourCellsMotif',nan,'basalEdgeLength',nan,'basalSumEdgesOfEnergy',nan,...
         'basalEdgeAngle',nan,'basalH1',nan,'basalH2',nan,'basalW1',nan,'basalW2',nan,...
@@ -38,23 +40,15 @@ function dataEnergy = getEnergyFromEdgesMatchingMotifsBasalApicalFilteringByAngl
     validPairs2=cell2mat(cellfun(@(x) length(x)==2,cellsInMotifContactingCellsEdge,'UniformOutput',false))';
     cellsInMotifContactingCellsEdge=cell2mat(cellsInMotifContactingCellsEdge(validPairs2)');
     pairCellValidCells=pairCellValidCells(validPairs2,:);
-       
-    
+   
     if sum(validPairs2)>0
-        
-    
         %check if the 4 cells motif are preserved in apical
         preservedMotifsInApical=cell2mat(arrayfun(@(x,y,z,zz) (sum(ismember(neighs_apical{x},[z,zz]))+sum(ismember(neighs_apical{y},[z,zz])))==4,...
             cellsInMotifContactingCellsEdge(:,1),cellsInMotifContactingCellsEdge(:,2),pairCellValidCells(:,1),pairCellValidCells(:,2),'UniformOutput',false));
 
-
         %we filter with the motifs that they are in contact in apical.
         pairCellValidCellsPreserved=pairCellValidCells(preservedMotifsInApical,:);
         cellsInMotifNoContactValidCellsPreserved=cellsInMotifContactingCellsEdge(preservedMotifsInApical,:);
-
-    %     figure;
-    %     imshow(L_basal)
-    %     hold on
 
         if size(pairCellValidCellsPreserved,1)>0
             %testing transition data
@@ -66,8 +60,7 @@ function dataEnergy = getEnergyFromEdgesMatchingMotifsBasalApicalFilteringByAngl
             else
                 [dataEnergy.apicalEdgeLength,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeAngle,dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,notEmptyIndexesApical]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(apicalVerticesPerCell,verticesApical,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_apical,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical);
             end
-
-
+            
             if sum(notEmptyIndexesBasal)< length(notEmptyIndexesBasal) || sum(notEmptyIndexesApical)< length(notEmptyIndexesApical)
 
                 notEmptyIndexes=(notEmptyIndexesApical & notEmptyIndexesBasal);

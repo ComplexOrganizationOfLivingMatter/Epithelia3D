@@ -1,4 +1,7 @@
 function [seeds] = chooseSeedsPositions(imin,H,W,n_seeds,length,indexImage,folder1)
+%CHOOSESEEDSPOSITIONS select the coordinates where Voronoi seeds are going
+%to be placed in a random way and without overlapping
+
 
 % Resolve K random values between imin and imax
 if ((H-(imin-1))*(W-(imin-1)) < n_seeds)

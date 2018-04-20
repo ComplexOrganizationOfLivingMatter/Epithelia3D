@@ -1,23 +1,19 @@
 function calculateNcellsAroundTrasversalSection(numSeeds,kindProjection,pathV5data,directory2save1,numOfSurfaceRatios,Hinitial,Winitial)
-
+%CALCULATENCELLSAROUNDTRASVERSALSECTION calculate the number of cells along
+%the trasverse axis of the cylinder.
     %function to calculate the average number of cells ('n') around the trasversal plane
     directory2save=[directory2save1 kindProjection '\' num2str(Winitial) 'x' num2str(Hinitial) '_' num2str(numSeeds) 'seeds\'];
-
-
     acumN=cell(numOfSurfaceRatios,size(pathV5data,1));
-
     for i=1:size(pathV5data,1)
 
         %load cylindrical Voronoi 5 data
         nameFile=pathV5data(i).name;
         load([directory2save nameFile(1:end-4) '\' nameFile],'listLOriginalProjection')
-
         for j=1:numOfSurfaceRatios
             [num2str(i),'-',num2str(j)]
             Img_cyl=listLOriginalProjection.L_originalProjection{j,1};
             %calculate neighbours of cells as cylinder model
             [neighs_cylModel,~]=calculateNeighbours(Img_cyl);
-
 
             %calculate neighbours of cells as planar model
             Img_planar=bwlabel(Img_cyl,8);
@@ -57,7 +53,6 @@ function calculateNcellsAroundTrasversalSection(numSeeds,kindProjection,pathV5da
                     cellsFinal=Img_planar(hCoordinatesFinal,W);
                 end
             end
-            
 
             %Analysis shortest path from adjacency matrix
             nCellsSection=zeros(1,length(cellsInitial));
@@ -70,14 +65,9 @@ function calculateNcellsAroundTrasversalSection(numSeeds,kindProjection,pathV5da
                 %do cells in shortest path binary and the rest 0's, after that
                 %multiplying by cylindermodel image.
                 nCellsSection(nPath)=length(unique(mask.*Img_cyl))-1;
-
             end
-
             acumN{j,i}=nCellsSection;
-
         end
-
-
     end
 
     %statistics
@@ -90,7 +80,6 @@ function calculateNcellsAroundTrasversalSection(numSeeds,kindProjection,pathV5da
         averageAcumNGlobaBySurfaceRatio(1,i)=mean(horzcat(acumN{i,:}));
         stdAcumNGlobalBySurfaceRatio(1,i)=std(horzcat(acumN{i,:}));
     end
-
 
     save([directory2save 'numberOfCellsAlongTrasversalSection.mat'],'acumN','averageAcumN','averageAcumNByImage','stdAcumNByImage','averageAcumNGlobaBySurfaceRatio','stdAcumNGlobalBySurfaceRatio')
 end
