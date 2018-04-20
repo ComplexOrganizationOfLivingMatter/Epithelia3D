@@ -1,4 +1,4 @@
-addpath(genpath('src'))
+addpath(genpath('srcPaperCode'))
 
 %% Defining initial parameters
 N_images=20;%total number of different initial images
