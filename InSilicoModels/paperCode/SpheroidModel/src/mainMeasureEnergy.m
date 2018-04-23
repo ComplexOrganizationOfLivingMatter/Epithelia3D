@@ -79,6 +79,7 @@ function [] = mainMeasureEnergy()
                 catch err
                     % If an error exists, capture it and save it on a logfile
                     disp('-------------ERROR--------------');
+                    disp('See logFile');
                     fid = fopen('logFile','a+');
                     % write the error to file
                     % first line: message

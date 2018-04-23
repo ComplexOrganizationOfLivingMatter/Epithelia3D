@@ -100,7 +100,7 @@ function [ projectionsInner, projectionsOuter,projectionsInnerWater,projectionsO
 %         figure;imshow(projInnerWat)
 %         figure;imshow(projOuterWat)
         
-        ['zProjection' num2str(z)]
+        %['zProjection' num2str(z)]
     end
    
     
