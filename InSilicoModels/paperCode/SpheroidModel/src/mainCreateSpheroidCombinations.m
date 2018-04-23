@@ -10,7 +10,7 @@ function [] = mainCreateSpheroidCombinations()
         %Columns are disposed on this order:
         %X radius; Y radius; Z radius; Cell heights; Name of the spheroid;
         %number of Cells
-        1.5 1 1 [0.5, 1, 2] 'Globe' 200
+        1.5 1 1 [0.5, 1, 2] 'Balloon' 200
         2 1 1 [0.5, 1, 2] 'Zepellin' 200
         1 1 1 [0.5, 1, 2] 'Sphere' 200
         36-5.369186755	29.59784615-5.369186755 29.59784615-5.369186755	5.369186755 'Stage 4' 200
