@@ -15,7 +15,7 @@ function [] = mainMeasureEnergy()
 
         nCellHeight = length(cellHeightFiles);
 
-        for cellHeight=nCellHeight
+        for cellHeight=1:nCellHeight
 
             %Initialize tables to export
             tableTransitionEnergy=table();
