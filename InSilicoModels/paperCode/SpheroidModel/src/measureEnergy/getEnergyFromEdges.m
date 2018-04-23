@@ -2,6 +2,7 @@ function [dataEnergy,dataEnergyNonPreservedMotifs,dataEnergyAngleThreshold,dataE
 %GETENERGYFROMEDGES Get energy from edges
 % 
 
+    noValidCells = union(noValidCells, setdiff(1:max(outerProjection(:)), validCells));
     %all vertices in outer surface
     [verticesOuter]=calculateVertices(outerProjection,neighsOuter);
     outerVerticesPerCell=arrayfun(@(x) find(sum(x==verticesOuter.verticesConnectCells,2)), 1:max(max(outerProjection)), 'UniformOutput', false);
