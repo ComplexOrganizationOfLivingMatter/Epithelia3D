@@ -52,14 +52,13 @@ function [] = mainMeasureEnergy()
                         imwrite(maskImg, maskFile);
                     end
                     
-                    if sum(size(maskImg) == size(projectionsInnerWater{1})) ~= 2
-                        maskImg = imresize(maskImg, size(projectionsInnerWater{1}));
-                    end
-                    
-                    maskRoiInner=1-logical(maskImg(:, :, 1));
-                    
                     for nProj=1:length(projectionsInnerWater)
 
+                        if sum(size(maskImg) == size(projectionsInnerWater{nProj})) ~= 2
+                            maskImg = imresize(maskImg, size(projectionsInnerWater{nProj}));
+                        end
+                        maskRoiInner=1-logical(maskImg(:, :, 1));
+                        
                         %function for getting inner roi, edges, neighbours and valid cells
                         [innerRoiProjection,outerRoiProjection,neighsOuter,neighsInner,noValidCells,validCells,totalEdges,labelEdges]= checkingParametersFromRoi(maskRoiInner,projectionsInnerWater{nProj},projectionsOuterWater{nProj});
 
