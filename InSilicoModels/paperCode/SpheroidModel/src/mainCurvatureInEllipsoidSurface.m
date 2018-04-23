@@ -79,11 +79,12 @@ function [] = mainCurvatureInEllipsoidSurface()
                 k2_mean=mean(k2);
                 k2_std=std(k2);
 
+                mkdir([filePath, '\curvature\']);
                 if k==1
-                    save([filePath,'\curvatureOuterEllipsoid_' splittedCellHeight(1:end-4) '_'  date '.mat' ],'R1_mean','R2_mean','R1_std','R2_std','k1_mean','k2_mean','k1_std','k2_std','R1','R2','k1','k2')
+                    save([filePath, '\curvature\curvatureOuterEllipsoid_' splittedCellHeight(1:end-4) '_'  date '.mat' ],'R1_mean','R2_mean','R1_std','R2_std','k1_mean','k2_mean','k1_std','k2_std','R1','R2','k1','k2')
                 else
                     if nHeight==1
-                        save([filePath,'\curvatureInnerEllipsoid_' date '_.mat'],'R1_mean','R2_mean','R1_std','R2_std','k1_mean','k2_mean','k1_std','k2_std','R1','R2','k1','k2')
+                        save([filePath, '\curvature\curvatureInnerEllipsoid_' date '.mat'],'R1_mean','R2_mean','R1_std','R2_std','k1_mean','k2_mean','k1_std','k2_std','R1','R2','k1','k2')
                     end
                 end
 
