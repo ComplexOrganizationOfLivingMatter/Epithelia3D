@@ -20,26 +20,27 @@ function [totalCellsInRois,totalProportionScutoids,totalProportionWinNeigh,...
     %loading mask central cells in projection
     maskRoiInner=imread([filePath 'maskInner.tif']);
     
-    if sum(size(maskRoiInner) == size(projectionsInnerWater{1})) ~= 2
-        maskRoiInner = imresize(maskRoiInner, size(projectionsInnerWater{1}));
-    end
     
-    maskRoiInner=1-im2bw(maskRoiInner(:,:,1));
     neighsInner=cell(length(projectionsInnerWater),1);
     noValidCells=cell(length(projectionsInnerWater),1);
     neighsOuter=cell(length(projectionsInnerWater),1);
     validCells=cell(length(projectionsInnerWater),1);
     projectionsOuter=cell(length(projectionsInnerWater),1);
     nCells=zeros(length(projectionsInnerWater),1);
-    for i=1:length(projectionsInnerWater)
-        [projectionsInner{i},projectionsOuter{i},neighsOuter{i},neighsInner{i},noValidCells{i},validCells{i},~,~]= checkingParametersFromRoi(maskRoiInner,projectionsInnerWater{i},projectionsOuterWater{i});
-        nCells(i)=size(neighsOuter{i},2);
+    for nProj=1:length(projectionsInnerWater)
+        if sum(size(maskRoiInner) == size(projectionsInnerWater{nProj})) ~= 2
+            maskRoiInner = imresize(maskRoiInner, size(projectionsInnerWater{nProj}));
+        end
+
+        maskRoiInner=1-im2bw(maskRoiInner(:,:,1));
+        [projectionsInner{nProj},projectionsOuter{nProj},neighsOuter{nProj},neighsInner{nProj},noValidCells{nProj},validCells{nProj},~,~]= checkingParametersFromRoi(maskRoiInner,projectionsInnerWater{nProj},projectionsOuterWater{nProj});
+        nCells(nProj)=size(neighsOuter{nProj},2);
     end
     cellNeighsOuter=cell(4,max(nCells));
     cellNeighsInner=cell(4,max(nCells));
-    for i=1:length(projectionsInnerWater)
-        cellNeighsOuter(i,1:size(neighsOuter{i},2))=neighsOuter{i};
-        cellNeighsInner(i,1:size(neighsInner{i},2))=neighsInner{i};
+    for nProj=1:length(projectionsInnerWater)
+        cellNeighsOuter(nProj,1:size(neighsOuter{nProj},2))=neighsOuter{nProj};
+        cellNeighsInner(nProj,1:size(neighsInner{nProj},2))=neighsInner{nProj};
     end
     globalValidCells=unique(horzcat(validCells{:}));
     totalCellsInRois=length(globalValidCells);
