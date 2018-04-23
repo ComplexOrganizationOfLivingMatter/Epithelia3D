@@ -95,7 +95,7 @@ function [] = mainAngleLengthScutoidsInEdges()
                 namesRows={'scutoidsProportion','frustaProportion','winningNeighboursProportion','lossingNeighboursProportion','numberOfCellsInROI'};
                 tableProportionScutoids=array2table([meanProportionScutoids,stdProportionScutoids;meanProportionCellsNoScutoids,stdProportionCellsNoScutoids;meanProportionWinningNeighs,stdProportionWinningNeighs;meanProportionLossingNeighs,stdProportionLossingNeighs;meanTotalCellsInRois,stdTotalCellsInRois],'VariableNames',namesColumns,'RowNames',namesRows);
 
-                folderResThreshold=[filePaths{nPath} 'resolutionThreshold' num2str(resolutionTreshold) '\'];
+                folderResThreshold=[actualDir 'resolutionThreshold' num2str(resolutionTreshold) '\'];
                 mkdir(folderResThreshold)
 
                 save([folderResThreshold 'dataAngleLengthEdges_cellHeight' listCellHeight{cellHeight} '_' date '.mat'],'totalAnglesTransition','totalAnglesNoTransition','totalLengthTransition','totalLengthNoTransition','tableProportionOfAngles')
@@ -104,7 +104,7 @@ function [] = mainAngleLengthScutoidsInEdges()
                 writetable(tableProportionScutoids,[folderResThreshold 'tableScutoidsProportions_cellHeight' listCellHeight{cellHeight} '_' date '.xls'],'WriteRowNames',true)
 
 
-                disp([filePaths{nPath} ' cell height ' cellHeight '/' length(listCellHeight) ' completed'])
+                disp([filePaths{nPath} ' cell height ' num2str(cellHeight) '/' num2str(length(listCellHeight)) ' completed'])
 
             end
         end
