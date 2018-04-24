@@ -1,8 +1,8 @@
 
 addpath('src')
 
-stage8TransitionPath= 'results\Stage 8\energy\energyTransitionEdgesNonPreservedMotifs_20-Mar-2018.xls';
-stage4TransitionPath= 'results\Stage 4\energy\energyTransitionEdgesNonPreservedMotifs_20-Mar-2018.xls';
+stage8TransitionPath= 'results\Stage 8\energy\spheroidVoronoiModelEnergy_Stage 8_Transition_NonPreservedMotifs_03-Apr-2018.xls';
+stage4TransitionPath= 'results\Stage 4\energy\spheroidVoronoiModelEnergy_Stage 4_Transition_NonPreservedMotifs_12-Apr-2018.xls';
 globeTransition05Path= 'results\Globe\energy\energyTransitionEdgesNonPreservedMotifs_cellHeight05_20-Mar-2018.xls';
 globeTransition1Path= 'results\Globe\energy\energyTransitionEdgesNonPreservedMotifs_cellHeight1_20-Mar-2018.xls';
 globeTransition2Path= 'results\Globe\energy\energyTransitionEdgesNonPreservedMotifs_cellHeight2_20-Mar-2018.xls';
@@ -11,8 +11,8 @@ rugbyTransition1Path= 'results\Rugby\energy\energyTransitionEdgesNonPreservedMot
 rugbyTransition2Path= 'results\Rugby\energy\energyTransitionEdgesNonPreservedMotifs_cellHeight2_20-Mar-2018.xls';
 % sphereTransitionPath= ;
 
-stage8NoTransitionPath= 'results\Stage 8\energy\energyNoTransitionEdgesNonPreservedMotifs_20-Mar-2018.xls';
-stage4NoTransitionPath= 'results\Stage 4\energy\energyNoTransitionEdgesNonPreservedMotifs_20-Mar-2018.xls';
+stage8NoTransitionPath= 'results\Stage 8\energy\spheroidVoronoiModelEnergy_Stage 8_NoTransition_NonPreservedMotifs_03-Apr-2018.xls';
+stage4NoTransitionPath= 'results\Stage 4\energy\spheroidVoronoiModelEnergy_Stage 4_NoTransition_NonPreservedMotifs_12-Apr-2018.xls';
 globeNoTransition05Path= 'results\Globe\energy\energyNoTransitionEdgesNonPreservedMotifs_cellHeight05_20-Mar-2018.xls';
 globeNoTransition1Path= 'results\Globe\energy\energyNoTransitionEdgesNonPreservedMotifs_cellHeight1_20-Mar-2018.xls';
 globeNoTransition2Path= 'results\Globe\energy\energyNoTransitionEdgesNonPreservedMotifs_cellHeight2_20-Mar-2018.xls';
@@ -36,7 +36,7 @@ meanScutoids=zeros(length(transitionPaths),1);
 stdScutoids=zeros(length(transitionPaths),1);
 meanTotalCells=zeros(length(transitionPaths),1);
 stdTotalCells=zeros(length(transitionPaths),1);
-for i=length(transitionPaths)-2:length(transitionPaths)%1:length(transitionPaths)
+for i=1:length(transitionPaths)%1:length(transitionPaths)
     [meanScutoids(i),stdScutoids(i),meanTotalCells(i),stdTotalCells(i)]=extractionOfScutoidsFromExcel(noTransitionPaths{i}, transitionPaths{i});
 end
 res = [meanScutoids, stdScutoids, meanTotalCells, stdTotalCells];
