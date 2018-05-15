@@ -46,7 +46,7 @@ for numLayer=1:3
     cell_layer{numLayer,1}=unique(all_neighs_layer{numLayer,1}(:,1),'rows');
     for numCell=1:size(cell_layer{numLayer,1})
         for numNeighs=1:size(neighs_layer{numLayer, numCell})
-            transition{numLayer, numCell}(acum,numTrans)=numCell; %Cojo la celula principal
+            transition{numLayer, numCell}(acum,numTrans)=numCell; %Take the principal cell
             acum=acum+1;
             
             cellToComparate=neighs_layer{numLayer, numCell}(numNeighs,1);
