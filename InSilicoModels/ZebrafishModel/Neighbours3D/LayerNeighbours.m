@@ -1,8 +1,8 @@
-function [neighs_real,sides_cells]=LayerNeighbours(img3DLabelled, finalCentroid)
+function [neigh_real, basicInfo, basicInfoByLayer, infoSharedLayers, boxPercentage] = LayerNeighbours(img3DLabelled, finalCentroid, folderNumber)
 
-
-[neighs_real,sides_cells]=calculate_neighbours3D(img3DLabelled);
-% save('neighbours_layer_Medio2.mat','neighs_real');
+[neighs_real, sides_cells]=calculate_neighbours3D(img3DLabelled);
+temporalName=['neighbours_layer_Medio' sprintf('%d',folderNumber) '.mat'];
+save(temporalName,'neighs_real','sides_cells');
 
 
 %The structure (ball) of the dilation of the cells is created with a radius of 4.
@@ -34,10 +34,10 @@ for numCell=1:size(neighs_real,2)
     %the cell that is being treated. 
     BW_dilate=imdilate(BW ,ball); 
     pixelsDilated=img3DLabelled(BW_dilate==1);
-    [uniqueNeigh,ia,ic] = unique(pixelsDilated); 
+    %[uniqueNeigh,ia,ic] = unique(pixelsDilated); 
     
     %the zero and the cell that is being analyzed are removed from the neighbor list
-    uniqueNeigh=uniqueNeigh(uniqueNeigh~=0 & uniqueNeigh~=numCell);
+    %uniqueNeigh=uniqueNeigh(uniqueNeigh~=0 & uniqueNeigh~=numCell);
     pixelsDilated= pixelsDilated( pixelsDilated~=0 & pixelsDilated~=numCell);
     
     %A variable is created with the layers.
@@ -46,16 +46,17 @@ for numCell=1:size(neighs_real,2)
     %A variable is created with the basic information of each cell with its ID,
     %the number of neighbors it has, its area, its volume and the layer that belongs
     basicInformation{numCell,1}=numCell;
-    basicInformation{numCell,2}=size(uniqueNeigh,1);
+    basicInformation{numCell,2}=size(neighs_real{1,numCell}, 1);
     basicInformation{numCell,3}=area;
     basicInformation{numCell,4}=volumen;
     basicInformation{numCell,5}=layer;
     
+  
     %Now the neighbors of the cell that is being analyzed are traversed to obtain the information they share
-    for numNeighs=1:size(uniqueNeigh,1)
+    for numNeighs=1:size(neighs_real{1,numCell},1)
         %The area that the analyzed cell shares with its neighbors and the percentage is calculated. 
         %Keep in mind that this measure is not the real one but the extended one.
-        areaShared=sum(pixelsDilated==uniqueNeigh(numNeighs));
+        areaShared=sum(pixelsDilated==neighs_real{1,numCell}(numNeighs,1));
         percentage=areaShared/size(pixelsDilated,1);
         
         %A variable is created with the information shared between the cell that is being analyzed and its
@@ -92,16 +93,18 @@ neigh_real.Properties.VariableNames={'ID', 'neighbours', 'sharedDilateArea', 'pe
 basicInfo=array2table(basicInformation);
 basicInfo.Properties.VariableNames={'ID', 'numNeighbours', 'area', 'volumen', 'layer'};
 
-writetable(neigh_real, 'neighbours_layer2.xlsx', 'Sheet','sharedInfo');
-writetable(basicInfo, 'neighbours_layer2.xlsx', 'Sheet','basicInfo');
+fileNameExcel=['neighbours_layer' sprintf('%d',folderNumber) '.xlsx'];
+writetable(neigh_real, fileNameExcel, 'Sheet','sharedInfo');
+writetable(basicInfo, fileNameExcel, 'Sheet','basicInfo');
 
-save('neighbours_layer2.mat','neigh_real', 'basicInfo');
+fileNameMat=['neighbours_layer' sprintf('%d',folderNumber) '.mat'];
+save(fileNameMat,'neigh_real', 'basicInfo');
 
 %Function to filter the variables
-[neigh_real, basicInfo]=deleteLowDilate(neigh_real, basicInfo, finalCentroid);
+[neigh_real, basicInfo]=deleteLowDilate(neigh_real, basicInfo, finalCentroid, folderNumber);
 
 %Function that combines the information according to how you
 %want to get graphics and an excel with the final data.
-[neigh_real, basicInfo]=infoGraphic(neigh_real, basicInfo);
+[basicInfoByLayer, infoSharedLayers, boxPercentage]=infoGraphic(neigh_real, basicInfo, folderNumber);
 
-end
+%end
