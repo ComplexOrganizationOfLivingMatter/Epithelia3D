@@ -1,4 +1,4 @@
-function [neigh_real, basicInfo]=deleteLowDilate(neigh_real, basicInfo, finalCentroid)
+function [neigh_real, basicInfo]=deleteLowDilate(neigh_real, basicInfo, finalCentroid, folderNumber)
 %DELETELOWDILATE %A filter is made to eliminate the shared information if the percentage that the
 %cells share among each other is less than 0.0051
 
@@ -85,12 +85,14 @@ end
 neigh_real=array2table(neigh_real);
 neigh_real.Properties.VariableNames={'ID', 'neighbours', 'sharedDilateArea', 'percentageShared', 'LayerNeigh', 'sharedRealArea'};
 
-basicInfo=array2table(basicInformation);
+basicInfo=array2table(basicInfo);
 basicInfo.Properties.VariableNames={'ID', 'numNeighbours', 'area', 'volumen', 'layer'};
 
-writetable(neigh_real, 'neighbours_layer_filter2.xlsx', 'Sheet','sharedInfo');
-writetable(basicInfo, 'neighbours_layer_filter2.xlsx', 'Sheet','basicInfo');
+fileNameFilterExcel=['neighbours_layer_filter' sprintf('%d',folderNumber) '.xlsx'];
+writetable(neigh_real, fileNameFilterExcel, 'Sheet','sharedInfo');
+writetable(basicInfo, fileNameFilterExcel, 'Sheet','basicInfo');
 
-save('neighbours_layer_filter2.mat','neigh_real', 'basicInfo');
+fileNameFilterMat=['neighbours_layer_filter' sprintf('%d',folderNumber) '.mat'];
+save(fileNameFilterMat,'neigh_real', 'basicInfo');
 
 end

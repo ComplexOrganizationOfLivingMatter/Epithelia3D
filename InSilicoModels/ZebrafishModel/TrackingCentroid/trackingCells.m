@@ -1,9 +1,10 @@
-function [LayerCentroid, trackingCentroid, finalCentroid] = trackingCells( pathArchMat, initialFrame, maxFrame, folderNumber)
-%UNTITLED3 Summary of this function goes here
-%   Detailed explanation goes here
+function [trackingCentroid, finalCentroid] = trackingCells( initialFrame, maxFrame, folderNumber)
+%TRACKINGCELLS track cells and corrects errors.
+
+pathArchMat=['LayersCentroids' sprintf('%d',folderNumber) '.mat'];
+load(pathArchMat);
 
 %Variables
-load(pathArchMat);
 numCell=1;
 n=1;
 
@@ -62,22 +63,21 @@ finalCentroid=sortrows(finalCentroid, 1);
 
 
 %Temporarily saved
-finalFileName=['trackingCentroids-Prueba-NOW' sprintf('%d',folderNumber) '.mat'];
-save(finalFileName, 'finalCentroid')
+FileName=['trackingCentroids-Prueba-NOW' sprintf('%d',folderNumber) '.mat'];
+save(FileName, 'finalCentroid')
 
 %Corrects overlapping cells
 [finalCentroidTracking] = finalTracking( finalCentroid, initialFrame, maxFrame, folderNumber);
-
 
 %Correct cells that only appear in a single frame. REPLACED BY THE FUNCTION 'deleUniqueCentroids.m'
 %[finalCentroid] = correctTracking(finalCentroid, folderNumber, maxFrame);
 
 %Eliminates centroids from the centroids that only appear in a frame
-[finalCentroid] = deleteUniqueCentroids( finalCentroid );
+[finalCentroid] = deleteUniqueCentroids( finalCentroidTracking );
 
 % Save the result to a .mat file
-finalFileName=['trackingCentroidPruebafinal' sprintf('%d',folderNumber) '.mat'];
-save(finalFileName, 'finalCentroidTracking')
+finalFileName=['trackingCentroid' sprintf('%d',folderNumber) '.mat'];
+save(finalFileName, 'finalCentroid')
 
 end
 
