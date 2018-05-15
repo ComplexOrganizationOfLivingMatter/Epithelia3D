@@ -1,18 +1,17 @@
-function [ img3DLabelled ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
+function [ img3DLabelled, Img ] = layerVoronoi( finalCentroid, numLayer, maxFrame, folderNumber)
 %LAYERVORONOI Create voronoi in 3D with tracking of centroids
-%   Detailed explanation goes here
 
-
+    %numLayer is always 'all' in this case
     pxWidth = 0.6165279; % Pixel converter
     
     %Creating an output directory
-    outputDir = strcat('..\..\results\LayerAnalysis\Layer_', numLayer, '\'); 
+    outputDir =strcat('results\LayerAnalysis\Layer_', numLayer, sprintf('%d',folderNumber), '\');
     mkdir(outputDir);
 
     
     seeds = []; %Create a variable for the seeds empty
-    cellIds = vertcat(infoCentroids{:, 1}); %Variable with only the tracking ID of all the cells
-    seedsInitial = vertcat(infoCentroids{:, 2}); %Variable with the tracking coordinates of all the cells
+    cellIds = vertcat(finalCentroid{:, 1}); %Variable with only the tracking ID of all the cells
+    seedsInitial = vertcat(finalCentroid{:, 2}); %Variable with the tracking coordinates of all the cells
     
     seeds(:, 1) = seedsInitial(:, 1) * pxWidth; %Fill the first column of the seed variable with the X components of the coordinates multiplied by the pixel conversion factor
     seeds(:, 2) = seedsInitial(:, 2) * pxWidth; %The same as before but for the Y coordinate
@@ -50,53 +49,93 @@ function [ img3DLabelled ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
     end
     
     % Loop to know which cells overlap
-    num=1;
-    for numAcum=1:size(acum,1)
-        numAcum
-           for numAcum2=(numAcum+1):size(acum,1) 
-                if any(ismember(acum{numAcum,1} ,acum{numAcum2,1}, 'rows'))==1
-                    idCellsRepeat{num,1}=[numAcum, numAcum2];
-                    num=num+1;
-                end
-           end
-    end    
+%     num=1;
+%     for numAcum=1:size(acum,1)
+%            for numAcum2=(numAcum+1):size(acum,1) 
+%                 if any(ismember(acum{numAcum,1} ,acum{numAcum2,1}, 'rows'))==1
+%                     idCellsRepeat{num,1}=[numAcum, numAcum2];
+%                     num=num+1;
+%                 end
+%            end
+%     end    
     
     imgDist = bwdist(imgWithSegmentSeeds3D);
     
     %We create the shape in which the voronoi will be embedded
     shapeOfSeeds = alphaShape(seeds(:, 1), seeds(:, 2), seeds(:, 3), 500);
-    
     img3DActual = zeros(max(seeds) + 1);
+    
     %Remove pixels outside the cells area
     [xPx, yPx, zPx] = findND(img3DActual==0);
     validPxs = shapeOfSeeds.inShape(xPx, yPx, zPx);
     
-    water3DImage=watershed(imgDist,26); 
-    water3DImage(validPxs==0)=0;
+    water3DImage=watershed(imgDist,26);
+    water3DImage(validPxs==0)=0;  
+
+    %Calculate how many seeds have been left at the end per layer
+    allCentroids(:,1)=vertcat(finalCentroid{:,1});
+    allCentroids(:,2)=vertcat(finalCentroid{:,3});
+    centroids=unique(allCentroids,'rows');
+    acum1=sum(centroids(:,2)==1);
+    acum2=sum(centroids(:,2)==2);
+    acum3=sum(centroids(:,2)==3);
+    acum4=sum(centroids(:,2)==4);
+    
     
     %Create voronoi 3D region, paint it and save it all
     img3DLabelled = zeros(max(seeds) + 1);
-    colours = colorcube(max(cellIds));
+%     colours = colorcube(max(cellIds));
     figure;
-
+    
+    %Variables for sample with 4 Layers
+    colours1 = autumn(acum1);
+    colours2 = winter(acum2);
+    colours3 = gray(acum3+20);
+    colours4 = copper(acum4);
+    
+    numLayer1=1;
+    numLayer2=1;
+    numLayer3=1;
+    numLayer4=1;
+    
     for numCell=1:max(cellIds)
         
-            numCell
-            seedsOfCell = seeds(cellIds == numCell, :);
-            labelToBeRelabelled=water3DImage(seedsOfCell(1,1),seedsOfCell(1,2),seedsOfCell(1,3));
-            regionActual = water3DImage == labelToBeRelabelled;
-            
-            img3DLabelled(regionActual) = numCell;
-            [x, y, z] = findND(bwperim(img3DLabelled == numCell));
-            cellFigure = alphaShape(x, y, z, 10);
-            plot(cellFigure, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
-            hold on;
+        numCell
+        seedsOfCell = seeds(cellIds == numCell, :);
+        labelToBeRelabelled=water3DImage(seedsOfCell(1,1),seedsOfCell(1,2),seedsOfCell(1,3));
+        regionActual = water3DImage == labelToBeRelabelled;
+        img3DLabelled(regionActual) = numCell;
+        [x, y, z] = findND(img3DLabelled == numCell);
+        cellFigure = alphaShape(x, y, z, 10);
+        
+        numLayer=centroids(numCell, 2);
+        
+        switch numLayer
+            case 1  %if centroids(numCell, 2) == 1
+                plot(cellFigure, 'FaceColor', colours1(numLayer1, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
+                numLayer1=numLayer1+1;
+                hold on;
+            case 2 % elseif centroids(numCell, 2) == 2
+                plot(cellFigure, 'FaceColor', colours2(numLayer2, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
+                numLayer2=numLayer2+1;
+                hold on; 
+            case 3 %elseif centroids(numCell, 2) == 3
+                plot(cellFigure, 'FaceColor', colours3(numLayer3, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
+                numLayer3=numLayer3+1;
+                hold on;
+            case 4 %if centroids(numCell, 2) == 4
+                plot(cellFigure, 'FaceColor', colours4(numLayer4, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
+                numLayer4=numLayer4+1;
+                hold on;
+        end
         
     end
     
-    save(strcat('layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled');
-    save(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.mat'), 'img3DLabelled');
-    savefig(strcat(outputDir, 'layerAnalysisVoronoi_', date, '.fig'));
+    ax = gca;
+    ax.Visible = 'off';
+    savefig(strcat(outputDir,'layerAnalysisVoronoiByLayersAll_', sprintf('%d',folderNumber), '.fig'));
+    save(strcat(outputDir, 'layerAnalysisVoronoi_', sprintf('%d',folderNumber), '.mat'), 'img3DLabelled');
+    
     colorR = repmat(colorcube(255), 10, 1);
     close all
     
@@ -126,6 +165,6 @@ function [ img3DLabelled ] = layerVoronoi( infoCentroids, numLayer, maxFrame )
         close all
     %     imwrite(img, colorR(1:255, :), strcat('img_z_', num2str(numZ) , '.tiff'));
     end
-    save(strcat('imgVoronoi2D_', date, '.mat'), 'Img');
+    save(strcat(outputDir, 'imgVoronoi2D_', sprintf('%d',folderNumber), '.mat'), 'Img');
 end
 
