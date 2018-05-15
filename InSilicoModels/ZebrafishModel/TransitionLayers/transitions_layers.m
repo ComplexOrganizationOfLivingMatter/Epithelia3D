@@ -1,103 +1,96 @@
-load('neighbours_layer2.mat');
-load('E:\Tina\pseudostratifiedEpithelia\LayerAnalysis\layerAnalysisVoronoi_16-Oct-2017.mat');
-load('E:\Tina\pseudostratifiedEpithelia\LayerAnalysis\imgVoronoi2D_16-Oct-2017.mat');
-load('E:\Tina\Epithelia3D\Zebrafish\Results\Sample2\LayersCentroids2.mat');
-load('E:\Tina\Epithelia3D\Zebrafish\Results\Sample2\trackingLayer2.mat');
+function [ neighs_layer, transitionLayerFrame, trans_Layer_Final, motiveFrame] = transitions_Layers(neigh_real, basicInfo, Img, folderNumber)
+%TRANSITIONS_LAYERS Calculate the changes of neighbors that suffer a same layer
+
 
 %Variables
-folderNumber=2;
+% load('neighbours_layer_filter2.mat')
+% load('imgVoronoi2D_12-Feb-2018.mat')
 
-%It takes the first column (cell id) and the third column (the layer to which the cell belongs)
-for numLayer=1:size(LayerCentroid,1)
-    for numC=1:size(finalCentroid,1)
-        if finalCentroid{numC,3}(:)==numLayer
-            cell_layer(numC,1)=finalCentroid{numC,1};
-            cell_layer(numC,2)=finalCentroid{numC,3};
+neighs_real=table2array(neigh_real);
+basicInfos=table2array(basicInfo);
+basicInfos=cell2mat(basicInfos);
+
+%folderNumber=2;
+acum=1;
+acum1=1;
+
+
+%It takes the first column (cell id) and the third column (the layer to
+%which the cell belongs).The nucleus and their neighbors are divided by
+%layer. Remove neighbors which are from other layers.
+
+for numLayer=1:3 %It only wants to see the transitions of the first 3 layers
+    for numCentroids=1:size(basicInfos,1)
+        if basicInfos(numCentroids,5)==numLayer
+           for numTrack=1:size(neighs_real,1) 
+                if basicInfos(numCentroids,1)==neighs_real(numTrack, 1) && neighs_real(numTrack, 5)==numLayer    
+                    
+                    neighs_layer{numLayer,basicInfos(numCentroids,1)}(acum,1)=neighs_real(numTrack,2);
+                    all_neighs_layer{numLayer, 1}(acum1, 1)=neighs_real(numTrack, 1);
+                    all_neighs_layer{numLayer, 1}(acum1, 2)=neighs_real(numTrack, 2);
+                    acum=acum+1;
+                    acum1=acum1+1;
+                    
+                end
+            end
         end
+        acum=1;
+    end
+    acum1=1;
+end
+
+acum=1;
+numTrans=1;
+for numLayer=1:3
+    
+    cell_layer{numLayer,1}=unique(all_neighs_layer{numLayer,1}(:,1),'rows');
+    for numCell=1:size(cell_layer{numLayer,1})
+        for numNeighs=1:size(neighs_layer{numLayer, numCell})
+            transition{numLayer, numCell}(acum,numTrans)=numCell; %Cojo la celula principal
+            acum=acum+1;
+            
+            cellToComparate=neighs_layer{numLayer, numCell}(numNeighs,1);
+            transition{numLayer, numCell}(acum,numTrans)=cellToComparate;
+            
+            
+            for numNeighs2=2:size(neighs_layer{numLayer, numCell},1)
+                newCellToComparate=neighs_layer{numLayer, numCell}(numNeighs2,1);
+                
+                if any(neighs_layer{numLayer, newCellToComparate}(:,1) == cellToComparate)
+                    acum=acum+1;
+                    transition{numLayer, numCell}(acum,numTrans)=newCellToComparate;
+                    if size(transition{numLayer, numCell}(:,numTrans),1)==4 && transition{numLayer, numCell}(4,numTrans)~=0
+                        ult=transition{numLayer,numCell}(3,numTrans);
+                        if any(neighs_layer{numLayer, newCellToComparate}(:,1)==ult)==0
+                            transition{numLayer, numCell}(:,numTrans)=[];
+                            acum=1;
+                        else
+                            break;
+                        end
+                    end
+                end
+            end
+            
+            if size(transition{numLayer, numCell},2)==numTrans
+                    if (size(transition{numLayer, numCell}(:,numTrans),1) <4) || any(transition{numLayer, numCell}(:,numTrans)==0)
+                        transition{numLayer, numCell}(:,numTrans)=[];
+                        acum=1;
+                    elseif size(transition{numLayer, numCell}(:,numTrans),1) >= 4
+                        numTrans=numTrans+1;
+                        acum=1;
+                    end
+            end
+            
+        end
+        acum=1;
+        numTrans=1;
     end
     
 end
 
-%It takes the unique id and the layer to which it belongs
-cell_layer=unique(cell_layer,'rows');
-
-%The nucleus and their neighbors are divided by layer
-for numLayer=1:size(LayerCentroid,1)
-    for numTrans=1:size(neighs_real,2)
-        if cell_layer(numTrans,2)==numLayer
-            all_neighs_layer{numLayer, numTrans}=neighs_real{1, numTrans};
-        end
-    end
-end
-
-%Remove neighbors which are from other layers
-for numLayer=1:size(all_neighs_layer,1)
-    for numTrans=1:size(all_neighs_layer,2)
-        if isempty(all_neighs_layer{numLayer, numTrans})== 0
-            for numNeighs=1:size(all_neighs_layer{numLayer, numTrans},1)
-                if all_neighs_layer{numLayer, numTrans}(numNeighs,3)==numLayer 
-                    neighs_layer{numLayer, numTrans}(numNeighs,:) = all_neighs_layer{numLayer, numTrans}(numNeighs,:);
-                end
-            end
-        end
-    end
-end
-
-%Zeros are removed
-emptyCells=cell2mat(cellfun(@(x) isempty(x) ,neighs_layer,'UniformOutput', false));
-neighs_layer(emptyCells)={0};
-neighs_layer=cellfun(@(x) x(x(:,1)~=0,:) ,neighs_layer,'UniformOutput', false);
-
-
-var=1;
-numTrans=1;
-for numLayer=1:size(neighs_layer,1)
-    for numCell=1:size(neighs_layer,2)
-        if isempty(neighs_layer{numLayer, numCell})== 0
-            for numNeighs=1:size(neighs_layer{numLayer, numCell},1)
-                
-                transition{numLayer, numCell}(var,numTrans)=numCell; %Cojo la celula principal
-                var=var+1;
-                
-                cellToComparate=neighs_layer{numLayer, numCell}(numNeighs,1);
-                transition{numLayer, numCell}(var,numTrans)=cellToComparate;
-                
-                for numNeighs2=2:size(neighs_layer{numLayer, numCell},1)
-                    newCellToComparate=neighs_layer{numLayer, numCell}(numNeighs2,1);
-                    
-                    if any(neighs_layer{numLayer, newCellToComparate}(:,1) == cellToComparate)
-                        var =var+1;
-                        transition{numLayer, numCell}(var,numTrans)=newCellToComparate;
-                        if size(transition{numLayer, numCell}(:,numTrans),1)==4 && transition{numLayer, numCell}(4,numTrans)~=0
-                            ult=transition{numLayer,numCell}(3,numTrans);
-                            if any(neighs_layer{numLayer, newCellToComparate}(:,1)==ult)==0
-                                transition{numLayer, numCell}(:,numTrans)=[];
-                                var=1;
-                            else
-                                break;
-                            end
-                        end
-                    end
-                end
-                
-                if size(transition{numLayer, numCell},2)==numTrans
-                    if (size(transition{numLayer, numCell}(:,numTrans),1) <4) || any(transition{numLayer, numCell}(:,numTrans)==0)
-                        transition{numLayer, numCell}(:,numTrans)=[];
-                        var=1;
-                    elseif size(transition{numLayer, numCell}(:,numTrans),1) >= 4
-                        numTrans=numTrans+1;
-                        var=1;
-                    end
-                end
-            end
-            var=1;
-            numTrans=1;
-        end
-    end
-end
 
 % Now that we have the result we have to clean it so that 
-% the same transition does not come out many times and organize
+% the same transition doesn't come out many times and organize
 % the result.
 num=1;
 for numLayer=1:size(transition,1)
@@ -114,13 +107,13 @@ for numLayer=1:size(transition,1)
     num=1;
 end
 
+
 %Transitions in the same Z
 acum=1;
-clear var
 for numZ = 1:size(Img,2)-1 
     cents=regionprops(Img{1,numZ}, 'Centroid');
     cellFrame=vertcat(cents.Centroid);
-    numZ
+    %numZ
     [neighs_Z,sides_cellsZ]=calculateNeighbours(Img{1,numZ});
     for numLayer=1:size(transition_layer,1)
         for numTrans=1:transition_layer{numLayer,2}
@@ -248,14 +241,5 @@ end
 finalFileName=['transition_layers_frame' sprintf('%d',folderNumber) '.mat'];
 save(finalFileName, 'neighs_layer', 'transitionLayerFrame', 'transition_Layer_Frame', 'trans_Layer_Final', 'motiveFrame');
 
-
-
-
-
-
-
-
-
-
-
+end
 
