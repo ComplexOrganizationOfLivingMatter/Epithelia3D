@@ -41,6 +41,6 @@ for numExperiment = 1:length(fileCombinations(:, 1))
             writetable(allFrustaFakeTrans, frustaTransFile);
         end
         
-        outputTable = horzcat(outputTable, computeTotalEnergy(frustaTransFile, strrep(experimentName, 'Voronoi', 'Frusta')));
+        outputTable = horzcat(outputTable, computeTotalEnergy(frustaTransFile, strrep(experimentName, 'Voronoi', 'Frusta'), isempty(frustaFile) == 0));
     end
 end
