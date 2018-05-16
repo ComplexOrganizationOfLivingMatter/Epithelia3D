@@ -1,4 +1,4 @@
-function [ ] = computeTotalEnergy( transitionsFile )
+function [ outputTable ] = computeTotalEnergy( transitionsFile, experimentName )
 %COMPUTETOTALENERGY Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -7,8 +7,13 @@ function [ ] = computeTotalEnergy( transitionsFile )
     transitionsExcel = readtable(transitionsFile);
     noTransitionsExcel = readtable(noTransitionsFile);
 
-    [noTransDiffSummary, ~] = getEnergyInfo(noTransitionsExcel);
-    [transDiffSummary, ~] = getEnergyInfo(transitionsExcel);
-    [diffSummary, ~] = getEnergyInfo(vertcat(transitionsExcel, noTransitionsExcel));
+    [noTransitionsEnergy, ~] = getEnergyInfo(noTransitionsExcel);
+    [transitionsEnergy, ~] = getEnergyInfo(transitionsExcel);
+    [tissueEnergy, ~] = getEnergyInfo(vertcat(transitionsExcel, noTransitionsExcel));
+    
+    outputTable = table(tissueEnergy, transitionsEnergy, noTransitionsEnergy);
+    
+    outputTable.Properties.VariableNames = cellfun(@(x) strcat(experimentName, '_', x), outputTable.Properties.VariableNames, 'UniformOutput', false);
+    
 end
 
