@@ -14,7 +14,7 @@ function [ unifyModel ] = unifyApicalAndBasal( apicalInfo, basalInfo )
     end
     correspondanceIdBasalApical(correspondanceIdBasalApical == 0) = [];
     
-    unifyModel = horzcat(apicalInfo(correspondanceIdBasalApical, 1:end-3), basalInfo(basalFilter, 5:end));
+    unifyModel = horzcat(basalInfo(basalFilter, 1:end-3), apicalInfo(correspondanceIdBasalApical, 5:end));
 
 end
 
