@@ -2,7 +2,7 @@ function [ outputTable ] = computeTotalEnergy( transitionsFile, experimentName )
 %COMPUTETOTALENERGY Summary of this function goes here
 %   Detailed explanation goes here
 
-    noTransitionsFile = strrep(transitionsFile, '_Transitions_', '_NoTransitions_');
+    noTransitionsFile = strrep(strrep(transitionsFile, 'Fake', ''), '_Transitions_', '_NoTransitions_');
     
     transitionsExcel = readtable(transitionsFile);
     noTransitionsExcel = readtable(noTransitionsFile);
