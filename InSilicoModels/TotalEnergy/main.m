@@ -208,8 +208,8 @@ ttestDifferences = @(x, y) ttest2(x(:, 1) - x(:, 2), y(:, 1) - y(:, 2));
 % [stage4Summary, stage4Energy] = getEnergyInfo(vertcat(eggChamberStage4Trans, eggChamberStage4NoTrans(randomIndicesNoTrans(1:maxSamples), :)));
 % 
 %% Ellipsoid Model Stage 4
-% modelStage4NoTrans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\ellipsoidVoronoiModel_Stage4_energyNoTransitions_Filtered200measurements_06-Mar_2018.xlsx');
-% modelStage4Trans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\ellipsoidVoronoiModel_Stage4_energyTransitions_Filtered200measurements_06-Mar_2018.xlsx');
+% modelStage4NoTrans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\EnergyMotifs\Voronoi\Matching_Motifs_Basal-Apical\Unfiltered\WithDuplicatedMotifs\spheroidVoronoiModelEnergy_Stage 4_NoTransition_AngleThreshold_03-Apr-2018.xls');
+% modelStage4Trans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\EnergyMotifs\Voronoi\Matching_Motifs_Basal-Apical\Unfiltered\WithDuplicatedMotifs\spheroidVoronoiModelEnergy_Stage 4_Transition_AngleThreshold_03-Apr-2018.xls');
 % 
 % modelStage4NoTrans.Properties.VariableNames = cellfun(@(x) strrep(x, 'inner', 'apical'), modelStage4NoTrans.Properties.VariableNames, 'UniformOutput', false);
 % modelStage4NoTrans.Properties.VariableNames = cellfun(@(x) strrep(x, 'outer', 'basal'), modelStage4NoTrans.Properties.VariableNames, 'UniformOutput', false);
@@ -217,15 +217,31 @@ ttestDifferences = @(x, y) ttest2(x(:, 1) - x(:, 2), y(:, 1) - y(:, 2));
 % modelStage4Trans.Properties.VariableNames = cellfun(@(x) strrep(x, 'inner', 'apical'), modelStage4NoTrans.Properties.VariableNames, 'UniformOutput', false);
 % modelStage4Trans.Properties.VariableNames = cellfun(@(x) strrep(x, 'outer', 'basal'), modelStage4NoTrans.Properties.VariableNames, 'UniformOutput', false);
 % 
+% [~, firstOcurrences] = unique(modelStage4Trans(:, [1:7]));
+% modelStage4Trans = modelStage4Trans(firstOcurrences, :);
+% 
+% [~, firstOcurrences] = unique(modelStage4NoTrans(:, [1:7]));
+% modelStage4NoTrans = modelStage4NoTrans(firstOcurrences, :);
+% 
+% 
+% [~, firstOcurrences] = unique(modelStage4Trans(:, [1:4 19]));
+% modelStage4Trans = modelStage4Trans(firstOcurrences, :);
+% 
+% [~, firstOcurrences] = unique(modelStage4NoTrans(:, [1:4 19]));
+% modelStage4NoTrans = modelStage4NoTrans(firstOcurrences, :);
+% 
 % maxSamples = size(modelStage4Trans, 1);
 % 
 % %idsFilter = 1:2:200;
 % %idsFilter = randperm(size(modelStage4NoTrans, 1), maxSamples);
-% idsFilter = [157,175,47,79,48,173,52,58,170,142,195,153,95,108,43,10,163,38,181,70,107,44,150,143,41,102,63,42,32,119,183,90,15,80,19,114,54,171,50,160,68,172,162,113,178,93,62,169,154,33,51,31,129,6,76,45,21,180,67,111,130,192,35,166,103,97,26,136,37,165,168,7,177,3,117,104,134,84,140,164,152,98,9,30,23,197,86,29,88,87,106,46,85,11,116,49,120,182,196,121,100,158,193,146,128,125,55,176,64,57,36,24,94,28,109,60,179,145,12,189,124,8,174,185,131,199,91,159,118,2,156,191,20,1,190,73,144,78,155,5,126,141,187,69,151,122,40,149,167,137,105,188,34,56,27,71,115,186,132,59,14,22,184,17,53,39,148,13,75,194,81,139,83,112,82,89,92,138,16,198,66,77,127,110,135,133,147,74,72,4,61,18,99,25,161,101,200,123,65,96];
+% idsFilterNoTrans = [7833,8708,1221,8779,6077,938,2676,5254,9198,9268,1514,9321,9191,4661,7683,1362,4049,8789,7603,9207,6292,343,8145,8958,6510,7266,7126,3761,6284,1641,6767,306,2654,443,931,7888,6656,3037,9100,330,4201,3653,7328,7611,1789,4687,4264,6184,6786,7219,2640,6500,6265,1555,1138,4764,9174,3254,5593,2139,7178,2437,4833,6677,8509,9161,5225,1324,1426,2458,8024,2427,7770,2324,8866,3339,1876,2395,5875,4513,3353,7921,5579,5240,8741,2724,7215,7181,3625,5409,723,514,5055,7419,8892,1237,5415,4468,114,3208,1544,7557,2961,5027,1576,5725,2501,6219,6552,7112,4282,797,2176,8678,1448,7845,5114,9461,743,4204,1013,9132,44,7355,7757,8244,802,3793,2466,7589,4092,8636,1725,2502,1380,1290,8240,5494,5211,1374,8082,5893,3325,4861,3806,720,2272,1168,1741,9468,3950,470,8542,8939,4644,4628,3195,8512,3492,1052,7377,3685,2285,3818,912,1248,8901,9033,5434,565,2218,3335,7754,146,407,1596,6127,6906,6113,4255];
+% idsFilterTrans = [11,65,154,115,6,124,57,122,164,92,13,140,127,53,22,29,157,75,141,131,112,48,179,9,142,60,156,113,10,88,61,178,71,99,23,30,16,76,74,73,4,46,33,31,166,25,94,14,77,5,105,172,104,26,161,143,116,121,158,138,120,66,149,36,111,126,153,85,133,100,167,170,69,83,95,35,103,148,160,18,81,1,32,123,119,45,3,135,110,56,49,40,168,130,175,106,80,97,150,72,24,114,84,78,128,129,91,17,136,52,7,51,2,82,139,174,145,177,21,144,41,173,176,62,86,107,90,20,55,109,134,98,96,117,132,47,34,27,102,12,59,28,50,93,101,125,44,42,137,68,163,38,155,8,162,19,70,147,79,169,43,108,58,146,37,152,54,89,171,63,15,64,165,118,151,67,39,159,87,180];
 % 
+% writetable(modelStage4NoTrans(idsFilterNoTrans(1:100), :), 'spheroidVoronoiModelEnergy_Stage4_NoTransitions_AngleThreshold_filtered_03_04_2018.xls');
+% writetable(modelStage4Trans(idsFilterTrans(1:100), :), 'spheroidVoronoiModelEnergy_Stage4_Transitions_AngleThreshold_filtered_03_04_2018.xls');
+% writetable(modelStage4NoTrans, 'spheroidVoronoiModelEnergy_Stage4_NoTransitions_AngleThreshold_03_04_2018.xls');
+% writetable(modelStage4Trans, 'spheroidVoronoiModelEnergy_Stage4_Transitions_AngleThreshold_03_04_2018.xls');
 % 
-% writetable(modelStage4NoTrans(idsFilter(1:2:200), :), 'energyMeasurements_ellipsoidVoronoiModel_Stage4_NoTransitions_filtered_26_03_2018.xls');
-% writetable(modelStage4Trans(idsFilter(1:2:200), :), 'energyMeasurements_ellipsoidVoronoiModel_Stage4_transitions_filtered_26_03_2018.xls');
 
 % [modelStage4NoTransSummary, 6modelStage4NoTransEnergy] = getEnergyInfo(modelStage4NoTrans(idsFilter, :));
 % [modelStage4TransSummary, modelStage4TransEnergy] = getEnergyInfo(modelStage4Trans(idsFilter, :));
@@ -233,15 +249,15 @@ ttestDifferences = @(x, y) ttest2(x(:, 1) - x(:, 2), y(:, 1) - y(:, 2));
 % [modelStage4Summary, modelStage4Energy] = getEnergyInfo(vertcat(modelStage4NoTrans(idsFilter, :), modelStage4Trans(idsFilter, :)));
 
 %% Frusta Model Stage 4
-frustaStage4 = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\energyMeasurements_spheroidAllFrustaModel_Stage4_NoTransition_28-Mar-2018.xls');
-voronoiTrans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\ellipsoidVoronoiModel_Stage4_energyTransitionEdges_05-Mar-2018.xls');
-voronoiNoTrans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\ellipsoidVoronoiModel_Stage4_energyNoTransitionEdges_05-Mar-2018.xls');
-
-[ allFrustaFakeTrans, allFrustaNoTrans, allFrustaFakeTransFiltered, allFrustaNoTransFiltered   ] = correspondanceFrustaAndVoronoi( voronoiNoTrans, voronoiTrans, frustaStage4 );
-writetable(allFrustaNoTrans, 'energyMeasurements_spheroidAllFrustaModel_Stage4_NoTransitions_28_03_2018.xls');
-writetable(allFrustaFakeTrans, 'energyMeasurements_spheroidAllFrustaModel_Stage4_FakeTransitions_28_03_2018.xls');
-writetable(allFrustaNoTransFiltered, 'energyMeasurements_spheroidAllFrustaModel_Stage4_NoTransitions_filtered_28_03_2018.xls');
-writetable(allFrustaFakeTransFiltered, 'energyMeasurements_spheroidAllFrustaModel_Stage4_FakeTransitions_filtered_28_03_2018.xls');
+% frustaStage4 = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\energyMeasurements_spheroidAllFrustaModel_Stage4_NoTransition_28-Mar-2018.xls');
+% voronoiTrans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\ellipsoidVoronoiModel_Stage4_energyTransitionEdges_05-Mar-2018.xls');
+% voronoiNoTrans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\ellipsoidVoronoiModel_Stage4_energyNoTransitionEdges_05-Mar-2018.xls');
+% 
+% [ allFrustaFakeTrans, allFrustaNoTrans, allFrustaFakeTransFiltered, allFrustaNoTransFiltered   ] = correspondanceFrustaAndVoronoi( voronoiNoTrans, voronoiTrans, frustaStage4 );
+% writetable(allFrustaNoTrans, 'energyMeasurements_spheroidAllFrustaModel_Stage4_NoTransitions_28_03_2018.xls');
+% writetable(allFrustaFakeTrans, 'energyMeasurements_spheroidAllFrustaModel_Stage4_FakeTransitions_28_03_2018.xls');
+% writetable(allFrustaNoTransFiltered, 'energyMeasurements_spheroidAllFrustaModel_Stage4_NoTransitions_filtered_28_03_2018.xls');
+% writetable(allFrustaFakeTransFiltered, 'energyMeasurements_spheroidAllFrustaModel_Stage4_FakeTransitions_filtered_28_03_2018.xls');
 
 %% Egg chamber Stage 8
 % eggChamberStage8Trans = readtable('D:\Pablo\Epithelia3D\Egg chamber\docs\energyMeasurements_eggChamber_Stage8_transitions_19_02_2018.xlsx');
@@ -260,24 +276,41 @@ writetable(allFrustaFakeTransFiltered, 'energyMeasurements_spheroidAllFrustaMode
 % 
 % [stage8Summary, stage8Energy] = getEnergyInfo(vertcat(eggChamberStage8Trans, eggChamberStage8NoTrans(randomIndicesNoTrans(1:maxSamples), :)));
 % 
-% %% Ellipsoid Modell Stage 8
-% modelStage8NoTrans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\ellipsoidVoronoiModel_Stage8_energyNoTransitions_Filtered200measurements_06-Mar_2018.xlsx');
-% modelStage8Trans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\ellipsoidVoronoiModel_Stage8_energyTransitions_Filtered200measurements_06-Mar_2018.xlsx');
-% 
-% maxSamples = size(modelStage8Trans, 1);
-% 
-% modelStage8NoTrans.Properties.VariableNames = cellfun(@(x) strrep(x, 'inner', 'apical'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
-% modelStage8NoTrans.Properties.VariableNames = cellfun(@(x) strrep(x, 'outer', 'basal'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
-% 
-% modelStage8Trans.Properties.VariableNames = cellfun(@(x) strrep(x, 'inner', 'apical'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
-% modelStage8Trans.Properties.VariableNames = cellfun(@(x) strrep(x, 'outer', 'basal'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
-% 
-% %idsFilter = 1:2:200;
-% %idsFilter = randperm(200, maxSamples);
-% idsFilter = randperm(size(modelStage8NoTrans, 1), maxSamples);
-% 
-% writetable(modelStage8NoTrans(idsFilter(1:2:200), :), 'energyMeasurements_spheroidVoronoiModel_Stage8_NoTransitions_filtered_26_03_2018.xls');
-% writetable(modelStage8Trans(idsFilter(1:2:200), :), 'energyMeasurements_spheroidVoronoiModel_Stage8_transitions_filtered_26_03_2018.xls');
+%% Ellipsoid Modell Stage 8
+modelStage8NoTrans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\EnergyMotifs\Voronoi\Matching_Motifs_Basal-Apical\Unfiltered\spheroidVoronoiModelEnergy_Stage 8_NoTransition_AngleThreshold_03-Apr-2018.xls');
+modelStage8Trans = readtable('D:\Pablo\Epithelia3D\InSilicoModels\EllipsoidModel\docs\EnergyMotifs\Voronoi\Matching_Motifs_Basal-Apical\Unfiltered\spheroidVoronoiModelEnergy_Stage 8_Transition_AngleThreshold_03-Apr-2018.xls');
+
+[~, firstOcurrences] = unique(modelStage8Trans(:, [1:7]));
+modelStage8Trans = modelStage8Trans(firstOcurrences, :);
+
+[~, firstOcurrences] = unique(modelStage8NoTrans(:, [1:7]));
+modelStage8NoTrans = modelStage8NoTrans(firstOcurrences, :);
+
+
+[~, firstOcurrences] = unique(modelStage8Trans(:, [1:4 19]));
+modelStage8Trans = modelStage8Trans(firstOcurrences, :);
+
+[~, firstOcurrences] = unique(modelStage8NoTrans(:, [1:4 19]));
+modelStage8NoTrans = modelStage8NoTrans(firstOcurrences, :);
+
+maxSamples = size(modelStage8Trans, 1);
+
+modelStage8NoTrans.Properties.VariableNames = cellfun(@(x) strrep(x, 'inner', 'apical'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
+modelStage8NoTrans.Properties.VariableNames = cellfun(@(x) strrep(x, 'outer', 'basal'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
+
+modelStage8Trans.Properties.VariableNames = cellfun(@(x) strrep(x, 'inner', 'apical'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
+modelStage8Trans.Properties.VariableNames = cellfun(@(x) strrep(x, 'outer', 'basal'), modelStage8NoTrans.Properties.VariableNames, 'UniformOutput', false);
+
+%idsFilter = 1:2:200;
+%idsFilter = randperm(200, maxSamples);
+idsFilterNoTrans = randperm(size(modelStage8NoTrans, 1), 100);
+idsFilterTrans = randperm(size(modelStage8Trans, 1), 100);
+
+writetable(modelStage8NoTrans(idsFilterNoTrans, :), 'spheroidVoronoiModelEnergy_Stage8_NoTransitions_AngleThreshold_filtered_03_04_2018.xls');
+writetable(modelStage8Trans(idsFilterTrans, :), 'spheroidVoronoiModelEnergy_Stage8_Transitions_AngleThreshold_filtered_03_04_2018.xls');
+
+writetable(modelStage8NoTrans, 'spheroidVoronoiModelEnergy_Stage8_NoTransitions_AngleThreshold_03_04_2018.xls');
+writetable(modelStage8Trans, 'spheroidVoronoiModelEnergy_Stage8_Transitions_AngleThreshold_03_04_2018.xls');
 
 % [modelStage8NoTransSummary, modelStage8NoTransEnergy] = getEnergyInfo(modelStage8NoTrans(idsFilter, :));
 % [modelStage8TransSummary, modelStage8TransEnergy] = getEnergyInfo(modelStage8Trans(idsFilter, :));
