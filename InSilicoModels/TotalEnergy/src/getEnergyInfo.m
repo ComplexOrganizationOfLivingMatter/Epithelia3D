@@ -2,6 +2,8 @@ function [ differenceTableSummaryEnergyData, totalEnergyData ] = getEnergyInfo( 
 %GETENERGYINFO Summary of this function goes here
 %   Detailed explanation goes here
 
+inputTable.Properties.VariableNames = cellfun(@(x) strrep(strrep(x, 'inner', 'apical'), 'outer', 'basal'), inputTable.Properties.VariableNames, 'UniformOutput', false);
+
 %Energy formulas
 if any(cellfun(@(x) isempty(strfind(x, 'basal')) == 0, inputTable.Properties.VariableNames))
     disp('Calculating energy in apical and basal');

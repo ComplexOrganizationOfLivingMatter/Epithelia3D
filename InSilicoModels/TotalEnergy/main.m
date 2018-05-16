@@ -23,18 +23,24 @@ for numExperiment = 1:length(fileCombinations(:, 1))
     
     if isempty(frustaFile) == 0
         
+        positions = strfind(frustaFile, '_');
+        apicalFrustaFile = strcat(frustaFile(1:positions(end-2)), 'surfaceRatio_1', frustaFile(positions(end):end));
+        allFrustaExcel = unifyApicalAndBasal(readtable(apicalFrustaFile), readtable(frustaFile));
+        
         noTransitionsFile = strrep(transFile, '_Transitions_', '_NoTransitions_');
         noTransitionsFile = strrep(noTransitionsFile, 'Fake', '');
         voronoiTransitionsExcel = readtable(transFile);
         voronoiNoTransitionsExcel = readtable(noTransitionsFile);
         
-        [ allFrustaFakeTrans, allFrustaNoTrans, ~, ~] = correspondanceFrustaAndVoronoi( readtable(noTransitionsFile), readtable(transFile), readtable(frustaFile) );
+        [ allFrustaFakeTrans, allFrustaNoTrans, ~, ~] = correspondanceFrustaAndVoronoi( readtable(noTransitionsFile), readtable(transFile), allFrustaExcel);
         positions = strfind(frustaFile, '_');
         
-        writetable(allFrustaNoTrans, strcat(frustaFile(1:positions(end)), 'NoTransitions_', frustaFile(positions(end)+1:length(frustaFile))));
         frustaTransFile = strcat(frustaFile(1:positions(end)), 'FakeTransitions_', frustaFile(positions(end)+1:length(frustaFile)));
-        writetable(allFrustaFakeTrans, frustaTransFile);
+        if exist(frustaTransFile, 'file') ~= 2
+            writetable(allFrustaNoTrans, strcat(frustaFile(1:positions(end)), 'NoTransitions_', frustaFile(positions(end)+1:length(frustaFile))));
+            writetable(allFrustaFakeTrans, frustaTransFile);
+        end
         
-        outputTable = horzcat(outputTable, computeTotalEnergy(frustaTransFile, strcat('Frusta_', experimentName)));
+        outputTable = horzcat(outputTable, computeTotalEnergy(frustaTransFile, strrep(experimentName, 'Voronoi', 'Frusta')));
     end
 end
