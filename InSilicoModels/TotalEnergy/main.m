@@ -19,7 +19,7 @@ for numExperiment = 1:length(fileCombinations(:, 1))
     experimentName = fileCombinations{numExperiment, 1};
     transFile = fileCombinations{numExperiment, 2};
     frustaFile = fileCombinations{numExperiment, 3};
-    outputTable = horzcat(outputTable, computeTotalEnergy(transFile, experimentName));
+    outputTable = horzcat(outputTable, computeTotalEnergy(transFile, experimentName, isempty(frustaFile) == 0));
     
     if isempty(frustaFile) == 0
         

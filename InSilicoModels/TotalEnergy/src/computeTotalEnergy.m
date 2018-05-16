@@ -1,4 +1,4 @@
-function [ outputTable ] = computeTotalEnergy( transitionsFile, experimentName )
+function [ outputTable ] = computeTotalEnergy( transitionsFile, experimentName, applyEdgeThreshold )
 %COMPUTETOTALENERGY Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -7,6 +7,13 @@ function [ outputTable ] = computeTotalEnergy( transitionsFile, experimentName )
     transitionsExcel = readtable(transitionsFile);
     noTransitionsExcel = readtable(noTransitionsFile);
 
+    edgeLengthPositions = cellfun(@(x) isempty(strfind(lower(x), 'edgelength')) == 0, noTransitionsExcel.Properties.VariableNames);
+    
+    if applyEdgeThreshold
+        noTransitionsExcel(any(noTransitionsExcel{:, edgeLengthPositions} <= 4, 2), :) = [];
+        transitionsExcel(any(transitionsExcel{:, edgeLengthPositions} <= 4, 2), :) = [];
+    end
+    
     [noTransitionsEnergy, ~] = getEnergyInfo(noTransitionsExcel);
     [transitionsEnergy, ~] = getEnergyInfo(transitionsExcel);
     [tissueEnergy, ~] = getEnergyInfo(vertcat(transitionsExcel, noTransitionsExcel));
