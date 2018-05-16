@@ -153,8 +153,7 @@ for numLayer=1:2
     infoSharedLayers{numLayer,1}(:,4)=averageAreaRealShared(:,1);
     infoSharedLayers{numLayer,1}(:,5)=averagePercentageShared(:,1);
     
-    %Bucle para dividir la variable de los porcentajes compartidos por el
-    %numero de vecinos
+    %Loop to divide the variable of the shared percentages by the number of neighbors
     for numCellShared=1:size(sharedPercentageWithOnlyNextLayer,1)
         actualNumNeigh=size(sharedPercentageWithOnlyNextLayer{numCellShared,1},1);
         sharedPercentageByNumNeigh{actualNumNeigh,1}(:,numCellShared)=sharedPercentageWithOnlyNextLayer{numCellShared,1}(:);
@@ -165,7 +164,7 @@ for numLayer=1:2
     sharedPercentageWithOnlyNextLayerByNumNeigh{1,1}=sharedPercentageWithOnlyNextLayerByNumNeigh{1,1}';
     
     %This loop is made to count the number of neighbors according to the percentage they share
-    %with the current layer, that is between 0 and 25%, 25-50%, 50-75% and 75-100%
+    %with the current layer, that is between 0 and 10%, 11-20%, and so on 91-100%
     for numNeighShared=1:size(sharedPercentageWithOnlyNextLayerByNumNeigh,1)
         for percentageByNeigh=1:size(sharedPercentageWithOnlyNextLayerByNumNeigh{numNeighShared,1},1)
             
