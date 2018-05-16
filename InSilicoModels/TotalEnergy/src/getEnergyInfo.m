@@ -1,9 +1,9 @@
-function [ differenceTableSummaryEnergyData, totalEnergyData ] = getEnergyInfo( data )
+function [ differenceTableSummaryEnergyData, totalEnergyData ] = getEnergyInfo( inputTable )
 %GETENERGYINFO Summary of this function goes here
 %   Detailed explanation goes here
 
 %Energy formulas
-if any(cellfun(@(x) isempty(strfind(x, 'basal')) == 0, data.Properties.VariableNames))
+if any(cellfun(@(x) isempty(strfind(x, 'basal')) == 0, inputTable.Properties.VariableNames))
     disp('Calculating energy in apical and basal');
     energyBasal = @(x) (x.basalSumEdgesOfEnergy ./ mean([x.basalW1 x.basalW2], 2)) ./ (2*sqrt(1+(mean([x.basalH1 x.basalH2], 2) ./ mean([x.basalW1 x.basalW2], 2)).^2));
     energyApical = @(x) (x.apicalSumEdgesOfEnergy ./ mean([x.apicalW1 x.apicalW2], 2)) ./ (2*sqrt(1+(mean([x.apicalH1 x.apicalH2], 2) ./ mean([x.apicalW1 x.apicalW2], 2)).^2));
@@ -18,7 +18,7 @@ else
 end
 
 
-totalEnergyData = totalEnergyCalculation(data);
+totalEnergyData = totalEnergyCalculation(inputTable);
 
 differenceTableSummary = @(x) vertcat(mean(x(:, 2)), ...
     std(x(:, 2)), ...
@@ -50,7 +50,7 @@ differenceTableSummaryReduction = @(x) vertcat(mean(x(:, 2)), ...
     std(abs(-x(:, 1) + x(:, 2))));
 
 
-differenceTableSummaryEnergyData = totalEnergyNoApicalNoBasalTableSummary(totalEnergyData);
+differenceTableSummaryEnergyData = differenceTableSummary(totalEnergyData);
 
 end
 
