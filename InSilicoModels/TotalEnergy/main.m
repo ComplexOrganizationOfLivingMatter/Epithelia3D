@@ -55,15 +55,23 @@ surfaceRatios = {'1', '1.25', '1.6667', '2', '5'};
 
 finalTable = table();
 
+totalfrustaPolDist = [];
+totalVoronoiPolDist = [];
+
 for numSR = 1:length(surfaceRatios)
     
     voronoiFile = dir(strcat(inputDirectoriesVoronoi, 'allMotifsEnergy_200seeds_surfaceRatio', surfaceRatios{numSR}, '_*'));
     frustaFile = dir(strcat(inputDirectoriesFrusta, 'allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatios{numSR}, '_*'));
     [uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( readtable(strcat(inputDirectoriesFrusta, frustaFile(1).name)), readtable(strcat(inputDirectoriesVoronoi, voronoiFile(1).name)), str2double(surfaceRatios{numSR}));
     
+    totalfrustaPolDist = vertcat(totalfrustaPolDist, mean(frustaPolDist));
+    totalVoronoiPolDist = vertcat(totalVoronoiPolDist, mean(voronoiPolDist));
+    
     [frustaTissueEnergy, ~] = getEnergyInfo(modelFrusta);
     [voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi);
     outputTable = table(frustaTissueEnergy, voronoiTissueEnergy);
+    outputTable(end+1, :) = table(size(modelFrusta, 1), size(modelVoronoi, 1));
+    outputTable(end+1, :) = table(length(vertcat(uniqueValidCells{:})), length(vertcat(uniqueValidCells{:})));
     outputTable.Properties.VariableNames = cellfun(@(x) strcat('SR', strrep(surfaceRatios{numSR}, '.', ''), '_', x), outputTable.Properties.VariableNames, 'UniformOutput', false);
     
     finalTable = horzcat(finalTable, outputTable);
