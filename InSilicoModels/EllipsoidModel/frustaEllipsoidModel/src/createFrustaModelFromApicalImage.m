@@ -88,17 +88,14 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
         outputNameFile(1).name = outputFileName;
         %close outputFigure
         
+        verticesPerCellInitial=initialEllipsoid.verticesPerCell;
+        verticesConnectCellsInitial=initialEllipsoid.verticesConnectCells;
+        neighsInitial=initialEllipsoid.neighbourhood;
+
+        save(strcat(outputFileDirectory, '\', outputNameFile(1).name),'neighsInitial','verticesPerCellInitial','verticesConnectCellsInitial','finalVerticesAugmented', '-append');
         
     else
         disp('Skipping...')
     end
-    
-    verticesPerCellInitial=initialEllipsoid.verticesPerCell;
-    verticesConnectCellsInitial=initialEllipsoid.verticesConnectCells;
-    neighsInitial=initialEllipsoid.neighbourhood;
-    
-    save(strcat(outputFileDirectory, '\', outputNameFile(1).name),'neighsInitial','verticesPerCellInitial','verticesConnectCellsInitial','finalVerticesAugmented', '-append');
-     
-
 end
 
