@@ -24,13 +24,13 @@ function mainTubularControlModelProjectionSurface(nSeeds,basalExpansions,apicalR
 
 
         %defining colours to draw the frusta diagrams
-        colours = colorcube(nSeeds);
-        colours = colours(randperm(nSeeds), :);
-
-        for nRand=1:numRandoms
-            %drawing frusta expansions diagrams and saving the vertices
-            drawAndSaveVertices(relativePathVoronoi,nSeeds,nRand,numSurfaces,typeProjection,basalExpansions,apicalReductions,colours,H);
-        end
+%         colours = colorcube(nSeeds);
+%         colours = colours(randperm(nSeeds), :);
+% 
+%         for nRand=1:numRandoms
+%             %drawing frusta expansions diagrams and saving the vertices
+%             drawAndSaveVertices(relativePathVoronoi,nSeeds,nRand,numSurfaces,typeProjection,basalExpansions,apicalReductions,colours,H);
+%         end
 
         %calculation of energy in frusta model
         energyCalculationControlTubularModel(numSurfaces,relativePathVoronoi,numRandoms,typeProjection,nSeeds,basalExpansions,apicalReductions)

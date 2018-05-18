@@ -1,4 +1,4 @@
-addpath(genpath('srcPaperCode'))
+addpath(genpath('src'))
 
 %% Defining initial parameters
 N_images=20;%total number of different initial images
@@ -12,7 +12,9 @@ distanceBetwSeeds=5;%minimum distances between seeds, avoiding overlaping
 %analize as frusta or scutoids.
 thresholdPixelsScutoid=4;
 
-setOfSeeds=[40 80 200 400 800];
+% setOfSeeds=[40 80 200 400 800];
+setOfSeeds=800;
+apicalReductions=1:-0.1:0.1;
 basalExpansions= 1./apicalReductions;
 %The paper didn't explore deeply the 'reduction', only was analysed in a
 %preliminar case. So if you decide execute the reduction alternative, 
@@ -27,14 +29,18 @@ for i=1:length(setOfSeeds)
         n_seeds=setOfSeeds(i);
 
          try 
-            % 1 - Generation of tubular CVT from random seeds
-            mainTubularCVTGenerator(N_images,N_frames,H,W,n_seeds,distanceBetwSeeds)
+            %% 1 - Generation of tubular CVT from random seeds
+%             mainTubularCVTGenerator(N_images,N_frames,H,W,n_seeds,distanceBetwSeeds)
 
             %% 2 - Projection of Voronoi seeds to another cylindrical surface and generation of Voronoi cells
             %the next main, also carry out the measurements of edge length, edge angles and scutoids
             %presence
-            mainTubularVoronoiModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W,thresholdPixelsScutoid)
+%             mainTubularVoronoiModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W,thresholdPixelsScutoid)
 
+            %% 3- Control model (all frusta) and its line-tension energy
+            mainTubularControlModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W)
+            
+            
         catch ME
             disp(['error in number of seeds: ' num2str(n_seeds)])
             disp(ME.stack(1).name)

@@ -83,21 +83,18 @@ function drawAndSaveVertices(relativePath,nSeeds,nRand,numSurfaces,typeProjectio
 
                     V=unique(V,'rows','stable');
                     V=round(V);
-                    if ismember(nCell,borderCells)
-
+                    if ismember(nCell,borderCells) || max(V(:,2))-min(V(:,2))>W_projection/2
                         if nSurf==1
-                            [V1,V2,V1index]=checkVerticesBorder(nCell,L_img,V,W_projection);
+                            [V1,V2,V1index,~]=checkVerticesBorder(nCell,L_img,V,W_projection);
                             indexesBorderVerticesLeftPerCell{nCell}=V1index;
                             arrayValidVerticesBorderLeft(indexes(V1index(1:(end-(length(indexesNoValidCells))))))=1;
-                            arrayValidVerticesBorderRight(indexes(~V1index(1:(end-(length(indexesNoValidCells))))))=1;
+                            arrayValidVerticesBorderRight(indexes(~V1index(1:(end-(length(indexesNoValidCells))))))=1;   
                         else
                             V1index=indexesBorderVerticesLeftPerCell{nCell};
                             V1=V;
                             V2=V;
                             V1(V1index,2)=V(V1index,2)+W_projection; 
                             V2(~V1index,2)=V(~V1index,2)-W_projection; 
-                            
-                            
                         end
 
                         orderVerticesV1=convhull(V1(:,1),V1(:,2));

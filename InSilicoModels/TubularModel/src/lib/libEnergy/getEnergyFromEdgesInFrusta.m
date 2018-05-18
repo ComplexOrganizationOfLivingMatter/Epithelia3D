@@ -36,13 +36,14 @@ function [dataEnergy,dataEnergyFilterByAngle] = getEnergyFromEdgesInFrusta( L_im
    
     %testing transition data
     dataEnergy.fourCellsMotif=[pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];
-    dataEnergyFilterByAngle.fourCellsMotif=[pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];
+%     dataEnergyFilterByAngle.fourCellsMotif=[pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];
     
     %get energy from all valid motifs
-    [dataEnergy.EdgeLength,dataEnergy.SumEdgesOfEnergy,dataEnergy.EdgeAngle,dataEnergy.H1,dataEnergy.H2,dataEnergy.W1,dataEnergy.W2,notEmptyIndexes]=capturingWidthHeightAndEnergy(projectionVerticesPerCell,verticesProjection,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_projection,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight);
+    numberOfCellsTrasversalSection=length(unique(L_img(1,:)));
+    [dataEnergy.EdgeLength,dataEnergy.SumEdgesOfEnergy,dataEnergy.EdgeAngle,dataEnergy.H1,dataEnergy.H2,dataEnergy.W1,dataEnergy.W2,notEmptyIndexes]=capturingWidthHeightAndEnergy(projectionVerticesPerCell,verticesProjection,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_projection,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight,numberOfCellsTrasversalSection);
     %get energy from all valid motifs that pass the angle treshold for H ~
     %(0-30º) and W ~ (60-90º)
-    [dataEnergyFilterByAngle.EdgeLength,dataEnergyFilterByAngle.SumEdgesOfEnergy,dataEnergyFilterByAngle.EdgeAngle,dataEnergyFilterByAngle.H1,dataEnergyFilterByAngle.H2,dataEnergyFilterByAngle.W1,dataEnergyFilterByAngle.W2,notEmptyIndexesFilterByAgle]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(projectionVerticesPerCell,verticesProjection,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_projection,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight);
+%     [dataEnergyFilterByAngle.EdgeLength,dataEnergyFilterByAngle.SumEdgesOfEnergy,dataEnergyFilterByAngle.EdgeAngle,dataEnergyFilterByAngle.H1,dataEnergyFilterByAngle.H2,dataEnergyFilterByAngle.W1,dataEnergyFilterByAngle.W2,notEmptyIndexesFilterByAgle]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(projectionVerticesPerCell,verticesProjection,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_projection,borderCells,arrayValidVerticesBorderLeft,arrayValidVerticesBorderRight,numberOfCellsTrasversalSection);
     
     dataEnergy.fourCellsMotif=dataEnergy.fourCellsMotif(notEmptyIndexes,:);
     dataEnergy.H1=dataEnergy.H1(notEmptyIndexes);
@@ -53,15 +54,15 @@ function [dataEnergy,dataEnergyFilterByAngle] = getEnergyFromEdgesInFrusta( L_im
     dataEnergy.EdgeLength=dataEnergy.EdgeLength(notEmptyIndexes);
     dataEnergy.EdgeAngle=dataEnergy.EdgeAngle(notEmptyIndexes);
     
-    dataEnergyFilterByAngle.fourCellsMotif=dataEnergyFilterByAngle.fourCellsMotif(notEmptyIndexesFilterByAgle,:);
-    dataEnergyFilterByAngle.H1=dataEnergyFilterByAngle.H1(notEmptyIndexesFilterByAgle);
-    dataEnergyFilterByAngle.H2=dataEnergyFilterByAngle.H2(notEmptyIndexesFilterByAgle);
-    dataEnergyFilterByAngle.W1=dataEnergyFilterByAngle.W1(notEmptyIndexesFilterByAgle);
-    dataEnergyFilterByAngle.W2=dataEnergyFilterByAngle.W2(notEmptyIndexesFilterByAgle);
-    dataEnergyFilterByAngle.SumEdgesOfEnergy=dataEnergyFilterByAngle.SumEdgesOfEnergy(notEmptyIndexesFilterByAgle);
-    dataEnergyFilterByAngle.EdgeLength=dataEnergyFilterByAngle.EdgeLength(notEmptyIndexesFilterByAgle);
-    dataEnergyFilterByAngle.EdgeAngle=dataEnergyFilterByAngle.EdgeAngle(notEmptyIndexesFilterByAgle);
-    
-    
+%     dataEnergyFilterByAngle.fourCellsMotif=dataEnergyFilterByAngle.fourCellsMotif(notEmptyIndexesFilterByAgle,:);
+%     dataEnergyFilterByAngle.H1=dataEnergyFilterByAngle.H1(notEmptyIndexesFilterByAgle);
+%     dataEnergyFilterByAngle.H2=dataEnergyFilterByAngle.H2(notEmptyIndexesFilterByAgle);
+%     dataEnergyFilterByAngle.W1=dataEnergyFilterByAngle.W1(notEmptyIndexesFilterByAgle);
+%     dataEnergyFilterByAngle.W2=dataEnergyFilterByAngle.W2(notEmptyIndexesFilterByAgle);
+%     dataEnergyFilterByAngle.SumEdgesOfEnergy=dataEnergyFilterByAngle.SumEdgesOfEnergy(notEmptyIndexesFilterByAgle);
+%     dataEnergyFilterByAngle.EdgeLength=dataEnergyFilterByAngle.EdgeLength(notEmptyIndexesFilterByAgle);
+%     dataEnergyFilterByAngle.EdgeAngle=dataEnergyFilterByAngle.EdgeAngle(notEmptyIndexesFilterByAgle);
+%     
+    dataEnergyFilterByAngle=[];
 end
 
