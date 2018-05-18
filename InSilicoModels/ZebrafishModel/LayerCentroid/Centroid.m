@@ -1,5 +1,5 @@
 function [centroidsC, pixel, maskBW] = Centroid( photoPath, name)
-
+%CENTROID Locate the centroids of the nuclei of the real images
 
 %%Load images
 Img=imread(photoPath);

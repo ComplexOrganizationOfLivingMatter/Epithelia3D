@@ -1,6 +1,6 @@
 function [ isNeighbours, sum ] = neighbour_frame( neighs_Z, trans, cellTrans )
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+
+%Check that the cells are neighbors in the same frame
 isNeighbours=1;
 sum=0;
 neighsNow=neighs_Z{trans(cellTrans,1)};

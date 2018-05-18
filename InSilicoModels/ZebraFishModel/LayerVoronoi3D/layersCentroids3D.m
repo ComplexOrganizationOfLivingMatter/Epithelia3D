@@ -1,9 +1,11 @@
 function layersCentroids3D( pathArchMat, initialFrame )
+%LAYERSCENTROIDS3D Represents layered centroids in 3D
+
 close all;
-%Carga las semillas
+%Load the seeds
 load(pathArchMat);
 
-%Representar las semillas segun la capa y por tanto, por color.
+%Represent the seeds according to the layer and therefore, by color.
 Color=colorcube(10);
 numCentroid=1;
 f=figure('Visible', 'on');

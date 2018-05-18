@@ -11,26 +11,8 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
     outputFileName = strrep(outputFileName{end}, 'ellipsoid', 'frusta');
     
     outputNameFile=dir([outputFileDirectory '\' outputFileName]);
-        
-    load(inputFile);
-
-    disp('Getting vertices 3D');
-    %Get vertices info on the apical layer
     
-    if isfield(initialEllipsoid, 'neighbourhood') == 0
-        [initialEllipsoid] = calculate_neighbours3D(initialEllipsoid.img3DLayer, initialEllipsoid);
-    end
     
-    initialEllipsoid = getVertices3D( initialEllipsoid.img3DLayer, initialEllipsoid.neighbourhood, initialEllipsoid );
-
-    
-    initialEllipsoid.resolutionFactor = ellipsoidInfo.resolutionFactor;
-    initialEllipsoid.resolutionEllipse = 500;
-
-    disp('Getting outter layer vertices');
-    %New vertices on basal
-    [ finalVerticesAugmented ] = getAugmentedCentroids( initialEllipsoid, vertcat(initialEllipsoid.verticesPerCell{:}), ellipsoidInfo.cellHeight);
-
     goForward = 0;
     if isempty(outputNameFile)
         goForward = 1;
@@ -38,7 +20,28 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
         goForward = 1;
     end
     
-    if goForward == 1        
+    if goForward == 1
+    
+        load(inputFile);
+
+        disp('Getting vertices 3D');
+        %Get vertices info on the apical layer
+
+        if isfield(initialEllipsoid, 'neighbourhood') == 0
+            [initialEllipsoid] = calculate_neighbours3D(initialEllipsoid.img3DLayer, initialEllipsoid);
+        end
+
+        initialEllipsoid = getVertices3D( initialEllipsoid.img3DLayer, initialEllipsoid.neighbourhood, initialEllipsoid );
+
+
+        initialEllipsoid.resolutionFactor = ellipsoidInfo.resolutionFactor;
+        initialEllipsoid.resolutionEllipse = 500;
+
+        disp('Getting outter layer vertices');
+        %New vertices on basal
+        [ finalVerticesAugmented ] = getAugmentedCentroids( initialEllipsoid, vertcat(initialEllipsoid.verticesPerCell{:}), ellipsoidInfo.cellHeight);
+
+    
         allFrustaImage = initialEllipsoid.img3DLayer;
         
         %     colours = colorcube(size(initialEllipsoid.centroids, 1));
@@ -85,15 +88,14 @@ function [ ] = createFrustaModelFromApicalImage(inputFile )
         outputNameFile(1).name = outputFileName;
         %close outputFigure
         
-        
-    end
-    
-    verticesPerCellInitial=initialEllipsoid.verticesPerCell;
-    verticesConnectCellsInitial=initialEllipsoid.verticesConnectCells;
-    neighsInitial=initialEllipsoid.neighbourhood;
-    
-    save(strcat(outputFileDirectory, '\', outputNameFile(1).name),'neighsInitial','verticesPerCellInitial','verticesConnectCellsInitial','finalVerticesAugmented', '-append');
-     
+        verticesPerCellInitial=initialEllipsoid.verticesPerCell;
+        verticesConnectCellsInitial=initialEllipsoid.verticesConnectCells;
+        neighsInitial=initialEllipsoid.neighbourhood;
 
+        save(strcat(outputFileDirectory, '\', outputNameFile(1).name),'neighsInitial','verticesPerCellInitial','verticesConnectCellsInitial','finalVerticesAugmented', '-append');
+        
+    else
+        disp('Skipping...')
+    end
 end
 

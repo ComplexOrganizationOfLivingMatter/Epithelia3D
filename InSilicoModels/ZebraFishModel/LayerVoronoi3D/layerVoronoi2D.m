@@ -1,4 +1,7 @@
 function layerVoronoi2D( pathArchMat, photoPath, photoName)
+%LAYERVORONOI2D Take the seeds of each layer (results of the first block) and create from it a voronoi in 2D of each layer
+
+
 
 close all;
 load(pathArchMat);

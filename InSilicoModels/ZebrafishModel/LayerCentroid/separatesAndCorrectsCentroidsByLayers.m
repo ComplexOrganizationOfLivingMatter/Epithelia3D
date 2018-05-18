@@ -61,7 +61,7 @@ for numFrame=currentFrame:maxFrame % Variable that corresponds with the number o
         [LayerCentroid] = LayerDraw( LayerCentroid, Color, numFrame, initialFrame, photo_Path, name, pixel);
         
         %Save the result to a .mat file
-        finalFileName=['LayersCentroidsPrueba' sprintf('%d',folderNumber) '.mat'];
+        finalFileName=['LayersCentroids' sprintf('%d',folderNumber) '.mat'];
         save(finalFileName, 'LayerCentroid', 'centroids', 'pixel', 'newLayer')
         
         %Display the next frame number in screen

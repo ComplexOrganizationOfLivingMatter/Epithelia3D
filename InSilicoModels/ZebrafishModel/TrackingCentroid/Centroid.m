@@ -9,14 +9,6 @@ I=Img>80;  %Convert image to binary image, based on threshold
 %%Deleting objects smaller than 5 pix
 BW2= bwareaopen(I,5);
 
-
-% D = bwdist(~BW2);
-% D = -D;
-% L = watershed(D);
-% L(~BW2) = 0;
-% maskBW=double(L);
-% imshow(maskBW)
- 
 %%Dilatation
 se=strel('disk',2);
 BW2=imdilate(BW2,se);
@@ -49,18 +41,6 @@ maskBW=bwlabel(mask,8);
 centroids = regionprops(maskBW, 'Centroid', 'PixelList');
 centroidsC = vertcat(centroids.Centroid);
 pixel = vertcat(centroids.PixelList);
-
-
-%%Show the created image along with the image of the centroids and Voronoi
-% f=figure('Visible', 'on');
-% imshow(Img);
-% hold on;
-% 
-% [m,n] = size(centroids);
-% 
-% for i=1:m
-%    plot(centroidsC(i,1), centroidsC(i, 2), 'b*');
-% end
 
 
 end
