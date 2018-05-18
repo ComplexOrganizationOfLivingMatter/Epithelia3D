@@ -58,6 +58,9 @@ finalTable = table();
 totalfrustaPolDist = [];
 totalVoronoiPolDist = [];
 
+frustaEnergyPerAngle = cell(length(surfaceRatios), 1);
+voronoiEnergyPerAngle = cell(length(surfaceRatios), 1);
+
 definedAngles = 0:15:90;
 
 for numSR = 1:length(surfaceRatios)
@@ -96,4 +99,6 @@ for numSR = 1:length(surfaceRatios)
     outputTable.Properties.VariableNames = cellfun(@(x) strcat('SR', strrep(surfaceRatios{numSR}, '.', ''), '_', x), outputTable.Properties.VariableNames, 'UniformOutput', false);
     
     finalTable = horzcat(finalTable, outputTable);
+    frustaEnergyPerAngle{numSR} = frustaTissueEnergyPerAngle;
+    voronoiEnergyPerAngle{numSR} = voronoiTissueEnergyPerAngle;
 end
