@@ -71,7 +71,7 @@ for numSR = 1:length(surfaceRatios)
     [voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi);
     outputTable = table(frustaTissueEnergy, voronoiTissueEnergy);
     outputTable(end+1, :) = table(size(modelFrusta, 1), size(modelVoronoi, 1));
-    outputTable(end+1, :) = table(length(vertcat(uniqueValidCells{:})), length(vertcat(uniqueValidCells{:})));
+    outputTable(end+1, :) = table(length(horzcat(uniqueValidCells{:})), length(horzcat(uniqueValidCells{:})));
     outputTable.Properties.VariableNames = cellfun(@(x) strcat('SR', strrep(surfaceRatios{numSR}, '.', ''), '_', x), outputTable.Properties.VariableNames, 'UniformOutput', false);
     
     finalTable = horzcat(finalTable, outputTable);
