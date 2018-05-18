@@ -58,17 +58,38 @@ finalTable = table();
 totalfrustaPolDist = [];
 totalVoronoiPolDist = [];
 
+definedAngles = 0:15:90;
+
 for numSR = 1:length(surfaceRatios)
     
     voronoiFile = dir(strcat(inputDirectoriesVoronoi, 'allMotifsEnergy_200seeds_surfaceRatio', surfaceRatios{numSR}, '_*'));
     frustaFile = dir(strcat(inputDirectoriesFrusta, 'allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatios{numSR}, '_*'));
     [uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( readtable(strcat(inputDirectoriesFrusta, frustaFile(1).name)), readtable(strcat(inputDirectoriesVoronoi, voronoiFile(1).name)), str2double(surfaceRatios{numSR}));
     
+    % It was not necessary to perform the Edge length cutoff because we do
+    % not distinguish between transition and no transition.
+    
+    
     totalfrustaPolDist = vertcat(totalfrustaPolDist, mean(frustaPolDist));
     totalVoronoiPolDist = vertcat(totalVoronoiPolDist, mean(voronoiPolDist));
     
+    frustaTissueEnergyPerAngle = [];
+    voronoiTissueEnergyPerAngle = [];
+    
+    for numAngle = 2:length(definedAngles)
+        actualAngle = definedAngles(numAngle);
+        prevAngle = definedAngles(numAngle-1);
+        
+        [frustaTissueEnergy, ~] = getEnergyInfo(modelFrusta(modelFrusta.EdgeAngle >= prevAngle & modelFrusta.EdgeAngle >= prevAngle, :));
+        [voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi(modelVoronoi.EdgeAngle >= prevAngle & modelVoronoi.EdgeAngle >= prevAngle, :));
+        
+        frustaTissueEnergyPerAngle(:, end+1) = frustaTissueEnergy;
+        voronoiTissueEnergyPerAngle(:, end+1) = voronoiTissueEnergy;
+    end
+    
+    
     [frustaTissueEnergy, ~] = getEnergyInfo(modelFrusta);
-    [voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi);
+	[voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi);
     outputTable = table(frustaTissueEnergy, voronoiTissueEnergy);
     outputTable(end+1, :) = table(size(modelFrusta, 1), size(modelVoronoi, 1));
     outputTable(end+1, :) = table(length(horzcat(uniqueValidCells{:})), length(horzcat(uniqueValidCells{:})));
