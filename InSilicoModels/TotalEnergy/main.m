@@ -83,11 +83,15 @@ for numSR = 1:length(surfaceRatios)
         actualAngle = definedAngles(numAngle);
         prevAngle = definedAngles(numAngle-1);
         
-        [frustaTissueEnergy, ~] = getEnergyInfo(modelFrusta(modelFrusta.EdgeAngle >= prevAngle & modelFrusta.EdgeAngle < actualAngle, :));
-        [voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi(modelVoronoi.EdgeAngle >= prevAngle & modelVoronoi.EdgeAngle < actualAngle, :));
+        indexingPerAngleVoronoi = modelVoronoi.EdgeAngle >= prevAngle & modelVoronoi.EdgeAngle < actualAngle;
+        indexingPerAngleFrusta = modelFrusta.EdgeAngle >= prevAngle & modelFrusta.EdgeAngle < actualAngle;
         
-        frustaTissueEnergyPerAngle(:, end+1) = frustaTissueEnergy;
-        voronoiTissueEnergyPerAngle(:, end+1) = voronoiTissueEnergy;
+        [frustaTissueEnergy, ~] = getEnergyInfo(modelFrusta(indexingPerAngleFrusta, :));
+        [voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi(indexingPerAngleVoronoi, :));
+        
+        %Adding num motifs
+        frustaTissueEnergyPerAngle(:, end+1) = vertcat(frustaTissueEnergy, sum(indexingPerAngleFrusta));
+        voronoiTissueEnergyPerAngle(:, end+1) = vertcat(voronoiTissueEnergy, sum(indexingPerAngleVoronoi));
     end
     
     
