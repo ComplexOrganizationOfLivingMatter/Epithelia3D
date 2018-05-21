@@ -35,10 +35,10 @@ for i=1:length(setOfSeeds)
             %% 2 - Projection of Voronoi seeds to another cylindrical surface and generation of Voronoi cells
             %the next main, also carry out the measurements of edge length, edge angles and scutoids
             %presence
-%             mainTubularVoronoiModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W,thresholdPixelsScutoid)
+            mainTubularVoronoiModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W,thresholdPixelsScutoid)
 
             %% 3- Control model (all frusta) and its line-tension energy
-            mainTubularControlModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W)
+%             mainTubularControlModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W)
             
             
         catch ME

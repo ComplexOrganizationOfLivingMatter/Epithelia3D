@@ -21,14 +21,15 @@ function [ dataEnergy,dataEnergyFilterByAngle ] = getEnergyFromAllMotifs(L_basal
     
     %testing transition data
     dataEnergy.fourCellsMotif=[pairCellValidCells,cellsInMotifContactingCellsEdge];
-    dataEnergyFilterByAngle.fourCellsMotif=[pairCellValidCells,cellsInMotifContactingCellsEdge];
+%     dataEnergyFilterByAngle.fourCellsMotif=[pairCellValidCells,cellsInMotifContactingCellsEdge];
     
     %calculation of energy
-    [dataEnergy.EdgeLength,dataEnergy.SumEdgesOfEnergy,dataEnergy.EdgeAngle,dataEnergy.H1,dataEnergy.H2,dataEnergy.W1,dataEnergy.W2,notEmptyIndexes]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairCellValidCells,cellsInMotifContactingCellsEdge,W,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
+    numberOfCellsTrasversalSection=length(unique(L_basal));
+    [dataEnergy.EdgeLength,dataEnergy.SumEdgesOfEnergy,dataEnergy.EdgeAngle,dataEnergy.H1,dataEnergy.H2,dataEnergy.W1,dataEnergy.W2,notEmptyIndexes]=capturingWidthHeightAndEnergy(verticesPerCell,vertices,pairCellValidCells,cellsInMotifContactingCellsEdge,W,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal,numberOfCellsTrasversalSection);
     
-     %calculation of energy filtered by angle
-    [dataEnergyFilterByAngle.EdgeLength,dataEnergyFilterByAngle.SumEdgesOfEnergy,dataEnergyFilterByAngle.EdgeAngle,dataEnergyFilterByAngle.H1,dataEnergyFilterByAngle.H2,dataEnergyFilterByAngle.W1,dataEnergyFilterByAngle.W2,notEmptyIndexesFilterByAngle]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(verticesPerCell,vertices,pairCellValidCells,cellsInMotifContactingCellsEdge,W,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
-    
+%      %calculation of energy filtered by angle
+%     [dataEnergyFilterByAngle.EdgeLength,dataEnergyFilterByAngle.SumEdgesOfEnergy,dataEnergyFilterByAngle.EdgeAngle,dataEnergyFilterByAngle.H1,dataEnergyFilterByAngle.H2,dataEnergyFilterByAngle.W1,dataEnergyFilterByAngle.W2,notEmptyIndexesFilterByAngle]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(verticesPerCell,vertices,pairCellValidCells,cellsInMotifContactingCellsEdge,W,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
+    dataEnergyFilterByAngle=[];
 
 end
 

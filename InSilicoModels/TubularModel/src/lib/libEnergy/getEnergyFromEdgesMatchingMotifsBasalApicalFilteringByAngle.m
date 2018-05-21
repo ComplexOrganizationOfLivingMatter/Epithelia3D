@@ -53,12 +53,14 @@ function dataEnergy = getEnergyFromEdgesMatchingMotifsBasalApicalFilteringByAngl
         if size(pairCellValidCellsPreserved,1)>0
             %testing transition data
             dataEnergy.fourCellsMotif=[pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved];
-
-            [dataEnergy.basalEdgeLength,dataEnergy.basalSumEdgesOfEnergy,dataEnergy.basalEdgeAngle,dataEnergy.basalH1,dataEnergy.basalH2,dataEnergy.basalW1,dataEnergy.basalW2,notEmptyIndexesBasal]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(basalVerticesPerCell,verticesBasal,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_basal,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
+    
+            numberOfCellsTrasversalSection=length(unique(L_apical));
+            
+            [dataEnergy.basalEdgeLength,dataEnergy.basalSumEdgesOfEnergy,dataEnergy.basalEdgeAngle,dataEnergy.basalH1,dataEnergy.basalH2,dataEnergy.basalW1,dataEnergy.basalW2,notEmptyIndexesBasal]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(basalVerticesPerCell,verticesBasal,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_basal,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal,numberOfCellsTrasversalSection);
             if strcmp(flag,'transition')
-                [dataEnergy.apicalEdgeLength,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeAngle,dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,notEmptyIndexesApical]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(apicalVerticesPerCell,verticesApical,cellsInMotifNoContactValidCellsPreserved,pairCellValidCellsPreserved,W_apical,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical);       
+                [dataEnergy.apicalEdgeLength,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeAngle,dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,notEmptyIndexesApical]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(apicalVerticesPerCell,verticesApical,cellsInMotifNoContactValidCellsPreserved,pairCellValidCellsPreserved,W_apical,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical,numberOfCellsTrasversalSection);       
             else
-                [dataEnergy.apicalEdgeLength,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeAngle,dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,notEmptyIndexesApical]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(apicalVerticesPerCell,verticesApical,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_apical,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical);
+                [dataEnergy.apicalEdgeLength,dataEnergy.apicalSumEdgesOfEnergy,dataEnergy.apicalEdgeAngle,dataEnergy.apicalH1,dataEnergy.apicalH2,dataEnergy.apicalW1,dataEnergy.apicalW2,notEmptyIndexesApical]=capturingWidthHeightAndEnergyFilteringAnglesOfMotifs(apicalVerticesPerCell,verticesApical,pairCellValidCellsPreserved,cellsInMotifNoContactValidCellsPreserved,W_apical,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical,numberOfCellsTrasversalSection);
             end
             
             if sum(notEmptyIndexesBasal)< length(notEmptyIndexesBasal) || sum(notEmptyIndexesApical)< length(notEmptyIndexesApical)
