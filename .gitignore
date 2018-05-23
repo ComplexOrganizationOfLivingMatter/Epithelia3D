@@ -86,6 +86,10 @@ Gastrulation/*/results/*
 /*.xls
 */docs/*
 /Egg chamber/Code/results/
+/CellFit/exeProgram/
+/CellFit/Meshes/
+/CellFit/WatershedImages/
+/CellFit/data/
 
 
 # Directories potentially created on remote AFP share
@@ -107,3 +111,4 @@ Temporary Items
 InSilicoModels/EllipsoidModel/frustaEllipsoidModel/logFile
 InSilicoModels/EllipsoidModel/voronoiEllipsoidModel/logFile
 InSilicoModels/paperCode/SpheroidModel/logFile
+*.exe
