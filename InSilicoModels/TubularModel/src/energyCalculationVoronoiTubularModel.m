@@ -18,12 +18,12 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
         tableNoTransitionEnergyFiltering100data=table();
         tableTransitionEnergy=table();
         tableTransitionEnergyFiltering100data=table();
-        tableNoTransitionEnergyFilterByAngle=table();
-        tableNoTransitionEnergyFiltering100dataFilterByAngle=table();
-        tableTransitionEnergyFilterByAngle=table();
-        tableTransitionEnergyFiltering100dataFilterByAngle=table();
         tableEnergyAllMotifs=table();
-        tableEnergyAllMotifsFilterByAngle=table();
+%         tableNoTransitionEnergyFilterByAngle=table();
+%         tableNoTransitionEnergyFiltering100dataFilterByAngle=table();
+%         tableTransitionEnergyFilterByAngle=table();
+%         tableTransitionEnergyFiltering100dataFilterByAngle=table();
+%         tableEnergyAllMotifsFilterByAngle=table();
 
         for nRand=1:numRandoms
             
@@ -74,11 +74,11 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                 else
                     %Calculate the energy data for matching motifs between apical and basal layers.
                     dataEnergyMatchingMotifs = getEnergyFromEdgesMatchingMotifsBasalApical(L_basal,L_apical,neighsBasal,neighsApical,noValidCells,totalEdgesBasal{nLab},labelEdges{nLab},borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical);
-                    dataEnergyMatchingMotifsFilterByAngle = getEnergyFromEdgesMatchingMotifsBasalApicalFilteringByAngle(L_basal,L_apical,neighsBasal,neighsApical,noValidCells,totalEdgesBasal{nLab},labelEdges{nLab},borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical);
+%                     dataEnergyMatchingMotifsFilterByAngle = getEnergyFromEdgesMatchingMotifsBasalApicalFilteringByAngle(L_basal,L_apical,neighsBasal,neighsApical,noValidCells,totalEdgesBasal{nLab},labelEdges{nLab},borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical);
                     
                     %Acum and filter energy in edges (transition and no transition)
                     [tableTransitionEnergy,tableTransitionEnergyFiltering100data,tableNoTransitionEnergy,tableNoTransitionEnergyFiltering100data ] = acumAndFilterEnergyData( dataEnergyMatchingMotifs, labelEdges{nLab},tableTransitionEnergy,tableTransitionEnergyFiltering100data,tableNoTransitionEnergy,tableNoTransitionEnergyFiltering100data,nRand,nSeeds,surfaceRatio);
-                    [tableTransitionEnergyFilterByAngle,tableTransitionEnergyFiltering100dataFilterByAngle,tableNoTransitionEnergyFilterByAngle,tableNoTransitionEnergyFiltering100dataFilterByAngle ] = acumAndFilterEnergyData( dataEnergyMatchingMotifsFilterByAngle, labelEdges{nLab},tableTransitionEnergyFilterByAngle,tableTransitionEnergyFiltering100dataFilterByAngle,tableNoTransitionEnergyFilterByAngle,tableNoTransitionEnergyFiltering100dataFilterByAngle,nRand,nSeeds,surfaceRatio);
+%                     [tableTransitionEnergyFilterByAngle,tableTransitionEnergyFiltering100dataFilterByAngle,tableNoTransitionEnergyFilterByAngle,tableNoTransitionEnergyFiltering100dataFilterByAngle ] = acumAndFilterEnergyData( dataEnergyMatchingMotifsFilterByAngle, labelEdges{nLab},tableTransitionEnergyFilterByAngle,tableTransitionEnergyFiltering100dataFilterByAngle,tableNoTransitionEnergyFilterByAngle,tableNoTransitionEnergyFiltering100dataFilterByAngle,nRand,nSeeds,surfaceRatio);
                 
                 end
                 %% All motifs energy in basal, without taking into account if the motifs match between basal and apical...
@@ -93,14 +93,14 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                     sumTableEnergyAllMotifs=sumTableEnergyAllMotifs(~nanIndex,:);
                     tableEnergyAllMotifs=[tableEnergyAllMotifs;sumTableEnergyAllMotifs];
                     
-                    %angle threshold H ~ (0-30º) and W ~ (60-90º)
-                    dataEnergyAllMotifsFilterByAngle.nRand=nRand*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
-                    dataEnergyAllMotifsFilterByAngle.numSeeds=nSeeds*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
-                    dataEnergyAllMotifsFilterByAngle.surfaceRatio=surfaceRatio*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
-                    sumTableEnergyAllMotifsFilterByAngle=struct2table(dataEnergyAllMotifsFilterByAngle);
-                    nanIndex=(isnan(sumTableEnergyAllMotifsFilterByAngle.H1));
-                    sumTableEnergyAllMotifsFilterByAngle=sumTableEnergyAllMotifsFilterByAngle(~nanIndex,:);
-                    tableEnergyAllMotifsFilterByAngle=[tableEnergyAllMotifsFilterByAngle;sumTableEnergyAllMotifsFilterByAngle];
+%                     %angle threshold H ~ (0-30º) and W ~ (60-90º)
+%                     dataEnergyAllMotifsFilterByAngle.nRand=nRand*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
+%                     dataEnergyAllMotifsFilterByAngle.numSeeds=nSeeds*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
+%                     dataEnergyAllMotifsFilterByAngle.surfaceRatio=surfaceRatio*ones(size(dataEnergyAllMotifsFilterByAngle.H1,1),1);
+%                     sumTableEnergyAllMotifsFilterByAngle=struct2table(dataEnergyAllMotifsFilterByAngle);
+%                     nanIndex=(isnan(sumTableEnergyAllMotifsFilterByAngle.H1));
+%                     sumTableEnergyAllMotifsFilterByAngle=sumTableEnergyAllMotifsFilterByAngle(~nanIndex,:);
+%                     tableEnergyAllMotifsFilterByAngle=[tableEnergyAllMotifsFilterByAngle;sumTableEnergyAllMotifsFilterByAngle];
                 end
             end
             
@@ -117,16 +117,16 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
         %valid motifs by layer.
         writetable(tableTransitionEnergy,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_' date  '.xls'])
         writetable(tableNoTransitionEnergy,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_' date  '.xls'])
-        writetable(tableTransitionEnergyFiltering100data,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_filtered_' date '.xls'])
-        writetable(tableNoTransitionEnergyFiltering100data,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_filtered_' date '.xls'])
+%         writetable(tableTransitionEnergyFiltering100data,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_filtered_' date '.xls'])
+%         writetable(tableNoTransitionEnergyFiltering100data,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_filtered_' date '.xls'])
         writetable(tableEnergyAllMotifs,[energyDirectory 'allMotifsEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_' date '.xls'])
         
-        %Same order than before, but in this case it were measured the energy in motifs with an angle treshold
-        writetable(tableTransitionEnergyFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_AngleThreshold_' date  '.xls'])
-        writetable(tableNoTransitionEnergyFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_AngleThreshold_' date  '.xls'])
-        writetable(tableTransitionEnergyFiltering100dataFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_filtered_AngleThreshold_' date '.xls'])
-        writetable(tableNoTransitionEnergyFiltering100dataFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_filtered_AngleThreshold_' date '.xls'])
-        writetable(tableEnergyAllMotifsFilterByAngle,[energyDirectory 'allMotifsEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_AngleThreshold_' date '.xls'])
+%         %Same order than before, but in this case it were measured the energy in motifs with an angle treshold
+%         writetable(tableTransitionEnergyFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_AngleThreshold_' date  '.xls'])
+%         writetable(tableNoTransitionEnergyFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_AngleThreshold_' date  '.xls'])
+%         writetable(tableTransitionEnergyFiltering100dataFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_filtered_AngleThreshold_' date '.xls'])
+%         writetable(tableNoTransitionEnergyFiltering100dataFilterByAngle,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_filtered_AngleThreshold_' date '.xls'])
+%         writetable(tableEnergyAllMotifsFilterByAngle,[energyDirectory 'allMotifsEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_AngleThreshold_' date '.xls'])
         
                 
     end
