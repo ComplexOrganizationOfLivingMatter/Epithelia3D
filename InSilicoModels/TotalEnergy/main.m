@@ -53,7 +53,7 @@ inputDirectoriesFrusta = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\
 inputDirectoriesVoronoi = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\Voronoi_energy_800seeds\';
 surfaceRatios = {'1', '1.25', '1.6667', '2', '5'};
 
-finalTable = table();
+finalTable = cell(length(surfaceRatios), 1);
 
 totalfrustaPolDist = [];
 totalVoronoiPolDist = [];
@@ -101,8 +101,9 @@ for numSR = 1:length(surfaceRatios)
     outputTable(end+1, :) = table(size(modelFrusta, 1), size(modelVoronoi, 1));
     outputTable(end+1, :) = table(length(horzcat(uniqueValidCells{:})), length(horzcat(uniqueValidCells{:})));
     outputTable.Properties.VariableNames = cellfun(@(x) strcat('SR', strrep(surfaceRatios{numSR}, '.', ''), '_', x), outputTable.Properties.VariableNames, 'UniformOutput', false);
-    
-    finalTable = horzcat(finalTable, outputTable);
+    numSR
+    finalTable{numSR} = outputTable;
     frustaEnergyPerAngle{numSR} = frustaTissueEnergyPerAngle;
     voronoiEnergyPerAngle{numSR} = voronoiTissueEnergyPerAngle;
 end
+finalTable = horzcat(finalTable{:});
