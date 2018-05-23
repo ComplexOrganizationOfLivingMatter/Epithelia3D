@@ -49,11 +49,11 @@ addpath('lib/');
 
 %% With no matching (all the motifs of the layer
 
-inputDirectoriesFrusta = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\AllFrusta_energy_200seeds\';
-inputDirectoriesVoronoi = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\Voronoi_energy_200seeds\';
+inputDirectoriesFrusta = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\AllFrusta_energy_800seeds\';
+inputDirectoriesVoronoi = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\Voronoi_energy_800seeds\';
 surfaceRatios = {'1', '1.25', '1.6667', '2', '5'};
 
-finalTable = table();
+finalTable = cell(length(surfaceRatios), 1);
 
 totalfrustaPolDist = [];
 totalVoronoiPolDist = [];
@@ -65,8 +65,8 @@ definedAngles = 0:15:90;
 
 for numSR = 1:length(surfaceRatios)
     
-    voronoiFile = dir(strcat(inputDirectoriesVoronoi, 'allMotifsEnergy_200seeds_surfaceRatio', surfaceRatios{numSR}, '_*'));
-    frustaFile = dir(strcat(inputDirectoriesFrusta, 'allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatios{numSR}, '_*'));
+    voronoiFile = dir(strcat(inputDirectoriesVoronoi, 'allMotifsEnergy_800seeds_surfaceRatio', surfaceRatios{numSR}, '_*'));
+    frustaFile = dir(strcat(inputDirectoriesFrusta, 'allFrustaEnergy_800seeds_surfaceRatio_', surfaceRatios{numSR}, '_*'));
     [uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( readtable(strcat(inputDirectoriesFrusta, frustaFile(1).name)), readtable(strcat(inputDirectoriesVoronoi, voronoiFile(1).name)), str2double(surfaceRatios{numSR}));
     
     % It was not necessary to perform the Edge length cutoff because we do
@@ -101,8 +101,9 @@ for numSR = 1:length(surfaceRatios)
     outputTable(end+1, :) = table(size(modelFrusta, 1), size(modelVoronoi, 1));
     outputTable(end+1, :) = table(length(horzcat(uniqueValidCells{:})), length(horzcat(uniqueValidCells{:})));
     outputTable.Properties.VariableNames = cellfun(@(x) strcat('SR', strrep(surfaceRatios{numSR}, '.', ''), '_', x), outputTable.Properties.VariableNames, 'UniformOutput', false);
-    
-    finalTable = horzcat(finalTable, outputTable);
+    numSR
+    finalTable{numSR} = outputTable;
     frustaEnergyPerAngle{numSR} = frustaTissueEnergyPerAngle;
     voronoiEnergyPerAngle{numSR} = voronoiTissueEnergyPerAngle;
 end
+finalTable = horzcat(finalTable{:});
