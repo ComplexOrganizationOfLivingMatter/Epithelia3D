@@ -7,7 +7,7 @@ function [ uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPo
     frustaPolDist = zeros(maxRandoms, 5);
     voronoiPolDist = zeros(maxRandoms, 5);
     for nRandom = 1:maxRandoms
-        load(strcat('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiModel\expansion\512x4096_200seeds\Image_', num2str(nRandom), '_Diagram_5\Image_', num2str(nRandom),'_Diagram_5.mat'));
+        load(strcat('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiModel\expansion\512x4096_800seeds\Image_', num2str(nRandom), '_Diagram_5\Image_', num2str(nRandom),'_Diagram_5.mat'));
         
         %Neighbours in frusta are the same as in apical
         frustaLayer = listLOriginalProjection(listLOriginalProjection.surfaceRatio == 1, :).L_originalProjection{1};
@@ -27,12 +27,12 @@ function [ uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPo
         oldValidCells = intersect(uniqueCellsModelVoronoi, uniqueCellsModelFrusta);
         
         
-        voronoiNoValidCells = union(unique(voronoiLayer(1:5, :)), unique(voronoiLayer(end-5:end, :)));
-        frustaNoValidCells = union(unique(frustaLayer(1:5, :)), unique(frustaLayer(end-5:end, :)));
+        voronoiNoValidCells = union(unique(voronoiLayer(1, :)), unique(voronoiLayer(end, :)));
+        frustaNoValidCells = union(unique(frustaLayer(1, :)), unique(frustaLayer(end, :)));
         
         noValidCells = union(unique(vertcat(neighbours_cellsVoronoi{voronoiNoValidCells(2:end)})), unique(vertcat(neighbours_cellsFrusta{frustaNoValidCells(2:end)})));
         
-        validCells = ismember(1:200, noValidCells) == 0;
+        validCells = ismember(1:length(neighbours_cellsFrusta), noValidCells) == 0;
 %         validCells = zeros(size(oldValidCells, 1), 1);
 %         for numCell = 1:length(oldValidCells)
 %             oldValidCell = oldValidCells(numCell);
@@ -47,7 +47,7 @@ function [ uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPo
 %             end
 %         end
         
-        uniqueValidCells{nRandom} = setdiff(1:200, noValidCells);
+        uniqueValidCells{nRandom} = setdiff(1:length(neighbours_cellsFrusta), noValidCells);
         
         sides_cellsFrusta = sides_cellsFrusta(logical(validCells));
         sides_cellsVoronoi = sides_cellsVoronoi(logical(validCells));
