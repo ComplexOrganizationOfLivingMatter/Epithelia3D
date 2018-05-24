@@ -49,6 +49,24 @@ addpath('lib/');
 
 %% With no matching (all the motifs of the layer
 
+salivaryGlandNoTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_NoTransitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
+salivaryGlandTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_Transitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
+
+[~, salivaryGlandTotalEnergy] = getEnergyInfo(vertcat(salivaryGlandTrans, salivaryGlandNoTrans));
+salivaryGlandTotalEnergyApical = salivaryGlandTotalEnergy(:, [2,4]);
+%Removing outliers
+salivaryGlandTotalEnergyApical(478, :) = [];
+salivaryGlandTotalEnergyBasal = salivaryGlandTotalEnergy(:, [1,3]);
+
+
+h = figure('visible', 'off');
+histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+hold on;
+histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+legend('SalivaryGlandApical', 'SalivaryGlandBasal');
+print(h, strcat('results/histogramEnergy_SalivaryGland.tif'), '-dtiff', '-r300')
+close(h);
+
 inputDirectoriesFrusta = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\AllFrusta_energy_800seeds\';
 inputDirectoriesVoronoi = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\Voronoi_energy_800seeds\';
 surfaceRatios = {'1', '1.25', '1.6667', '2', '5'};
@@ -63,47 +81,68 @@ voronoiEnergyPerAngle = cell(length(surfaceRatios), 1);
 
 definedAngles = 0:15:90;
 
-for numSR = 1:length(surfaceRatios)
+parfor numSR = 1:length(surfaceRatios)
     
     voronoiFile = dir(strcat(inputDirectoriesVoronoi, 'allMotifsEnergy_800seeds_surfaceRatio', surfaceRatios{numSR}, '_*'));
     frustaFile = dir(strcat(inputDirectoriesFrusta, 'allFrustaEnergy_800seeds_surfaceRatio_', surfaceRatios{numSR}, '_*'));
+    
     [uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( readtable(strcat(inputDirectoriesFrusta, frustaFile(1).name)), readtable(strcat(inputDirectoriesVoronoi, voronoiFile(1).name)), str2double(surfaceRatios{numSR}));
+    
+    [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
+	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
+    
+    numBins = 100;
+    h = figure('visible', 'off');
+    histogram(frustaTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+    hold on;
+    histogram(voronoiTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+    %histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+    %histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+    legend('Frusta', 'Voronoi');%, 'SalivaryGlandApical', 'SalivaryGlandBasal')
+    print(h, strcat('results/histogramEnergy_FrustaVsVoronoi_SurfaceRatio', surfaceRatios{numSR}, '.tif'), '-dtiff', '-r300')
+    close(h);
+    
+    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta' );
+    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi' );
+    
     
     % It was not necessary to perform the Edge length cutoff because we do
     % not distinguish between transition and no transition.
     
     
-    totalfrustaPolDist = vertcat(totalfrustaPolDist, mean(frustaPolDist));
-    totalVoronoiPolDist = vertcat(totalVoronoiPolDist, mean(voronoiPolDist));
-    
-    frustaTissueEnergyPerAngle = [];
-    voronoiTissueEnergyPerAngle = [];
-    
-    for numAngle = 2:length(definedAngles)
-        actualAngle = definedAngles(numAngle);
-        prevAngle = definedAngles(numAngle-1);
-        
-        indexingPerAngleVoronoi = modelVoronoi.EdgeAngle >= prevAngle & modelVoronoi.EdgeAngle < actualAngle;
-        indexingPerAngleFrusta = modelFrusta.EdgeAngle >= prevAngle & modelFrusta.EdgeAngle < actualAngle;
-        
-        [frustaTissueEnergy, ~] = getEnergyInfo(modelFrusta(indexingPerAngleFrusta, :));
-        [voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi(indexingPerAngleVoronoi, :));
-        
-        %Adding num motifs
-        frustaTissueEnergyPerAngle(:, end+1) = vertcat(frustaTissueEnergy, sum(indexingPerAngleFrusta));
-        voronoiTissueEnergyPerAngle(:, end+1) = vertcat(voronoiTissueEnergy, sum(indexingPerAngleVoronoi));
-    end
-    
-    
-    [frustaTissueEnergy, ~] = getEnergyInfo(modelFrusta);
-	[voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi);
-    outputTable = table(frustaTissueEnergy, voronoiTissueEnergy);
-    outputTable(end+1, :) = table(size(modelFrusta, 1), size(modelVoronoi, 1));
-    outputTable(end+1, :) = table(length(horzcat(uniqueValidCells{:})), length(horzcat(uniqueValidCells{:})));
-    outputTable.Properties.VariableNames = cellfun(@(x) strcat('SR', strrep(surfaceRatios{numSR}, '.', ''), '_', x), outputTable.Properties.VariableNames, 'UniformOutput', false);
-    numSR
-    finalTable{numSR} = outputTable;
-    frustaEnergyPerAngle{numSR} = frustaTissueEnergyPerAngle;
-    voronoiEnergyPerAngle{numSR} = voronoiTissueEnergyPerAngle;
+%     totalfrustaPolDist = vertcat(totalfrustaPolDist, mean(frustaPolDist));
+%     totalVoronoiPolDist = vertcat(totalVoronoiPolDist, mean(voronoiPolDist));
+%     
+%     frustaTissueEnergyPerAngle = [];
+%     voronoiTissueEnergyPerAngle = [];
+%     
+%     for numAngle = 2:length(definedAngles)
+%         actualAngle = definedAngles(numAngle);
+%         prevAngle = definedAngles(numAngle-1);
+%         
+%         indexingPerAngleVoronoi = modelVoronoi.EdgeAngle >= prevAngle & modelVoronoi.EdgeAngle < actualAngle;
+%         indexingPerAngleFrusta = modelFrusta.EdgeAngle >= prevAngle & modelFrusta.EdgeAngle < actualAngle;
+%         
+%         [frustaTissueEnergy, ~] = getEnergyInfo(modelFrusta(indexingPerAngleFrusta, :));
+%         [voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi(indexingPerAngleVoronoi, :));
+%         
+%         %Adding num motifs
+%         frustaTissueEnergyPerAngle(:, end+1) = vertcat(frustaTissueEnergy, sum(indexingPerAngleFrusta));
+%         voronoiTissueEnergyPerAngle(:, end+1) = vertcat(voronoiTissueEnergy, sum(indexingPerAngleVoronoi));
+%     end
+%     
+%     
+%     [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
+% 	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
+%     
+%     outputTable = table(frustaTissueEnergy, voronoiTissueEnergy);
+%     outputTable(end+1, :) = table(size(modelFrusta, 1), size(modelVoronoi, 1));
+%     outputTable(end+1, :) = table(length(horzcat(uniqueValidCells{:})), length(horzcat(uniqueValidCells{:})));
+%     outputTable.Properties.VariableNames = cellfun(@(x) strcat('SR', strrep(surfaceRatios{numSR}, '.', ''), '_', x), outputTable.Properties.VariableNames, 'UniformOutput', false);
+% 
+%     
+%     finalTable{numSR} = outputTable;
+%     frustaEnergyPerAngle{numSR} = frustaTissueEnergyPerAngle;
+%     voronoiEnergyPerAngle{numSR} = voronoiTissueEnergyPerAngle;
 end
 finalTable = horzcat(finalTable{:});

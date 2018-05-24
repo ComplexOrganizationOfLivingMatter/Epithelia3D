@@ -58,7 +58,7 @@ function [ uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPo
         motifsVoronoiIndices = find(modelVoronoi.nRand == nRandom);
         removingMotifs = any(ismember(motifsVoronoi, uniqueValidCells{nRandom}), 2) == 0;
 %         %
-%         l_original = listLOriginalProjection(listLOriginalProjection.surfaceRatio == surfaceRatio, :).L_originalProjection{1};
+%         l_original = listLOriginalProjection(round(listLOriginalProjection.surfaceRatio, 4) == surfaceRatio, :).L_originalProjection{1};
 %         figure;
 %         imshow(ismember(l_original, unique(motifsVoronoi(removingMotifs, :))))
 %         figure;
