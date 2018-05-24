@@ -63,47 +63,56 @@ voronoiEnergyPerAngle = cell(length(surfaceRatios), 1);
 
 definedAngles = 0:15:90;
 
-for numSR = 1:length(surfaceRatios)
+parfor numSR = 1:length(surfaceRatios)
     
     voronoiFile = dir(strcat(inputDirectoriesVoronoi, 'allMotifsEnergy_800seeds_surfaceRatio', surfaceRatios{numSR}, '_*'));
     frustaFile = dir(strcat(inputDirectoriesFrusta, 'allFrustaEnergy_800seeds_surfaceRatio_', surfaceRatios{numSR}, '_*'));
+    
     [uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( readtable(strcat(inputDirectoriesFrusta, frustaFile(1).name)), readtable(strcat(inputDirectoriesVoronoi, voronoiFile(1).name)), str2double(surfaceRatios{numSR}));
+    
+    [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
+	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
+    
+    paintLineTensionEdges( readtable(strcat(inputDirectoriesVoronoi, voronoiFile(1).name)), str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi' )
+    paintLineTensionEdges( readtable(strcat(inputDirectoriesVoronoi, frustaFile(1).name)), str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta' )
     
     % It was not necessary to perform the Edge length cutoff because we do
     % not distinguish between transition and no transition.
     
     
-    totalfrustaPolDist = vertcat(totalfrustaPolDist, mean(frustaPolDist));
-    totalVoronoiPolDist = vertcat(totalVoronoiPolDist, mean(voronoiPolDist));
-    
-    frustaTissueEnergyPerAngle = [];
-    voronoiTissueEnergyPerAngle = [];
-    
-    for numAngle = 2:length(definedAngles)
-        actualAngle = definedAngles(numAngle);
-        prevAngle = definedAngles(numAngle-1);
-        
-        indexingPerAngleVoronoi = modelVoronoi.EdgeAngle >= prevAngle & modelVoronoi.EdgeAngle < actualAngle;
-        indexingPerAngleFrusta = modelFrusta.EdgeAngle >= prevAngle & modelFrusta.EdgeAngle < actualAngle;
-        
-        [frustaTissueEnergy, ~] = getEnergyInfo(modelFrusta(indexingPerAngleFrusta, :));
-        [voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi(indexingPerAngleVoronoi, :));
-        
-        %Adding num motifs
-        frustaTissueEnergyPerAngle(:, end+1) = vertcat(frustaTissueEnergy, sum(indexingPerAngleFrusta));
-        voronoiTissueEnergyPerAngle(:, end+1) = vertcat(voronoiTissueEnergy, sum(indexingPerAngleVoronoi));
-    end
-    
-    
-    [frustaTissueEnergy, ~] = getEnergyInfo(modelFrusta);
-	[voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi);
-    outputTable = table(frustaTissueEnergy, voronoiTissueEnergy);
-    outputTable(end+1, :) = table(size(modelFrusta, 1), size(modelVoronoi, 1));
-    outputTable(end+1, :) = table(length(horzcat(uniqueValidCells{:})), length(horzcat(uniqueValidCells{:})));
-    outputTable.Properties.VariableNames = cellfun(@(x) strcat('SR', strrep(surfaceRatios{numSR}, '.', ''), '_', x), outputTable.Properties.VariableNames, 'UniformOutput', false);
-    numSR
-    finalTable{numSR} = outputTable;
-    frustaEnergyPerAngle{numSR} = frustaTissueEnergyPerAngle;
-    voronoiEnergyPerAngle{numSR} = voronoiTissueEnergyPerAngle;
+%     totalfrustaPolDist = vertcat(totalfrustaPolDist, mean(frustaPolDist));
+%     totalVoronoiPolDist = vertcat(totalVoronoiPolDist, mean(voronoiPolDist));
+%     
+%     frustaTissueEnergyPerAngle = [];
+%     voronoiTissueEnergyPerAngle = [];
+%     
+%     for numAngle = 2:length(definedAngles)
+%         actualAngle = definedAngles(numAngle);
+%         prevAngle = definedAngles(numAngle-1);
+%         
+%         indexingPerAngleVoronoi = modelVoronoi.EdgeAngle >= prevAngle & modelVoronoi.EdgeAngle < actualAngle;
+%         indexingPerAngleFrusta = modelFrusta.EdgeAngle >= prevAngle & modelFrusta.EdgeAngle < actualAngle;
+%         
+%         [frustaTissueEnergy, ~] = getEnergyInfo(modelFrusta(indexingPerAngleFrusta, :));
+%         [voronoiTissueEnergy, ~] = getEnergyInfo(modelVoronoi(indexingPerAngleVoronoi, :));
+%         
+%         %Adding num motifs
+%         frustaTissueEnergyPerAngle(:, end+1) = vertcat(frustaTissueEnergy, sum(indexingPerAngleFrusta));
+%         voronoiTissueEnergyPerAngle(:, end+1) = vertcat(voronoiTissueEnergy, sum(indexingPerAngleVoronoi));
+%     end
+%     
+%     
+%     [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
+% 	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
+%     
+%     outputTable = table(frustaTissueEnergy, voronoiTissueEnergy);
+%     outputTable(end+1, :) = table(size(modelFrusta, 1), size(modelVoronoi, 1));
+%     outputTable(end+1, :) = table(length(horzcat(uniqueValidCells{:})), length(horzcat(uniqueValidCells{:})));
+%     outputTable.Properties.VariableNames = cellfun(@(x) strcat('SR', strrep(surfaceRatios{numSR}, '.', ''), '_', x), outputTable.Properties.VariableNames, 'UniformOutput', false);
+% 
+%     
+%     finalTable{numSR} = outputTable;
+%     frustaEnergyPerAngle{numSR} = frustaTissueEnergyPerAngle;
+%     voronoiEnergyPerAngle{numSR} = voronoiTissueEnergyPerAngle;
 end
 finalTable = horzcat(finalTable{:});
