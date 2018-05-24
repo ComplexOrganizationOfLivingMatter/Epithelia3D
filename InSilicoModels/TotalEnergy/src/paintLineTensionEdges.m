@@ -12,7 +12,7 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
     for nRandom = 1:maxRandoms
         load(strcat('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiModel\expansion\512x4096_800seeds\Image_', num2str(nRandom), '_Diagram_5\Image_', num2str(nRandom),'_Diagram_5.mat'));
         
-        if typeOfSimulation == 'Voronoi'
+        if isequal(typeOfSimulation, 'Voronoi')
             imageLabelled = listLOriginalProjection(round(listLOriginalProjection.surfaceRatio, 2) == round(surfaceRatio, 2), :).L_originalProjection{1};
         else
             imageLabelled = listLOriginalProjection(1).L_originalProjection{1};
