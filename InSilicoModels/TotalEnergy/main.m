@@ -49,6 +49,23 @@ addpath('lib/');
 
 %% With no matching (all the motifs of the layer
 
+salivaryGlandNoTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_NoTransitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
+salivaryGlandTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_Transitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
+
+[~, salivaryGlandTotalEnergy] = getEnergyInfo(vertcat(salivaryGlandTrans, salivaryGlandNoTrans));
+salivaryGlandTotalEnergyApical = salivaryGlandTotalEnergy(:, [2,4]);
+%Removing outliers
+salivaryGlandTotalEnergyApical(478, :) = [];
+salivaryGlandTotalEnergyBasal = salivaryGlandTotalEnergy(:, [1,3]);
+
+
+h = figure('visible', 'off');
+histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+legend('SalivaryGlandApical', 'SalivaryGlandBasal');
+print(h, strcat('results/histogramEnergy_SalivaryGland_SurfaceRatio', surfaceRatios{numSR}, '.tif'), '-dtiff', '-r300')
+close(h);
+
 inputDirectoriesFrusta = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\AllFrusta_energy_800seeds\';
 inputDirectoriesVoronoi = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\Voronoi_energy_800seeds\';
 surfaceRatios = {'1', '1.25', '1.6667', '2', '5'};
@@ -73,8 +90,20 @@ parfor numSR = 1:length(surfaceRatios)
     [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
 	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
     
-    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi' )
-    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta' )
+    numBins = 100;
+    h = figure('visible', 'off');
+    histogram(frustaTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+    hold on;
+    histogram(voronoiTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+    %histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+    %histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+    legend('Frusta', 'Voronoi');%, 'SalivaryGlandApical', 'SalivaryGlandBasal')
+    print(h, strcat('results/histogramEnergy_FrustaVsVoronoi_SurfaceRatio', surfaceRatios{numSR}, '.tif'), '-dtiff', '-r300')
+    close(h);
+    
+    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta' );
+    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi' );
+    
     
     % It was not necessary to perform the Edge length cutoff because we do
     % not distinguish between transition and no transition.

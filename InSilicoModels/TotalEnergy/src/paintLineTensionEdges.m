@@ -37,7 +37,7 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
         
         outputDir = strcat('results/', typeOfSimulation, '/SurfaceRatio', num2str(surfaceRatio), '/');
         mkdir(outputDir)
-%         h = figure;
+%         h = figure('visible', 'off');
 %         imshow(heatMapImage, colours);
 %         colorbar('northoutside')
 %         print(h, strcat(outputDir, 'lineTensionPlot_NRandom', num2str(nRandom), '_withColorBar.tif'), '-dtiff', '-r300')
