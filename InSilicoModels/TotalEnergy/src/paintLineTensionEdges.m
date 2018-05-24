@@ -20,7 +20,7 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
             imageLabelled = listLOriginalProjection.L_originalProjection{1};
             imgLabelledDilated = imdilate(imageLabelled == 0, strel('disk', 2));
             imageLabelled(imgLabelledDilated) = 0;
-            imageLabelled = imresize(imageLabelled, [size(imageLabelled, 1) size(imageLabelled, 2)*surfaceRatio]);
+            imageLabelled = imresize(imageLabelled, [size(imageLabelled, 1) size(imageLabelled, 2)*surfaceRatio], 'nearest');
         end
         
         heatMapImage = zeros(size(imageLabelled));
