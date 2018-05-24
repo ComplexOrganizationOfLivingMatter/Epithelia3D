@@ -16,7 +16,7 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
         if isequal(typeOfSimulation, 'Voronoi')
             imageLabelled = listLOriginalProjection(round(listLOriginalProjection.surfaceRatio, 2) == round(surfaceRatio, 2), :).L_originalProjection{1};
         else
-            imageLabelled = listLOriginalProjection(1).L_originalProjection{1};
+            imageLabelled = listLOriginalProjection.L_originalProjection{1};
             imageLabelled = imresize(imageLabelled, [size(imageLabelled, 1) size(imageLabelled, 2)*surfaceRatio]);
         end
         
