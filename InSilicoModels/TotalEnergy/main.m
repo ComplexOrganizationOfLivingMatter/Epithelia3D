@@ -61,9 +61,10 @@ salivaryGlandTotalEnergyBasal = salivaryGlandTotalEnergy(:, [1,3]);
 
 h = figure('visible', 'off');
 histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+hold on;
 histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability');
 legend('SalivaryGlandApical', 'SalivaryGlandBasal');
-print(h, strcat('results/histogramEnergy_SalivaryGland_SurfaceRatio', surfaceRatios{numSR}, '.tif'), '-dtiff', '-r300')
+print(h, strcat('results/histogramEnergy_SalivaryGland.tif'), '-dtiff', '-r300')
 close(h);
 
 inputDirectoriesFrusta = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\AllFrusta_energy_800seeds\';
