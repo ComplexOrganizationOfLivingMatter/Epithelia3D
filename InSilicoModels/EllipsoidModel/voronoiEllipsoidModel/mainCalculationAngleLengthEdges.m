@@ -1,18 +1,32 @@
 
-neighs=ellipsoidInfo.neighbourhood;
+addpath(genpath('lib'))
 
-totalPairs=cellfun(@(x, y) [y*ones(length(x),1),x],neighs,num2cell(1:length(neighs))','UniformOutput',false);
-totalPairs=unique(vertcat(totalPairs{:}),'rows');
-totalPairs=unique([min(totalPairs,[],2),max(totalPairs,[],2)],'rows');   
+ellipsoidsName={'Globe','Rugby','Sphere','Stage 4','Stage 8'};
 
-angleLengthEdge = cell(size(totalPairs,1),3);
-
-for i = 1 : size(totalPairs,1)
+for nEllipsoid=1:length(ellipsoidsName)
     
-    [ anglesEdge , lengthEdge ] = calculateAngleLength( totalPairs(i,1) , totalPairs(i,2) );
+    pathFiles=getAllFiles(['results\' ellipsoidsName{nEllipsoid} '\randomizations\' ]);
+    index1=cellfun(@(x) contains(x,'ellip') ,pathFiles);
+    index2=cellfun(@(x) contains(x,'randomizations\random_') ,pathFiles);
+    indexEllip=logical(index1.*index2);
+    pathFilesEllipsoid=pathFiles(indexEllip);
     
-    angleLengthEdge{i,1}=totalPairs;
-    angleLengthEdge{i,2}=anglesEdge;
-    angleLengthEdge{i,3}=lengthEdge;
+    for i = 1 : size(pathFilesEllipsoid,1)
+
+        load(pathFilesEllipsoid{i},'initialEllipsoid','ellipsoidInfo')
+
+        ellipsoidInfo = calculateAngleLength(ellipsoidInfo);
+
+        if ~isfield(initialEllipsoid,'edgesOrientation')
+            
+            initialEllipsoid = calculateAngleLength(initialEllipsoid);
+            save(pathEllipsoid,'initialEllipsoid','-append')
+
+        end
+        
+        save(pathEllipsoid,'ellipsoidInfo','-append')
+
+    end
+    
 end
 
