@@ -73,8 +73,8 @@ parfor numSR = 1:length(surfaceRatios)
     [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
 	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
     
-    paintLineTensionEdges( readtable(strcat(inputDirectoriesVoronoi, voronoiFile(1).name)), str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi' )
-    paintLineTensionEdges( readtable(strcat(inputDirectoriesVoronoi, frustaFile(1).name)), str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta' )
+    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi' )
+    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta' )
     
     % It was not necessary to perform the Edge length cutoff because we do
     % not distinguish between transition and no transition.
