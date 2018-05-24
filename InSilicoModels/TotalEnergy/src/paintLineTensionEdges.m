@@ -21,10 +21,12 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
         
         heatMapImage = zeros(size(imageLabelled));
         
+        imgOnlyEdges = imdilate(imageLabelled == 0, strel('disk', 2));
         for numRow = 1:size(energyExcel, 1)
             neighbouringCells = energyExcel{numRow, 1:2};
-            dilatedImg = imdilate(ismember(imageLabelled, neighbouringCells), strel('disk', 2));
-            imgOnlyEdges = imdilate(imageLabelled == 0, strel('disk', 2));
+            cell1Dilated = imdilate(ismember(imageLabelled, neighbouringCells(1)), strel('disk', 4));
+            cell2Dilated = imdilate(ismember(imageLabelled, neighbouringCells(2)), strel('disk', 4));
+            dilatedImg = cell1Dilated & cell2Dilated;
             heatmapValue = (totalEnergyData(numRow, 1) - minValue)/(maxValue-minValue)*maxColours;
             heatMapImage(dilatedImg & imgOnlyEdges) = round(heatmapValue);
         end
