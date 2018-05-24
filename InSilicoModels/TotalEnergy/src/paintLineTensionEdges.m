@@ -1,4 +1,4 @@
-function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData )
+function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData, typeOfSimulation )
 %PAINTLINETENSIONEDGES Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -7,24 +7,36 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData 
     maxColours = 100;
 
     maxRandoms = 20;
+    colours = colormap(jet(maxColours));
+    colours(1, :) = [0 0 0];
     for nRandom = 1:maxRandoms
         load(strcat('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiModel\expansion\512x4096_800seeds\Image_', num2str(nRandom), '_Diagram_5\Image_', num2str(nRandom),'_Diagram_5.mat'));
-        imageLabelled = listLOriginalProjection(round(listLOriginalProjection.surfaceRatio, 2) == round(surfaceRatio, 2), :).L_originalProjection{1};
+        
+        if typeOfSimulation == 'Voronoi'
+            imageLabelled = listLOriginalProjection(round(listLOriginalProjection.surfaceRatio, 2) == round(surfaceRatio, 2), :).L_originalProjection{1};
+        else
+            imageLabelled = listLOriginalProjection(1).L_originalProjection{1};
+            imageLabelled = imresize(imageLabelled, [size(imageLabelled, 1) size(imageLabelled, 2)*surfaceRatio]);
+        end
         
         heatMapImage = zeros(size(imageLabelled));
         
         for numRow = 1:size(energyExcel, 1)
             neighbouringCells = energyExcel{numRow, 1:2};
-            dilatedImg = imdilate(ismember(imageLabelled, neighbouringCells), strel('disk', 1));
-            imgOnlyEdges = imageLabelled == 0;
+            dilatedImg = imdilate(ismember(imageLabelled, neighbouringCells), strel('disk', 2));
+            imgOnlyEdges = imdilate(imageLabelled == 0, strel('disk', 2));
             heatmapValue = (totalEnergyData(numRow, 1) - minValue)/(maxValue-minValue)*maxColours;
             heatMapImage(dilatedImg & imgOnlyEdges) = round(heatmapValue);
         end
         
-        figure;
-        imshow(heatMapImage, colormap('parula', maxColours));
+        outputDir = strcat('results/', typeOfSimulation, '/SurfaceRatio', num2str(surfaceRatio), '/');
+        mkdir(outputDir)
+%         h = figure;
+%         imshow(heatMapImage, colours);
+%         colorbar('northoutside')
+%         print(h, strcat(outputDir, 'lineTensionPlot_NRandom', num2str(nRandom), '_withColorBar.tif'), '-dtiff', '-r300')
+%         close(h);
+        imwrite(heatMapImage, colours, strcat(outputDir, 'lineTensionPlot_NRandom', num2str(nRandom), '.tif'))
     end
-
-
 end
 
