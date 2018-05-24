@@ -9,7 +9,8 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
     maxRandoms = 20;
     colours = colormap(jet(maxColours));
     colours(1, :) = [0 0 0];
-    for nRandom = 1:maxRandoms
+    for nRandom = 1%:maxRandoms
+        actualEnergyExcel = energyExcel(energyExcel.nRand == nRandom, :);
         load(strcat('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiModel\expansion\512x4096_800seeds\Image_', num2str(nRandom), '_Diagram_5\Image_', num2str(nRandom),'_Diagram_5.mat'));
         
         if isequal(typeOfSimulation, 'Voronoi')
@@ -22,8 +23,8 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
         heatMapImage = zeros(size(imageLabelled));
         
         imgOnlyEdges = imdilate(imageLabelled == 0, strel('disk', 2));
-        for numRow = 1:size(energyExcel, 1)
-            neighbouringCells = energyExcel{numRow, 1:2};
+        for numRow = 1:size(actualEnergyExcel, 1)
+            neighbouringCells = actualEnergyExcel{numRow, 1:2};
             cell1Dilated = imdilate(ismember(imageLabelled, neighbouringCells(1)), strel('disk', 4));
             cell2Dilated = imdilate(ismember(imageLabelled, neighbouringCells(2)), strel('disk', 4));
             dilatedImg = cell1Dilated & cell2Dilated;
