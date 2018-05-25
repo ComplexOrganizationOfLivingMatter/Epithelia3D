@@ -1,7 +1,7 @@
 
 addpath(genpath('lib'))
 
-ellipsoidsName={'Globe','Rugby','Sphere','Stage 4','Stage 8'};
+ellipsoidsName={'Stage 4','Stage 8','Globe','Rugby','Sphere'};
 
 for nEllipsoid=1:length(ellipsoidsName)
     
@@ -14,18 +14,20 @@ for nEllipsoid=1:length(ellipsoidsName)
     for i = 1 : size(pathFilesEllipsoid,1)
 
         load(pathFilesEllipsoid{i},'initialEllipsoid','ellipsoidInfo')
-
-        ellipsoidInfo = calculateAngleLength(ellipsoidInfo);
-
-        if ~isfield(initialEllipsoid,'edgesOrientation')
-            
-            initialEllipsoid = calculateAngleLength(initialEllipsoid);
-            save(pathEllipsoid,'initialEllipsoid','-append')
-
-        end
         
-        save(pathEllipsoid,'ellipsoidInfo','-append')
+        if ~isfield(ellipsoidInfo,'edgesOrientation')
+        
+            ellipsoidInfo = calculateAngleLength(ellipsoidInfo);
 
+            if ~isfield(initialEllipsoid,'edgesOrientation')
+
+                initialEllipsoid = calculateAngleLength(initialEllipsoid);
+                save(pathEllipsoid,'initialEllipsoid','-append')
+
+            end
+
+            save(pathEllipsoid,'ellipsoidInfo','-append')
+        end
     end
     
 end

@@ -9,8 +9,8 @@ function [ellipsoidInfo] = calculateAngleLength(ellipsoidInfo)
     totalPairs=unique([min(totalPairs,[],2),max(totalPairs,[],2)],'rows');   
 
     angleLengthEdge = cell(size(totalPairs,1),5);
-
-    for i = 1 : size(totalPairs,1)
+%     figure; 
+    parfor i = 1 : size(totalPairs,1)
 
         coordinatesCell1=ellipsoidInfo.cellDilated{totalPairs(i,1)};
         coordinatesCell2=ellipsoidInfo.cellDilated{totalPairs(i,2)};
@@ -20,37 +20,21 @@ function [ellipsoidInfo] = calculateAngleLength(ellipsoidInfo)
         mask3D=false(size(ellipsoidInfo.img3DLayer));
         indexesMask=sub2ind(size(mask3D),sharedCoordinates(:,1),sharedCoordinates(:,2),sharedCoordinates(:,3));
         mask3D(indexesMask)=1;
-        
-        shp=alphaShape(double(sharedCoordinates(:,1)),double(sharedCoordinates(:,2)),double(sharedCoordinates(:,3)));
-        figure;plot(shp);
-                
-
-%         maskSkel=bwskel(logical(mask3D));
-%         maskSkelOpen=bwareaopen(maskSkel,4,26);
-%         CC = bwconncomp(maskSkelOpen,26);
-        
+%         shp=alphaShape(double(sharedCoordinates(:,1)),double(sharedCoordinates(:,2)),double(sharedCoordinates(:,3)));
+%         %figure;
+%         plot(shp);
         maskSkel=bwskel(mask3D,'MinBranchLength',8);
         indCoord=find(maskSkel);
         [x,y,z]=ind2sub(size(maskSkel),indCoord);
         lengthEdge=max(pdist([x,y,z]));
-        figure;plot3(x,y,z,'o')
-         
+%         plot3(x,y,z)
+%         hold on
         propsEdge=regionprops3(maskSkel,'PrincipalAxisLength','Orientation','Centroid');
-
-%         [x,y,z]=ind2sub(size(mask3),indSkel);
-%         plot3(x,y,z,'o')
-        
 
         anglesEdge=cat(1,propsEdge.Orientation);
         centroidCoord=cat(1,propsEdge.Centroid);            
         principalAxisLength=cat(1,propsEdge.PrincipalAxisLength);
-
-        angleLengthEdge{i,1}=totalPairs(i,:);
-        angleLengthEdge{i,2}=anglesEdge;
-        angleLengthEdge{i,3}=lengthEdge;
-        angleLengthEdge{i,4}=centroidCoord;
-        angleLengthEdge{i,5}=principalAxisLength;
-        
+        angleLengthEdge(i,:)={totalPairs(i,:),anglesEdge,lengthEdge,centroidCoord,principalAxisLength};
     end
     
     tableEdges=cell2table(angleLengthEdge,'VariableNames',{'idCells' 'angleEdge' 'lengthEdge' 'centroid' 'principalAxesLength'});
