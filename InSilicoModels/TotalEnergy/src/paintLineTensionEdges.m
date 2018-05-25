@@ -16,20 +16,22 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
         
         if isequal(typeOfSimulation, 'Voronoi')
             imageLabelled = listLOriginalProjection(round(listLOriginalProjection.surfaceRatio, 2) == round(surfaceRatio, 2), :).L_originalProjection{1};
+            initialDilated = 0;
         else
             imageLabelled = listLOriginalProjection.L_originalProjection{1};
-            imgLabelledDilated = imdilate(imageLabelled == 0, strel('disk', 2));
+            initialDilated = 3;
+            imgLabelledDilated = imdilate(imageLabelled == 0, strel('disk', initialDilated));
             imageLabelled(imgLabelledDilated) = 0;
             imageLabelled = imresize(imageLabelled, [size(imageLabelled, 1) size(imageLabelled, 2)*surfaceRatio], 'nearest');
         end
         
         heatMapImage = zeros(size(imageLabelled));
         
-        imgOnlyEdges = imdilate(imageLabelled == 0, strel('disk', 2));
+        imgOnlyEdges = imdilate(imageLabelled == 0, strel('disk', 3));
         for numRow = 1:size(actualEnergyExcel, 1)
             neighbouringCells = actualEnergyExcel{numRow, 1:2};
-            cell1Dilated = imdilate(ismember(imageLabelled, neighbouringCells(1)), strel('disk', 4));
-            cell2Dilated = imdilate(ismember(imageLabelled, neighbouringCells(2)), strel('disk', 4));
+            cell1Dilated = imdilate(ismember(imageLabelled, neighbouringCells(1)), strel('disk', 4+initialDilated));
+            cell2Dilated = imdilate(ismember(imageLabelled, neighbouringCells(2)), strel('disk', 4+initialDilated));
             dilatedImg = cell1Dilated & cell2Dilated;
             heatmapValue = (actualTotalEnergy(numRow, 1) - minValue)/(maxValue-minValue)*maxColours;
             heatMapImage(dilatedImg & imgOnlyEdges) = round(heatmapValue);

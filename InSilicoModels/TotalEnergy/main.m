@@ -59,17 +59,19 @@ salivaryGlandTotalEnergyApical(478, :) = [];
 salivaryGlandTotalEnergyBasal = salivaryGlandTotalEnergy(:, [1,3]);
 
 
+numBins = 20;
 h = figure('visible', 'off');
-histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
 hold on;
-histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
 legend('SalivaryGlandApical', 'SalivaryGlandBasal');
+title('Salivary gland');
 print(h, strcat('results/histogramEnergy_SalivaryGland.tif'), '-dtiff', '-r300')
 close(h);
 
 inputDirectoriesFrusta = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\AllFrusta_energy_800seeds\';
 inputDirectoriesVoronoi = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\Voronoi_energy_800seeds\';
-surfaceRatios = {'1', '1.25', '1.6667', '2', '5'};
+surfaceRatios = {'1', '1.25', '1.6667', '2', '5', '10'};
 
 finalTable = cell(length(surfaceRatios), 1);
 
@@ -91,14 +93,14 @@ parfor numSR = 1:length(surfaceRatios)
     [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
 	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
     
-    numBins = 100;
     h = figure('visible', 'off');
-    histogram(frustaTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+    histogram(frustaTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
     hold on;
-    histogram(voronoiTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+    histogram(voronoiTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
     %histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability');
     %histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability');
     legend('Frusta', 'Voronoi');%, 'SalivaryGlandApical', 'SalivaryGlandBasal')
+    title(strcat('Surface ratio: ', surfaceRatios{numSR}));
     print(h, strcat('results/histogramEnergy_FrustaVsVoronoi_SurfaceRatio', surfaceRatios{numSR}, '.tif'), '-dtiff', '-r300')
     close(h);
     
