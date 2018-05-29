@@ -22,11 +22,14 @@ for nEllipsoid=1:length(ellipsoidsName)
             if ~isfield(initialEllipsoid,'edgesOrientation')
 
                 initialEllipsoid = calculateAngleLength(initialEllipsoid);
-                save(pathEllipsoid,'initialEllipsoid','-append')
+                save(pathFilesEllipsoid{i},'initialEllipsoid','-append')
+                
+                disp(['Initial ellipsoid - ' pathFilesEllipsoid{i}])
 
             end
 
-            save(pathEllipsoid,'ellipsoidInfo','-append')
+            save(pathFilesEllipsoid{i},'ellipsoidInfo','-append')
+            disp(['Outter ellipsoid - ' pathFilesEllipsoid{i}])
         end
     end
     
