@@ -2,7 +2,7 @@ function calculatePercentajeScutoidsByThreshold(pathTube,numSeeds,H,W,totalRando
 %CALCULATEPERCENTAJESCUTOIDSBYTHRESHOLD calculate the presence of scutoids
 %that pass the edge length threshold in both layers (apical and basal)
 numberOfRows=11;
-path2load=[pathTube projection '\' num2str(H) 'x' num2str(W) '_' num2str(numSeeds) 'seeds\'];
+path2load=[pathTube projection '\' num2str(W) 'x' num2str(H) '_' num2str(numSeeds) 'seeds\'];
 load([path2load 'Image_1_Diagram_5\Image_1_Diagram_5.mat'],'listLOriginalProjection')
 listSurfaceRatios=listLOriginalProjection.surfaceRatio;
     
@@ -41,7 +41,7 @@ for nRand = 1:totalRandom
             L_basal=listLOriginalProjection.L_originalProjection{listSurfaceRatios==listSurfaceRatios(nSurfRat)};
             L_apical=listLOriginalProjection.L_originalProjection{listSurfaceRatios==1};
         else
-            L_apical=listLOriginalProjection.L_originalProjection{listSurfaceRatios(nSurfRat)};
+            L_apical=listLOriginalProjection.L_originalProjection{listSurfaceRatios==listSurfaceRatios(nSurfRat)};
             L_basal=listLOriginalProjection.L_originalProjection{listSurfaceRatios==1};
         end
         edgeLengthApical=totalEdges.TransitionInApical{nSurfRat};
@@ -114,7 +114,7 @@ for nRand = 1:totalRandom
         
     end
     
-    disp(['Completed % scutoids in ' num2str(H) 'x' num2str(W) '_' num2str(numSeeds) 'seeds - rand' num2str(nRand)])
+    disp(['Completed % scutoids in ' num2str(W) 'x' num2str(H) '_' num2str(numSeeds) 'seeds - rand' num2str(nRand)])
 
     %Acum data
     listTransitionPerCell(:,:,nRand)=transitionPerCell';

@@ -1,6 +1,6 @@
 function [edgeLength, edgeAngle] = edgeLengthAnglesCalculation(vertsEdge,borderCells,verticesBorderLeft,verticesBorderRight,verticesTotal,fourCellMotif,W,numberOfCellsTrasversalSection)
 
-    if numberOfCellsTrasversalSection<5
+    if numberOfCellsTrasversalSection<4
         indexCellsEdge=ismember(vertcat(verticesTotal.verticesPerCell{:}),vertsEdge,'rows');
         CellsEdge=verticesTotal.verticesConnectCells(indexCellsEdge,:);
         cellsEdge=intersect(CellsEdge(1,:),CellsEdge(2,:));

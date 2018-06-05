@@ -38,9 +38,9 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                 disp(['Measuring Energy in voronoi tubular model: surface ratio(expansion) ' num2str(surfaceRatio) ' number of seeds ' num2str(nSeeds) ' random ' num2str(nRand) ])
                 
             else
-                L_basal=listLOriginalApical.L_originalApical{listLOriginalProjection.surfaceRatio==1};
-                surfaceRatio=1/(1-apicalReductions(nSurf));
-                L_apical=listLOriginalApical.L_originalApical{round(listLOriginalProjection.surfaceRatio,1)==round(surfaceRatio,1)};
+                L_basal=listLOriginalProjection.L_originalProjection{listLOriginalProjection.surfaceRatio==1};
+                surfaceRatio=apicalReductions(nSurf);
+                L_apical=listLOriginalProjection.L_originalProjection{round(listLOriginalProjection.surfaceRatio,1)==round(surfaceRatio,1)};
                 disp(['Measuring Energy in voronoi tubular model: surface ratio(reduction)' num2str(surfaceRatio)  ' number of seeds ' num2str(nSeeds) ' random ' num2str(nRand) ])
             end
             
@@ -63,6 +63,10 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
             totalPairsBasal=unique(vertcat(totalPairsBasal{:}),'rows');
             totalPairsBasal=unique([min(totalPairsBasal,[],2),max(totalPairsBasal,[],2)],'rows');   
             
+            totalPairsApical=cellfun(@(x, y) [y*ones(length(x),1),x],neighsApical',num2cell(1:size(neighsApical,2))','UniformOutput',false);
+            totalPairsApical=unique(vertcat(totalPairsApical{:}),'rows');
+            totalPairsApical=unique([min(totalPairsApical,[],2),max(totalPairsApical,[],2)],'rows');   
+            
             totalEdgesBasal={pairsTransition;pairsNoTransition};
             nTransitions=vertcat(pairsTransition{:});
             
@@ -83,8 +87,13 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
                 end
                 %% All motifs energy in basal, without taking into account if the motifs match between basal and apical...
                 if nLab == 1
-                    [dataEnergyAllMotifs,dataEnergyAllMotifsFilterByAngle] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairsBasal,verticesBasal,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
-                
+                    
+                    if surfaceRatio>=1
+                        [dataEnergyAllMotifs,~] = getEnergyFromAllMotifs(L_basal,noValidCells,totalPairsBasal,verticesBasal,borderCellsBasal,arrayValidVerticesBorderLeftBasal,arrayValidVerticesBorderRightBasal);
+                    else
+                        [dataEnergyAllMotifs,~] = getEnergyFromAllMotifs(L_apical,noValidCells,totalPairsApical,verticesApical,borderCellsApical,arrayValidVerticesBorderLeftApical,arrayValidVerticesBorderRightApical);
+                    end
+                    
                     dataEnergyAllMotifs.nRand=nRand*ones(size(dataEnergyAllMotifs.H1,1),1);
                     dataEnergyAllMotifs.numSeeds=nSeeds*ones(size(dataEnergyAllMotifs.H1,1),1);
                     dataEnergyAllMotifs.surfaceRatio=surfaceRatio*ones(size(dataEnergyAllMotifs.H1,1),1);
@@ -115,7 +124,9 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
         %energy measured matching motifs between basal and apical; filtered
         %as a max of 100 measurements and finally a table with all the
         %valid motifs by layer.
-        writetable(tableTransitionEnergy,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_' date  '.xls'])
+        if ~isempty(tableTransitionEnergy)
+            writetable(tableTransitionEnergy,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_' date  '.xls'])
+        end
         writetable(tableNoTransitionEnergy,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_' date  '.xls'])
 %         writetable(tableTransitionEnergyFiltering100data,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_Transitions_filtered_' date '.xls'])
 %         writetable(tableNoTransitionEnergyFiltering100data,[energyDirectory 'voronoiModelEnergy_' num2str(nSeeds) 'seeds_surfaceRatio' num2str(surfaceRatio) '_NoTransitions_filtered_' date '.xls'])

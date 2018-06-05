@@ -29,14 +29,14 @@ function mainTubularVoronoiModelProjectionSurface(numSeeds,basalExpansions,apica
                     listOfSurfaceRatios=apicalReductions;
             end
 
-%             %carry out Voronoi surface projections and edge length and angles measurements
+            %carry out Voronoi surface projections and edge length and angles measurements
 %             surfaceProjection(pathV5data,nameOfFolder,directory2save,path3dVoronoi,kindProjection{typeP},listOfSurfaceRatios)
 %   
 %             %calculation the presence of scutoids
 %             if thresholdRes <= 1
 %                 calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection{typeP},pathV5data,directory2save,length(listOfSurfaceRatios),Hinitial,Winitial)
 %             else
-%                 calculatePercentajeScutoidsByThreshold(directory2save,numSeeds,Hinitial,Winitial,numRandoms,kindProjection{typeP},thresholdRes)
+%                  calculatePercentajeScutoidsByThreshold(directory2save,numSeeds,Hinitial,Winitial,numRandoms,kindProjection{typeP},thresholdRes)
 %             end
 %             %calculation the number of cells along the trasversal plane
 %             calculateNcellsAroundTrasversalSection(numSeeds,kindProjection{typeP},pathV5data,directory2save,length(listOfSurfaceRatios),Hinitial,Winitial)

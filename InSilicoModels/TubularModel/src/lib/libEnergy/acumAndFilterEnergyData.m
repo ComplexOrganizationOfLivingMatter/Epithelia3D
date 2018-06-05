@@ -15,7 +15,7 @@ function [tableTransitionEnergy,tableTransitionEnergyFiltering100data,tableNoTra
         end
 
         %storing all data and filtered 5 data per realization (IF there are more than 5)
-        if strcmp(labelEdges,'transition');
+        if strcmp(labelEdges,'transition')
             tableTransitionEnergy=[tableTransitionEnergy;sumTableEnergy];
             tableTransitionEnergyFiltering100data=[tableTransitionEnergyFiltering100data;sumTableEnergy(pos,:)];
         else

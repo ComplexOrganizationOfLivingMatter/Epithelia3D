@@ -10,7 +10,7 @@ function calculateNcellsAroundTrasversalSection(numSeeds,kindProjection,pathV5da
         nameFile=pathV5data(i).name;
         load([directory2save nameFile(1:end-4) '\' nameFile],'listLOriginalProjection')
         for j=1:numOfSurfaceRatios
-            [num2str(i),'-',num2str(j)]
+            disp(['surface' num2str(i),' - file ',num2str(j)])
             Img_cyl=listLOriginalProjection.L_originalProjection{j,1};
             %calculate neighbours of cells as cylinder model
             [neighs_cylModel,~]=calculateNeighbours(Img_cyl);
