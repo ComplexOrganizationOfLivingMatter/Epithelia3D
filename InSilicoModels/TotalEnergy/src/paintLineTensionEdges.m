@@ -43,7 +43,6 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
             blankImage = zeros(size(imageLabelled));
             
             for numRow = 1:size(actualEnergyExcel, 1)
-                numRow
                 neighbouringCells = actualEnergyExcel{numRow, 1:2};
                 %Cells that are not  connected but share the edge of the motif
                 edgeEndCells = actualEnergyExcel{numRow, 3:4};
@@ -72,7 +71,11 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
             end
         end
         
-        outputDir = strcat('results/', typeOfSimulation, '/SurfaceRatio', num2str(surfaceRatio), '/');
+        reductionOrExpansion = strsplit(inputDirectory, '\');
+        reductionOrExpansion = reductionOrExpansion{end-1};
+        
+        outputDir = strcat('results/', reductionOrExpansion, '/', typeOfSimulation, '/SurfaceRatio', num2str(surfaceRatio), '/');
+        
         mkdir(outputDir)
 %         h = figure('visible', 'off');
 %         imshow(heatMapImage, colours);

@@ -55,10 +55,5 @@ else
     differenceTableSummaryEnergyData = totalEnergyNoApicalNoBasalTableSummary(totalEnergyData);
 end
 
-
-
-
-
-
 end
 
