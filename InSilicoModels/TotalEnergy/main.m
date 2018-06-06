@@ -78,7 +78,7 @@ mkdir(strcat('results/', expansionOrReduction, '/'));
 
 numBins = 100;
 
-inputDirectories = strcat(inputDirectories, expansionOrReduction);
+inputDirectories = strcat(inputDirectories, expansionOrReduction, '\');
 if isequal(expansionOrReduction, 'reduction\')
     surfaceRatios = surfaceRatiosReduction;
 else
@@ -113,11 +113,11 @@ for numSR = 1:length(surfaceRatios)
     %histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability');
     legend('Frusta', 'Voronoi');%, 'SalivaryGlandApical', 'SalivaryGlandBasal')
     title(strcat('Surface ratio: ', surfaceRatios{numSR}));
-    print(h, strcat('results/', expansionOrReduction, 'histogramEnergy_FrustaVsVoronoi_SurfaceRatio', surfaceRatios{numSR}, '_', date, '.tif'), '-dtiff', '-r300')
+    print(h, strcat('results/', expansionOrReduction, '/histogramEnergy_FrustaVsVoronoi_SurfaceRatio', surfaceRatios{numSR}, '_', date, '.tif'), '-dtiff', '-r300')
     close(h);
     
-    %paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta', inputDirectories );
-    %paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi', inputDirectories );
+    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta', inputDirectories );
+    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi', inputDirectories );
     
     
     % It was not necessary to perform the Edge length cutoff because we do
