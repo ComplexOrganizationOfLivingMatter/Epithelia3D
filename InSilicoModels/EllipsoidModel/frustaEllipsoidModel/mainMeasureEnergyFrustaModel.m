@@ -21,7 +21,7 @@ filePaths={filePathFrustaStage4,filePathFrustaStage8, filePathFrustaGlobe, fileP
 for nPath=1:length(filePaths)
     
     if nPath==1
-       numRandoms=[1:10,61:130];
+       numRandoms=1:130;
        nCellHeight=1;
     else if nPath==2
        numRandoms=1:30; 
