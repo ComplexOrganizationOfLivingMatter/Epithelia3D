@@ -1,4 +1,4 @@
-function [ uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( modelFrusta, modelVoronoi, surfaceRatio )
+function [ uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( modelFrusta, modelVoronoi, surfaceRatio, inputDirectory )
 %GETVALIDOFVALIDCELLS Summary of this function goes here
 %   Detailed explanation goes here
     
@@ -6,8 +6,9 @@ function [ uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPo
     uniqueValidCells = cell(maxRandoms, 1);
     frustaPolDist = zeros(maxRandoms, 5);
     voronoiPolDist = zeros(maxRandoms, 5);
-    for nRandom = 1:maxRandoms
-        load(strcat('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiModel\expansion\512x4096_800seeds\Image_', num2str(nRandom), '_Diagram_5\Image_', num2str(nRandom),'_Diagram_5.mat'));
+    for nRandom = 1%:maxRandoms
+        load(strcat(inputDirectory, 'Voronoi\2048x4096_200seeds\Image_', num2str(nRandom), '_Diagram_5\Image_', num2str(nRandom),'_Diagram_5.mat'));
+        %load(strcat(inputDirectory, '2048x4096_200seeds\randomization', num2str(nRandom), '\totalVerticesData'));
         
         %Neighbours in frusta are the same as in apical
         frustaLayer = listLOriginalProjection(listLOriginalProjection.surfaceRatio == 1, :).L_originalProjection{1};
