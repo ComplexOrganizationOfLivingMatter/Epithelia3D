@@ -47,31 +47,42 @@ addpath('lib/');
 %     end
 % end
 
-%% With no matching (all the motifs of the layer
+%% With no matching (all the motifs of the layer)
 
-salivaryGlandNoTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_NoTransitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
-salivaryGlandTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_Transitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
+% salivaryGlandNoTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_NoTransitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
+% salivaryGlandTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_Transitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
+% 
+% [~, salivaryGlandTotalEnergy] = getEnergyInfo(vertcat(salivaryGlandTrans, salivaryGlandNoTrans));
+% salivaryGlandTotalEnergyApical = salivaryGlandTotalEnergy(:, [2,4]);
+% %Removing outliers
+% salivaryGlandTotalEnergyApical(478, :) = [];
+% salivaryGlandTotalEnergyBasal = salivaryGlandTotalEnergy(:, [1,3]);
+% 
+% 
+% numBins = 100;
+% h = figure('visible', 'off');
+% histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% hold on;
+% histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% legend('SalivaryGlandApical', 'SalivaryGlandBasal');
+% title('Salivary gland');
+% print(h, strcat('results/histogramEnergy_SalivaryGland.tif'), '-dtiff', '-r300')
+% close(h);
 
-[~, salivaryGlandTotalEnergy] = getEnergyInfo(vertcat(salivaryGlandTrans, salivaryGlandNoTrans));
-salivaryGlandTotalEnergyApical = salivaryGlandTotalEnergy(:, [2,4]);
-%Removing outliers
-salivaryGlandTotalEnergyApical(478, :) = [];
-salivaryGlandTotalEnergyBasal = salivaryGlandTotalEnergy(:, [1,3]);
+inputDirectories = 'D:\Pablo\Epithelia3D\InSilicoModels\TotalEnergy\data\';
+surfaceRatiosExpansion = {'1', '1.25', '1.6667', '2', '5', '10'};
+surfaceRatiosReduction = {'1', '0.8', '0.6', '0.5', '0.2', '0.1'};
 
+expansionOrReduction = 'reduction\';
 
-numBins = 20;
-h = figure('visible', 'off');
-histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
-hold on;
-histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
-legend('SalivaryGlandApical', 'SalivaryGlandBasal');
-title('Salivary gland');
-print(h, strcat('results/histogramEnergy_SalivaryGland.tif'), '-dtiff', '-r300')
-close(h);
+numBins = 100;
 
-inputDirectoriesFrusta = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\AllFrusta_energy_800seeds\';
-inputDirectoriesVoronoi = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\Voronoi_energy_800seeds\';
-surfaceRatios = {'1', '1.25', '1.6667', '2', '5', '10'};
+inputDirectories = strcat(inputDirectories, expansionOrReduction);
+if isequal(expansionOrReduction, 'reduction\')
+    surfaceRatios = surfaceRatiosReduction;
+else
+    surfaceRatios = surfaceRatiosExpansion;
+end
 
 finalTable = cell(length(surfaceRatios), 1);
 
@@ -83,12 +94,12 @@ voronoiEnergyPerAngle = cell(length(surfaceRatios), 1);
 
 definedAngles = 0:15:90;
 
-parfor numSR = 1:length(surfaceRatios)
+for numSR = 1:length(surfaceRatios)
     
-    voronoiFile = dir(strcat(inputDirectoriesVoronoi, 'allMotifsEnergy_800seeds_surfaceRatio', surfaceRatios{numSR}, '_*'));
-    frustaFile = dir(strcat(inputDirectoriesFrusta, 'allFrustaEnergy_800seeds_surfaceRatio_', surfaceRatios{numSR}, '_*'));
+    voronoiFile = dir(strcat(inputDirectories, 'allMotifsEnergy_200seeds_surfaceRatio', surfaceRatios{numSR}, '_*'));
+    frustaFile = dir(strcat(inputDirectories, 'allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatios{numSR}, '_*'));
     
-    [uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( readtable(strcat(inputDirectoriesFrusta, frustaFile(1).name)), readtable(strcat(inputDirectoriesVoronoi, voronoiFile(1).name)), str2double(surfaceRatios{numSR}));
+    [uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( readtable(strcat(inputDirectories, frustaFile(1).name)), readtable(strcat(inputDirectories, voronoiFile(1).name)), str2double(surfaceRatios{numSR}), inputDirectories);
     
     [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
 	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
@@ -104,8 +115,8 @@ parfor numSR = 1:length(surfaceRatios)
     print(h, strcat('results/histogramEnergy_FrustaVsVoronoi_SurfaceRatio', surfaceRatios{numSR}, '.tif'), '-dtiff', '-r300')
     close(h);
     
-    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta' );
-    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi' );
+    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta', inputDirectories );
+    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi', inputDirectories );
     
     
     % It was not necessary to perform the Edge length cutoff because we do
