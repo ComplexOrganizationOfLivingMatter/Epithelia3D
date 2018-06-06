@@ -74,6 +74,7 @@ surfaceRatiosExpansion = {'1', '1.25', '1.6667', '2', '5', '10'};
 surfaceRatiosReduction = {'1', '0.8', '0.6', '0.5', '0.2', '0.1'};
 
 expansionOrReduction = 'reduction\';
+mkdir(strcat('results/', expansionOrReduction, '/'));
 
 numBins = 100;
 
