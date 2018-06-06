@@ -17,22 +17,47 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
             load(strcat(inputDirectory, 'Voronoi\2048x4096_200seeds\Image_', num2str(nRandom), '_Diagram_5\Image_', num2str(nRandom),'_Diagram_5.mat'));
             imageLabelled = listLOriginalProjection(round(listLOriginalProjection.surfaceRatio, 2) == round(surfaceRatio, 2), :).L_originalProjection{1};
             initialDilated = 0;
+            
+            heatMapImage = zeros(size(imageLabelled));
+            imgOnlyEdges = imdilate(imageLabelled == 0, strel('disk', 3));
+            for numRow = 1:size(actualEnergyExcel, 1)
+                neighbouringCells = actualEnergyExcel{numRow, 1:2};
+                cell1Dilated = imdilate(ismember(imageLabelled, neighbouringCells(1)), strel('disk', 4+initialDilated));
+                cell2Dilated = imdilate(ismember(imageLabelled, neighbouringCells(2)), strel('disk', 4+initialDilated));
+                dilatedImg = cell1Dilated & cell2Dilated;
+                heatmapValue = (actualTotalEnergy(numRow, 1) - minValue)/(maxValue-minValue)*maxColours;
+                heatMapImage(dilatedImg & imgOnlyEdges) = round(heatmapValue);
+            end
+            
         else
             load(strcat(inputDirectory, 'AllFrusta\2048x4096_200seeds\randomization', num2str(nRandom), '\totalVerticesData.mat'));
             imageLabelled = L_img;
             imageLabelled = imresize(imageLabelled, [size(imageLabelled, 1) size(imageLabelled, 2)*surfaceRatio], 'nearest');
+            
+            frustaInfo = frustaTable(round(frustaTable.surfaceRatio, 2) == round(surfaceRatio, 2), :);
+            
+            heatMapImage = zeros(size(imageLabelled));
+        
+            for numRow = 1:size(actualEnergyExcel, 1)
+                neighbouringCells = actualEnergyExcel{numRow, 1:2};
+                %Cells that are not  connected but share the edge of the motif
+                edgeEndCells = actualEnergyExcel{numRow, 3:4};
+                
+                numVertex1 = find(ismember(frustaInfo.vertices.verticesConnectCells, horzcat(neighbouringCells, edgeEndCells(1)), 'rows'));
+                numVertex2 = find(ismember(frustaInfo.vertices.verticesConnectCells, horzcat(neighbouringCells, edgeEndCells(2)), 'rows'));
+                
+                vertex1 = frustaInfo.vertices.verticesPerCell{numVertex1};
+                vertex2 = frustaInfo.vertices.verticesPerCell{numVertex2};
+                
+                [xToPaint, yToPaint] = Drawline3D(vertex1(1), vertex1(2), 0, vertex2(1), vertex2(2), 0);
+                
+                indicesToPaint = sub2ind(size(imageLabelled),xToPaint, yToPaint);
+
+                heatmapValue = (actualTotalEnergy(numRow, 1) - minValue)/(maxValue-minValue)*maxColours;
+                heatMapImage(indicesToPaint) = round(heatmapValue);
+            end
         end
         
-        heatMapImage = zeros(size(imageLabelled));
-        
-        for numRow = 1:size(actualEnergyExcel, 1)
-            neighbouringCells = actualEnergyExcel{numRow, 1:2};
-            
-            
-            
-            heatmapValue = (actualTotalEnergy(numRow, 1) - minValue)/(maxValue-minValue)*maxColours;
-            heatMapImage(dilatedImg & imgOnlyEdges) = round(heatmapValue);
-        end
         
         outputDir = strcat('results/', typeOfSimulation, '/SurfaceRatio', num2str(surfaceRatio), '/');
         mkdir(outputDir)
