@@ -5,7 +5,7 @@ function mainTubularControlModelProjectionSurface(nSeeds,basalExpansions,apicalR
     typeProjections={'expansion','reduction'};
     if isempty(basalExpansions)
         typeProjections={'reduction'};
-    else if isempty(apicalReductions)
+    else if isempty(apicalReductions) 
             typeProjections={'expansion'};
          end
     end
@@ -16,7 +16,7 @@ function mainTubularControlModelProjectionSurface(nSeeds,basalExpansions,apicalR
         typeProjection=typeProjections{typProj};
         relativePathVoronoi= ['data\tubularVoronoiModel\' typeProjection '\' num2str(W) 'x' num2str(H) '_'];
 
-        if ~isempty(strfind(typeProjection,'expansion'))
+        if contains(typeProjection,'expansion')
             numSurfaces=length(basalExpansions);
         else
             numSurfaces=length(apicalReductions);
@@ -24,9 +24,9 @@ function mainTubularControlModelProjectionSurface(nSeeds,basalExpansions,apicalR
 
 
         %defining colours to draw the frusta diagrams
-%         colours = colorcube(nSeeds);
-%         colours = colours(randperm(nSeeds), :);
-% 
+        colours = colorcube(nSeeds);
+        colours = colours(randperm(nSeeds), :);
+
 %         for nRand=1:numRandoms
 %             %drawing frusta expansions diagrams and saving the vertices
 %             drawAndSaveVertices(relativePathVoronoi,nSeeds,nRand,numSurfaces,typeProjection,basalExpansions,apicalReductions,colours,H);
@@ -34,7 +34,5 @@ function mainTubularControlModelProjectionSurface(nSeeds,basalExpansions,apicalR
 
         %calculation of energy in frusta model
         energyCalculationControlTubularModel(numSurfaces,relativePathVoronoi,numRandoms,typeProjection,nSeeds,basalExpansions,apicalReductions)
-
-
     end
 end

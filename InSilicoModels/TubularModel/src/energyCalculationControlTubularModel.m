@@ -17,11 +17,11 @@ function energyCalculationControlTubularModel(numSurfaces,relativePathVoronoi,nu
                     %loading L_img, frustaModel and indexesBorderVertices
                     load([directory2load  'totalVerticesData.mat'])
                     
-                    if ~isempty(strfind(typeProjection,'expansion'))
+                    if contains(typeProjection,'expansion')
                          surfaceRatio=basalExpansions(nSurf);
                         disp(['Calculation of energy: number of randomization: ' num2str(nRand) '_ surface ratio - expansion: ' num2str(surfaceRatio) ])
                     else
-                        surfaceRatio=1/(1-apicalReductions(nSurf));
+                        surfaceRatio=apicalReductions(nSurf);
                         disp(['Calculation of energy: number of randomization: ' num2str(nRand) '_ surface ratio - reduction: ' num2str(surfaceRatio) ])
                     end
 

@@ -30,16 +30,16 @@ function mainTubularVoronoiModelProjectionSurface(numSeeds,basalExpansions,apica
             end
 
             %carry out Voronoi surface projections and edge length and angles measurements
-%             surfaceProjection(pathV5data,nameOfFolder,directory2save,path3dVoronoi,kindProjection{typeP},listOfSurfaceRatios)
-%   
-%             %calculation the presence of scutoids
-%             if thresholdRes <= 1
-%                 calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection{typeP},pathV5data,directory2save,length(listOfSurfaceRatios),Hinitial,Winitial)
-%             else
-%                  calculatePercentajeScutoidsByThreshold(directory2save,numSeeds,Hinitial,Winitial,numRandoms,kindProjection{typeP},thresholdRes)
-%             end
-%             %calculation the number of cells along the trasversal plane
-%             calculateNcellsAroundTrasversalSection(numSeeds,kindProjection{typeP},pathV5data,directory2save,length(listOfSurfaceRatios),Hinitial,Winitial)
+            surfaceProjection(pathV5data,nameOfFolder,directory2save,path3dVoronoi,kindProjection{typeP},listOfSurfaceRatios)
+  
+            %calculation the presence of scutoids
+            if thresholdRes <= 1
+                calculateNumberOfInvolvedCellsInTransitions(numSeeds,kindProjection{typeP},pathV5data,directory2save,length(listOfSurfaceRatios),Hinitial,Winitial)
+            else
+                 calculatePercentajeScutoidsByThreshold(directory2save,numSeeds,Hinitial,Winitial,numRandoms,kindProjection{typeP},thresholdRes)
+            end
+            %calculation the number of cells along the trasversal plane
+            calculateNcellsAroundTrasversalSection(numSeeds,kindProjection{typeP},pathV5data,directory2save,length(listOfSurfaceRatios),Hinitial,Winitial)
 
             %measurements of line tension energy
             energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,length(listOfSurfaceRatios),numRandoms,kindProjection{typeP},numSeeds,basalExpansions,apicalReductions)
