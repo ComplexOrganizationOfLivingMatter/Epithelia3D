@@ -1,4 +1,4 @@
-function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData, typeOfSimulation, inputDirectory, singleCell)
+function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData, typeOfSimulation, inputDirectory, cellsAnalysed)
 %PAINTLINETENSIONEDGES Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -74,7 +74,7 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
         reductionOrExpansion = strsplit(inputDirectory, '\');
         reductionOrExpansion = reductionOrExpansion{end-1};
         
-        outputDir = strcat('results/', reductionOrExpansion, '/', typeOfSimulation, '/Random_', num2str(nRandom), '/');
+        outputDir = strcat('results/', reductionOrExpansion, '/', typeOfSimulation, '/', cellsAnalysed ,'/Random_', num2str(nRandom), '/');
         
         mkdir(outputDir)
 %         h = figure('visible', 'off');
