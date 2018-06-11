@@ -73,10 +73,18 @@ inputDirectories = 'D:\Pablo\Epithelia3D\InSilicoModels\TotalEnergy\data\';
 surfaceRatiosExpansion = {'1', '1.25', '1.6667', '2', '5', '10'};
 surfaceRatiosReduction = {'1', '0.8', '0.6', '0.5', '0.2', '0.1'};
 
-expansionOrReduction = 'reduction\';
+expansionOrReduction = 'expansion';
 mkdir(strcat('results/', expansionOrReduction, '/'));
 
 numBins = 100;
+
+cellsToAnalyze =  [108, 139];
+
+        
+cellsAnalysed = mat2str(cellsToAnalyze);
+cellsAnalysed = strrep(cellsAnalysed(2:end-1), ' ', '-');
+expansionOrReduction = strcat(expansionOrReduction, '/', cellsAnalysed);
+mkdir(strcat('results/', expansionOrReduction, '/'));
 
 inputDirectories = strcat(inputDirectories, expansionOrReduction, '\');
 if isequal(expansionOrReduction, 'reduction\')
@@ -102,6 +110,11 @@ for numSR = 1:length(surfaceRatios)
     
     [uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( readtable(strcat(inputDirectories, frustaFile(1).name)), readtable(strcat(inputDirectories, voronoiFile(1).name)), str2double(surfaceRatios{numSR}), inputDirectories);
     
+    if isempty(cellsToAnalyze) == 0
+        modelFrusta(any(ismember(modelFrusta{:, 1:4}, cellsToAnalyze), 2) == 0, :) = [];
+        modelVoronoi(any(ismember(modelVoronoi{:, 1:4}, cellsToAnalyze), 2) == 0, :) = [];
+    end
+    
     [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
 	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
     
@@ -109,15 +122,14 @@ for numSR = 1:length(surfaceRatios)
     histogram(frustaTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
     hold on;
     histogram(voronoiTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
-    %histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability');
-    %histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability');
+    
     legend('Frusta', 'Voronoi');%, 'SalivaryGlandApical', 'SalivaryGlandBasal')
     title(strcat('Surface ratio: ', surfaceRatios{numSR}));
     print(h, strcat('results/', expansionOrReduction, '/histogramEnergy_FrustaVsVoronoi_SurfaceRatio', surfaceRatios{numSR}, '_', date, '.tif'), '-dtiff', '-r300')
     close(h);
     
-    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta', inputDirectories );
-    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi', inputDirectories );
+    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta', inputDirectories);
+    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi', inputDirectories);
     
     
     % It was not necessary to perform the Edge length cutoff because we do
