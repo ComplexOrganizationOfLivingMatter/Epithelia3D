@@ -74,7 +74,7 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
         reductionOrExpansion = strsplit(inputDirectory, '\');
         reductionOrExpansion = reductionOrExpansion{end-1};
         
-        outputDir = strcat('results/', reductionOrExpansion, '/', typeOfSimulation, '/', cellsAnalysed ,'/Random_', num2str(nRandom), '/');
+        outputDir = strcat('results/', reductionOrExpansion, '/', cellsAnalysed, '/', typeOfSimulation ,'/Random_', num2str(nRandom), '/');
         
         mkdir(outputDir)
 %         h = figure('visible', 'off');
@@ -82,7 +82,14 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
 %         colorbar('northoutside')
 %         print(h, strcat(outputDir, 'lineTensionPlot_NRandom', num2str(nRandom), '_withColorBar.tif'), '-dtiff', '-r300')
 %         close(h);
-        imwrite(heatMapImage, colours, strcat(outputDir, 'lineTensionPlot_SurfaceRatio', num2str(surfaceRatio)', '.tif'))
+
+        [row, col] = find(heatMapImage > 0);
+        bounding_box = [min(row), min(col), max(row) - min(row) + 1, max(col) - min(col) + 1];
+
+        % display with rectangle
+        rect = bounding_box([2,1,4,3]); % rectangle wants x,y,w,h we have rows, columns, ... need to convert
+
+        imwrite(imcrop(heatMapImage, rect), colours, strcat(outputDir, 'lineTensionPlot_SurfaceRatio', strrep(num2str(surfaceRatio), '.', '-'), '.tif'))
     end
 end
 
