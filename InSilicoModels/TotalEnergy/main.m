@@ -153,7 +153,7 @@ parfor numSR = 1:length(surfaceRatios)
     histogram(voronoiTotalEnergy(modelVoronoi.EdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
     ylim([0 maxLim]);
     title('EdgeAngle<45');
-    legend(strcat('Frusta (', sum(modelFrusta.EdgeAngle < 45) ,' motifs)'), strcat('Voronoi (', sum(modelFrusta.EdgeAngle < 45) ,' motifs)'));
+    legend(strcat('Frusta (', num2str(sum(modelFrusta.EdgeAngle < 45)) ,' motifs)'), strcat('Voronoi (', num2str(sum(modelVoronoi.EdgeAngle < 45)) ,' motifs)'));
     hold off;
     
     subplot(1,2,2);
@@ -162,9 +162,8 @@ parfor numSR = 1:length(surfaceRatios)
     histogram(voronoiTotalEnergy(modelVoronoi.EdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
     ylim([0 maxLim]);
     title('EdgeAngle>=45');
-    legend(strcat('Frusta (', sum(modelFrusta.EdgeAngle >= 45) ,' motifs)'), strcat('Voronoi (', sum(modelFrusta.EdgeAngle >= 45) ,' motifs)'));
+    legend(strcat('Frusta (', num2str(sum(modelFrusta.EdgeAngle >= 45)) ,' motifs)'), strcat('Voronoi (', num2str(sum(modelVoronoi.EdgeAngle >= 45)) ,' motifs)'));
     hold off;
-    
     
     suptitle(strcat('Surface ratio: ', surfaceRatios{numSR}));
     %legend('Frusta', 'Voronoi');%, 'SalivaryGlandApical', 'SalivaryGlandBasal')
