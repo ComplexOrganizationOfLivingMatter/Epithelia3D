@@ -99,10 +99,11 @@ voronoiEnergyPerAngle = cell(length(surfaceRatios), 1);
 %cellsToAnalyze =  [108];
 cellsToAnalyze = [];
 
-        
-cellsAnalysed = mat2str(cellsToAnalyze);
-cellsAnalysed = strcat('cellsWithId_', strrep(cellsAnalysed(2:end-1), ' ', '-'));
-expansionOrReduction = strcat(expansionOrReduction, '/', cellsAnalysed);
+if isempty(cellsToAnalyze) == 0
+    cellsAnalysed = mat2str(cellsToAnalyze);
+    cellsAnalysed = strcat('cellsWithId_', strrep(cellsAnalysed(2:end-1), ' ', '-'));
+    expansionOrReduction = strcat(expansionOrReduction, '/', cellsAnalysed);
+end
 mkdir(strcat('results/', expansionOrReduction, '/'));
 
 
@@ -123,8 +124,8 @@ parfor numSR = 1:length(surfaceRatios)
     [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
 	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
     
-    %h = figure('visible', 'off');
-    h = figure;
+    h = figure('visible', 'off');
+    %h = figure;
     subplot(1,2,1);
     histogram(frustaTotalEnergy(modelFrusta.EdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
     hold on;
