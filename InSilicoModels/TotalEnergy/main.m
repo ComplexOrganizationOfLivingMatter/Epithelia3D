@@ -52,21 +52,42 @@ addpath('lib/');
 % salivaryGlandNoTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_NoTransitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
 % salivaryGlandTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_Transitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
 % 
-% [~, salivaryGlandTotalEnergy] = getEnergyInfo(vertcat(salivaryGlandTrans, salivaryGlandNoTrans));
+% salivaryGlandModel = vertcat(salivaryGlandTrans, salivaryGlandNoTrans);
+% 
+% [~, salivaryGlandTotalEnergy] = getEnergyInfo(salivaryGlandModel);
 % salivaryGlandTotalEnergyApical = salivaryGlandTotalEnergy(:, [2,4]);
 % %Removing outliers
 % salivaryGlandTotalEnergyApical(478, :) = [];
+% salivaryGlandModel(478, :) = [];
 % salivaryGlandTotalEnergyBasal = salivaryGlandTotalEnergy(:, [1,3]);
 % 
-% 
+% maxLim = 0.15;
 % numBins = 100;
 % h = figure('visible', 'off');
-% histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% subplot(1,2,1);
+% histogram(salivaryGlandTotalEnergyApical(salivaryGlandModel.basalEdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
 % hold on;
-% histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% histogram(salivaryGlandTotalEnergyBasal(salivaryGlandModel.basalEdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
 % legend('SalivaryGlandApical', 'SalivaryGlandBasal');
-% title('Salivary gland');
-% print(h, strcat('results/histogramEnergy_SalivaryGland.tif'), '-dtiff', '-r300')
+% title('EdgeAngle<45');
+% ylim([0 maxLim]);
+% 
+% subplot(1,2,2);
+% histogram(salivaryGlandTotalEnergyApical(salivaryGlandModel.basalEdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% hold on;
+% histogram(salivaryGlandTotalEnergyBasal(salivaryGlandModel.basalEdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% legend('SalivaryGlandApical', 'SalivaryGlandBasal');
+% title('EdgeAngle>=45');
+% ylim([0 maxLim]);
+% suptitle('Salivary gland');
+% 
+% % histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% % hold on;
+% % histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% % legend('SalivaryGlandApical', 'SalivaryGlandBasal');
+% % title('Salivary gland');
+% 
+% print(h, strcat('results/histogramEnergy_SalivaryGland', '_', date, '.tif'), '-dtiff', '-r300')
 % close(h);
 
 inputDirectories = 'D:\Pablo\Epithelia3D\InSilicoModels\TotalEnergy\data\';
@@ -130,15 +151,18 @@ parfor numSR = 1:length(surfaceRatios)
     histogram(frustaTotalEnergy(modelFrusta.EdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
     hold on;
     histogram(voronoiTotalEnergy(modelVoronoi.EdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+    ylim([0 maxLim]);
     title('EdgeAngle<45');
-    legend('Frusta', 'Voronoi')
+    legend(strcat('Frusta (', sum(modelFrusta.EdgeAngle < 45) ,' motifs)'), strcat('Voronoi (', sum(modelFrusta.EdgeAngle < 45) ,' motifs)'));
     hold off;
+    
     subplot(1,2,2);
     histogram(frustaTotalEnergy(modelFrusta.EdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
     hold on;
     histogram(voronoiTotalEnergy(modelVoronoi.EdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+    ylim([0 maxLim]);
     title('EdgeAngle>=45');
-    legend('Frusta', 'Voronoi')
+    legend(strcat('Frusta (', sum(modelFrusta.EdgeAngle >= 45) ,' motifs)'), strcat('Voronoi (', sum(modelFrusta.EdgeAngle >= 45) ,' motifs)'));
     hold off;
     
     
