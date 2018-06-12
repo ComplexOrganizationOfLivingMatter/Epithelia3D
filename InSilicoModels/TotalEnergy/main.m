@@ -70,21 +70,15 @@ addpath('lib/');
 % close(h);
 
 inputDirectories = 'D:\Pablo\Epithelia3D\InSilicoModels\TotalEnergy\data\';
-surfaceRatiosExpansion = {'1', '1.25', '1.6667', '2', '5', '10'};
-surfaceRatiosReduction = {'1', '0.8', '0.6', '0.5', '0.2', '0.1'};
+% surfaceRatiosExpansion = {'1', '1.25', '1.6667', '2', '5', '10'};
+% surfaceRatiosReduction = {'1', '0.8', '0.6', '0.5', '0.2', '0.1'};
+surfaceRatiosExpansion = {'1', '1.1111', '1.25', '1.4286', '1.6667', '2', '2.5', '3.3333', '5', '10'};
+surfaceRatiosReduction = {'1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1'};
 
 expansionOrReduction = 'expansion';
 mkdir(strcat('results/', expansionOrReduction, '/'));
 
 numBins = 100;
-
-cellsToAnalyze =  [108, 139];
-
-        
-cellsAnalysed = mat2str(cellsToAnalyze);
-cellsAnalysed = strrep(cellsAnalysed(2:end-1), ' ', '-');
-expansionOrReduction = strcat(expansionOrReduction, '/', cellsAnalysed);
-mkdir(strcat('results/', expansionOrReduction, '/'));
 
 inputDirectories = strcat(inputDirectories, expansionOrReduction, '\');
 if isequal(expansionOrReduction, 'reduction\')
@@ -101,9 +95,20 @@ totalVoronoiPolDist = [];
 frustaEnergyPerAngle = cell(length(surfaceRatios), 1);
 voronoiEnergyPerAngle = cell(length(surfaceRatios), 1);
 
+
+%cellsToAnalyze =  [108];
+cellsToAnalyze = [];
+
+        
+cellsAnalysed = mat2str(cellsToAnalyze);
+cellsAnalysed = strcat('cellsWithId_', strrep(cellsAnalysed(2:end-1), ' ', '-'));
+expansionOrReduction = strcat(expansionOrReduction, '/', cellsAnalysed);
+mkdir(strcat('results/', expansionOrReduction, '/'));
+
+
 definedAngles = 0:15:90;
 
-for numSR = 1:length(surfaceRatios)
+parfor numSR = 1:length(surfaceRatios)
     
     voronoiFile = dir(strcat(inputDirectories, 'allMotifsEnergy_200seeds_surfaceRatio', surfaceRatios{numSR}, '_*'));
     frustaFile = dir(strcat(inputDirectories, 'allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatios{numSR}, '_*'));
@@ -118,18 +123,32 @@ for numSR = 1:length(surfaceRatios)
     [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
 	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
     
-    h = figure('visible', 'off');
-    histogram(frustaTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+    %h = figure('visible', 'off');
+    h = figure;
+    subplot(1,2,1);
+    histogram(frustaTotalEnergy(modelFrusta.EdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
     hold on;
-    histogram(voronoiTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+    histogram(voronoiTotalEnergy(modelVoronoi.EdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+    title('EdgeAngle<45');
+    legend('Frusta', 'Voronoi')
+    hold off;
+    subplot(1,2,2);
+    histogram(frustaTotalEnergy(modelFrusta.EdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+    hold on;
+    histogram(voronoiTotalEnergy(modelVoronoi.EdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+    title('EdgeAngle>=45');
+    legend('Frusta', 'Voronoi')
+    hold off;
     
-    legend('Frusta', 'Voronoi');%, 'SalivaryGlandApical', 'SalivaryGlandBasal')
-    title(strcat('Surface ratio: ', surfaceRatios{numSR}));
+    
+    suptitle(strcat('Surface ratio: ', surfaceRatios{numSR}));
+    %legend('Frusta', 'Voronoi');%, 'SalivaryGlandApical', 'SalivaryGlandBasal')
+    
     print(h, strcat('results/', expansionOrReduction, '/histogramEnergy_FrustaVsVoronoi_SurfaceRatio', surfaceRatios{numSR}, '_', date, '.tif'), '-dtiff', '-r300')
     close(h);
     
-    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta', inputDirectories);
-    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi', inputDirectories);
+    %paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta', inputDirectories, cellsAnalysed);
+    %paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi', inputDirectories, cellsAnalysed);
     
     
     % It was not necessary to perform the Edge length cutoff because we do
