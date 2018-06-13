@@ -74,7 +74,11 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
         reductionOrExpansion = strsplit(inputDirectory, '\');
         reductionOrExpansion = reductionOrExpansion{end-1};
         
-        outputDir = strcat('results/', reductionOrExpansion, '/', cellsAnalysed, '/', typeOfSimulation ,'/Random_', num2str(nRandom), '/');
+        if isempty(cellsAnalysed)
+            outputDir = strcat('results/', reductionOrExpansion, '/', typeOfSimulation ,'/Random_', num2str(nRandom), '/');
+        else
+            outputDir = strcat('results/', reductionOrExpansion, '/', cellsAnalysed, '/', typeOfSimulation ,'/Random_', num2str(nRandom), '/');
+        end
         
         mkdir(outputDir)
 %         h = figure('visible', 'off');
