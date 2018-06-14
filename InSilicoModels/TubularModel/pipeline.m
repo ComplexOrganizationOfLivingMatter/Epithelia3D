@@ -53,9 +53,9 @@ for i=1:length(setOfSeeds)
             
         catch ME
             disp(['error in number of seeds: ' num2str(n_seeds)])
-            disp(ME.stack(1).name)
-            disp(ME.stack(1).line)
-
+            for j =length(ME.stack):-1:1
+                disp([ME.stack(j).name, ' - ' num2str(ME.stack(j).line)])
+            end
         end
 
 
