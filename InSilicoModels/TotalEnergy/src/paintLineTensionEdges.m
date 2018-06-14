@@ -69,6 +69,25 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
                 heatMapImage(indicesToPaint) = round(heatmapValue);
                 blankImage(indicesToPaint) = 0;
             end
+            
+            uniqueCells = unique(actualEnergyExcel{:, 1:4});
+            perimeterCells = zeros(length(uniqueCells), 1);
+            for numCell = 1:length(uniqueCells)
+                actualCell = uniqueCells(numCell);
+                actualVertices = any(frustaInfo.vertices.verticesConnectCells == actualCell, 2);
+                actualVertices = frustaInfo.vertices.verticesPerCell(actualVertices);
+                actualVertices = vertcat(actualVertices{:});
+                verticesConvexHull = convhull(actualVertices);
+                if length(verticesConvexHull)-1 ~= size(actualVertices, 1)
+                    continue
+                end
+                actualVertices = actualVertices(verticesConvexHull(1:end-1), :);
+                polyin = polyshape(actualVertices);
+                perimeterCells(numCell) = polyin.perimeter;
+            end
+            
+            perimeterCells
+            
         end
         
         reductionOrExpansion = strsplit(inputDirectory, '\');
