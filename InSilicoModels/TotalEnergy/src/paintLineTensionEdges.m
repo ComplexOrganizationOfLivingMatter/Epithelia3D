@@ -13,10 +13,11 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
         actualEnergyExcel = energyExcel(energyExcel.nRand == nRandom, :);
         actualTotalEnergy = totalEnergyData(energyExcel.nRand == nRandom, :);
         
+        uniqueCells = unique(actualEnergyExcel{:, 1:4});
+        
         if isequal(typeOfSimulation, 'Voronoi')
             load(strcat(inputDirectory, 'Voronoi\2048x4096_200seeds\Image_', num2str(nRandom), '_Diagram_5\Image_', num2str(nRandom),'_Diagram_5.mat'));
             imageLabelled = listLOriginalProjection(round(listLOriginalProjection.surfaceRatio, 2) == round(surfaceRatio, 2), :).L_originalProjection{1};
-            initialDilated = 0;
             
             heatMapImage = zeros(size(imageLabelled));
             imgOnlyEdges = imdilate(imageLabelled == 0, strel('disk', 3));
@@ -29,6 +30,19 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
                 heatMapImage(dilatedImg & imgOnlyEdges) = round(heatmapValue);
             end
             
+            h = figure ('Visible', 'off');
+            imshow(heatMapImage, colours);
+            hold on;
+            cellPerimeters = regionprops(imageLabelled, {'Centroid', 'Perimeter'});
+            borderCells = unique([imageLabelled(:, 1), imageLabelled(:, end)]);
+            for numCell = 1:length(uniqueCells)
+                actualCell = uniqueCells(numCell);
+                if ismember(actualCell, borderCells)
+                    continue;
+                end
+                actualCentroid = cellPerimeters(actualCell).Centroid;
+                text(actualCentroid(1), actualCentroid(2), num2str(round(cellPerimeters(actualCell).Perimeter/(1e3), 1)), 'Color', 'white', 'HorizontalAlignment', 'center');
+            end
         else
             load(strcat(inputDirectory, 'AllFrusta\2048x4096_200seeds\randomization', num2str(nRandom), '\totalVerticesData.mat'));
             imageLabelled = L_img;
@@ -70,10 +84,13 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
                 blankImage(indicesToPaint) = 0;
             end
             
-            uniqueCells = unique(actualEnergyExcel{:, 1:4});
-            perimeterCells = zeros(length(uniqueCells), 1);
+            
+            perimeterCells = zeros(max(uniqueCells), 1);
+            h = figure ('Visible', 'off');
+            imshow(heatMapImage, colours)
+            hold on;
             for numCell = 1:length(uniqueCells)
-                actualCell = uniqueCells(numCell);
+                actualCell = uniqueCells(numCell);  
                 actualVertices = any(frustaInfo.vertices.verticesConnectCells == actualCell, 2);
                 actualVertices = frustaInfo.vertices.verticesPerCell(actualVertices);
                 actualVertices = vertcat(actualVertices{:});
@@ -83,10 +100,27 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
                 end
                 actualVertices = actualVertices(verticesConvexHull(1:end-1), :);
                 polyin = polyshape(actualVertices);
-                perimeterCells(numCell) = polyin.perimeter;
+                %plot(polyin)
+                %hold on;
+                [Cx, Cy] = centroid(polyin);
+                text(Cy, Cx, num2str(round(polyin.perimeter/(1e3), 1)), 'Color', 'white');
+                perimeterCells(actualCell) = polyin.perimeter;
             end
             
-            perimeterCells
+            %perimeterCells
+            
+%             contractilityPerVertex = zeros(size(frustaInfo.vertices.verticesPerCell, 1), 1);
+%             
+%             contractibilityEquation = @(cellsPerimeters) sum(cellsPerimeters.^2);
+%             
+%             for numVertex = 1:size(contractilityPerVertex, 1)
+%                 actualPerimeters = perimeterCells(frustaInfo.vertices.verticesConnectCells(numVertex, :));
+%                 if any(actualPerimeters == 0)
+%                     continue
+%                 end
+%                 contractilityPerVertex(numVertex) = contractibilityEquation(actualPerimeters);
+%             end
+            
             
         end
         
@@ -112,6 +146,8 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
         % display with rectangle
         rect = bounding_box([2,1,4,3]); % rectangle wants x,y,w,h we have rows, columns, ... need to convert
 
+        print(h, strcat(outputDir, 'lineTensionAndPerimeters_SurfaceRatio', strrep(num2str(surfaceRatio), '.', '-'), '.tif'), '-dtiff', '-r600');
+        close(h)
         imwrite(imcrop(heatMapImage, rect), colours, strcat(outputDir, 'lineTensionPlot_SurfaceRatio', strrep(num2str(surfaceRatio), '.', '-'), '.tif'))
     end
 end
