@@ -8,7 +8,7 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
 
     maxRandoms = 20;
     colours = colormap(jet(maxColours));
-    colours(1, :) = [0 0 0];
+    colours(1, :) = [1 1 1];
     for nRandom = 1%:maxRandoms
         actualEnergyExcel = energyExcel(energyExcel.nRand == nRandom, :);
         actualTotalEnergy = totalEnergyData(energyExcel.nRand == nRandom, :);
@@ -103,7 +103,7 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
                 %plot(polyin)
                 %hold on;
                 [Cx, Cy] = centroid(polyin);
-                text(Cy, Cx, num2str(round(polyin.perimeter/(1e3), 1)), 'Color', 'white');
+                text(Cy, Cx, num2str(round(polyin.perimeter/(1e3), 1)), 'Color', 'white', 'HorizontalAlignment', 'center');
                 perimeterCells(actualCell) = polyin.perimeter;
             end
             
@@ -148,6 +148,7 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
 
         print(h, strcat(outputDir, 'lineTensionAndPerimeters_SurfaceRatio', strrep(num2str(surfaceRatio), '.', '-'), '.tif'), '-dtiff', '-r600');
         close(h)
+        colours(1, :, :) = [0 0 0];
         imwrite(imcrop(heatMapImage, rect), colours, strcat(outputDir, 'lineTensionPlot_SurfaceRatio', strrep(num2str(surfaceRatio), '.', '-'), '.tif'))
     end
 end
