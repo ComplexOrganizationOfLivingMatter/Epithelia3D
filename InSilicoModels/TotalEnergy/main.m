@@ -47,31 +47,95 @@ addpath('lib/');
 %     end
 % end
 
-%% With no matching (all the motifs of the layer
+%% With no matching (all the motifs of the layer)
 
-salivaryGlandNoTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_NoTransitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
-salivaryGlandTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_Transitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
+% salivaryGlandNoTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_NoTransitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
+% salivaryGlandTrans = readtable('D:\Pablo\Epithelia3D\docs\Tables\FinalEnergyMeasurements\SalivaryGland\Unfiltered\energyMeasurements_TotalEnergy_Transitions_SalivaryGland_20x_40x_60x_19_02_2018.xls');
+% 
+% salivaryGlandModel = vertcat(salivaryGlandTrans, salivaryGlandNoTrans);
+% 
+% [~, salivaryGlandTotalEnergy] = getEnergyInfo(salivaryGlandModel);
+% salivaryGlandTotalEnergyApical = salivaryGlandTotalEnergy(:, [2,4]);
+% %Removing outliers
+% salivaryGlandTotalEnergyApical(478, :) = [];
+% salivaryGlandModel(478, :) = [];
+% salivaryGlandTotalEnergyBasal = salivaryGlandTotalEnergy(:, [1,3]);
+% 
+% %% Basal filter
+% maxLim = 0.15;
+% numBins = 100;
+% h = figure('visible', 'off');
+% subplot(1,2,1);
+% histogram(salivaryGlandTotalEnergyApical(salivaryGlandModel.basalEdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% hold on;
+% histogram(salivaryGlandTotalEnergyBasal(salivaryGlandModel.basalEdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% legend('SalivaryGlandApical', 'SalivaryGlandBasal');
+% title('EdgeAngle<45');
+% ylim([0 maxLim]);
+% 
+% subplot(1,2,2);
+% histogram(salivaryGlandTotalEnergyApical(salivaryGlandModel.basalEdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% hold on;
+% histogram(salivaryGlandTotalEnergyBasal(salivaryGlandModel.basalEdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% legend('SalivaryGlandApical', 'SalivaryGlandBasal');
+% title('EdgeAngle>=45');
+% ylim([0 maxLim]);
+% suptitle('Salivary gland (basal angle)');
+% 
+% print(h, strcat('results/histogramEnergy_SalivaryGland_basalFilter_', date, '.tif'), '-dtiff', '-r300')
+% close(h);
+% 
+% %% Apical filter
+% maxLim = 0.15;
+% numBins = 100;
+% h = figure('visible', 'off');
+% subplot(1,2,1);
+% histogram(salivaryGlandTotalEnergyApical(salivaryGlandModel.apicalEdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% hold on;
+% histogram(salivaryGlandTotalEnergyBasal(salivaryGlandModel.apicalEdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% legend('SalivaryGlandApical', 'SalivaryGlandBasal');
+% title('EdgeAngle<45');
+% ylim([0 maxLim]);
+% 
+% subplot(1,2,2);
+% histogram(salivaryGlandTotalEnergyApical(salivaryGlandModel.apicalEdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% hold on;
+% histogram(salivaryGlandTotalEnergyBasal(salivaryGlandModel.apicalEdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% legend('SalivaryGlandApical', 'SalivaryGlandBasal');
+% title('EdgeAngle>=45');
+% ylim([0 maxLim]);
+% suptitle('Salivary gland (apical angle)');
+% 
+% print(h, strcat('results/histogramEnergy_SalivaryGland_apicalFilter_', date, '.tif'), '-dtiff', '-r300')
+% close(h);
 
-[~, salivaryGlandTotalEnergy] = getEnergyInfo(vertcat(salivaryGlandTrans, salivaryGlandNoTrans));
-salivaryGlandTotalEnergyApical = salivaryGlandTotalEnergy(:, [2,4]);
-%Removing outliers
-salivaryGlandTotalEnergyApical(478, :) = [];
-salivaryGlandTotalEnergyBasal = salivaryGlandTotalEnergy(:, [1,3]);
+
+%% General
+% histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% hold on;
+% histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+% legend('SalivaryGlandApical', 'SalivaryGlandBasal');
+% title('Salivary gland');
 
 
-numBins = 20;
-h = figure('visible', 'off');
-histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
-hold on;
-histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
-legend('SalivaryGlandApical', 'SalivaryGlandBasal');
-title('Salivary gland');
-print(h, strcat('results/histogramEnergy_SalivaryGland.tif'), '-dtiff', '-r300')
-close(h);
+inputDirectories = 'D:\Pablo\Epithelia3D\InSilicoModels\TotalEnergy\data\';
+% surfaceRatiosExpansion = {'1', '1.25', '1.6667', '2', '5', '10'};
+% surfaceRatiosReduction = {'1', '0.8', '0.6', '0.5', '0.2', '0.1'};
+surfaceRatiosExpansion = {'1', '1.1111', '1.25', '1.4286', '1.6667', '2', '2.5', '3.3333', '5', '10'};
+surfaceRatiosReduction = {'1', '0.9', '0.8', '0.7', '0.6', '0.5', '0.4', '0.3', '0.2', '0.1'};
 
-inputDirectoriesFrusta = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\AllFrusta_energy_800seeds\';
-inputDirectoriesVoronoi = 'D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\docs\Voronoi_energy_800seeds\';
-surfaceRatios = {'1', '1.25', '1.6667', '2', '5', '10'};
+expansionOrReduction = 'expansion';
+mkdir(strcat('results/', expansionOrReduction, '/'));
+
+maxLim = 0.15;
+numBins = 100;
+
+inputDirectories = strcat(inputDirectories, expansionOrReduction, '\');
+if isequal(expansionOrReduction, 'reduction\')
+    surfaceRatios = surfaceRatiosReduction;
+else
+    surfaceRatios = surfaceRatiosExpansion;
+end
 
 finalTable = cell(length(surfaceRatios), 1);
 
@@ -81,31 +145,64 @@ totalVoronoiPolDist = [];
 frustaEnergyPerAngle = cell(length(surfaceRatios), 1);
 voronoiEnergyPerAngle = cell(length(surfaceRatios), 1);
 
+
+%cellsToAnalyze =  [108];
+cellsToAnalyze = [];
+cellsAnalysed = [];
+
+if isempty(cellsToAnalyze) == 0
+    cellsAnalysed = mat2str(cellsToAnalyze);
+    cellsAnalysed = strcat('cellsWithId_', strrep(cellsAnalysed(2:end-1), ' ', '-'));
+    expansionOrReduction = strcat(expansionOrReduction, '/', cellsAnalysed);
+end
+mkdir(strcat('results/', expansionOrReduction, '/'));
+
+
 definedAngles = 0:15:90;
 
 parfor numSR = 1:length(surfaceRatios)
     
-    voronoiFile = dir(strcat(inputDirectoriesVoronoi, 'allMotifsEnergy_800seeds_surfaceRatio', surfaceRatios{numSR}, '_*'));
-    frustaFile = dir(strcat(inputDirectoriesFrusta, 'allFrustaEnergy_800seeds_surfaceRatio_', surfaceRatios{numSR}, '_*'));
+    voronoiFile = dir(strcat(inputDirectories, 'allMotifsEnergy_200seeds_surfaceRatio', surfaceRatios{numSR}, '_*'));
+    frustaFile = dir(strcat(inputDirectories, 'allFrustaEnergy_200seeds_surfaceRatio_', surfaceRatios{numSR}, '_*'));
     
-    [uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( readtable(strcat(inputDirectoriesFrusta, frustaFile(1).name)), readtable(strcat(inputDirectoriesVoronoi, voronoiFile(1).name)), str2double(surfaceRatios{numSR}));
+    [uniqueValidCells, modelFrusta, modelVoronoi, frustaPolDist, voronoiPolDist ] = getValidOfValidCells( readtable(strcat(inputDirectories, frustaFile(1).name)), readtable(strcat(inputDirectories, voronoiFile(1).name)), str2double(surfaceRatios{numSR}), inputDirectories);
+    
+    if isempty(cellsToAnalyze) == 0
+        modelFrusta(any(ismember(modelFrusta{:, 1:4}, cellsToAnalyze), 2) == 0, :) = [];
+        modelVoronoi(any(ismember(modelVoronoi{:, 1:4}, cellsToAnalyze), 2) == 0, :) = [];
+    end
     
     [frustaTissueEnergy, frustaTotalEnergy] = getEnergyInfo(modelFrusta);
 	[voronoiTissueEnergy, voronoiTotalEnergy] = getEnergyInfo(modelVoronoi);
     
     h = figure('visible', 'off');
-    histogram(frustaTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+    %h = figure;
+    subplot(1,2,1);
+    histogram(frustaTotalEnergy(modelFrusta.EdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
     hold on;
-    histogram(voronoiTotalEnergy(:, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
-    %histogram(salivaryGlandTotalEnergyApical(:, 1), 'NumBins', numBins, 'normalization', 'probability');
-    %histogram(salivaryGlandTotalEnergyBasal(:, 1), 'NumBins', numBins, 'normalization', 'probability');
-    legend('Frusta', 'Voronoi');%, 'SalivaryGlandApical', 'SalivaryGlandBasal')
-    title(strcat('Surface ratio: ', surfaceRatios{numSR}));
-    print(h, strcat('results/histogramEnergy_FrustaVsVoronoi_SurfaceRatio', surfaceRatios{numSR}, '.tif'), '-dtiff', '-r300')
+    histogram(voronoiTotalEnergy(modelVoronoi.EdgeAngle < 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+    ylim([0 maxLim]);
+    title('EdgeAngle<45');
+    legend(strcat('Frusta (', num2str(sum(modelFrusta.EdgeAngle < 45)) ,' motifs)'), strcat('Voronoi (', num2str(sum(modelVoronoi.EdgeAngle < 45)) ,' motifs)'));
+    hold off;
+    
+    subplot(1,2,2);
+    histogram(frustaTotalEnergy(modelFrusta.EdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+    hold on;
+    histogram(voronoiTotalEnergy(modelVoronoi.EdgeAngle >= 45, 1), 'NumBins', numBins, 'normalization', 'probability', 'binLimits', [0.5, 1.5]);
+    ylim([0 maxLim]);
+    title('EdgeAngle>=45');
+    legend(strcat('Frusta (', num2str(sum(modelFrusta.EdgeAngle >= 45)) ,' motifs)'), strcat('Voronoi (', num2str(sum(modelVoronoi.EdgeAngle >= 45)) ,' motifs)'));
+    hold off;
+    
+    suptitle(strcat('Surface ratio: ', surfaceRatios{numSR}));
+    %legend('Frusta', 'Voronoi');%, 'SalivaryGlandApical', 'SalivaryGlandBasal')
+    
+    print(h, strcat('results/', expansionOrReduction, '/histogramEnergy_FrustaVsVoronoi_SurfaceRatio', surfaceRatios{numSR}, '_', date, '.tif'), '-dtiff', '-r300')
     close(h);
     
-    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta' );
-    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi' );
+    paintLineTensionEdges( modelFrusta, str2double(surfaceRatios{numSR}), frustaTotalEnergy, 'Frusta', inputDirectories, cellsAnalysed);
+    paintLineTensionEdges( modelVoronoi, str2double(surfaceRatios{numSR}), voronoiTotalEnergy, 'Voronoi', inputDirectories, cellsAnalysed);
     
     
     % It was not necessary to perform the Edge length cutoff because we do
