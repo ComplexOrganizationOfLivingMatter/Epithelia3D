@@ -145,7 +145,10 @@ function [] = paintLineTensionEdges( energyExcel, surfaceRatio, totalEnergyData,
 
         % display with rectangle
         rect = bounding_box([2,1,4,3]); % rectangle wants x,y,w,h we have rows, columns, ... need to convert
-
+        
+        %Cropping region of figure
+        set(gca, 'XLim', [min(col) max(col)])
+        set(gca, 'YLim', [min(row) max(row)])
         print(h, strcat(outputDir, 'lineTensionAndPerimeters_SurfaceRatio', strrep(num2str(surfaceRatio), '.', '-'), '.tif'), '-dtiff', '-r600');
         close(h)
         colours(1, :, :) = [0 0 0];
