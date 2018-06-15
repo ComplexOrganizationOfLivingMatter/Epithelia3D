@@ -90,8 +90,8 @@ function extractionVertices2D_3D%(pathFile,projectionType,imageType)
         end
     end
     cellVerticesTable=cell2table(cellWithVertices,'VariableNames',{'nRand','radius','cellID','noValidCellID','borderCellID','vertX_Y'});
-    pairOfVerticesTable=cell2table(pairOfVerticesTotal,'VariableNames',{'verticeID','nRand','radius'});
-    vertices3dTable=cell2table(dataVertID,'VariableNames',{'nRand','radius','verticeID','vertX','vertY','vertZ'});
+    pairOfVerticesTable=cell2table(pairOfVerticesTotal,'VariableNames',{'verticeID1','verticeID2','nRand','radius'});
+    vertices3dTable=cell2table(dataVertID,'VariableNames',{'nRand','radius','verticeID','vertX','vertY','vertZ','cellID'});
 
     writetable(cellVerticesTable,[projectionType '_' imageType '_tableVertices2D_' date '.xls'])
     writetable(vertices3dTable,[projectionType '_' imageType '_tableVertices3D_' date '.xls'])
