@@ -1,4 +1,4 @@
-function clustersOfNeighs3D = buildClustersOfNeighs3D(image3DInfo)
+function uniqueClustersOfNeighs3D = buildClustersOfNeighs3D(image3DInfo,reductionFactor,centerImage)
 
     clustersOfNeighs3D={};
     for nCell=1:length(image3DInfo.neighbourhood)
@@ -29,9 +29,16 @@ function clustersOfNeighs3D = buildClustersOfNeighs3D(image3DInfo)
                     coordVert=nFoldVertexCoord;
                end
                motif=sort([nCell studiedMotif(studiedMotif~=0)]);
-               clustersOfNeighs3D(end+1,1:2)={coordVert,motif};               
+               coordOriginal=coordVert*reductionFactor;
+               clustersOfNeighs3D(end+1,1:3)={coordOriginal,motif,pdist2(coordOriginal(1:2),centerImage)};               
             end
         end        
     end
+    
+    % convert to string and later unique
+    C = cellfun(@(x) sprintf('%.99f ',x),clustersOfNeighs3D(:,2),'UniformOutput',false) ;
+    [~,k] = unique(C,'stable');
+    uniqueClustersOfNeighs3D = clustersOfNeighs3D(k,:);
+ 
 
 end
