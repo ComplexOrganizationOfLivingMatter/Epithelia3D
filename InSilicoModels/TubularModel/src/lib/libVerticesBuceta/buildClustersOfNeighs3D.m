@@ -1,4 +1,4 @@
-function clustersOfNeighs3D = buildQuartetsOfNeighs3D(image3DInfo)
+function clustersOfNeighs3D = buildClustersOfNeighs3D(image3DInfo)
 
     clustersOfNeighs3D={};
     for nCell=1:length(image3DInfo.neighbourhood)
@@ -13,6 +13,7 @@ function clustersOfNeighs3D = buildQuartetsOfNeighs3D(image3DInfo)
         end
         
         overlappedPixels = sum(idxCellDilated(:,4:end) > 0,2);
+        %pixels overlapping 4 or more cells
         pixelsWithCross=overlappedPixels >= 3;
         
         crossCells = idxCellDilated(pixelsWithCross,4:end);
