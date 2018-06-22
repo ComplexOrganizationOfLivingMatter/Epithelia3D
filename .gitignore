@@ -112,3 +112,4 @@ InSilicoModels/EllipsoidModel/frustaEllipsoidModel/logFile
 InSilicoModels/EllipsoidModel/voronoiEllipsoidModel/logFile
 InSilicoModels/paperCode/SpheroidModel/logFile
 *.exe
+*.obj
