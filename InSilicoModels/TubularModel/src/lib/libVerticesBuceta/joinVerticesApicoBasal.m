@@ -6,8 +6,9 @@ function  [pairOfVertices3DApicoBasal,verticesInfoExtreme] = joinVerticesApicoBa
         vertId=sortClusterOfNeighs{nVert,1};
         cellsInVert=double(sortClusterOfNeighs{nVert,3});
         
-        if nVert+1 < size(sortClusterOfNeighs,1)
+        if nVert < size(sortClusterOfNeighs,1)
             restOfClusterOfNeighs=sortClusterOfNeighs(nVert+1:end,:);
+            
             matchVert=cellfun(@(x) sum(ismember(cellsInVert,x))>=3,restOfClusterOfNeighs(:,3));
             indexesMatch=find(matchVert);
             if ~isempty(indexesMatch)
@@ -48,6 +49,7 @@ function  [pairOfVertices3DApicoBasal,verticesInfoExtreme] = joinVerticesApicoBa
                 end
             end
         end
+        
         
     end
 end

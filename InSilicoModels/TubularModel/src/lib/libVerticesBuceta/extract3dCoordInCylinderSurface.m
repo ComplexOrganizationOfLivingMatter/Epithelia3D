@@ -1,4 +1,4 @@
-function [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(L_img,dataVertID,pairOfVerticesTotal,nRand)
+function [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(L_img,dataVertID,pairOfVerticesTotal,nRand,radiusMaxCylinder)
 
     [~,W]=size(L_img);
     [neighs,~] = calculateNeighbours(L_img);
@@ -13,10 +13,10 @@ function [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=
     %% vertices relocated in Cylinder 3D position: x=R*cos(angle); y=R*sin(angle);
     angleOfSeedsLocation=(360/W)*totalVert(:,2);
     %final location of seeds in basal region
-    vert3D.x=round(radius*cosd(angleOfSeedsLocation))+radius+1;
-    vert3D.y=round(radius*sind(angleOfSeedsLocation))+radius+1;
+    vert3D.x=round(radius*cosd(angleOfSeedsLocation))+radiusMaxCylinder+1;
+    vert3D.y=round(radius*sind(angleOfSeedsLocation))+radiusMaxCylinder+1;
     vert3D.z=round(totalVert(:,1));
-    vertID=1:length(vert3D.x);
+    vertID=[1:length(vert3D.x)]+size(dataVertID,1);
     dataVertID=[dataVertID;[num2cell([nRand*ones(length(vert3D.x),1), radius*ones(length(vert3D.x),1),vertID', vert3D.x,vert3D.y,vert3D.z]),totalCellsPerVertex]];
     
      %% vertices in contact
@@ -34,8 +34,8 @@ function [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=
     pairOfVertices=cell2mat(pairOfVertices);
     orderedPairOfVertices=[min(pairOfVertices,[],2),max(pairOfVertices,[],2)];
     uniquePairOfVertices=unique(orderedPairOfVertices,'rows');
-    pairOfVerticesTotal=[pairOfVerticesTotal;num2cell([uniquePairOfVertices,nRand*ones(size(uniquePairOfVertices,1),1),radius*ones(size(uniquePairOfVertices,1),1)])];
-
+    pairOfVerticesTotal=[pairOfVerticesTotal;uniquePairOfVertices,num2cell([nRand*ones(size(uniquePairOfVertices,1),1),radius*ones(size(uniquePairOfVertices,1),1)])];
+    
     disp('1 - Vertices in contact')
 
 end
