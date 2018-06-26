@@ -114,3 +114,5 @@ InSilicoModels/paperCode/SpheroidModel/logFile
 *.exe
 *.obj
 *.zip
+*.eps
+*.dat
