@@ -113,3 +113,4 @@ InSilicoModels/EllipsoidModel/voronoiEllipsoidModel/logFile
 InSilicoModels/paperCode/SpheroidModel/logFile
 *.exe
 *.obj
+*.zip
