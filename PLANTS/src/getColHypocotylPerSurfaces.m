@@ -1,5 +1,7 @@
 function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceLayer2,cellsLayer1,cellsLayer2]=getColHypocotylPerSurfaces(neighbourhoodInfo,img3d,cellCorrectLayer1)
 
+    minCellSize=500;
+
     %calculate outer surface of layer 1 of Col_hypocotyl
     mask3d=false(size(img3d));
     mask3d(img3d>0)=1;
@@ -12,7 +14,7 @@ function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceL
     outerSurfaceLayer1(maskCellsOuter==1)=img3d(maskCellsOuter==1);
     volumeReg=regionprops3(outerSurfaceLayer1,'Volume');
     volumeCells=cat(1,volumeReg.Volume);
-    cells2delete=find(volumeCells>0 & volumeCells<50);
+    cells2delete=find(volumeCells>0 & volumeCells<minCellSize);
 
     for nCell=cells2delete'
         outerSurfaceLayer1(outerSurfaceLayer1==nCell)=0;
@@ -86,7 +88,7 @@ function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceL
     
     volumeReg=regionprops3(innerSurfaceLayer1,'Volume');
     volumeCells=cat(1,volumeReg.Volume);
-    cells2delete=find(volumeCells>0 & volumeCells<50);
+    cells2delete=find(volumeCells>0 & volumeCells<minCellSize);
     for nCell=cells2delete'
         innerSurfaceLayer1(innerSurfaceLayer1==nCell)=0;
     end
@@ -98,7 +100,7 @@ function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceL
     outerSurfaceLayer2(outerLayer2Indices)=img3d(outerLayer2Indices);
     volumeReg=regionprops3(outerSurfaceLayer2,'Volume');
     volumeCells=cat(1,volumeReg.Volume);
-    cells2delete=find(volumeCells>0 & volumeCells<50);
+    cells2delete=find(volumeCells>0 & volumeCells<minCellSize);
     for nCell=cells2delete'
         outerSurfaceLayer2(outerSurfaceLayer2==nCell)=0;
     end
@@ -109,7 +111,7 @@ function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceL
     innerSurfaceLayer2(innerLayer2Indices)=img3d(innerLayer2Indices);
     volumeReg=regionprops3(innerSurfaceLayer2,'Volume');
     volumeCells=cat(1,volumeReg.Volume);
-    cells2delete=find(volumeCells>0 & volumeCells<50);
+    cells2delete=find(volumeCells>0 & volumeCells<minCellSize);
     for nCell=cells2delete'
         innerSurfaceLayer2(innerSurfaceLayer2==nCell)=0;
     end

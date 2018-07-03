@@ -29,18 +29,18 @@ for nNam=1:2%1:length(names)
 %     verticesInfoOuterLayerOuterSurface=getVertices3d(maskOuterSurface,neighboursLayer,neighbourhoodInfo);
 
     
-%     colours = jet(double(max(setOfCells.Layer1)));
-%     colours = colours(randperm(max(setOfCells.Layer1)), :);
+%     colours = jet(double(max(setOfCells.Layer2)));
+%     colours = colours(randperm(max(setOfCells.Layer2)), :);
 % 
 %     h=figure;    
-%     for nCell=setOfCells.Layer1'
-        
+%     for nCell=setOfCells.Layer2'
+%         
 %         [x,y,z] = ind2sub(size(layer2.outerSurface),find(layer2.outerSurface==nCell));
 %         shp=alphaShape(x,y,z,500);
 %         plot(shp, 'FaceColor', colours(nCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
 %         hold on
 %         
-%         [x,y,z] = ind2sub(size(layer1.innerSurface),find(layer1.innerSurface==nCell));
+%         [x,y,z] = ind2sub(size(layer2.innerSurface),find(layer2.innerSurface==nCell));
 %         shp=alphaShape(x,y,z,500);
 %         plot(shp, 'FaceColor', colours(nCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
 %         hold on
