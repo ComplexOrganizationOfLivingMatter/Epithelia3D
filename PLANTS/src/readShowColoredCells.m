@@ -1,18 +1,21 @@
-names={'Hypocotyl A','Hypocotyl B'};
-subfold='splittedImage\col_hypocotyl_';
+names={'Hypocotyl A','Hypocotyl B','root A','root B',...
+    'katanin meristem A','katanin meristem B','WT meristem A',...
+    'WT meristem B'};
+subfolds={'col_hypocotyl_','col_hypocotyl_','root_','root_','katanin_meristem_',...
+    'katanin_meristem_','WT_meristem_','WT_meristem_'};
 
-for nNam=1:length(names)
-    listImg=dir([names{nNam} '\' subfold names{nNam}(end) '*.tif']);
+for nNam=3:length(names)
+    listImg=dir(['..\' names{nNam} '\splittedImage\' subfolds{nNam} names{nNam}(end) '*.tif']);
     imgCell=cell(size(listImg,1) ,1);
     
     for nImg=1:size(listImg,1) 
-        imgCell{nImg}=imread([names{nNam} '\' subfold names{nNam}(end) num2str(nImg,'%03.0f') '.tif']); 
+        imgCell{nImg}=imread(['..\' names{nNam} '\splittedImage\' subfolds{nNam} names{nNam}(end) num2str(nImg,'%03.0f') '.tif']); 
     end
     img3d=double(cat(3,imgCell{:}));
     
-    save([names{nNam} '\image3d_' strrep(names{nNam},' ','_') '.mat'],'img3d','-v7.3');
+    save(['..\' names{nNam} '\image3d_' strrep(names{nNam},' ','_') '.mat'],'img3d','-v7.3');
     
-    mkdir([names{nNam} '\segmentedImage'])
+%     mkdir([names{nNam} '\segmentedImage'])
 
 %     totalCells=unique(img3d);
 %     totalCells=totalCells(totalCells~=0)';

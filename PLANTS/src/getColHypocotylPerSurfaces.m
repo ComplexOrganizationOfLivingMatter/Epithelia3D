@@ -1,11 +1,13 @@
 function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceLayer2,cellsLayer1,cellsLayer2]=getColHypocotylPerSurfaces(neighbourhoodInfo,img3d,cellCorrectLayer1)
 
     minCellSize=500;
-
+    
     %calculate outer surface of layer 1 of Col_hypocotyl
     mask3d=false(size(img3d));
     mask3d(img3d>0)=1;
+        
     mask3dFilled=imfill(mask3d,'holes');
+    
     zerosMask=logical(1-mask3dFilled);
     se=strel('sphere',1);
     zerosMaskDilated=imdilate(zerosMask,se);
@@ -82,7 +84,7 @@ function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceL
     end
     
     %calculate inner surface - Layer 1
-    innerSurfaceLayer1=zeros(size(img3d));
+    innerSurfaceLayer1=uint16(zeros(size(img3d)));
     innerLayer1Indices=mask3dLayer1 & mask3dLayer2Dilated;
     innerSurfaceLayer1(innerLayer1Indices)=img3d(innerLayer1Indices);
     
@@ -93,9 +95,11 @@ function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceL
         innerSurfaceLayer1(innerSurfaceLayer1==nCell)=0;
     end
         
+    cellLayer1Inn=unique(innerSurfaceLayer1);
+    cellsLayer1 = intersect(cellsLayer1,cellLayer1Inn);
     
     %calculate outer surface - Layer 2
-    outerSurfaceLayer2=zeros(size(img3d));
+    outerSurfaceLayer2=uint16(zeros(size(img3d)));
     outerLayer2Indices=mask3dLayer1Dilated & mask3dLayer2;
     outerSurfaceLayer2(outerLayer2Indices)=img3d(outerLayer2Indices);
     volumeReg=regionprops3(outerSurfaceLayer2,'Volume');
@@ -106,7 +110,7 @@ function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceL
     end
     
     %calculate inner surface - Layer 2
-    innerSurfaceLayer2=zeros(size(img3d));
+    innerSurfaceLayer2=uint16(zeros(size(img3d)));
     innerLayer2Indices=mask3dLayer3Dilated & mask3dLayer2;
     innerSurfaceLayer2(innerLayer2Indices)=img3d(innerLayer2Indices);
     volumeReg=regionprops3(innerSurfaceLayer2,'Volume');
@@ -118,7 +122,7 @@ function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceL
 
     
     cellsLayer2Out=unique(outerSurfaceLayer2);
-    cellsLayer2Inn=unique(outerSurfaceLayer2);
+    cellsLayer2Inn=unique(innerSurfaceLayer2);
     cellsLayer2=intersect(cellsLayer2Out,cellsLayer2Inn);
     cellsLayer2=cellsLayer2(cellsLayer2~=0);
 end
