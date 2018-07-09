@@ -1,10 +1,12 @@
-function [ neigbourhoodInfo] = getVertices3D( L_img, neighbours,neigbourhoodInfo )
+function [ neigbourhoodInfo] = getVertices3D( L_img, setOfCells,neigbourhoodInfo )
 % With a labelled image as input, the objective is get all vertex for each
 % cell
+
+neighbours=neigbourhoodInfo.neighbourhood;
+indicesCells=ismember(1:length(neighbours),setOfCells);
+neighbours(~indicesCells)={nan};
 neighboursVertices = buildTripletsOfNeighs( neighbours );%intersect dilatation of each cell of triplet
 vertices = cell(size(neighboursVertices, 1), 1);
-
-initBorderImg = L_img==0;
 
 
 % We first calculate the perimeter of the cell to improve efficiency
@@ -25,7 +27,8 @@ for numTriplet = 1 : size(neighboursVertices,1)
     BW3_dilate(sub2ind(size(L_img), pxs(:, 1), pxs(:, 2), pxs(:, 3))) = neighboursVertices(numTriplet, 3);
 
     %It is better use '&' than '.*' in this function
-    [xPx, yPx, zPx] = findND(BW1_dilate & BW2_dilate & BW3_dilate & initBorderImg);
+     indxCellDilated = find(BW1_dilate & BW2_dilate & BW3_dilate);
+     [xPx, yPx, zPx]=ind2sub(size(BW1_dilate),indxCellDilated);
     
     if length(xPx)>1
         vertices{numTriplet} = round(mean([xPx, yPx, zPx]));
@@ -34,15 +37,17 @@ for numTriplet = 1 : size(neighboursVertices,1)
     end
 end
 
+indValid=cellfun(@(x) ~isempty(x),vertices);
+vertices=vertices(indValid);
 neigbourhoodInfo.verticesPerCell = vertices;
-neigbourhoodInfo.verticesConnectCells = neighboursVertices;
+neigbourhoodInfo.verticesConnectCells = neighboursVertices(indValid);
 
 %Correct false negative and positive
 
 % imshow(L_img)
 % 
 % hold on
-% for i=1:size(vertices,1), plot3(vertices(i,1),vertices(i,2), vertices(i,3),'*r'), end
+%     for i=1:size(vertices,1), plot3(vertices{i}(1),vertices{i}(2), vertices{i}(3),'*r'), end
 % hold off
 
 end
