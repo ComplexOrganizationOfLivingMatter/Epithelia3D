@@ -67,7 +67,6 @@ function [forceInferenceValue] = readDatFile( fileName, correspondingImage )
                 end
             else %Cell preassure
                 cellInfo(end+1, :) = [str2double(lineSplitted{3}), str2double(lineSplitted{4})];
-                cellInfo
             end
         elseif edgesTensions == true
             edgesTensions = false;
