@@ -18,11 +18,8 @@ function [forceInferenceValue] = readDatFile( fileName, correspondingImage, newS
     allVertices = vertcat(verticesInfo.verticesPerCell{:});
     
     if isempty(newSize) == 0
-        allVertices = allVertices * (size(correspondingImage) * newSize);
+        allVertices = allVertices .* newSize;
     end
-    
-    %emptyImage = zeros(size(imgLabelled));
-    %dilateShape = strel('disk', 6);
     
     while ischar(rowFile)
         
@@ -46,8 +43,8 @@ function [forceInferenceValue] = readDatFile( fileName, correspondingImage, newS
                 %of frusta. To do this, we calculate the neighbours in the 
                 %inital frames and, then, extrapolate the initial vertices
                 % of the actual image.
-                [~, indexV1] = pdist2(allVertices, edgeInfo(end, [2 1]), 'Euclidean', 'Smallest',1);
-                [~, indexV2] = pdist2(allVertices, edgeInfo(end, [4 3]), 'Euclidean', 'Smallest', 1);
+                [minValue, indexV1] = pdist2(allVertices, edgeInfo(end, [2 1]), 'Euclidean', 'Smallest',1);
+                [minValue, indexV2] = pdist2(allVertices, edgeInfo(end, [4 3]), 'Euclidean', 'Smallest', 1);
                 %realVertex1 = allVertices(indexV1, :);
                 %realVertex2 = allVertices(indexV2, :);
                 
