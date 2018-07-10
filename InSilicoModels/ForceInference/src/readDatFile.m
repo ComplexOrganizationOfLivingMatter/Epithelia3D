@@ -1,4 +1,4 @@
-function [forceInferenceValue] = readDatFile( fileName, correspondingImage, newSize )
+function [forceInferenceValue, edgeInfo] = readDatFile( fileName, correspondingImage, newSize )
 %READDATFILE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -37,7 +37,8 @@ function [forceInferenceValue] = readDatFile( fileName, correspondingImage, newS
                 %Id of edge
                 edgeInfo(end+1, 1:2) = [str2double(vertex1_X(2:end)), str2double(vertex1_Y(1:end-1))];
                 edgeInfo(end, 3:4) = [str2double(vertex2_X(2:end)), str2double(vertex2_Y(1:end-1))];
-                edgeInfo(end, 5) = str2double(lineSplitted{2});
+                edgeInfo(end, 5) = pdist2(edgeInfo(end, [2 1]), edgeInfo(end, [4 3]));
+                edgeInfo(end, 6) = str2double(lineSplitted{2});
                 
                 %First we should do a correspondance with the real vertices
                 %of frusta. To do this, we calculate the neighbours in the 
@@ -63,17 +64,14 @@ function [forceInferenceValue] = readDatFile( fileName, correspondingImage, newS
                 cellsOfTheEdge = intersect(neighboursVertex1, neighboursVertex2);
                 cellsOfTheEdge(cellsOfTheEdge == 0) = [];
                 if length(cellsOfTheEdge) == 2
-                    edgeInfo(end, 6:7) = cellsOfTheEdge;
-%                 else
-%                     disp('Warning! Three cells');
-%                     edgeInfo(end, 6:8) = cellsOfTheEdge;
+                    edgeInfo(end, 7:end) = cellsOfTheEdge;
                 end
             else %Cell preassure
                 cellInfo(end+1, :) = [str2double(lineSplitted{3}), str2double(lineSplitted{4})];
             end
         elseif edgesTensions == true
             edgesTensions = false;
-            edgeInfo = array2table(edgeInfo, 'VariableNames',{'vertex1_X', 'vertex1_Y', 'vertex2_X', 'vertex2_Y', 'TensionValue', 'ConnectingCell1', 'ConnectingCell2'});
+            edgeInfo = array2table(edgeInfo, 'VariableNames',{'vertex1_X', 'vertex1_Y', 'vertex2_X', 'vertex2_Y', 'EdgeLength' 'TensionValue', 'ConnectingCell1', 'ConnectingCell2'});
         end
         
         rowFile = fgetl(fileID);
