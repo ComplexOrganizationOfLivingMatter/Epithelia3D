@@ -64,7 +64,7 @@ function [forceInferenceValue, edgeInfo] = readDatFile( fileName, correspondingI
                 cellsOfTheEdge = intersect(neighboursVertex1, neighboursVertex2);
                 cellsOfTheEdge(cellsOfTheEdge == 0) = [];
                 if length(cellsOfTheEdge) == 2
-                    edgeInfo(end, 7:end) = cellsOfTheEdge;
+                    edgeInfo(end, 7:8) = cellsOfTheEdge;
                 end
             else %Cell preassure
                 cellInfo(end+1, :) = [str2double(lineSplitted{3}), str2double(lineSplitted{4})];

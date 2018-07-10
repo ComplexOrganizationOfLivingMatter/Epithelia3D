@@ -60,4 +60,26 @@ end
 [voronoiForceInference{1}] = removeInvalidCells(voronoiForceInference{1});
 [voronoiForceInference{2}] = removeInvalidCells(voronoiForceInference{2});
 
-initialFramesForceInference = removeInvalidCells(initialFramesForceInference);
+frustaFI = table2array(frustaForceInference{1});
+voronoiFI = table2array(voronoiForceInference{1});
+
+[correlationF, pvalueF] = corrcoef(frustaFI(:, 2:4), 'Rows', 'pairwise');
+[correlationV, pvalueV] = corrcoef(voronoiFI(:, 2:4), 'Rows', 'pairwise');
+
+initialFramesForceInference{1} = removeInvalidCells(initialFramesForceInference{1});
+
+frustaEdgesInfo = table2array(frustaForceInference{3});
+voronoiEdgesInfo = table2array(voronoiForceInference{3});
+
+voronoiEdgesInfo(any(voronoiEdgesInfo(:, 7:end) == 0, 2), :) = [];
+frustaEdgesInfo(any(frustaEdgesInfo(:, 7:end) == 0, 2), :) = [];
+
+[correlationF, pvalueF] = corrcoef(frustaEdgesInfo(:, 5:6), 'Rows', 'pairwise');
+[correlationV, pvalueV] = corrcoef(voronoiEdgesInfo(:, 5:6), 'Rows', 'pairwise');
+
+%Histogram
+figure;
+nBins = 20;
+histogram(frustaFI(:, 2));
+hold on;
+histogram(voronoiFI(:, 2));
