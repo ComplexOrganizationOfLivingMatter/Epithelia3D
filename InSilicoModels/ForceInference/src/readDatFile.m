@@ -1,4 +1,4 @@
-function [forceInferenceValue] = readDatFile( fileName, correspondingImage )
+function [forceInferenceValue] = readDatFile( fileName, correspondingImage, newSize )
 %READDATFILE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -16,6 +16,10 @@ function [forceInferenceValue] = readDatFile( fileName, correspondingImage )
     [neighbours, sideCells] = calculateNeighbours(imgLabelled);
     [ verticesInfo ] = calculateVertices( imgLabelled, neighbours);
     allVertices = vertcat(verticesInfo.verticesPerCell{:});
+    
+    if isempty(newSize) == 0
+        allVertices = allVertices * (size(correspondingImage) * newSize);
+    end
     
     %emptyImage = zeros(size(imgLabelled));
     %dilateShape = strel('disk', 6);
@@ -39,7 +43,9 @@ function [forceInferenceValue] = readDatFile( fileName, correspondingImage )
                 edgeInfo(end, 5) = str2double(lineSplitted{2});
                 
                 %First we should do a correspondance with the real vertices
-                %of frusta
+                %of frusta. To do this, we calculate the neighbours in the 
+                %inital frames and, then, extrapolate the initial vertices
+                % of the actual image.
                 [~, indexV1] = pdist2(allVertices, edgeInfo(end, [2 1]), 'Euclidean', 'Smallest',1);
                 [~, indexV2] = pdist2(allVertices, edgeInfo(end, [4 3]), 'Euclidean', 'Smallest', 1);
                 %realVertex1 = allVertices(indexV1, :);
