@@ -37,7 +37,7 @@ function [forceInferenceValue, edgeInfo] = readDatFile( fileName, correspondingI
                 %Id of edge
                 edgeInfo(end+1, 1:2) = [str2double(vertex1_X(2:end)), str2double(vertex1_Y(1:end-1))];
                 edgeInfo(end, 3:4) = [str2double(vertex2_X(2:end)), str2double(vertex2_Y(1:end-1))];
-                edgeInfo(end, 5) = pdist2(edgeInfo(end, [2 1]), edgeInfo(end, [4 3]));
+                edgeInfo(end, 5) = pdist(vertcat(edgeInfo(end, [2 1]), edgeInfo(end, [4 3])));
                 edgeInfo(end, 6) = str2double(lineSplitted{2});
                 
                 %First we should do a correspondance with the real vertices
