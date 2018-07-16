@@ -7,7 +7,7 @@ function [ verticesInfo ] = getVertices3D( L_img, setOfCells, neigbourhoodInfo )
     neighbours(~indicesCells)={nan};
     neighboursVertices = buildTripletsOfNeighs( neighbours );%intersect dilatation of each cell of triplet
     vertices = cell(size(neighboursVertices, 1), 1);
-
+    binaryL_img=L_img>0;
 
     % We first calculate the perimeter of the cell to improve efficiency
     % If the image is small, is better not to use bwperim
@@ -27,7 +27,7 @@ function [ verticesInfo ] = getVertices3D( L_img, setOfCells, neigbourhoodInfo )
         BW3_dilate(sub2ind(size(L_img), pxs(:, 1), pxs(:, 2), pxs(:, 3))) = 1;
 
         %It is better use '&' than '.*' in this function
-         indxCellDilated = find(BW1_dilate & BW2_dilate & BW3_dilate);
+         indxCellDilated = find(BW1_dilate & BW2_dilate & BW3_dilate & binaryL_img);
          [xPx, yPx, zPx]=ind2sub(size(BW1_dilate),indxCellDilated);
 
         if length(xPx)>1

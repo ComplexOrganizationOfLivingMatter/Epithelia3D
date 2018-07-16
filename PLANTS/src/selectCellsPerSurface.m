@@ -29,10 +29,10 @@ for nNam=1:2%1:length(names)
         end
         
         if ~exist(['..\' names{nNam} '\verticesSurfaces.mat'],'file')
-            verticesInfoLayer1.Outer=getVertices3D(layer1.outerSurface,setOfCells.Layer1,neighbourhoodInfo);
-            verticesInfoLayer1.Inner=getVertices3D(layer1.innerSurface,setOfCells.Layer1,neighbourhoodInfo);
-            verticesInfoLayer2.Outer=getVertices3D(layer2.outerSurface,setOfCells.Layer2,neighbourhoodInfo);
-            verticesInfoLayer2.Inner=getVertices3D(layer2.innerSurface,setOfCells.Layer2,neighbourhoodInfo);
+            verticesInfoLayer1Outer=getVertices3D(layer1.outerSurface,setOfCells.Layer1,neighbourhoodInfo);
+            verticesInfoLayer1Inner=getVertices3D(layer1.innerSurface,setOfCells.Layer1,neighbourhoodInfo);
+            verticesInfoLayer2Outer=getVertices3D(layer2.outerSurface,setOfCells.Layer2,neighbourhoodInfo);
+            verticesInfoLayer2Inner=getVertices3D(layer2.innerSurface,setOfCells.Layer2,neighbourhoodInfo);
             save(['..\' names{nNam} '\verticesSurfaces.mat'],'verticesInfoLayer1','verticesInfoLayer2')
         else
             load(['..\' names{nNam} '\verticesSurfaces.mat'],'verticesInfoLayer1','verticesInfoLayer2')
@@ -50,51 +50,6 @@ for nNam=1:2%1:length(names)
     
 %     save(['..\' names{nNam} '\cellsAndSurfacesPerLayer.mat'],'-v7.3','layer1','layer2','setOfCells')
 
-    colours = jet(double(max(setOfCells.Layer1)));
-    colours = colours(randperm(max(setOfCells.Layer1)), :);
-    h=figure;    
-    for nCell=setOfCells.Layer1'
-        
-        [x,y,z] = ind2sub(size(layer1.outerSurface),find(layer1.outerSurface==nCell));
-        shp=alphaShape(x,y,z,10);
-        plot(shp, 'FaceColor', colours(nCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
-        hold on
-    end
-    
-    savefig(h,[names{nNam} '\outerSurfaceLayer1.fig']);
-    close all
-    
-    h=figure;    
-    for nCell=setOfCells.Layer1'
-        [x,y,z] = ind2sub(size(layer1.innerSurface),find(layer1.innerSurface==nCell));
-        shp=alphaShape(x,y,z,10);
-        plot(shp, 'FaceColor', colours(nCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
-        hold on
-    end
-    savefig(h,[names{nNam} '\innerSurfaceLayer1.fig']);
-    close all
-    
-    colours = jet(double(max(setOfCells.Layer2)));
-    colours = colours(randperm(max(setOfCells.Layer2)), :);
-    h=figure;    
-    for nCell=setOfCells.Layer2'
-        [x,y,z] = ind2sub(size(layer2.outerSurface),find(layer2.outerSurface==nCell));
-        shp=alphaShape(x,y,z,10);
-        plot(shp, 'FaceColor', colours(nCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
-        hold on
-    end
-    
-    savefig(h,[names{nNam} '\outerSurfaceLayer2.fig']);
-    close all
-    
-    h=figure;    
-    for nCell=setOfCells.Layer2'
-        [x,y,z] = ind2sub(size(layer2.innerSurface),find(layer2.innerSurface==nCell));
-        shp=alphaShape(x,y,z,10);
-        plot(shp, 'FaceColor', colours(nCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
-        hold on
-    end
-    savefig(h,[names{nNam} '\innerSurfaceLayer2.fig']);
-    close all
-    
+    draw3dSurfaces(setOfCells,layer1,layer2,names,nNam)
+
 end
