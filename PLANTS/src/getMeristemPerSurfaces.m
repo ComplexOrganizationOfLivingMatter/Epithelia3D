@@ -1,5 +1,7 @@
-function [layer1OuterSurface,layer1InnerSurface,layer2OuterSurface,layer2InnerSurface,setOfCellsLayer1,setOfCellsLayer2]=getMeristemPerSurfaces(img3d,name)
+function [layer1OuterSurface,layer1InnerSurface,layer2OuterSurface,layer2InnerSurface,setOfCellsLayer1,setOfCellsLayer2]=getMeristemPerSurfaces(name)
     
+    load(['..\' sampleName '\image3d_' strrep(sampleName,' ','_') '.mat'],'img3d');
+    img3d=uint16(img3d);
     [H,W,c]=size(img3d);
     layer1OuterSurface=uint16(zeros(H,W));
 
