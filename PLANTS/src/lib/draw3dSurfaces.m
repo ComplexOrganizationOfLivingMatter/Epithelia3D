@@ -1,4 +1,4 @@
-function draw3dSurfaces(setOfCells,layer1,layer2,names,nNam)
+function draw3dSurfaces(setOfCells,layer1,layer2,name)
     colours = jet(double(max(setOfCells.Layer1)));
     colours = colours(randperm(max(setOfCells.Layer1)), :);
     h=figure;    
@@ -9,7 +9,7 @@ function draw3dSurfaces(setOfCells,layer1,layer2,names,nNam)
         hold on
     end
     
-    savefig(h,['..\' names{nNam} '\outerSurfaceLayer1.fig']);
+    savefig(h,['data\' name '\outerSurfaceLayer1.fig']);
     close(h)
     
     h=figure;    
@@ -19,7 +19,7 @@ function draw3dSurfaces(setOfCells,layer1,layer2,names,nNam)
         plot(shp, 'FaceColor', colours(nCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
         hold on
     end
-    savefig(h,['..\' names{nNam} '\innerSurfaceLayer1.fig']);
+    savefig(h,['data\' name '\innerSurfaceLayer1.fig']);
     close(h)
     
     colours = jet(double(max(setOfCells.Layer2)));
@@ -32,7 +32,7 @@ function draw3dSurfaces(setOfCells,layer1,layer2,names,nNam)
         hold on
     end
     
-    savefig(h,['..\' names{nNam} '\outerSurfaceLayer2.fig']);
+    savefig(h,['data\' name '\outerSurfaceLayer2.fig']);
     close(h)
     
     h=figure;    
@@ -42,7 +42,7 @@ function draw3dSurfaces(setOfCells,layer1,layer2,names,nNam)
         plot(shp, 'FaceColor', colours(nCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
         hold on
     end
-    savefig(h,['..\' names{nNam} '\innerSurfaceLayer2.fig']);
+    savefig(h,['data\' name '\innerSurfaceLayer2.fig']);
     close(h)
 end
 

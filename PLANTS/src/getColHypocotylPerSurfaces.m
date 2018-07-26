@@ -1,6 +1,6 @@
 function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceLayer2,cellsLayer1,cellsLayer2]=getColHypocotylPerSurfaces(neighbourhoodInfo,img3d,cellCorrectLayer1)
 
-    minCellSize=500;
+    minCellSize=1000;
     
     %calculate outer surface of layer 1 of Col_hypocotyl
     mask3d=false(size(img3d));
@@ -9,7 +9,7 @@ function [outerSurfaceLayer1,innerSurfaceLayer1,outerSurfaceLayer2,innerSurfaceL
     mask3dFilled=imfill(mask3d,'holes');
     
     zerosMask=logical(1-mask3dFilled);
-    se=strel('sphere',1);
+    se=strel('sphere',5);
     zerosMaskDilated=imdilate(zerosMask,se);
     maskCellsOuter=zerosMaskDilated-zerosMask;
     outerSurfaceLayer1=zeros(size(img3d));
