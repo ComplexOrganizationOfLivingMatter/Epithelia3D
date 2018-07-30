@@ -25,16 +25,19 @@ function [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=
     for nVert = 1:length(vert3D.x)
         cellsOfVertice = totalCellsPerVertex{nVert};
         if nVert<=length(vert3D.x)-nOfvertNoValidCells
-            verticesID = find(cellfun(@(x) sum(ismember(cellsOfVertice,x))>1, totalCellsPerVertex(1:end))==1);
+            verticesID = find(cellfun(@(x) sum(ismember(cellsOfVertice,x))>1, totalCellsPerVertex(1:end-nOfvertNoValidCells)));
         else
-            verticesID = find(cellfun(@(x) sum(ismember(cellsOfVertice,x))>=1, totalCellsPerVertex(end-nOfvertNoValidCells+1:end))==1)+length(vert3D.x)-nOfvertNoValidCells;
+            verticesID = find(cellfun(@(x) sum(ismember(cellsOfVertice,x))>=1, totalCellsPerVertex(end-nOfvertNoValidCells+1:end)))+length(vert3D.x)-nOfvertNoValidCells;
         end
         pairOfVertices{nVert} = [nVert*ones(length(verticesID)-1,1),verticesID(verticesID~=nVert)];  
     end
     pairOfVertices=cell2mat(pairOfVertices);
     orderedPairOfVertices=[min(pairOfVertices,[],2),max(pairOfVertices,[],2)];
     uniquePairOfVertices=unique(orderedPairOfVertices,'rows');
-    pairOfVerticesTotal=[pairOfVerticesTotal;uniquePairOfVertices,num2cell([nRand*ones(size(uniquePairOfVertices,1),1),radius*ones(size(uniquePairOfVertices,1),1)])];
+    if ~isempty(pairOfVerticesTotal)
+        uniquePairOfVertices=uniquePairOfVertices+ max(max(vertcat(pairOfVerticesTotal{:,1:2})));
+    end
+    pairOfVerticesTotal=[pairOfVerticesTotal;num2cell(uniquePairOfVertices),num2cell([nRand*ones(size(uniquePairOfVertices,1),1),radius*ones(size(uniquePairOfVertices,1),1)])];
     
     disp('1 - Vertices in contact')
 
