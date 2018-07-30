@@ -3,7 +3,7 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
     % With a labelled image as input, the objective is get all vertex for each
     % cell
 
-    ratio=5;
+    ratio=4;
     se=strel('disk',ratio);
 
     neighboursVertices = buildTripletsOfNeighs( neighbours );%intersect dilatation of each cell of triplet

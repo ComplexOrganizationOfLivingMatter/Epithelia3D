@@ -1,7 +1,7 @@
 function [neighs_real,sides_cells]=calculateNeighbours(L_img)
 
 %% Generate neighbours
-    ratio=5;
+    ratio=4;
     se = strel('disk',ratio);
     neighs_real={};
     cells=sort(unique(L_img));
