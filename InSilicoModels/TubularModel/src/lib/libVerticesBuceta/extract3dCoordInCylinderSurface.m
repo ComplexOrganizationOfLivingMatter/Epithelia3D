@@ -1,9 +1,15 @@
-function [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(L_img,dataVertID,pairOfVerticesTotal,nRand,radiusMaxCylinder)
+function [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(L_img,dataVertID,pairOfVerticesTotal,nRand,radiusMaxCylinder, surfaceRatioToExtrapolateVertices)
 
     [~,W]=size(L_img);
     [neighs,~] = calculateNeighbours(L_img);
     [verticesInfo] = calculateVertices(L_img,neighs);
     [ verticesNoValidCellsInfo ] = getVerticesBorderNoValidCells(L_img );
+
+    if exist('surfaceRatioToExtrapolateVertices', 'var') == 1
+        W = round(W*surfaceRatioToExtrapolateVertices);
+        verticesInfo.verticesPerCell = cellfun(@(x) round(x .* [1, surfaceRatioToExtrapolateVertices]), verticesInfo.verticesPerCell, 'UniformOutput', false);
+        verticesNoValidCellsInfo.verticesPerCell = cellfun(@(x) round(x .* [1, surfaceRatioToExtrapolateVertices]), verticesNoValidCellsInfo.verticesPerCell, 'UniformOutput', false);
+    end
 
     radius=W/(2*pi);
     totalVert=cell2mat([verticesInfo.verticesPerCell;verticesNoValidCellsInfo.verticesPerCell]);
