@@ -1,6 +1,6 @@
 function [neighbourhoodInfo] = calculate_neighbours3D(L_img)
     %% Generate neighbours
-    se = strel('sphere',1);
+    se = strel('sphere',6);
     cells=unique(L_img)';
     cells=cells(cells~=0);
 %     imgPerim = uint16(bwperim(L_img)) .* L_img;
