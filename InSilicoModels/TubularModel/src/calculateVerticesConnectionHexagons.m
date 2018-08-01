@@ -4,7 +4,7 @@ addpath(genpath('lib'))
 H_initial=512;
 W_initial=1024;
 n_seeds=132;
-rootPath='D:\Pedro\Epithelia3D\InSilicoModels\TubularModel\beforePaperCode\dataBeforePaperCode\voronoiModel\reduction\cylinderOfHexagons\';
+rootPath='..\beforePaperCode\dataBeforePaperCode\voronoiModel\reduction\cylinderOfHexagons\';
 dir2save=[num2str(H_initial) 'x' num2str(W_initial) '_' num2str(n_seeds) 'seeds\'];
 
 initialSurfaceRatio = 0.3;
@@ -17,6 +17,14 @@ dataVertID={};
 pairOfVerticesTotal={};
 
 load([rootPath dir2save 'Image_1_Diagram_5.mat'],'listSeedsProjected','listLOriginalProjection')
+
+%Voronoi or Frusta output
+VoronoiOutput = 0;
+if VoronoiOutput
+    disp('---------------Voronoi results--------------');
+else
+    disp('---------------Frusta results --------------');
+end
         
 maxSurfaceRatio=max(surfaceRatios);
 L_imgMax=listLOriginalProjection.L_originalProjection{listLOriginalProjection.surfaceRatio==maxSurfaceRatio};
@@ -29,13 +37,18 @@ for nSurfR=surfaceRatios
     %2- vertices in contact over the surface
     L_img = listLOriginalProjection.L_originalProjection{round(listLOriginalProjection.surfaceRatio,3)==round(nSurfR,3)};
     
-        L_img=[L_img(:,end-5:end),L_img(:,1:end-5)];
+    L_img=[L_img(:,end-5:end),L_img(:,1:end-5)];
+    if initialSurfaceRatio == nSurfR || VoronoiOutput
+        initialL_img = L_img;
+
+        [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(L_img,dataVertID,pairOfVerticesTotal,nRand,RadiusMax);
+    else
+        %We get the L_img from earlier steps
+        [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(initialL_img,dataVertID,pairOfVerticesTotal,nRand,RadiusMax, nSurfR/initialSurfaceRatio);
+    end
     
-    [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(L_img,dataVertID,pairOfVerticesTotal,nRand,RadiusMax);
-
     %%3- cells composed by N-vertices
-    cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,verticesNoValidCellsInfo,cellWithVertices,nRand);   
-
+    cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,verticesNoValidCellsInfo,cellWithVertices,nRand);
 end
 
 
@@ -68,20 +81,26 @@ cellVerticesTable=cell2table(cellsVerts,'VariableNames',{'cellIDs','verticesIDs'
 pairOfVerticesTable=array2table(pairTotalVertices,'VariableNames',{'verticeID1','verticeID2'});
 vertices3dTable=cell2table(dataVertID,'VariableNames',{'radius','verticeID','coordX','coordY','coordZ','cellIDs'});
 
-% %representing joined vertices
-% figure;
-% hold on
-% for nPair=size(pairOfVerticesTable,1):-1:1
-%     x1=vertices3dTable.vertX(pairOfVerticesTable.verticeID1(nPair));
-%     y1=vertices3dTable.vertY(pairOfVerticesTable.verticeID1(nPair));
-%     z1=vertices3dTable.vertZ(pairOfVerticesTable.verticeID1(nPair));
-%     x2=vertices3dTable.vertX(pairOfVerticesTable.verticeID2(nPair));
-%     y2=vertices3dTable.vertY(pairOfVerticesTable.verticeID2(nPair));
-%     z2=vertices3dTable.vertZ(pairOfVerticesTable.verticeID2(nPair));
-%     
-%     plot3([x1,x2],[y1,y2],[z1,z2])
-%     
-% end
+
+%Representing a cell
+%verticesToShowIDs = cellVerticesTable.verticesIDs{96};
+
+%representing joined vertices
+figure;
+hold on
+for nPair=size(pairOfVerticesTable,1):-1:1
+    %if ismember(pairOfVerticesTable.verticeID1(nPair), verticesToShowIDs) && ismember(pairOfVerticesTable.verticeID2(nPair), verticesToShowIDs)
+        x1=vertices3dTable.coordX(pairOfVerticesTable.verticeID1(nPair));
+        y1=vertices3dTable.coordY(pairOfVerticesTable.verticeID1(nPair));
+        z1=vertices3dTable.coordZ(pairOfVerticesTable.verticeID1(nPair));
+        x2=vertices3dTable.coordX(pairOfVerticesTable.verticeID2(nPair));
+        y2=vertices3dTable.coordY(pairOfVerticesTable.verticeID2(nPair));
+        z2=vertices3dTable.coordZ(pairOfVerticesTable.verticeID2(nPair));
+
+        plot3([x1,x2],[y1,y2],[z1,z2])
+    %end
+    
+end
 
 writetable(cellVerticesTable,[rootPath dir2save 'cellsWithVerticesIDs_' date '.xls'])
 writetable(vertices3dTable,[rootPath dir2save 'tableVerticesCoordinates3D_' date '.xls'])
