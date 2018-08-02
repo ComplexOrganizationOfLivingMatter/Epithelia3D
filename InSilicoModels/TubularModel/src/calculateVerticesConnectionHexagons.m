@@ -78,6 +78,41 @@ vertInter=vertcat(dataVertID{c==2,2});
 join2Del=arrayfun(@(x,y) sum(ismember(vertInter,[x,y]))==2,pairTotalVertices(:,1),pairTotalVertices(:,2));
 pairTotalVertices(join2Del,:)=[];
 
+%% Removing the vertices that are irrelevant
+% We created a line between each pair of vertices and see if any other
+% vertex overlap with this line.
+thresholdDistance = 1;
+vertexToDelete = [];
+for numCell = 96%1:size(cellVerticesTable, 1)
+    verticesOfACellIds = cellVerticesTable.verticesIDs{numCell};   
+    
+    %Possible pair of vertices we could remove
+    actualPairOfVertices = pairTotalVertices(all(ismember(pairTotalVertices, verticesOfACellIds), 2), :);
+    
+    for initialNumVertex = verticesOfACellIds
+        pairOfVerticesToAnalyse = actualPairOfVertices(any(ismember(actualPairOfVertices, initialNumVertex), 2), :);
+        vertexNeighbours = unique(pairOfVerticesToAnalyse)';
+        vertexNeighbours(vertexNeighbours == initialNumVertex) = [];
+        
+        for numVertexNeigh = vertexNeighbours
+            pairOfVerticesNeighs = actualPairOfVertices(any(ismember(actualPairOfVertices, numVertexNeigh), 2), :);
+            endVertices = unique(pairOfVerticesNeighs)';
+            endVertices(ismember(endVertices, [initialNumVertex numVertexNeigh])) = [];
+            for endNumVertex = endVertices
+                initialVertex = cell2mat(dataVertID(initialNumVertex, 3:5));
+                intermediateVertex = cell2mat(dataVertID(numVertexNeigh, 3:5)); 
+                endVertex = cell2mat(dataVertID(endNumVertex, 3:5));
+                [linePoints] = line3D(initialVertex, endVertex);
+                if min(pdist2(intermediateVertex, linePoints)) < thresholdDistance
+                    %plot3(intermediateVertex(:, 1), intermediateVertex(:, 2), intermediateVertex(:, 3), '*')
+                    vertexToDelete(end+1) = numVertexNeigh;
+                end
+            end
+        end
+    end
+end
+
+
 %storing data
 cellVerticesTable=cell2table(cellsVerts,'VariableNames',{'cellIDs','verticesIDs'});
 pairOfVerticesTable=array2table(pairTotalVertices,'VariableNames',{'verticeID1','verticeID2'});
