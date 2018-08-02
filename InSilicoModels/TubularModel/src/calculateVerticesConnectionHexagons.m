@@ -82,7 +82,7 @@ function [] = calculateVerticesConnectionHexagons()
     %% Removing the vertices that are irrelevant
     % We created a line between each pair of vertices and see if any other
     % vertex overlap with this line.
-    thresholdDistance = 1;
+    thresholdDistance = 1.5;
     verticesToDelete = [];
     newUnions = [];
     for numCell = 1:size(cellsVerts, 1)
@@ -116,17 +116,18 @@ function [] = calculateVerticesConnectionHexagons()
         end
     end
 
-    verticesToDeleteRaw = verticesToDelete;
+    verticesToDelete = verticesToDelete';
     [verticesToDelete, ids] = unique(verticesToDelete);
     newUnions = newUnions(ids, :);
 
-    for removingVertex = 1:size(verticesToDelete, 2)
+    for removingVertex = 1:size(verticesToDelete, 1)
         newThresome = [verticesToDelete(removingVertex) newUnions(removingVertex, :)];
         pairTotalVertices(all(ismember(pairTotalVertices, newThresome), 2), :) = [];
         pairTotalVertices(end+1, :) = newUnions(removingVertex, :);
     end
-
-
+    cellsVerts(:, 2) = cellfun(@(x) x(ismember(x, verticesToDelete) == 0), cellsVerts(:, 2), 'UniformOutput', false);
+    dataVertID(verticesToDelete, :) = [];
+    
     %storing data
     cellVerticesTable=cell2table(cellsVerts,'VariableNames',{'cellIDs','verticesIDs'});
     pairOfVerticesTable=array2table(pairTotalVertices,'VariableNames',{'verticeID1','verticeID2'});
@@ -134,22 +135,22 @@ function [] = calculateVerticesConnectionHexagons()
 
 
     %Representing a cell
-    verticesToShowIDs = cellVerticesTable.verticesIDs{96};
+    %verticesToShowIDs = cellVerticesTable.verticesIDs{96};
 
     %representing joined vertices
     figure;
     hold on
     for nPair=size(pairOfVerticesTable,1):-1:1
-        if ismember(pairOfVerticesTable.verticeID1(nPair), verticesToShowIDs) && ismember(pairOfVerticesTable.verticeID2(nPair), verticesToShowIDs)
-            x1=vertices3dTable.coordX(pairOfVerticesTable.verticeID1(nPair));
-            y1=vertices3dTable.coordY(pairOfVerticesTable.verticeID1(nPair));
-            z1=vertices3dTable.coordZ(pairOfVerticesTable.verticeID1(nPair));
-            x2=vertices3dTable.coordX(pairOfVerticesTable.verticeID2(nPair));
-            y2=vertices3dTable.coordY(pairOfVerticesTable.verticeID2(nPair));
-            z2=vertices3dTable.coordZ(pairOfVerticesTable.verticeID2(nPair));
+%         if ismember(pairOfVerticesTable.verticeID1(nPair), verticesToShowIDs) && ismember(pairOfVerticesTable.verticeID2(nPair), verticesToShowIDs)
+            x1=vertices3dTable.coordX(vertices3dTable.verticeID == pairOfVerticesTable.verticeID1(nPair));
+            y1=vertices3dTable.coordY(vertices3dTable.verticeID == pairOfVerticesTable.verticeID1(nPair));
+            z1=vertices3dTable.coordZ(vertices3dTable.verticeID == pairOfVerticesTable.verticeID1(nPair));
+            x2=vertices3dTable.coordX(vertices3dTable.verticeID == pairOfVerticesTable.verticeID2(nPair));
+            y2=vertices3dTable.coordY(vertices3dTable.verticeID == pairOfVerticesTable.verticeID2(nPair));
+            z2=vertices3dTable.coordZ(vertices3dTable.verticeID == pairOfVerticesTable.verticeID2(nPair));
 
             plot3([x1,x2],[y1,y2],[z1,z2])
-        end
+%         end
 
     end
 
