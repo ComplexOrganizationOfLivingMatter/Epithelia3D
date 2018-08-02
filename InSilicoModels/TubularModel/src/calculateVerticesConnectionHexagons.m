@@ -22,8 +22,10 @@ load([rootPath dir2save 'Image_1_Diagram_5.mat'],'listSeedsProjected','listLOrig
 VoronoiOutput = 0;
 if VoronoiOutput
     disp('---------------Voronoi results--------------');
+    outputKind = 'Voronoi';
 else
     disp('---------------Frusta results --------------');
+    outputKind = 'Frusta';
 end
         
 maxSurfaceRatio=max(surfaceRatios);
@@ -102,8 +104,8 @@ for nPair=size(pairOfVerticesTable,1):-1:1
     
 end
 
-writetable(cellVerticesTable,[rootPath dir2save 'cellsWithVerticesIDs_' date '.xls'])
-writetable(vertices3dTable,[rootPath dir2save 'tableVerticesCoordinates3D_' date '.xls'])
-writetable(pairOfVerticesTable,[rootPath dir2save 'tableConnectionsOfVertices3D_' date '.xls'])
+writetable(cellVerticesTable,[rootPath dir2save 'cellsWithVerticesIDs_' outputKind '_' date '.xls'])
+writetable(vertices3dTable,[rootPath dir2save 'tableVerticesCoordinates3D_' outputKind '_' date '.xls'])
+writetable(pairOfVerticesTable,[rootPath dir2save 'tableConnectionsOfVertices3D_' outputKind '_' date '.xls'])
 
 
