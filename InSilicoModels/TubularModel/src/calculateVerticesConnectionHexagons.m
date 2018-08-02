@@ -86,7 +86,7 @@ function [] = calculateVerticesConnectionHexagons()
     verticesToDelete = [];
     newUnions = [];
     for numCell = 1:size(cellsVerts, 1)
-        verticesOfACellIds = cellsVerts{numCell, 1};   
+        verticesOfACellIds = cellsVerts{numCell, 2};   
 
         %Possible pair of vertices we could remove
         actualPairOfVertices = pairTotalVertices(all(ismember(pairTotalVertices, verticesOfACellIds), 2), :);
@@ -120,7 +120,7 @@ function [] = calculateVerticesConnectionHexagons()
     [verticesToDelete, ids] = unique(verticesToDelete);
     newUnions = newUnions(ids, :);
 
-    for removingVertex = 1:size(verticesToDelete)
+    for removingVertex = 1:size(verticesToDelete, 2)
         newThresome = [verticesToDelete(removingVertex) newUnions(removingVertex, :)];
         pairTotalVertices(all(ismember(pairTotalVertices, newThresome), 2), :) = [];
         pairTotalVertices(end+1, :) = newUnions(removingVertex, :);
