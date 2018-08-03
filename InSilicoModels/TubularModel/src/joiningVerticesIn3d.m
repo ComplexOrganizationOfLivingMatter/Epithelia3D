@@ -20,8 +20,14 @@ function id3dJoin=joiningVerticesIn3d(dataVertID)
  
  for nVert=find(majorRadius)'
      
-     id2Join=cellfun(@(x) sum(ismember(cellsVert{nVert},x))==3,cellsVertInter);
+     id2Join=cellfun(@(x) sum(ismember(cellsVert{nVert},x))==2,cellsVertInter);
+     if sum(id2Join) > 1
+         vertexToLink = [dataVertID{nVert, 4:6}];
+         possibleVerticesAllInfo = dataVertID(id2Join, :);
+         possibleVertices = cell2mat(possibleVerticesAllInfo(:, 4:6));
+         pdist2(vertexToLink, possibleVertices); 
+     end
      id3dJoin= [id3dJoin; vertIdsInter(id2Join),ones(sum(id2Join),1).*vertIds(nVert)];
  end
-    
+    disp('');
 end
