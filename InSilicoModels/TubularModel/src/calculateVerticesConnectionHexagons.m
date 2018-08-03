@@ -4,7 +4,7 @@ function [] = calculateVerticesConnectionHexagons()
 
     H_initial=512;
     W_initial=1024;
-    n_seeds=132;
+    n_seeds=520;
     rootPath='..\beforePaperCode\dataBeforePaperCode\voronoiModel\reduction\cylinderOfHexagons\';
     dir2save=[num2str(H_initial) 'x' num2str(W_initial) '_' num2str(n_seeds) 'seeds\'];
 
@@ -60,17 +60,29 @@ function [] = calculateVerticesConnectionHexagons()
     [~, uniqueVerticesIDs] = unique(allVertices, 'rows');
     duplicatedVerticesIDs = setdiff(1:size(dataVertID, 1), uniqueVerticesIDs);
     
+    oldpairOfVerticesTotal = cell2mat(pairOfVerticesTotal(:, 1:2));
+    newPairOfVerticesTotal = cell2mat(pairOfVerticesTotal(:, 1:2));
     for numDupliVertex = duplicatedVerticesIDs
         duplicatedIndices = ismember(allVertices, allVertices(numDupliVertex, :), 'rows');
-        vertexToKeep = duplicatedIndices(duplicatedIndices ~= numDupliVertex);
+        allVerticesDuplicated = find(duplicatedIndices);
+        vertexToKeep = allVerticesDuplicated(allVerticesDuplicated ~= numDupliVertex);
         dataVertID(vertexToKeep, end) = {union(dataVertID{duplicatedIndices, end})};
+        newPairOfVerticesTotal(ismember(oldpairOfVerticesTotal, numDupliVertex)) = vertexToKeep;
     end
     
-    pairOfVerticesTotal(any(ismember(cell2mat(pairOfVerticesTotal(:, 1:2)), duplicatedVerticesIDs), 2), :) = [];
+    pairOfVerticesTotal(:, 1:2) = num2cell(newPairOfVerticesTotal);
+    
     dataVertID(duplicatedVerticesIDs, :) = [];
     
-    
+    oldIDs = dataVertID(:, 3);
     dataVertID(:, 3) = mat2cell(1:size(dataVertID, 1), 1,  ones(size(dataVertID, 1), 1));
+    
+    oldpairOfVerticesTotal = cell2mat(pairOfVerticesTotal(:, 1:2));
+    newPairOfVerticesTotal = cell2mat(pairOfVerticesTotal(:, 1:2));
+    for numOldID = 1:size(dataVertID, 1)
+        newPairOfVerticesTotal(ismember(oldpairOfVerticesTotal, oldIDs{numOldID})) = numOldID;
+    end
+    pairOfVerticesTotal(:, 1:2) = num2cell(newPairOfVerticesTotal);
     
     pairVertices3D=joiningVerticesIn3d(dataVertID);
     radiusCyl=vertcat(dataVertID{:,2});
