@@ -4,7 +4,7 @@ function [] = calculateVerticesConnectionHexagons()
 
     H_initial=512;
     W_initial=1024;
-    n_seeds=520;
+    n_seeds=132;
     rootPath='..\beforePaperCode\dataBeforePaperCode\voronoiModel\reduction\cylinderOfHexagons\';
     dir2save=[num2str(H_initial) 'x' num2str(W_initial) '_' num2str(n_seeds) 'seeds\'];
 
@@ -51,7 +51,7 @@ function [] = calculateVerticesConnectionHexagons()
         end
 
         %%3- cells composed by N-vertices
-        cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,verticesNoValidCellsInfo,cellWithVertices,nRand);
+        %cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,verticesNoValidCellsInfo,cellWithVertices,nRand);
     end
 
 
@@ -67,7 +67,10 @@ function [] = calculateVerticesConnectionHexagons()
     end
     
     pairOfVerticesTotal(any(ismember(cell2mat(pairOfVerticesTotal(:, 1:2)), duplicatedVerticesIDs), 2), :) = [];
-    dataVertID = dataVertID(uniqueVerticesIDs, :);
+    dataVertID(duplicatedVerticesIDs, :) = [];
+    
+    
+    dataVertID(:, 3) = mat2cell(1:size(dataVertID, 1), 1,  ones(size(dataVertID, 1), 1));
     
     pairVertices3D=joiningVerticesIn3d(dataVertID);
     radiusCyl=vertcat(dataVertID{:,2});
@@ -149,9 +152,15 @@ function [] = calculateVerticesConnectionHexagons()
     %Representing a cell
     verticesToShowIDs = cellVerticesTable.verticesIDs{7};
 
+
+    
     %representing joined vertices
     figure;
     hold on
+    for numVertex = verticesToShowIDs
+        plot3(vertices3dTable.coordX(numVertex), vertices3dTable.coordY(numVertex), vertices3dTable.coordZ(numVertex), '*');
+    end
+    
     for nPair=size(pairOfVerticesTable,1):-1:1
         if ismember(pairOfVerticesTable.verticeID1(nPair), verticesToShowIDs) && ismember(pairOfVerticesTable.verticeID2(nPair), verticesToShowIDs)
             x1=vertices3dTable.coordX(vertices3dTable.verticeID == pairOfVerticesTable.verticeID1(nPair));
