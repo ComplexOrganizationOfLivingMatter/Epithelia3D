@@ -20,7 +20,7 @@ function [] = calculateVerticesConnectionHexagons()
     load([rootPath dir2save 'Image_1_Diagram_5.mat'],'listSeedsProjected','listLOriginalProjection')
 
     %Voronoi or Frusta output
-    VoronoiOutput = 0;
+    VoronoiOutput = 1;
     if VoronoiOutput
         disp('---------------Voronoi results--------------');
         outputKind = 'Voronoi';
@@ -55,9 +55,22 @@ function [] = calculateVerticesConnectionHexagons()
     end
 
 
+    %The same vertices
+    allVertices = cell2mat(dataVertID(:, 4:6));
+    [~, uniqueVerticesIDs] = unique(allVertices, 'rows');
+    duplicatedVerticesIDs = setdiff(1:size(dataVertID, 1), uniqueVerticesIDs);
+    
+    for numDupliVertex = duplicatedVerticesIDs
+        duplicatedIndices = ismember(allVertices, allVertices(numDupliVertex, :), 'rows');
+        vertexToKeep = duplicatedIndices(duplicatedIndices ~= numDupliVertex);
+        dataVertID(vertexToKeep, end) = {union(dataVertID{duplicatedIndices, end})};
+    end
+    
+    pairOfVerticesTotal(any(ismember(cell2mat(pairOfVerticesTotal(:, 1:2)), duplicatedVerticesIDs), 2), :) = [];
+    dataVertID = dataVertID(uniqueVerticesIDs, :);
+    
     pairVertices3D=joiningVerticesIn3d(dataVertID);
     radiusCyl=vertcat(dataVertID{:,2});
-    radiusCylUniq=unique(radiusCyl);
 
     pairTotalVertices = [[vertcat(pairOfVerticesTotal{:,1}),vertcat(pairOfVerticesTotal{:,2})];pairVertices3D];
 
@@ -74,7 +87,7 @@ function [] = calculateVerticesConnectionHexagons()
     dataVertID = dataVertID(:,2:end);  
 
     %deleting junction intermediate layer
-    [radCyl,idx,c]=unique(vertcat(dataVertID{:,1}));
+    [~,~,c]=unique(vertcat(dataVertID{:,1}));
     vertInter=vertcat(dataVertID{c==2,2});
     join2Del=arrayfun(@(x,y) sum(ismember(vertInter,[x,y]))==2,pairTotalVertices(:,1),pairTotalVertices(:,2));
     pairTotalVertices(join2Del,:)=[];
@@ -133,15 +146,14 @@ function [] = calculateVerticesConnectionHexagons()
     pairOfVerticesTable=array2table(pairTotalVertices,'VariableNames',{'verticeID1','verticeID2'});
     vertices3dTable=cell2table(dataVertID,'VariableNames',{'radius','verticeID','coordX','coordY','coordZ','cellIDs'});
 
-
     %Representing a cell
-    %verticesToShowIDs = cellVerticesTable.verticesIDs{96};
+    verticesToShowIDs = cellVerticesTable.verticesIDs{7};
 
     %representing joined vertices
     figure;
     hold on
     for nPair=size(pairOfVerticesTable,1):-1:1
-%         if ismember(pairOfVerticesTable.verticeID1(nPair), verticesToShowIDs) && ismember(pairOfVerticesTable.verticeID2(nPair), verticesToShowIDs)
+        if ismember(pairOfVerticesTable.verticeID1(nPair), verticesToShowIDs) && ismember(pairOfVerticesTable.verticeID2(nPair), verticesToShowIDs)
             x1=vertices3dTable.coordX(vertices3dTable.verticeID == pairOfVerticesTable.verticeID1(nPair));
             y1=vertices3dTable.coordY(vertices3dTable.verticeID == pairOfVerticesTable.verticeID1(nPair));
             z1=vertices3dTable.coordZ(vertices3dTable.verticeID == pairOfVerticesTable.verticeID1(nPair));
@@ -150,7 +162,7 @@ function [] = calculateVerticesConnectionHexagons()
             z2=vertices3dTable.coordZ(vertices3dTable.verticeID == pairOfVerticesTable.verticeID2(nPair));
 
             plot3([x1,x2],[y1,y2],[z1,z2])
-%         end
+        end
 
     end
 
