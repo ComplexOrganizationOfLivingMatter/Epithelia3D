@@ -55,7 +55,7 @@ function [] = calculateVerticesConnectionHexagons()
     end
 
 
-    %The same vertices
+    %% The same vertices as one
     allVertices = cell2mat(dataVertID(:, 4:6));
     [~, uniqueVerticesIDs] = unique(allVertices, 'rows');
     duplicatedVerticesIDs = setdiff(1:size(dataVertID, 1), uniqueVerticesIDs);
@@ -161,14 +161,32 @@ function [] = calculateVerticesConnectionHexagons()
     pairOfVerticesTable=array2table(pairTotalVertices,'VariableNames',{'verticeID1','verticeID2'});
     vertices3dTable=cell2table(dataVertID,'VariableNames',{'radius','verticeID','coordX','coordY','coordZ','cellIDs'});
 
-    %Representing a cell
-    verticesToShowIDs = cellsVerts{15, 2};
+    %% Representing a cell
+    verticesToShowIDs = cellsVerts{33, 2};
 
     %representing joined vertices
     figure;
-    hold on
-    for numVertex = verticesToShowIDs
-        plot3(vertices3dTable.coordX(vertices3dTable.verticeID == numVertex), vertices3dTable.coordY(vertices3dTable.verticeID == numVertex), vertices3dTable.coordZ(vertices3dTable.verticeID == numVertex), '*');
+%     for numVertex = verticesToShowIDs
+%         plot3(vertices3dTable.coordX(vertices3dTable.verticeID == numVertex), vertices3dTable.coordY(vertices3dTable.verticeID == numVertex), vertices3dTable.coordZ(vertices3dTable.verticeID == numVertex), '*');
+%     end
+    
+    tipCells = unique([verticesNoValidCellsInfo.verticesConnectCells{:}]);
+    
+    tipCellsAndItsVertices = {};
+    
+    colours = colorcube(200);
+    colours = repmat(colours, 2200/200, 1);
+    for numCell = 1:size(cellsVerts, 1)
+        verticesToShowIDs = cellsVerts{numCell, 2};
+        
+        vertexIndices = ismember(vertices3dTable.verticeID, verticesToShowIDs);
+        if ismember(numCell, tipCells) == 0
+            shapeCell = alphaShape(vertices3dTable.coordX(vertexIndices), vertices3dTable.coordY(vertexIndices), vertices3dTable.coordZ(vertexIndices), Inf);
+            plot(shapeCell, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none');
+            hold on
+        else
+            tipCellsAndItsVertices(end+1, :) = {numCell, find(vertexIndices)};
+        end
     end
     
     for nPair=size(pairOfVerticesTable,1):-1:1
@@ -181,12 +199,16 @@ function [] = calculateVerticesConnectionHexagons()
             z2=vertices3dTable.coordZ(vertices3dTable.verticeID == pairOfVerticesTable.verticeID2(nPair));
 
             plot3([x1,x2],[y1,y2],[z1,z2])
+            hold on;
         end
 
     end
 
+    tipCellsAndItsVerticesTable = cell2table(tipCellsAndItsVertices,'VariableNames',{'cellIDs','verticesIDs'});
+    
     writetable(cellVerticesTable,[rootPath dir2save 'cellsWithVerticesIDs_' outputKind '_' date '.xls'])
     writetable(vertices3dTable,[rootPath dir2save 'tableVerticesCoordinates3D_' outputKind '_' date '.xls'])
     writetable(pairOfVerticesTable,[rootPath dir2save 'tableConnectionsOfVertices3D_' outputKind '_' date '.xls'])
+    writetable(tipCellsAndItsVerticesTable,[rootPath dir2save 'tipCells_' outputKind '_' date '.xls'])
 end
 
