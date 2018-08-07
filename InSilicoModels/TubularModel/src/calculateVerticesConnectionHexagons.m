@@ -156,12 +156,19 @@ function [] = calculateVerticesConnectionHexagons()
     cellsVerts(:, 2) = cellfun(@(x) x(ismember(x, verticesToDelete) == 0), cellsVerts(:, 2), 'UniformOutput', false);
     dataVertID(verticesToDelete, :) = [];
     
-    %storing data
+    %% Connecting correctly the tip cells
+    tipCells = unique([verticesNoValidCellsInfo.verticesConnectCells{:}]);
+    
+    pairTotalVertices = connectVerticesOfTipCells(tipCells, pairTotalVertices, dataVertID);
+    
+    %% Storing data
     cellVerticesTable=cell2table(cellsVerts,'VariableNames',{'cellIDs','verticesIDs'});
     pairOfVerticesTable=array2table(pairTotalVertices,'VariableNames',{'verticeID1','verticeID2'});
     vertices3dTable=cell2table(dataVertID,'VariableNames',{'radius','verticeID','coordX','coordY','coordZ','cellIDs'});
 
-    %% Representing a cell
+    %% Visualizing the model
+    
+    % Representing a cell
     verticesToShowIDs = cellsVerts{33, 2};
 
     %representing joined vertices
@@ -169,8 +176,6 @@ function [] = calculateVerticesConnectionHexagons()
 %     for numVertex = verticesToShowIDs
 %         plot3(vertices3dTable.coordX(vertices3dTable.verticeID == numVertex), vertices3dTable.coordY(vertices3dTable.verticeID == numVertex), vertices3dTable.coordZ(vertices3dTable.verticeID == numVertex), '*');
 %     end
-    
-    tipCells = unique([verticesNoValidCellsInfo.verticesConnectCells{:}]);
     
     tipCellsAndItsVertices = {};
     
