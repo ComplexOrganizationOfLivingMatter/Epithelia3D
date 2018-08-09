@@ -79,10 +79,7 @@ function [] = calculateVerticesConnectionHexagons()
     dataVertID = dataVertID(:,2:end);  
 
     %% Deleting junction intermediate layer
-    [~,~,c]=unique(vertcat(dataVertID{:,1}));
-    vertInter=vertcat(dataVertID{c==2,2});
-    join2Del=arrayfun(@(x,y) sum(ismember(vertInter,[x,y]))==2,pairTotalVertices(:,1),pairTotalVertices(:,2));
-    pairTotalVertices(join2Del,:)=[];
+    [pairTotalVertices] = deleteJunctionIntermediateLayer(dataVertID,pairTotalVertices);
 
     %% Removing the vertices that are irrelevant
     % We created a line between each pair of vertices and see if any other
@@ -134,8 +131,9 @@ function [] = calculateVerticesConnectionHexagons()
     dataVertID(verticesToDelete, :) = [];
     
     %% Connecting correctly the tip cells
-    
     pairTotalVertices = connectVerticesOfTipCells(tipCells, pairTotalVertices, dataVertID, cellsVerts);
+    
+    [pairTotalVertices] = deleteJunctionIntermediateLayer(dataVertID,pairTotalVertices);
     
     %% Storing data
     cellVerticesTable=cell2table(cellsVerts,'VariableNames',{'cellIDs','verticesIDs'});
