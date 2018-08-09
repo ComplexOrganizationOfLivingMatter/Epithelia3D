@@ -1,7 +1,9 @@
 function [ ] = create3DMotifFromVoronoi( )
 %CREATE3DMOTIFFROMVORONOI Summary of this function goes here
 %   Detailed explanation goes here
-    load('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\Image_10.mat')
+    %load('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\Image_10.mat')
+    load('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\beforePaperCode\dataBeforePaperCode\voronoiModel\expansion\512x1024_50seeds\ImageForFigure\Image_10.mat')
+    addpath('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\beforePaperCode\srcBeforePaperCode\projectionSurfaceVoronoi5\libVoronoiSegment');
     
     %selectedCells = 1:max(listLOriginalProjection.L_originalProjection{1});
     %Yellow, Red, Green, Blue
@@ -61,6 +63,9 @@ function [ ] = create3DMotifFromVoronoi( )
             plot(shp, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
             %trisurf(k, xCell, yCell, zCell, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
         end
+        [F,V]=shp.boundaryFacets;
+        mkdir('stlReconstruction');
+        stlwrite(['stlReconstruction/cell' num2str(selectedCells(numCell)) '.stl'],F,V) 
         hold on;
     end
     axis equal
