@@ -59,7 +59,8 @@ function [] = calculateVerticesConnectionHexagons()
     [pairOfVerticesTotal] = unifyingDuplicatedVertices(dataVertID, pairOfVerticesTotal);
     
     %% Joining vertices in 3D
-    pairVertices3D=joiningVerticesIn3d(dataVertID);
+    tipCells = unique([verticesNoValidCellsInfo.verticesConnectCells{:}]);
+    pairVertices3D=joiningVerticesIn3d(dataVertID, tipCells);
     
     radiusCyl=vertcat(dataVertID{:,2});
 
@@ -133,7 +134,6 @@ function [] = calculateVerticesConnectionHexagons()
     dataVertID(verticesToDelete, :) = [];
     
     %% Connecting correctly the tip cells
-    tipCells = unique([verticesNoValidCellsInfo.verticesConnectCells{:}]);
     
     pairTotalVertices = connectVerticesOfTipCells(tipCells, pairTotalVertices, dataVertID, cellsVerts);
     
@@ -149,9 +149,9 @@ function [] = calculateVerticesConnectionHexagons()
 
     %representing joined vertices
     figure;
-%     for numVertex = verticesToShowIDs
-%         plot3(vertices3dTable.coordX(vertices3dTable.verticeID == numVertex), vertices3dTable.coordY(vertices3dTable.verticeID == numVertex), vertices3dTable.coordZ(vertices3dTable.verticeID == numVertex), '*');
-%     end
+    for numVertex = verticesToShowIDs
+        plot3(vertices3dTable.coordX(vertices3dTable.verticeID == numVertex), vertices3dTable.coordY(vertices3dTable.verticeID == numVertex), vertices3dTable.coordZ(vertices3dTable.verticeID == numVertex), '*');
+    end
     
     tipCellsAndItsVertices = {};
     
@@ -182,7 +182,6 @@ function [] = calculateVerticesConnectionHexagons()
             plot3([x1,x2],[y1,y2],[z1,z2])
             hold on;
         end
-
     end
 
     tipCellsAndItsVerticesTable = cell2table(tipCellsAndItsVertices,'VariableNames',{'cellIDs','verticesIDs'});
