@@ -23,9 +23,12 @@ function [pairTotalVerticesModified] = connectVerticesOfTipCells(tipCells, pairT
             if length(verticesConnectedSameRadiusID) < 2
                 missingVerticesWithoutActual = setdiff(missingVertices, numVertex);
                 missingVerticesSameRadiusIDs = missingVerticesWithoutActual(cellfun(@(x) x == actualVerticesInfo{1, 1},  dataVertID(ismember(vertexRealIDs, missingVerticesWithoutActual), 1)));
-                missingVerticesSameRadiusCells = dataVertID(ismember(vertexRealIDs, missingVerticesSameRadiusIDs), end);
-                [~, idMax] = max(cellfun(@(x) sum(ismember(actualVerticesInfo{1, end}, x)), missingVerticesSameRadiusCells));
-                newPairVertices = [newPairVertices; numVertex, missingVerticesSameRadiusIDs(idMax)];
+                
+                if isempty(missingVerticesSameRadiusIDs) == 0
+                    missingVerticesSameRadiusCells = dataVertID(ismember(vertexRealIDs, missingVerticesSameRadiusIDs), end);
+                    [~, idMax] = max(cellfun(@(x) sum(ismember(actualVerticesInfo{1, end}, x)), missingVerticesSameRadiusCells));
+                    newPairVertices = [newPairVertices; numVertex, missingVerticesSameRadiusIDs(idMax)];
+                end
             end
         end
     end

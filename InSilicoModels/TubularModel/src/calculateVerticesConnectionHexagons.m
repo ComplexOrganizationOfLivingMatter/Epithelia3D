@@ -102,16 +102,18 @@ function [] = calculateVerticesConnectionHexagons()
                 pairOfVerticesNeighs = actualPairOfVertices(any(ismember(actualPairOfVertices, numVertexNeigh), 2), :);
                 endVertices = unique(pairOfVerticesNeighs)';
                 endVertices(ismember(endVertices, [initialNumVertex numVertexNeigh])) = [];
-                for endVertexCont = 1:size(endVertices, 1)
-                    endNumVertex = endVertices(endVertexCont);
-                    initialVertex = cell2mat(dataVertID(initialNumVertex, 3:5));
-                    intermediateVertex = cell2mat(dataVertID(numVertexNeigh, 3:5)); 
-                    endVertex = cell2mat(dataVertID(endNumVertex, 3:5));
-                    [linePoints] = line3D(initialVertex, endVertex);
-                    if min(pdist2(intermediateVertex, linePoints)) < thresholdDistance
-                        %plot3(intermediateVertex(:, 1), intermediateVertex(:, 2), intermediateVertex(:, 3), '*')
-                        verticesToDelete(end+1) = numVertexNeigh;
-                        newUnions(end+1, :) = [initialNumVertex, endNumVertex];
+                if isempty(endVertices) == 0
+                    for endVertexCont = 1:size(endVertices, 2)
+                        endNumVertex = endVertices(endVertexCont);
+                        initialVertex = cell2mat(dataVertID(initialNumVertex, 3:5));
+                        intermediateVertex = cell2mat(dataVertID(numVertexNeigh, 3:5)); 
+                        endVertex = cell2mat(dataVertID(endNumVertex, 3:5));
+                        [linePoints] = line3D(initialVertex, endVertex);
+                        if min(pdist2(intermediateVertex, linePoints)) < thresholdDistance
+                            %plot3(intermediateVertex(:, 1), intermediateVertex(:, 2), intermediateVertex(:, 3), '*')
+                            verticesToDelete(end+1) = numVertexNeigh;
+                            newUnions(end+1, :) = [initialNumVertex, endNumVertex];
+                        end
                     end
                 end
             end
