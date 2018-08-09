@@ -56,35 +56,11 @@ function [] = calculateVerticesConnectionHexagons()
 
 
     %% The same vertices as one
-    allVertices = cell2mat(dataVertID(:, 4:6));
-    [~, uniqueVerticesIDs] = unique(allVertices, 'rows');
-    duplicatedVerticesIDs = setdiff(1:size(dataVertID, 1), uniqueVerticesIDs);
+    [pairOfVerticesTotal] = unifyingDuplicatedVertices(dataVertID, pairOfVerticesTotal);
     
-    oldpairOfVerticesTotal = cell2mat(pairOfVerticesTotal(:, 1:2));
-    newPairOfVerticesTotal = cell2mat(pairOfVerticesTotal(:, 1:2));
-    for numDupliVertex = duplicatedVerticesIDs
-        duplicatedIndices = ismember(allVertices, allVertices(numDupliVertex, :), 'rows');
-        allVerticesDuplicated = find(duplicatedIndices);
-        vertexToKeep = allVerticesDuplicated(allVerticesDuplicated ~= numDupliVertex);
-        dataVertID(vertexToKeep, end) = {union(dataVertID{duplicatedIndices, end})};
-        newPairOfVerticesTotal(ismember(oldpairOfVerticesTotal, numDupliVertex)) = vertexToKeep;
-    end
-    
-    pairOfVerticesTotal(:, 1:2) = num2cell(newPairOfVerticesTotal);
-    
-    dataVertID(duplicatedVerticesIDs, :) = [];
-    
-    oldIDs = dataVertID(:, 3);
-    dataVertID(:, 3) = mat2cell(1:size(dataVertID, 1), 1,  ones(size(dataVertID, 1), 1));
-    
-    oldpairOfVerticesTotal = cell2mat(pairOfVerticesTotal(:, 1:2));
-    newPairOfVerticesTotal = cell2mat(pairOfVerticesTotal(:, 1:2));
-    for numOldID = 1:size(dataVertID, 1)
-        newPairOfVerticesTotal(ismember(oldpairOfVerticesTotal, oldIDs{numOldID})) = numOldID;
-    end
-    pairOfVerticesTotal(:, 1:2) = num2cell(newPairOfVerticesTotal);
-    
+    %% Joining vertices in 3D
     pairVertices3D=joiningVerticesIn3d(dataVertID);
+    
     radiusCyl=vertcat(dataVertID{:,2});
 
     pairTotalVertices = [[vertcat(pairOfVerticesTotal{:,1}),vertcat(pairOfVerticesTotal{:,2})];pairVertices3D];
@@ -101,7 +77,7 @@ function [] = calculateVerticesConnectionHexagons()
 
     dataVertID = dataVertID(:,2:end);  
 
-    %deleting junction intermediate layer
+    %% Deleting junction intermediate layer
     [~,~,c]=unique(vertcat(dataVertID{:,1}));
     vertInter=vertcat(dataVertID{c==2,2});
     join2Del=arrayfun(@(x,y) sum(ismember(vertInter,[x,y]))==2,pairTotalVertices(:,1),pairTotalVertices(:,2));
@@ -159,7 +135,7 @@ function [] = calculateVerticesConnectionHexagons()
     %% Connecting correctly the tip cells
     tipCells = unique([verticesNoValidCellsInfo.verticesConnectCells{:}]);
     
-    pairTotalVertices = connectVerticesOfTipCells(tipCells, pairTotalVertices, dataVertID);
+    pairTotalVertices = connectVerticesOfTipCells(tipCells, pairTotalVertices, dataVertID, cellsVerts);
     
     %% Storing data
     cellVerticesTable=cell2table(cellsVerts,'VariableNames',{'cellIDs','verticesIDs'});
@@ -169,7 +145,7 @@ function [] = calculateVerticesConnectionHexagons()
     %% Visualizing the model
     
     % Representing a cell
-    verticesToShowIDs = cellsVerts{33, 2};
+    verticesToShowIDs = cellsVerts{1, 2};
 
     %representing joined vertices
     figure;
