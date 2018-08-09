@@ -20,7 +20,7 @@ function [] = calculateVerticesConnectionHexagons()
     load([rootPath dir2save 'Image_1_Diagram_5.mat'],'listSeedsProjected','listLOriginalProjection')
 
     %Voronoi or Frusta output
-    VoronoiOutput = 0;
+    VoronoiOutput = 1;
     if VoronoiOutput
         disp('---------------Voronoi results--------------');
         outputKind = 'Voronoi';
@@ -169,6 +169,10 @@ function [] = calculateVerticesConnectionHexagons()
             tipCellsAndItsVertices(end+1, :) = {numCell, find(vertexIndices)};
         end
     end
+    
+    figure;
+    
+    verticesToShowIDs = cellsVerts{33, 2};
     
     for nPair=size(pairOfVerticesTable,1):-1:1
         if ismember(pairOfVerticesTable.verticeID1(nPair), verticesToShowIDs) && ismember(pairOfVerticesTable.verticeID2(nPair), verticesToShowIDs)
