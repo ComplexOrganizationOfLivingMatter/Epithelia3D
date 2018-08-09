@@ -24,12 +24,12 @@ function id3dJoin=joiningVerticesIn3d(dataVertID, tipCells)
 
     verticesOfTipCells = cellfun(@(x) any(ismember(x, tipCells)), dataVertID(:, 7));
 
-    vertIdsEnd=vertcat(dataVertID{majorRadius,3});
-    cellsVertEnd=vertcat(dataVertID(majorRadius,end));
-    zCoordEnd = vertcat(dataVertID(majorRadius,6));
+    vertIdsEnd=vertcat(dataVertID{majorRadius & verticesOfTipCells,3});
+    cellsVertEnd=vertcat(dataVertID(majorRadius & verticesOfTipCells, end));
+    zCoordEnd = vertcat(dataVertID(majorRadius & verticesOfTipCells, 6));
 
     for nVert = find(minorRadius & verticesOfTipCells)'
-        id2Join=cellfun(@(x, y) sum(ismember(cellsVert{nVert},x))>1 & dataVertID{nVert,6} == y, cellsVertEnd, zCoordEnd);
+        id2Join=cellfun(@(x, y) sum(ismember(cellsVert{nVert},x))>1, cellsVertEnd, zCoordEnd);
         id3dJoin= [id3dJoin; vertIdsEnd(id2Join),ones(sum(id2Join),1).*vertIds(nVert)];
     end
 
