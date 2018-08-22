@@ -1,4 +1,4 @@
-function [layer1,layer2,setOfCells,verticesInfoLayer1,verticesInfoLayer2] = getHypocotylSurfaces(sampleName)
+function [layer1,layer2,setOfCells,verticesInfoLayer1,verticesInfoLayer2] = getHypocotylSurfaces(sampleName,rangeY)
 
     disp(sampleName)
 
@@ -29,6 +29,12 @@ function [layer1,layer2,setOfCells,verticesInfoLayer1,verticesInfoLayer2] = getH
     end
         
     disp('2 - layers captured')
+    
+    %% Get filled surfaces
+    [layer1.outerSurface,layer1.innerSurface,layer2.outerSurface,layer2.innerSurface] = fillingLayersColHypocotyl(img3d,setOfCells,rangeY);
+
+    disp('3 - layers filled using watershed')
+    
 
     %% Get vertices from surfaces
     if ~exist(['data\' sampleName '\verticesSurfaces.mat'],'file')
@@ -41,7 +47,7 @@ function [layer1,layer2,setOfCells,verticesInfoLayer1,verticesInfoLayer2] = getH
         load(['data\' sampleName '\verticesSurfaces.mat'],'verticesInfoLayer1','verticesInfoLayer2')
     end
         
-    disp('3 - vertices captured')
+    disp('4 - vertices captured')
     
     %% Get center and axes length from hypocotyl
     if ~exist(['data\' sampleName '\certerAndRadiusPerZ.mat'],'file')

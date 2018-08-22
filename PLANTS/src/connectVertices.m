@@ -1,6 +1,6 @@
-function connectVertices(name,verticesInfoLayer1,verticesInfoLayer2)
+function connectVertices(name,verticesInfoLayer1,verticesInfoLayer2,rangeY)
     
-    rangeY=[700,1400];
+    
 
     load(['data\' name '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');
     setOfVertices={verticesInfoLayer1.Outer,verticesInfoLayer1.Inner,verticesInfoLayer2.Outer,verticesInfoLayer2.Inner};
