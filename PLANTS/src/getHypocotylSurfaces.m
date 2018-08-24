@@ -31,7 +31,7 @@ function [layer1,layer2,setOfCells,verticesInfoLayer1,verticesInfoLayer2] = getH
     disp('2 - layers captured')
     
     %% Get filled surfaces
-    [layer1.outerSurface,layer1.innerSurface,layer2.outerSurface,layer2.innerSurface] = fillingLayersColHypocotyl(img3d,setOfCells,rangeY);
+    [imgLayer1,layer1.outerSurface,layer1.innerSurface,imgLayer2,layer2.outerSurface,layer2.innerSurface] = fillingLayersColHypocotyl(layer1,layer2,rangeY);
 
     disp('3 - layers filled using watershed')
     
