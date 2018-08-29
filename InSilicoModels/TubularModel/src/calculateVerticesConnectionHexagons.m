@@ -206,7 +206,22 @@ function [] = calculateVerticesConnectionHexagons()
             verticesOfCellWithActualRadius = verticesOfCell(ismember(verticesOfCell, actualVerticesIds));
             verticesRadius = dataVertID(ismember([dataVertID{:, 2}], verticesOfCellWithActualRadius), 3:5);
             
-            verticesRadius = verticesRadius';
+            actualPairTotalVertices = pairTotalVertices(all(ismember(pairTotalVertices, verticesOfCellWithActualRadius), 2), :);
+            
+            newOrderOfVertices = actualPairTotalVertices(1, :);
+            actualPairTotalVertices(1, :) = [];
+            verticesOfCellWithActualRadius(ismember(verticesOfCellWithActualRadius, newOrderOfVertices)) = [];
+            
+            while ~empty(actualPairTotalVertices)
+                nextPairId = any(ismember(actualPairTotalVertices, newOrderOfVertices(end)), 2);
+                nextPair = actualPairTotalVertices(nextPairId, :);
+                nextVertex = nextPair(ismember(nextPair, newOrderOfVertices) == 0);
+                
+                newOrderOfVertices(end+1) = nextVertex;
+                verticesOfCellWithActualRadius
+            end
+            
+            verticesRadius = verticesRadius(newOrderOfVertices, :)';
             {numRadius, numCell, [verticesRadius{:}]};
         end
     end
