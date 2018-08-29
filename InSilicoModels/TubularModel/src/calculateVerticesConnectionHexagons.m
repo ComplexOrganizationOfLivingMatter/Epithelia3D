@@ -197,6 +197,8 @@ function [] = calculateVerticesConnectionHexagons()
     disp('Exporting');
     apicalRadius = min(radiusCyl);
     basalRadius = max(radiusCyl);
+    
+    samiraTable = {};
     for numRadius = [apicalRadius, basalRadius]
         verticesWithActualRadius = dataVertID([dataVertID{:, 1}] == numRadius, :);
         actualVerticesIds = [verticesWithActualRadius{:, 2}];
@@ -204,7 +206,6 @@ function [] = calculateVerticesConnectionHexagons()
         for numCell = 1:size(cellsVerts, 1)
             verticesOfCell = cellsVerts{numCell, 2};
             verticesOfCellWithActualRadius = verticesOfCell(ismember(verticesOfCell, actualVerticesIds));
-            verticesRadius = dataVertID(ismember([dataVertID{:, 2}], verticesOfCellWithActualRadius), 3:5);
             
             actualPairTotalVertices = pairTotalVertices(all(ismember(pairTotalVertices, verticesOfCellWithActualRadius), 2), :);
             
@@ -225,17 +226,19 @@ function [] = calculateVerticesConnectionHexagons()
             
             actualPairTotalVertices(all(ismember(actualPairTotalVertices, newOrderOfVertices), 2), :) = [];
             
-            while ~empty(actualPairTotalVertices)
+            while ~isempty(actualPairTotalVertices)
                 nextPairId = any(ismember(actualPairTotalVertices, newOrderOfVertices(end)), 2);
                 nextPair = actualPairTotalVertices(nextPairId, :);
                 nextVertex = nextPair(ismember(nextPair, newOrderOfVertices) == 0);
-                
-                newOrderOfVertices(end+1) = nextVertex;
-                actualPairTotalVertices(nextPair, :) = [];
+                nextVertex
+                if isempty(nextVertex) == 0
+                    newOrderOfVertices(end+1) = unique(nextVertex);
+                end
+                actualPairTotalVertices(nextPairId, :) = [];
             end
             
-            verticesRadius = verticesRadius(newOrderOfVertices, :)';
-            {numRadius, numCell, [verticesRadius{:}]};
+            verticesRadius = dataVertID(ismember([dataVertID{:, 2}], newOrderOfVertices), 3:5)';
+            samiraTable(end+1, :) = {numRadius, numCell, [verticesRadius{:}]};
         end
     end
     
@@ -243,7 +246,7 @@ function [] = calculateVerticesConnectionHexagons()
     %writetable(vertices3dTable,[rootPath dir2save 'tableVerticesCoordinates3D_' outputKind '_' date '.xls'])
     %writetable(pairOfVerticesTable,[rootPath dir2save 'tableConnectionsOfVertices3D_' outputKind '_' date '.xls'])
     %writetable(tipCellsAndItsVerticesTable,[rootPath dir2save 'tipCells_' outputKind '_' date '.xls'])
-    
+    samiraTable
     
     
 end
