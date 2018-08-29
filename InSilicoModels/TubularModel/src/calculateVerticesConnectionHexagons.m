@@ -208,9 +208,22 @@ function [] = calculateVerticesConnectionHexagons()
             
             actualPairTotalVertices = pairTotalVertices(all(ismember(pairTotalVertices, verticesOfCellWithActualRadius), 2), :);
             
-            newOrderOfVertices = actualPairTotalVertices(1, :);
-            actualPairTotalVertices(1, :) = [];
-            verticesOfCellWithActualRadius(ismember(verticesOfCellWithActualRadius, newOrderOfVertices)) = [];
+            % Should be connected clockwise
+            % I.e. from bigger numbers to smaller ones
+            % Or the second vertex should in the left hand of the first
+            
+            newOrderOfVertices = actualPairTotalVertices(1);
+            possibleNextVerticesIDs = actualPairTotalVertices(any(ismember(actualPairTotalVertices, newOrderOfVertices), 2), :);
+            possibleNextVerticesIDs = unique(possibleNextVerticesIDs);
+            possibleNextVerticesIDs(newOrderOfVertices == possibleNextVerticesIDs) = [];
+            
+            possibleNextVertices = dataVertID(ismember([dataVertID{:, 2}], possibleNextVerticesIDs), 3:4);
+            
+            [~, nextVertex] = pdist2(cell2mat(possibleNextVertices), [1, 1], 'euclidean', 'Largest', 1);
+            
+            newOrderOfVertices(end+1) = possibleNextVerticesIDs(nextVertex);
+            
+            actualPairTotalVertices(all(ismember(actualPairTotalVertices, newOrderOfVertices), 2), :) = [];
             
             while ~empty(actualPairTotalVertices)
                 nextPairId = any(ismember(actualPairTotalVertices, newOrderOfVertices(end)), 2);
@@ -218,7 +231,7 @@ function [] = calculateVerticesConnectionHexagons()
                 nextVertex = nextPair(ismember(nextPair, newOrderOfVertices) == 0);
                 
                 newOrderOfVertices(end+1) = nextVertex;
-                verticesOfCellWithActualRadius
+                actualPairTotalVertices(nextPair, :) = [];
             end
             
             verticesRadius = verticesRadius(newOrderOfVertices, :)';
