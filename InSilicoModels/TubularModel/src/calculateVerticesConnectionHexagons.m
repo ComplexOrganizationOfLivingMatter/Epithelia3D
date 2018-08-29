@@ -190,9 +190,30 @@ function [] = calculateVerticesConnectionHexagons()
 
     tipCellsAndItsVerticesTable = cell2table(tipCellsAndItsVertices,'VariableNames',{'cellIDs','verticesIDs'});
     
-    writetable(cellVerticesTable,[rootPath dir2save 'cellsWithVerticesIDs_' outputKind '_' date '.xls'])
-    writetable(vertices3dTable,[rootPath dir2save 'tableVerticesCoordinates3D_' outputKind '_' date '.xls'])
-    writetable(pairOfVerticesTable,[rootPath dir2save 'tableConnectionsOfVertices3D_' outputKind '_' date '.xls'])
-    writetable(tipCellsAndItsVerticesTable,[rootPath dir2save 'tipCells_' outputKind '_' date '.xls'])
+    %Export as Samira requested:
+    % - .xls file
+    % Each line would be like:
+    % - Radius. Cell ID. Vertex1 (x, y). Vertex2 (x,y)...
+    disp('Exporting');
+    apicalRadius = min(radiusCyl);
+    basalRadius = max(radiusCyl);
+    for numRadius = [apicalRadius, basalRadius]
+        verticesWithActualRadius = dataVertID([dataVertID{:, 1}] == numRadius, :);
+        actualVerticesIds = [verticesWithActualRadius{:, 2}];
+        
+        for numCell = 1:size(cellsVerts, 1)
+            
+            
+            {numRadius, numCell, verticesOfRadius};
+        end
+    end
+    
+    %writetable(cellVerticesTable,[rootPath dir2save 'cellsWithVerticesIDs_' outputKind '_' date '.xls'])
+    %writetable(vertices3dTable,[rootPath dir2save 'tableVerticesCoordinates3D_' outputKind '_' date '.xls'])
+    %writetable(pairOfVerticesTable,[rootPath dir2save 'tableConnectionsOfVertices3D_' outputKind '_' date '.xls'])
+    %writetable(tipCellsAndItsVerticesTable,[rootPath dir2save 'tipCells_' outputKind '_' date '.xls'])
+    
+    
+    
 end
 
