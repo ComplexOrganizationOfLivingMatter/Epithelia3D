@@ -213,29 +213,8 @@ function [] = calculateVerticesConnectionHexagons()
             % I.e. from bigger numbers to smaller ones
             % Or the second vertex should in the left hand of the first
             
-            newOrderOfVertices = actualPairTotalVertices(1);
-            possibleNextVerticesIDs = actualPairTotalVertices(any(ismember(actualPairTotalVertices, newOrderOfVertices), 2), :);
-            possibleNextVerticesIDs = unique(possibleNextVerticesIDs);
-            possibleNextVerticesIDs(newOrderOfVertices == possibleNextVerticesIDs) = [];
-            
-            possibleNextVertices = dataVertID(ismember([dataVertID{:, 2}], possibleNextVerticesIDs), 3:4);
-            
-            [~, nextVertex] = pdist2(cell2mat(possibleNextVertices), [1, 1], 'euclidean', 'Largest', 1);
-            
-            newOrderOfVertices(end+1) = possibleNextVerticesIDs(nextVertex);
-            
-            actualPairTotalVertices(all(ismember(actualPairTotalVertices, newOrderOfVertices), 2), :) = [];
-            
-            while ~isempty(actualPairTotalVertices)
-                nextPairId = any(ismember(actualPairTotalVertices, newOrderOfVertices(end)), 2);
-                nextPair = actualPairTotalVertices(nextPairId, :);
-                nextVertex = nextPair(ismember(nextPair, newOrderOfVertices) == 0);
-                nextVertex
-                if isempty(nextVertex) == 0
-                    newOrderOfVertices(end+1) = unique(nextVertex);
-                end
-                actualPairTotalVertices(nextPairId, :) = [];
-            end
+            % \TODO refactor to use this function:
+            [newOrderX, newOrderY] = poly2cw(verticesOfCell(:, 1), verticesOfCell(:, 2));
             
             verticesRadius = dataVertID(ismember([dataVertID{:, 2}], newOrderOfVertices), 3:5)';
             samiraTable(end+1, :) = {numRadius, numCell, [verticesRadius{:}]};
