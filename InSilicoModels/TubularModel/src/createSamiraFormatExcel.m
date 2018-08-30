@@ -60,12 +60,12 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
             [newOrderX, newOrderY] = poly2cw(verticesOfCell(orderBoundary(1:end-1), 1), verticesOfCell(orderBoundary(1:end-1), 2));
             
             verticesRadius = [];
-            figure;
-            previousVertex = [newOrderX(end), newOrderY(end)];
+            %figure;
+            %previousVertex = [newOrderX(end), newOrderY(end)];
             for numVertex = 1:length(newOrderX)
-                plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)]);
-                hold on;
-                previousVertex = [newOrderX(numVertex), newOrderY(numVertex)];
+                %plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)]);
+                %hold on;
+                %previousVertex = [newOrderX(numVertex), newOrderY(numVertex)];
                 verticesRadius(end+1) = newOrderX(numVertex);
                 verticesRadius(end+1) = newOrderY(numVertex);
             end
