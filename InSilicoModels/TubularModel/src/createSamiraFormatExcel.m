@@ -35,7 +35,8 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
                    matDistance = pdist(verticesOfCell);
                    matDistance = squareform(matDistance);
                    [~, closestVertex] = sort(matDistance(missingVertices, :));
-                   closestVertex = closestVertex(2);
+                   closestVertex(closestVertex == missingVertices) = [];
+                   closestVertex = closestVertex(1);
                    closestVertexPosition = find(orderBoundary == closestVertex);
                    possiblePartner = [orderBoundary(closestVertexPosition(end) - 1), orderBoundary(closestVertexPosition(1) + 1)];
                    distanceToPossiblePartner1 = matDistance(missingVertices, possiblePartner(1)) - matDistance(closestVertex, possiblePartner(1));
@@ -47,18 +48,17 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
                        newLocation = closestVertexPosition(1) + 1;
                    end
                    
-                   orderBoundary = [orderBoudary(1:newLocation), missingVertices, orderBoudary(newLocation+1:end)];
+                   if distanceToPossiblePartner1 ~= distanceToPossiblePartner2
+                       orderBoundary = [orderBoundary(1:newLocation); missingVertices; orderBoundary(newLocation+1:end)];
+                   end
                end
-%                
-            else
-                % Should be connected clockwise
-                % I.e. from bigger numbers to smaller ones
-                % Or the second vertex should in the left hand of the first
-                [newOrderX, newOrderY] = poly2cw(verticesOfCell(orderBoundary(1:end-1), 1), verticesOfCell(orderBoundary(1:end-1), 2));
             end
             
+            % Should be connected clockwise
+            % I.e. from bigger numbers to smaller ones
+            % Or the second vertex should in the left hand of the first
+            [newOrderX, newOrderY] = poly2cw(verticesOfCell(orderBoundary(1:end-1), 1), verticesOfCell(orderBoundary(1:end-1), 2));
             
-
             verticesRadius = [];
             figure;
             previousVertex = [newOrderX(end), newOrderY(end)];
