@@ -13,49 +13,39 @@ function [] = createSamiraFormatExcel(pathFile, surfaceRatios)
         [neighbours, ~] = calculateNeighbours(L_img);
         [ verticesInfo ] = calculateVertices( L_img, neighbours);
         
+        maxCells = max(verticesInfo.verticesConnectCells(:));
         
-        
-        
-        
-        
-        verticesWithActualRadius = dataVertID([dataVertID{:, 1}] == nSurfR, :);
-        actualVerticesIds = [verticesWithActualRadius{:, 2}];
-        
-        for numCell = 1:size(cellsVerts, 1)
-            verticesOfCell = cellsVerts{numCell, 2};
-            verticesOfCellWithActualRadius = verticesOfCell(ismember(verticesOfCell, actualVerticesIds));
+        %Create pairs of vertices
+        pairTotalVertices = [];
+        for numVertex = 1:size(verticesInfo.verticesConnectCells, 1)
+            actualCellsOfVertex = verticesInfo.verticesConnectCells(numVertex, :);
+            newConnections = find(sum(ismember(verticesInfo.verticesConnectCells, actualCellsOfVertex), 2) > 1);
             
-            actualPairTotalVertices = pairTotalVertices(all(ismember(pairTotalVertices, verticesOfCellWithActualRadius), 2), :);
+            newConnections(newConnections==numVertex) = [];
+            newPairs = [repmat(numVertex, length(newConnections), 1), newConnections];
+            newPairs = sort(newPairs, 2);
+            pairTotalVertices = [pairTotalVertices; newPairs];
+        end
+        
+        %Perform unique
+        pairTotalVertices = unique(pairTotalVertices, 'rows');
+        
+        %Maybe only valid cells?
+        for numCell = 1:maxCells
+            numCell = 54;
+            verticesOfCellIDs = find(any(ismember(verticesInfo.verticesConnectCells, numCell), 2));
+            
+            actualPairTotalVertices = pairTotalVertices(all(ismember(pairTotalVertices, verticesOfCellIDs), 2), :);
+            
+            verticesOfCell = verticesInfo.verticesPerCell(verticesOfCellIDs);
+            verticesOfCell = cell2mat(verticesOfCell);
             
             % Should be connected clockwise
             % I.e. from bigger numbers to smaller ones
             % Or the second vertex should in the left hand of the first
             
-            newOrderOfVertices = actualPairTotalVertices(1);
-            possibleNextVerticesIDs = actualPairTotalVertices(any(ismember(actualPairTotalVertices, newOrderOfVertices), 2), :);
-            possibleNextVerticesIDs = unique(possibleNextVerticesIDs);
-            possibleNextVerticesIDs(newOrderOfVertices == possibleNextVerticesIDs) = [];
-            
-            possibleNextVertices = dataVertID(ismember([dataVertID{:, 2}], possibleNextVerticesIDs), 3:4);
-            
-            [~, nextVertex] = pdist2(cell2mat(possibleNextVertices), [1, 1], 'euclidean', 'Largest', 1);
-            
-            newOrderOfVertices(end+1) = possibleNextVerticesIDs(nextVertex);
-            
-            actualPairTotalVertices(all(ismember(actualPairTotalVertices, newOrderOfVertices), 2), :) = [];
-            
-            while ~isempty(actualPairTotalVertices)
-                nextPairId = any(ismember(actualPairTotalVertices, newOrderOfVertices(end)), 2);
-                nextPair = actualPairTotalVertices(nextPairId, :);
-                nextVertex = nextPair(ismember(nextPair, newOrderOfVertices) == 0);
-                nextVertex
-                if isempty(nextVertex) == 0
-                    newOrderOfVertices(end+1) = unique(nextVertex);
-                end
-                actualPairTotalVertices(nextPairId, :) = [];
-            end
-            
-            verticesRadius = dataVertID(ismember([dataVertID{:, 2}], newOrderOfVertices), 3:5)';
+            [newOrderX, newOrderY] = poly2cw(verticesOfCell(:, 1), verticesOfCell(:, 2));
+  
             samiraTable(end+1, :) = {nSurfR, numCell, [verticesRadius{:}]};
         end
     end
