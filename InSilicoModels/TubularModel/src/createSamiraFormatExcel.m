@@ -1,4 +1,4 @@
-function [] = createSamiraFormatExcel(pathFile, surfaceRatios)
+function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
 %CREATESAMIRAFORMATEXCEL Summary of this function goes here
 %   Detailed explanation goes here
     addpath(genpath('lib'))
@@ -7,7 +7,6 @@ function [] = createSamiraFormatExcel(pathFile, surfaceRatios)
 
     samiraTable = {};
     for nSurfR = [1, surfaceRatios]
-        
         L_img = listLOriginalProjection.L_originalProjection{round(listLOriginalProjection.surfaceRatio,3)==round(nSurfR,3)};
         
         [neighbours, ~] = calculateNeighbours(L_img);
@@ -15,39 +14,41 @@ function [] = createSamiraFormatExcel(pathFile, surfaceRatios)
         
         maxCells = max(verticesInfo.verticesConnectCells(:));
         
-        %Create pairs of vertices
-        pairTotalVertices = [];
-        for numVertex = 1:size(verticesInfo.verticesConnectCells, 1)
-            actualCellsOfVertex = verticesInfo.verticesConnectCells(numVertex, :);
-            newConnections = find(sum(ismember(verticesInfo.verticesConnectCells, actualCellsOfVertex), 2) > 1);
-            
-            newConnections(newConnections==numVertex) = [];
-            newPairs = [repmat(numVertex, length(newConnections), 1), newConnections];
-            newPairs = sort(newPairs, 2);
-            pairTotalVertices = [pairTotalVertices; newPairs];
-        end
+        noValidCells = unique([L_img(:, 1)', L_img(1, :), L_img(:, end)', L_img(end, :)]);
         
-        %Perform unique
-        pairTotalVertices = unique(pairTotalVertices, 'rows');
+        validCells = setdiff(1:maxCells, noValidCells);
         
         %Maybe only valid cells?
-        for numCell = 1:maxCells
-            numCell = 54;
-            verticesOfCellIDs = find(any(ismember(verticesInfo.verticesConnectCells, numCell), 2));
-            
-            actualPairTotalVertices = pairTotalVertices(all(ismember(pairTotalVertices, verticesOfCellIDs), 2), :);
-            
+        samiraTable = {};
+        for numCell = validCells%1:maxCells
+            verticesOfCellIDs = any(ismember(verticesInfo.verticesConnectCells, numCell), 2);
             verticesOfCell = verticesInfo.verticesPerCell(verticesOfCellIDs);
             verticesOfCell = cell2mat(verticesOfCell);
+            
+            orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.2);
+            
+            if length(orderBoundary)-1 ~= size(verticesOfCell, 1)
+               disp(strcat('Warning: cell number', num2str(numCell), ' may be wrongly done'));
+            end
             
             % Should be connected clockwise
             % I.e. from bigger numbers to smaller ones
             % Or the second vertex should in the left hand of the first
-            
-            [newOrderX, newOrderY] = poly2cw(verticesOfCell(:, 1), verticesOfCell(:, 2));
-  
-            samiraTable(end+1, :) = {nSurfR, numCell, [verticesRadius{:}]};
+            [newOrderX, newOrderY] = poly2cw(verticesOfCell(orderBoundary(1:end-1), 1), verticesOfCell(orderBoundary(1:end-1), 2));
+
+            verticesRadius = [];
+            %figure;
+            %previousVertex = [newOrderX(end), newOrderY(end)];
+            for numVertex = 1:length(newOrderX)
+                %plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)]);
+                %hold on;
+                %previousVertex = [newOrderX(numVertex), newOrderY(numVertex)];
+                verticesRadius(end+1) = newOrderX(numVertex);
+                verticesRadius(end+1) = newOrderY(numVertex);
+            end
+            samiraTable = [samiraTable; nSurfR, numCell, verticesRadius];
         end
     end
+    samiraTableT = cell2table(samiraTable, 'VariableNames',{'Radius', 'CellIDs', 'verticesValues(x,y)'});
 end
 
