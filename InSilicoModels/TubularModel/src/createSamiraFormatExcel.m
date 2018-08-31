@@ -85,10 +85,10 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
                 verticesRadius(end+1) = newOrderX(numVertex);
                 verticesRadius(end+1) = newOrderY(numVertex);
             end
-            samiraTable = [samiraTable; nSurfR, cellWithVertices{numCell, 3}, {verticesRadius}];
+            samiraTable = [samiraTable; nSurfR, cellWithVertices{numCell, 3:5}, {verticesRadius}];
         end
     end
-    samiraTableT = cell2table(samiraTable, 'VariableNames',{'Radius', 'CellIDs', 'verticesValues_x_y'});
+    samiraTableT = cell2table(samiraTable, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
     typeOfSimulation = 'voronoi';
     nameSplitted = strsplit(nameOfSimulation, '_');
     writetable(samiraTableT, strcat(strjoin(pathSplitted(1:end-2), '\'), '\', typeOfSimulation, '_realization', nameSplitted{2} ,'_samirasFormat_', date, '.xls'));
