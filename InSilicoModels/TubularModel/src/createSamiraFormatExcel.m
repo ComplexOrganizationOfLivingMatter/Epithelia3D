@@ -1,4 +1,4 @@
-function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
+function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios, typeOfSimulation)
 %CREATESAMIRAFORMATEXCEL Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -8,7 +8,8 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
     pathSplitted = strsplit(pathFile, '\');
     nameOfSimulation = pathSplitted{end-1};
     load(strcat(pathFile, nameOfSimulation,'.mat'), 'listLOriginalProjection');
-
+    
+    nameSplitted = strsplit(nameOfSimulation, '_');
     samiraTable = {};
     for nSurfR = [1, surfaceRatios]
         L_img = listLOriginalProjection.L_originalProjection{round(listLOriginalProjection.surfaceRatio,3)==round(nSurfR,3)};
@@ -24,15 +25,10 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
 %         noValidCells = unique([L_img(:, 1)', L_img(1, :), L_img(:, end)', L_img(end, :)]);
 %         
 %         validCells = setdiff(1:maxCells, noValidCells);
-        figure;
-        faceColours = [0 0 0; 1 1 1; 1 0.5 0; 1 1 0];
+        figure('Visible', 'off', 'units','normalized','outerposition',[0 0 1 1]);
+        faceColours = [1 1 1; 1 1 0; 1 0.5 0];
         edgeColours = [0 0 1; 0 1 0];
-        for numCell = 1:size(cellWithVertices, 1)
-            faceColour(numCell) = cellWithVertices{numCell, 5};
-            
-        end
         
-        imshow(L_img, faceColours);
         
         for numCell = 1:size(cellWithVertices, 1)
 %             if ismember(numCell, validCells)
@@ -84,24 +80,29 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
             % Or the second vertex should in the left hand of the first
             [newOrderX, newOrderY] = poly2cw(verticesOfCell(orderBoundary(1:end-1), 1), verticesOfCell(orderBoundary(1:end-1), 2));
             
-
+            faceColour = faceColours(cellWithVertices{numCell, 5}+1, :); 
+            patch(newOrderX, newOrderY, faceColour);
+            hold on;
+            
+            text(mean(newOrderX) - 20, mean(newOrderY), num2str(cellWithVertices{numCell, 3}));
             
             verticesRadius = [];
-%             figure;
             previousVertex = [newOrderX(end), newOrderY(end)];
+            
+            edgeColour = edgeColours(cellWithVertices{numCell, 4}+1, :);
             for numVertex = 1:length(newOrderX)
-                plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)], 'Color', edgeColours);
-                hold on;
+                plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)], 'Color', edgeColour, 'LineWidth', 3);
                 previousVertex = [newOrderX(numVertex), newOrderY(numVertex)];
                 verticesRadius(end+1) = newOrderX(numVertex);
                 verticesRadius(end+1) = newOrderY(numVertex);
             end
+            
             samiraTable = [samiraTable; nSurfR, cellWithVertices{numCell, 3:5}, {verticesRadius}];
         end
+        print(strcat(strjoin(pathSplitted(1:end-2), '\'), '\plot_', typeOfSimulation, '_realization', nameSplitted{2} , '_', date, '.png'), '-dpng', '-r300');
     end
     samiraTableT = cell2table(samiraTable, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
-    typeOfSimulation = 'voronoi';
-    nameSplitted = strsplit(nameOfSimulation, '_');
+    
     writetable(samiraTableT, strcat(strjoin(pathSplitted(1:end-2), '\'), '\', typeOfSimulation, '_realization', nameSplitted{2} ,'_samirasFormat_', date, '.xls'));
 end
 
