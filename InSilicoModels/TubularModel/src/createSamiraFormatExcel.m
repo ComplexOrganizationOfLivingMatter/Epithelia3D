@@ -1,9 +1,13 @@
 function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
 %CREATESAMIRAFORMATEXCEL Summary of this function goes here
 %   Detailed explanation goes here
+%
+%   Example: createSamiraFormatExcel('..\data\tubularVoronoiModel\expansion\2048x4096_200seeds\Image_2_Diagram_5\', 1.6667)
     addpath(genpath('lib'))
 
-    load(strcat(pathFile, 'Image_1_Diagram_5.mat'), 'listLOriginalProjection');
+    pathSplitted = strsplit(pathFile, '\');
+    nameOfSimulation = pathSplitted{end-1};
+    load(strcat(pathFile, nameOfSimulation,'.mat'), 'listLOriginalProjection');
 
     samiraTable = {};
     for nSurfR = [1, surfaceRatios]
@@ -11,23 +15,31 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
         
         [neighbours, ~] = calculateNeighbours(L_img);
         [ verticesInfo ] = calculateVertices( L_img, neighbours);
+        [ verticesNoValidCellsInfo ] = getVerticesBorderNoValidCells( L_img );
         
-        maxCells = max(verticesInfo.verticesConnectCells(:));
+        cellWithVertices = groupingVerticesPerCellSurface(L_img, verticesInfo, verticesNoValidCellsInfo, [], 1);          
         
-        noValidCells = unique([L_img(:, 1)', L_img(1, :), L_img(:, end)', L_img(end, :)]);
+        maxCells = max(L_img(:));
         
-        validCells = setdiff(1:maxCells, noValidCells);
+%         noValidCells = unique([L_img(:, 1)', L_img(1, :), L_img(:, end)', L_img(end, :)]);
+%         
+%         validCells = setdiff(1:maxCells, noValidCells);
         
-        %Maybe only valid cells?
-        samiraTable = {};
-        for numCell = validCells%1:maxCells
-            verticesOfCellIDs = any(ismember(verticesInfo.verticesConnectCells, numCell), 2);
-            verticesOfCell = verticesInfo.verticesPerCell(verticesOfCellIDs);
-            verticesOfCell = cell2mat(verticesOfCell);
+        for numCell = 1:size(cellWithVertices, 1)
+%             if ismember(numCell, validCells)
+%                 verticesOfCellIDs = any(ismember(verticesInfo.verticesConnectCells, numCell), 2);
+%                 verticesOfCell = verticesInfo.verticesPerCell(verticesOfCellIDs);
+%             else
+%                 verticesOfCellIDs = any(ismember(verticesNoValidCellsInfo.verticesConnectCells, numCell), 2);
+%                 verticesOfCell = verticesNoValidCellsInfo.verticesPerCell(verticesOfCellIDs);
+%             end
+%             verticesOfCell = cell2mat(verticesOfCell);
+            
+            verticesOfCell = cellWithVertices{numCell, end};
             
             orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1);
             
-            if length(orderBoundary)-1 ~= size(verticesOfCell, 1)
+            if length(orderBoundary)-1 ~= size(verticesOfCell, 1) && ismember(numCell, validCells)
                disp(strcat('Warning: cell number', num2str(numCell), ' may be wrongly done'));
                disp('Correcting...')
                missingVertices = setdiff(1:size(verticesOfCell, 1), orderBoundary);
@@ -60,18 +72,21 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
             [newOrderX, newOrderY] = poly2cw(verticesOfCell(orderBoundary(1:end-1), 1), verticesOfCell(orderBoundary(1:end-1), 2));
             
             verticesRadius = [];
-            %figure;
-            %previousVertex = [newOrderX(end), newOrderY(end)];
+            figure;
+            previousVertex = [newOrderX(end), newOrderY(end)];
             for numVertex = 1:length(newOrderX)
-                %plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)]);
-                %hold on;
-                %previousVertex = [newOrderX(numVertex), newOrderY(numVertex)];
+                plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)]);
+                hold on;
+                previousVertex = [newOrderX(numVertex), newOrderY(numVertex)];
                 verticesRadius(end+1) = newOrderX(numVertex);
                 verticesRadius(end+1) = newOrderY(numVertex);
             end
-            samiraTable = [samiraTable; nSurfR, numCell, verticesRadius];
+            samiraTable = [samiraTable; nSurfR, cellWithVertices{numCell, 3}, {verticesRadius}];
         end
     end
-    samiraTableT = cell2table(samiraTable, 'VariableNames',{'Radius', 'CellIDs', 'verticesValues(x,y)'});
+    samiraTableT = cell2table(samiraTable, 'VariableNames',{'Radius', 'CellIDs', 'verticesValues_x_y'});
+    typeOfSimulation = 'voronoi';
+    nameSplitted = strsplit(nameOfSimulation, '_');
+    writetable(samiraTableT, strcat(strjoin(pathSplitted(1:end-2), '\'), '\', typeOfSimulation, '_realization', nameSplitted{2} ,'_samirasFormat_', date, '.xls'));
 end
 
