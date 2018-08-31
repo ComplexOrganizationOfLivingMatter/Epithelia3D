@@ -24,6 +24,15 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
 %         noValidCells = unique([L_img(:, 1)', L_img(1, :), L_img(:, end)', L_img(end, :)]);
 %         
 %         validCells = setdiff(1:maxCells, noValidCells);
+        figure;
+        faceColours = [0 0 0; 1 1 1; 1 0.5 0; 1 1 0];
+        edgeColours = [0 0 1; 0 1 0];
+        for numCell = 1:size(cellWithVertices, 1)
+            faceColour(numCell) = cellWithVertices{numCell, 5};
+            
+        end
+        
+        imshow(L_img, faceColours);
         
         for numCell = 1:size(cellWithVertices, 1)
 %             if ismember(numCell, validCells)
@@ -75,13 +84,15 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
             % Or the second vertex should in the left hand of the first
             [newOrderX, newOrderY] = poly2cw(verticesOfCell(orderBoundary(1:end-1), 1), verticesOfCell(orderBoundary(1:end-1), 2));
             
+
+            
             verticesRadius = [];
 %             figure;
-%             previousVertex = [newOrderX(end), newOrderY(end)];
+            previousVertex = [newOrderX(end), newOrderY(end)];
             for numVertex = 1:length(newOrderX)
-%                 plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)]);
-%                 hold on;
-%                 previousVertex = [newOrderX(numVertex), newOrderY(numVertex)];
+                plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)], 'Color', edgeColours);
+                hold on;
+                previousVertex = [newOrderX(numVertex), newOrderY(numVertex)];
                 verticesRadius(end+1) = newOrderX(numVertex);
                 verticesRadius(end+1) = newOrderY(numVertex);
             end
