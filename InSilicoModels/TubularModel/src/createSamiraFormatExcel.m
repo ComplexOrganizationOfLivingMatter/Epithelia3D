@@ -35,11 +35,15 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
 %             end
 %             verticesOfCell = cell2mat(verticesOfCell);
             
-            verticesOfCell = cellWithVertices{numCell, end};
+            verticesOfCellInit = cellWithVertices{numCell, end};
+            numberOfVertices = (size(verticesOfCellInit, 2)/2);
+            verticesOfCell = [];
+            verticesOfCell(1:numberOfVertices, 1) = verticesOfCellInit(1:2:end);
+            verticesOfCell(1:numberOfVertices, 2) = verticesOfCellInit(2:2:end);
             
             orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1);
             
-            if length(orderBoundary)-1 ~= size(verticesOfCell, 1) && ismember(numCell, validCells)
+            if length(orderBoundary)-1 ~= size(verticesOfCell, 1)
                disp(strcat('Warning: cell number', num2str(numCell), ' may be wrongly done'));
                disp('Correcting...')
                missingVertices = setdiff(1:size(verticesOfCell, 1), orderBoundary);
@@ -72,12 +76,12 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios)
             [newOrderX, newOrderY] = poly2cw(verticesOfCell(orderBoundary(1:end-1), 1), verticesOfCell(orderBoundary(1:end-1), 2));
             
             verticesRadius = [];
-            figure;
-            previousVertex = [newOrderX(end), newOrderY(end)];
+%             figure;
+%             previousVertex = [newOrderX(end), newOrderY(end)];
             for numVertex = 1:length(newOrderX)
-                plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)]);
-                hold on;
-                previousVertex = [newOrderX(numVertex), newOrderY(numVertex)];
+%                 plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)]);
+%                 hold on;
+%                 previousVertex = [newOrderX(numVertex), newOrderY(numVertex)];
                 verticesRadius(end+1) = newOrderX(numVertex);
                 verticesRadius(end+1) = newOrderY(numVertex);
             end
