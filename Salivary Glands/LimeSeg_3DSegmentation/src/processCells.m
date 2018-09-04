@@ -1,4 +1,4 @@
-function [labelledImage] = processCells(directoryOfCells)
+function [labelledImage, basalLayer] = processCells(directoryOfCells)
 %PROCESSCELLS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -21,6 +21,8 @@ function [labelledImage] = processCells(directoryOfCells)
 %         pcshow([x,y,z]);
 %         hold on;
     end
-    disp('done');
+    
+    
+    %% Get basal layer by dilating the empty space
 end
 
