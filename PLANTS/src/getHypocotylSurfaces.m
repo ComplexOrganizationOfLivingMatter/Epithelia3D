@@ -30,12 +30,23 @@ function [layer1,layer2,setOfCells,verticesInfoLayer1,verticesInfoLayer2] = getH
         
     disp('2 - layers captured')
     
-    %% Get filled surfaces
-    [imgLayer1,layer1.outerSurface,layer1.innerSurface,imgLayer2,layer2.outerSurface,layer2.innerSurface] = fillingLayersColHypocotyl(layer1,layer2,rangeY);
-
-    disp('3 - layers filled using watershed')
+    %% Get filled surfaces using the closest point to the wrapping
+   [wrapping1.outerSurface,wrapping1.innerSurface,wrapping2.outerSurface,wrapping2.innerSurface] = fillingLayersColHypocotyl(layer1,layer2,rangeY,['data\' sampleName '\']);
+    disp('3 - layers closest point')
     
-
+    %% Get neighbours of the wrapping
+    if exist(['data\' sampleName '\neighboursInfoClosestPoint.mat'],'file') 
+        load(['data\' sampleName '\neighboursInfoClosestPoint.mat'],'neighbourhoodInfoL1Outer','neighbourhoodInfoL1Inner','neighbourhoodInfoL2Outer','neighbourhoodInfoL2Inner')
+    else
+        [neighbourhoodInfoL1Outer] = calculate_neighbours3D_closestPoint(wrapping1.outerSurface);
+        [neighbourhoodInfoL1Inner] = calculate_neighbours3D_closestPoint(wrapping1.innerSurface);
+        [neighbourhoodInfoL2Outer] = calculate_neighbours3D_closestPoint(wrapping2.outerSurface);
+        [neighbourhoodInfoL2Inner] = calculate_neighbours3D_closestPoint(wrapping2.innerSurface);
+        save(['data\' sampleName '\neighboursInfoClosestPoint.mat'],'-v7.3','neighbourhoodInfoL1Outer','neighbourhoodInfoL1Inner','neighbourhoodInfoL2Outer','neighbourhoodInfoL2Inner')
+    end
+    
+    disp('4 - neighbours closest point')
+    
     %% Get vertices from surfaces
     if ~exist(['data\' sampleName '\verticesSurfaces.mat'],'file')
         verticesInfoLayer1.Outer=getVertices3D(layer1.outerSurface,setOfCells.Layer1,neighbourhoodInfo);
@@ -47,7 +58,20 @@ function [layer1,layer2,setOfCells,verticesInfoLayer1,verticesInfoLayer2] = getH
         load(['data\' sampleName '\verticesSurfaces.mat'],'verticesInfoLayer1','verticesInfoLayer2')
     end
         
-    disp('4 - vertices captured')
+    disp('5 - vertices captured')
+    
+    %% Get vertices from wrapping
+    if ~exist(['data\' sampleName '\verticesWrapping.mat'],'file')
+        verticesInfoWrapping1.Outer=getVertices3D(wrapping1.outerSurface,unique(wrapping1.outerSurface),neighbourhoodInfoL1Outer);
+        verticesInfoWrapping1.Inner=getVertices3D(wrapping1.innerSurface,unique(wrapping1.innerSurface),neighbourhoodInfoL1Inner);
+        verticesInfoWrapping2.Outer=getVertices3D(wrapping2.outerSurface,unique(wrapping2.outerSurface),neighbourhoodInfoL2Outer);
+        verticesInfoWrapping2.Inner=getVertices3D(wrapping2.innerSurface,unique(wrapping2.innerSurface),neighbourhoodInfoL2Inner);
+        save(['data\' sampleName '\verticesWrapping.mat'],'verticesInfoWrapping1','verticesInfoWrapping2')
+    else
+        load(['data\' sampleName '\verticesWrapping.mat'],'verticesInfoWrapping1','verticesInfoWrapping2')
+    end
+        
+    disp('6 - vertices captured in wrapping')
     
     %% Get center and axes length from hypocotyl
     if ~exist(['data\' sampleName '\certerAndRadiusPerZ.mat'],'file')
@@ -58,9 +82,9 @@ function [layer1,layer2,setOfCells,verticesInfoLayer1,verticesInfoLayer2] = getH
         save(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
     end
     
-    disp('4 - get centroids and infered cylinder axes')
+    disp('7 - get centroids and infered cylinder axes')
        
-    %% draw surfaces
-    draw3dSurfaces(setOfCells,layer1,layer2,sampleName)
-    disp('**surfaces drawn')
+%     %% draw surfaces
+%     draw3dSurfaces(setOfCells,layer1,layer2,sampleName)
+%     disp('**surfaces drawn')
 end

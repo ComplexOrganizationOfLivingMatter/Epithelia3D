@@ -1,7 +1,7 @@
 function [ verticesInfo ] = getVertices3D( L_img, setOfCells, neigbourhoodInfo )
     % With a labelled image as input, the objective is get all vertex for each
     % cell
-
+    setOfCells=setOfCells(setOfCells~=0);
     neighbours=neigbourhoodInfo.neighbourhood;
     indicesCells=ismember(1:length(neighbours),setOfCells);
     neighbours(~indicesCells)={nan};

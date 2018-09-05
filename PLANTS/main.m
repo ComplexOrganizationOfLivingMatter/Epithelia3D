@@ -4,7 +4,7 @@ names={'Hypocotyl A','Hypocotyl B','katanin meristem A',...
     'katanin meristem B','WT meristem A','WT meristem B','root A','root B'};
     
 addpath(genpath('src'))
-for nNam=2%length(names)
+for nNam=1%length(names)
     if contains(names{nNam},'Hypocot')
         rangeY=[700,1400];
         [layer1,layer2,setOfCells,verticesInfoLayer1,verticesInfoLayer2]=getHypocotylSurfaces(names{nNam},rangeY);      
