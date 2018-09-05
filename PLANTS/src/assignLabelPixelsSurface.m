@@ -21,7 +21,7 @@ function labelledSurface = assignLabelPixelsSurface (surfaceMask,imgLayer)
     labelledSurface(idMask)= imgLayer(idImgLayer(idMin));
 
     
-    [x,y,z] = ind2sub(size(labelledSurface),find(surfaceMask>0));%find(labelledSurface>0));
-    figure;
-    pcshow([x,y,z]);
+%     [x,y,z] = ind2sub(size(labelledSurface),find(surfaceMask>0));%find(labelledSurface>0));
+%     figure;
+%     pcshow([x,y,z]);
 end
