@@ -1,4 +1,4 @@
-function [labelledImage, basalLayer] = processCells(directoryOfCells)
+function [labelledImage, basalLayer] = processCells(directoryOfCells, resizeImg, numDepth)
 %PROCESSCELLS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,12 +6,13 @@ function [labelledImage, basalLayer] = processCells(directoryOfCells)
     
     labelledImage = zeros(1, 1, 1);
     figure;
-    numDepth = 3;
-    resizeImg = 0.25;
     for numCell = 1:size(cellFiles, 1)
         plyFile = fullfile(cellFiles(numCell).folder, cellFiles(numCell).name, 'T_1.ply');
         ptCloud = pcread(plyFile);
         pixelLocations = round(double(ptCloud.Location)*resizeImg);
+        % We added for the same x,y several zs, because we found that some
+        % of the zs were not completed (i.e. some zs of some cells were
+        % composed by only a few pixels).
         for numPixel = 1:size(pixelLocations, 1)
             zPixels = pixelLocations(numPixel, 3)-numDepth:1:pixelLocations(numPixel, 3)+numDepth;
             zPixels(zPixels < 1) = [];
@@ -41,6 +42,7 @@ function [labelledImage, basalLayer] = processCells(directoryOfCells)
     objectDilated = imdilate(labelledImage>0, se);
     objectDilated = imfill(objectDilated, 'holes');
     finalObject = imerode(objectDilated, se);
+    finalObject = bwareaopen(finalObject, 5);
     emptySpace = finalObject == 0;
     [x,y,z] = ind2sub(size(finalObject),find(finalObject>0));
     figure;
@@ -49,7 +51,9 @@ function [labelledImage, basalLayer] = processCells(directoryOfCells)
     se = strel('sphere',2);
     finalObjectEroded = imerode(finalObject, se);
     basalLayer = finalObject - finalObjectEroded;
-        [x,y,z] = ind2sub(size(basalLayer),find(basalLayer>0));
+    basalLayer(:, :, end) = finalObject(:, :, end);
+    basalLayer(:, :, 1) = finalObject(:, :, 1);
+    [x,y,z] = ind2sub(size(basalLayer),find(basalLayer>0));
     figure;
     pcshow([x,y,z]);
     basalLayer = labelledImage .* basalLayer;
