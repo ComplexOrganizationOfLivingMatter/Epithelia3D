@@ -1,4 +1,4 @@
-function [labelledImage, apicalLayer] = processLumen(lumenDir, labelledImage, resizeImg, numDepth)
+function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, labelledImage, resizeImg, numDepth)
 %PROCESSLUMEN Summary of this function goes here
 %   Detailed explanation goes here
     lumenFile = dir(fullfile(lumenDir, '**', '*.ply'));
@@ -6,10 +6,8 @@ function [labelledImage, apicalLayer] = processLumen(lumenDir, labelledImage, re
     %pcshow(lumenPC);
     pixelLocations = round(double(lumenPC.Location)*resizeImg);
     lumenImage = zeros(size(labelledImage));
-    for numPixel = 1:size(pixelLocations, 1)
-        [labelledImage] = addCellToImage(pixelLocations, labelledImage, 0);
-        [lumenImage] = addCellToImage(pixelLocations, lumenImage, 1);
-    end
+    [labelledImage] = addCellToImage(pixelLocations, labelledImage, 0);
+    [lumenImage] = addCellToImage(pixelLocations, lumenImage, 1);
     
     %% Get apical layer by dilating the lumen
     se = strel('sphere', 5);
