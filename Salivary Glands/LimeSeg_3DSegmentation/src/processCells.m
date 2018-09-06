@@ -18,6 +18,11 @@ function [labelledImage, basalLayer] = processCells(directoryOfCells, resizeImg,
 %         hold on;
     end
     
+    %Crop image 3D to minimal bounding box
+    props = regionprops3(labelledImage>0, 'BoundingBox');
+    bbox = props.BoundingBox;
+    labelledImage = labelledImage(floor(bbox(2)):size(labelledImage, 1), floor(bbox(1)):size(labelledImage, 2), :);
+    
 %     % Fill cells
 %     se = strel('sphere',8);
 %     for numCell = 1:size(cellFiles, 1)
