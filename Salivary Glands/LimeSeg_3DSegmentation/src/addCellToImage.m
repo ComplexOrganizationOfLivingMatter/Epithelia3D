@@ -10,7 +10,7 @@ function [labelledImage] = addCellToImage(pixelLocations, labelledImage, numCell
         labelledImage(pixelLocations(numPixel, 1), pixelLocations(numPixel, 2), pixelLocations(numPixel, 3)) = numCell;
     end
     cellShape = alphaShape(pixelLocations, 20);
-    [qx,qy,qz]=ind2sub(size(labelledImage),find(labelledImage == 0));
+    [qx,qy,qz]=ind2sub(size(labelledImage),find(labelledImage == numCell));
     tf = inShape(cellShape,qx,qy,qz);
 
     inCellIndices = sub2ind(size(labelledImage), qx(tf), qy(tf), qz(tf));
