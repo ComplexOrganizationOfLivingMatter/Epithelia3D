@@ -49,19 +49,23 @@ function [layer1,layer2,setOfCells,verticesInfoLayer1,verticesInfoLayer2] = getH
     
     %% Get vertices from surfaces
     if ~exist(['data\' sampleName '\verticesSurfaces.mat'],'file')
-        verticesInfoLayer1.Outer=getVertices3D(imresize3(layer1.outerSurface,resizeFactor),setOfCells.Layer1,neighbourhoodInfo);
+        verticesInfoLayer1.Outer=getVertices3D(layer1.outerSurface,setOfCells.Layer1,neighbourhoodInfo);
+        verticesInfoLayer1.Outer.verticesPerCell=round(verticesInfoLayer1.Outer.verticesPerCell*resizeFactor);
         verticesInfoLayer1.Outer.verticesPerCell(verticesInfoLayer1.Outer.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer1.Outer.verticesPerCell(:,2)>rangeY(2),:)=[];
         verticesInfoLayer1.Outer.verticesPerCell(:,2)=verticesInfoLayer1.Outer.verticesPerCell(:,2)-rangeY(1)+1;
         
-        verticesInfoLayer1.Inner=getVertices3D(imresize3(layer1.innerSurface,resizeFactor),setOfCells.Layer1,neighbourhoodInfo);
+        verticesInfoLayer1.Inner=getVertices3D(layer1.innerSurface,setOfCells.Layer1,neighbourhoodInfo);
+        verticesInfoLayer1.Inner.verticesPerCell=round(verticesInfoLayer1.Inner.verticesPerCell*resizeFactor);
         verticesInfoLayer1.Inner.verticesPerCell(verticesInfoLayer1.Inner.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer1.Inner.verticesPerCell(:,2)>rangeY(2),:)=[];
         verticesInfoLayer1.Inner.verticesPerCell(:,2)=verticesInfoLayer1.Inner.verticesPerCell(:,2)-rangeY(1)+1;
         
-        verticesInfoLayer2.Outer=getVertices3D(imresize3(layer2.outerSurface,resizeFactor),setOfCells.Layer2,neighbourhoodInfo);
+        verticesInfoLayer2.Outer=getVertices3D(layer2.outerSurface,setOfCells.Layer2,neighbourhoodInfo);
+        verticesInfoLayer2.Outer.verticesPerCell=round(verticesInfoLayer2.Outer.verticesPerCell*resizeFactor);
         verticesInfoLayer2.Outer.verticesPerCell(verticesInfoLayer2.Outer.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer2.Outer.verticesPerCell(:,2)>rangeY(2),:)=[];
         verticesInfoLayer2.Outer.verticesPerCell(:,2)=verticesInfoLayer2.Outer.verticesPerCell(:,2)-rangeY(1)+1;
        
-        verticesInfoLayer2.Inner=getVertices3D(imresize3(layer2.innerSurface,resizeFactor),setOfCells.Layer2,neighbourhoodInfo);
+        verticesInfoLayer2.Inner=getVertices3D(layer2.innerSurface,setOfCells.Layer2,neighbourhoodInfo);
+        verticesInfoLayer2.Inner.verticesPerCell=round(verticesInfoLayer2.Inner.verticesPerCell*resizeFactor);
         verticesInfoLayer2.Inner.verticesPerCell(verticesInfoLayer2.Inner.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer2.Inner.verticesPerCell(:,2)>rangeY(2),:)=[];
         verticesInfoLayer2.Inner.verticesPerCell(:,2)=verticesInfoLayer2.Inner.verticesPerCell(:,2)-rangeY(1)+1;
         
