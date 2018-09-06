@@ -39,7 +39,7 @@ function [ verticesInfo ] = getVertices3D( L_img, setOfCells, neigbourhoodInfo )
 
     indicesValid=cellfun(@(x) ~isempty(x),vertices);
     vertices=vertices(indicesValid,:);
-    verticesInfo.verticesPerCell = vertices;
+    verticesInfo.verticesPerCell = vertcat(vertices{:});
     verticesInfo.verticesConnectCells = neighboursVertices(indicesValid,:);
 
     %Correct false negative and positive

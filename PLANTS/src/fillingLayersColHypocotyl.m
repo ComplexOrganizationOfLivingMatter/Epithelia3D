@@ -1,19 +1,17 @@
-function [labelOuterSurface1,labelInnerSurface1,labelOuterSurface2,labelInnerSurface2] = fillingLayersColHypocotyl(layer1,layer2,rangeY,path2save)
+function [labelOuterSurface1,labelInnerSurface1,labelOuterSurface2,labelInnerSurface2] = fillingLayersColHypocotyl(layer1,layer2,rangeY,resizedFactor,path2save)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
     tipValueInn=24;
     
     tipValueOut=37;
 %     openValue=10;
-    resizedFactor=0.3;
    
     layOut1Resized=imresize3(layer1.outerSurface,resizedFactor);
     layInn1Resized=imresize3(layer1.innerSurface,resizedFactor);
     layOut2Resized=imresize3(layer2.outerSurface,resizedFactor);
     layInn2Resized=imresize3(layer2.innerSurface,resizedFactor);
 
-    rangeY=round(rangeY*resizedFactor);
-    
+   
     %% add zeros tips for possible 
     layOut1Resized=addTipsImg3D(tipValueOut,layOut1Resized);
     layInn1Resized=addTipsImg3D(tipValueInn,layInn1Resized);
