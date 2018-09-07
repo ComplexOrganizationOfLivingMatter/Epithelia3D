@@ -6,8 +6,8 @@ function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, label
     %pcshow(lumenPC);
     pixelLocations = round(double(lumenPC.Location)*resizeImg);
     lumenImage = zeros(size(labelledImage));
-    [labelledImage] = addCellToImage(pixelLocations, labelledImage, 0);
     [lumenImage] = addCellToImage(pixelLocations, lumenImage, 1);
+    labelledImage(lumenImage == 1) = 0;
     
     %% Get apical layer by dilating the lumen
     se = strel('sphere', 5);

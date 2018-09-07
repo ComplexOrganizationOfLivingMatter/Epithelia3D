@@ -38,7 +38,7 @@ function [labelledImage, basalLayer] = processCells(directoryOfCells, resizeImg,
     
     %% Get basal layer by dilating the empty space
     tipValue = 4;
-    labelledImage = addTipsImg3D(tipValue+1,labelledImage);
+    %labelledImage = addTipsImg3D(tipValue+1,labelledImage);
     se = strel('sphere',tipValue);
     objectDilated = imdilate(labelledImage>0, se);
     objectDilated = imfill(objectDilated, 'holes');
