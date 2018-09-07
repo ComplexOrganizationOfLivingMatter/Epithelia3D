@@ -9,7 +9,7 @@ function [] = exportAsImageSequence(labelledImage, outputDir)
     colours = colours(randperm(max(labelledImage(:))), :);
     colours = vertcat([1 1 1], colours);
     
-    figure; %'Visible', 'off', 
+    figure('Visible', 'off');
     for numZ = 1:size(labelledImage, 3)
         imshow(labelledImage(:, :, numZ), colours);
         set(gcf, 'units','normalized','outerposition',[0 0 1 1]);
