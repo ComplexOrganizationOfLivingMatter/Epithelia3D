@@ -72,7 +72,7 @@ setappdata(0,'imageSequence',imageSequence);
 % This sets up the initial plot - only do when we are invisible
 % so window can get raised using window.
 if strcmp(get(hObject,'Visible'),'off')
-    imshow(imageSequence{1});
+    showSelectedCell()
 end
 
 % UIWAIT makes window wait for user response (see UIRESUME)
@@ -94,6 +94,19 @@ function save_Callback(hObject, eventdata, handles)
 % hObject    handle to save (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+newCellRegion = getappdata(0, 'newCellRegion');
+selectCellId = getappdata(0, 'cellId');
+labelledImage = getappdata(0, 'labelledImage');
+selectedZ = getappdata(0, 'selectedZ');
+
+[x, y] = find(newCellRegion);
+
+newIndices = sub2ind(size(labelledImage), x, y, ones(length(x), 1)*selectedZ);
+
+labelledImage(newIndices) = selectCellId;
+
+setappdata(0, 'labelledImage', labelledImage);
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -116,26 +129,7 @@ function tbCellId_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of tbZFrame as text
 %        str2double(get(hObject,'String')) returns contents of tbZFrame as a double
 setappdata(0,'cellId',str2double(get(hObject,'String')));
-selectCellId = str2double(get(hObject,'String'));
-labelledImage = getappdata(0, 'labelledImage');
-selectedZ = getappdata(0, 'selectedZ');
-
-perimImg = bwperim(labelledImage(:, :,  selectedZ) == selectCellId)';
-%imshow(perimImg);
-imageSequence = getappdata(0, 'imageSequence');
-
-tipValue = 5;
-
-imgToShow = imageSequence{selectedZ};
-differenceOfSize = size(imgToShow) - size(perimImg) - tipValue;
-imgToShow = imgToShow(differenceOfSize(1)+1:size(imgToShow, 1), differenceOfSize(2)+1:size(imgToShow, 2), :);
-
-[xOld, yOld, zOld] = ind2sub(size(perimImg),find(perimImg == 1));
-newIndices = sub2ind(size(imgToShow), xOld, yOld, zOld);
-
-imgToShow(newIndices) = 65536;
-imshow(labelledImage(:, :,  selectedZ)');
-imshow(imgToShow);
+showSelectedCell();
 
 
 function tbZFrame_Callback(hObject, eventdata, handles)
@@ -145,9 +139,8 @@ function tbZFrame_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of tbZFrame as text
 %        str2double(get(hObject,'String')) returns contents of tbZFrame as a double
-imageSequence = getappdata(0, 'imageSequence');
 setappdata(0, 'selectedZ', str2double(get(hObject,'String')));
-imshow(imageSequence{str2double(get(hObject,'String'))});
+showSelectedCell();
 
 
 % --- Executes during object creation, after setting all properties.
@@ -169,3 +162,4 @@ function insertROI_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 newCellRegion = roipoly;
+setappdata(0,'newCellRegion', newCellRegion);
