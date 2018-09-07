@@ -22,7 +22,7 @@ function varargout = window(varargin)
 
 % Edit the above text to modify the response to help window
 
-% Last Modified by GUIDE v2.5 06-Sep-2018 16:20:32
+% Last Modified by GUIDE v2.5 06-Sep-2018 16:59:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -95,81 +95,6 @@ function save_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 
-% --------------------------------------------------------------------
-function FileMenu_Callback(hObject, eventdata, handles)
-% hObject    handle to FileMenu (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --------------------------------------------------------------------
-function OpenMenuItem_Callback(hObject, eventdata, handles)
-% hObject    handle to OpenMenuItem (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-file = uigetfile('*.fig');
-if ~isequal(file, 0)
-    open(file);
-end
-
-% --------------------------------------------------------------------
-function PrintMenuItem_Callback(hObject, eventdata, handles)
-% hObject    handle to PrintMenuItem (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-printdlg(handles.figure1)
-
-% --------------------------------------------------------------------
-function CloseMenuItem_Callback(hObject, eventdata, handles)
-% hObject    handle to CloseMenuItem (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-selection = questdlg(['Close ' get(handles.figure1,'Name') '?'],...
-                     ['Close ' get(handles.figure1,'Name') '...'],...
-                     'Yes','No','Yes');
-if strcmp(selection,'No')
-    return;
-end
-
-delete(handles.figure1)
-
-
-% --- Executes on selection change in popupmenu1.
-function popupmenu1_Callback(hObject, eventdata, handles)
-% hObject    handle to popupmenu1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = get(hObject,'String') returns popupmenu1 contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from popupmenu1
-
-
-% --- Executes during object creation, after setting all properties.
-function popupmenu1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to popupmenu1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: popupmenu controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-     set(hObject,'BackgroundColor','white');
-end
-
-set(hObject, 'String', {'plot(rand(5))', 'plot(sin(1:0.01:25))', 'bar(1:.5:10)', 'plot(membrane)', 'surf(peaks)'});
-
-
-
-function tbCellId_Callback(hObject, eventdata, handles)
-% hObject    handle to tbCellId (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of tbCellId as text
-%        str2double(get(hObject,'String')) returns contents of tbCellId as a double
-selectedCellId = str2double(get(hObject,'String'));
-
-
 % --- Executes during object creation, after setting all properties.
 function tbCellId_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to tbCellId (see GCBO)
@@ -182,6 +107,19 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
+function tbCellId_Callback(hObject, eventdata, handles)
+% hObject    handle to tbZFrame (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of tbZFrame as text
+%        str2double(get(hObject,'String')) returns contents of tbZFrame as a double
+setappdata(0,'cellId',str2double(get(hObject,'String')));
+selectedCellId = str2double(get(hObject,'String'));
+labelledImage = getappdata(0, 'labelledImage');
+selectedZ = getappdata(0, 'selectedZ');
+
+perimImg = bwperim(labelledImage(:, :,  selectedZ) == selectCellId)
 
 
 function tbZFrame_Callback(hObject, eventdata, handles)
@@ -191,8 +129,9 @@ function tbZFrame_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of tbZFrame as text
 %        str2double(get(hObject,'String')) returns contents of tbZFrame as a double
-setappdata(0,'selectedZ',str2double(get(hObject,'String')));
-
+imageSequence = getappdata(0, 'imageSequence');
+setappdata(0, 'selectedZ', str2double(get(hObject,'String')));
+imshow(imageSequence{str2double(get(hObject,'String'))});
 
 
 % --- Executes during object creation, after setting all properties.
@@ -217,20 +156,8 @@ newCellRegion = roipoly;
 
 
 
-% --- Executes on key press with focus on insertROI and none of its controls.
-function insertROI_KeyPressFcn(hObject, eventdata, handles)
-% hObject    handle to insertROI (see GCBO)
-% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.UICONTROL)
-%	Key: name of the key that was pressed, in lower case
-%	Character: character interpretation of the key(s) that was pressed
-%	Modifier: name(s) of the modifier key(s) (i.e., control, shift) pressed
-% handles    structure with handles and user data (see GUIDATA)
-
-
-% --- Executes on button press in updateZ.
-function updateZ_Callback(hObject, eventdata, handles)
-% hObject    handle to updateZ (see GCBO)
+% --- Executes on button press in updateCellId.
+function updateCellId_Callback(hObject, eventdata, handles)
+% hObject    handle to updateCellId (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-imageSequence = getappdata(0,'imageSequence');
-imshow(imageSequence{getappdata(0,'selectedZ')});
