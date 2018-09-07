@@ -63,7 +63,8 @@ imageSequence = {};
 
 for numImg = 3:size(imageSequenceFiles, 1)
     actualFile = imageSequenceFiles(numImg);
-    imageSequence(end+1) = {imresize3(imread(fullfile(actualFile.folder, actualFile.name)), resizeImg)};
+    actualImg = imread(fullfile(actualFile.folder, actualFile.name));
+    imageSequence(end+1) = {imresize3(actualImg, resizeImg)};
 end
 
 setappdata(0,'imageSequence',imageSequence);
@@ -115,11 +116,26 @@ function tbCellId_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of tbZFrame as text
 %        str2double(get(hObject,'String')) returns contents of tbZFrame as a double
 setappdata(0,'cellId',str2double(get(hObject,'String')));
-selectedCellId = str2double(get(hObject,'String'));
+selectCellId = str2double(get(hObject,'String'));
 labelledImage = getappdata(0, 'labelledImage');
 selectedZ = getappdata(0, 'selectedZ');
 
-perimImg = bwperim(labelledImage(:, :,  selectedZ) == selectCellId)
+perimImg = bwperim(labelledImage(:, :,  selectedZ) == selectCellId)';
+%imshow(perimImg);
+imageSequence = getappdata(0, 'imageSequence');
+
+tipValue = 5;
+
+imgToShow = imageSequence{selectedZ};
+differenceOfSize = size(imgToShow) - size(perimImg) - tipValue;
+imgToShow = imgToShow(differenceOfSize(1)+1:size(imgToShow, 1), differenceOfSize(2)+1:size(imgToShow, 2), :);
+
+[xOld, yOld, zOld] = ind2sub(size(perimImg),find(perimImg == 1));
+newIndices = sub2ind(size(imgToShow), xOld, yOld, zOld);
+
+imgToShow(newIndices) = 65536;
+imshow(labelledImage(:, :,  selectedZ)');
+imshow(imgToShow);
 
 
 function tbZFrame_Callback(hObject, eventdata, handles)
@@ -153,11 +169,3 @@ function insertROI_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 newCellRegion = roipoly;
-
-
-
-% --- Executes on button press in updateCellId.
-function updateCellId_Callback(hObject, eventdata, handles)
-% hObject    handle to updateCellId (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
