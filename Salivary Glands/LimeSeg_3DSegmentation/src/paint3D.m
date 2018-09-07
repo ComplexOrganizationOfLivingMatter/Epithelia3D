@@ -4,10 +4,10 @@ function [] = paint3D(labelledImage, showingCells)
 
     colours = colorcube(max(labelledImage(:)));
     colours = colours(randperm(max(labelledImage(:))), :);
-    if isempty(showingCells)
+    if exist('showingCells', 'var') == 0
         showingCells = 1:max(labelledImage(:));
     end
-    figure;
+    % figure;
     for numSeed = showingCells
         % Painting each cell
         [x,y,z] = ind2sub(size(labelledImage),find(labelledImage == numSeed));

@@ -1,4 +1,4 @@
-function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, labelledImage, resizeImg, numDepth)
+function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, labelledImage, resizeImg)
 %PROCESSLUMEN Summary of this function goes here
 %   Detailed explanation goes here
     lumenFile = dir(fullfile(lumenDir, '**', '*.ply'));

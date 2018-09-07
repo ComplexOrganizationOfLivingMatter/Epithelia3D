@@ -1,10 +1,10 @@
-function [labelledImage, basalLayer] = processCells(directoryOfCells, resizeImg, numDepth)
+function [labelledImage, basalLayer] = processCells(directoryOfCells, resizeImg, imgSize)
 %PROCESSCELLS Summary of this function goes here
 %   Detailed explanation goes here
 
     cellFiles = dir(fullfile(directoryOfCells, 'state', 'cell_*'));
     
-    labelledImage = zeros(1, 1, 1);
+    labelledImage = zeros(imgSize(1), imgSize(2), 1);
 
 %     figure;
     for numCell = 1:size(cellFiles, 1)
@@ -19,9 +19,9 @@ function [labelledImage, basalLayer] = processCells(directoryOfCells, resizeImg,
     end
     
     %Crop image 3D to minimal bounding box
-    props = regionprops3(labelledImage>0, 'BoundingBox');
-    bbox = props.BoundingBox;
-    labelledImage = labelledImage(floor(bbox(2)):size(labelledImage, 1), floor(bbox(1)):size(labelledImage, 2), :);
+    %props = regionprops3(labelledImage>0, 'BoundingBox');
+    %bbox = props.BoundingBox;
+    %labelledImage = labelledImage(floor(bbox(2)):size(labelledImage, 1), floor(bbox(1)):size(labelledImage, 2), :);
     
 %     % Fill cells
 %     se = strel('sphere',8);
@@ -44,16 +44,16 @@ function [labelledImage, basalLayer] = processCells(directoryOfCells, resizeImg,
     objectDilated = imfill(objectDilated, 'holes');
     finalObject = imerode(objectDilated, se);
     finalObject = bwareaopen(finalObject, 5);
-    [x,y,z] = ind2sub(size(finalObject),find(finalObject>0));
-    figure;
-    pcshow([x,y,z]);
+%     [x,y,z] = ind2sub(size(finalObject),find(finalObject>0));
+%     figure;
+%     pcshow([x,y,z]);
     
     se = strel('sphere',2);
     finalObjectEroded = imerode(finalObject, se);
     basalLayer = finalObject - finalObjectEroded;
     basalLayer(:, :, end) = finalObject(:, :, end);
     basalLayer(:, :, 1) = finalObject(:, :, 1);
-    [x,y,z] = ind2sub(size(basalLayer),find(basalLayer>0));
+%     [x,y,z] = ind2sub(size(basalLayer),find(basalLayer>0));
 %     figure;
 %     pcshow([x,y,z]);
     labelledImage = double(labelledImage);
