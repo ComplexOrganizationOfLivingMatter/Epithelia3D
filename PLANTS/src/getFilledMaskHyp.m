@@ -31,7 +31,7 @@ function [labelOuterFilledSurface,labelInnerFilledSurface] = getFilledMaskHyp(im
 
     imgLayerOuterLimited=imgLayerOuter(:,tipValueOut+rangeY(1):tipValueOut+rangeY(2),:);
     imgLayerInnerLimited=imgLayerInner(:,tipValueInn+rangeY(1):tipValueInn+rangeY(2),:);
-
+    
     labelOuterFilledSurface=assignLabelPixelsSurface(maskFillLayerOuter,imgLayerOuterLimited);
     labelInnerFilledSurface=assignLabelPixelsSurface(maskFillLayerInner,imgLayerInnerLimited);
 
