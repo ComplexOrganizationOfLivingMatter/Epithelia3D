@@ -22,7 +22,9 @@ function [] = exportAsImageSequence(labelledImage, outputDir)
                 text(centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(numCentroid), 'HorizontalAlignment', 'center');
             end
         end
-        print(fullfile(outputDir, strcat('labelledImage_', num2str(numZ), '.tif')), '-dtiff');
+        fig = gcf;
+        fig.InvertHardcopy = 'off';
+        saveas(gcf,fullfile(outputDir, strcat('labelledImage_', num2str(numZ), '.png')))
         %imwrite(labelledImage(:, :, numZ), , );
     end
 end

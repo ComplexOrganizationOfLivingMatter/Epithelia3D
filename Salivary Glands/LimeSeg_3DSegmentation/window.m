@@ -61,6 +61,9 @@ outputDir = getappdata(0,'outputDir');
 imageSequenceFiles = dir(fullfile(outputDir, 'ImageSequence'));
 imageSequence = {};
 
+setappdata(0, 'selectedZ', '1');
+setappdata(0, 'cellId', '1');
+
 for numImg = 3:size(imageSequenceFiles, 1)
     actualFile = imageSequenceFiles(numImg);
     actualImg = imread(fullfile(actualFile.folder, actualFile.name));
