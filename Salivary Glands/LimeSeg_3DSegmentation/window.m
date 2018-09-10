@@ -54,6 +54,8 @@ function window_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for window
 handles.output = hObject;
 
+set(0, 'currentfigure', hObject); 
+
 % Update handles structure
 guidata(hObject, handles);
 resizeImg = getappdata(0,'resizeImg');
@@ -61,8 +63,9 @@ outputDir = getappdata(0,'outputDir');
 imageSequenceFiles = dir(fullfile(outputDir, 'ImageSequence'));
 imageSequence = {};
 
-setappdata(0, 'selectedZ', '1');
-setappdata(0, 'cellId', '1');
+tipValue = getappdata(0, 'tipValue');
+setappdata(0, 'selectedZ', 1+tipValue+1);
+setappdata(0, 'cellId', 1);
 
 for numImg = 3:size(imageSequenceFiles, 1)
     actualFile = imageSequenceFiles(numImg);
@@ -142,8 +145,13 @@ function tbZFrame_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of tbZFrame as text
 %        str2double(get(hObject,'String')) returns contents of tbZFrame as a double
-setappdata(0, 'selectedZ', str2double(get(hObject,'String')));
-showSelectedCell();
+tipValue = getappdata(0, 'tipValue');
+labelledImage = getappdata(0, 'labelledImage');
+newFrameValue = str2double(get(hObject,'String'));
+if newFrameValue > 0 && newFrameValue + tipValue + 1 <= size(labelledImage, 3)
+    setappdata(0, 'selectedZ', newFrameValue + tipValue + 1);
+    showSelectedCell();
+end
 
 
 % --- Executes during object creation, after setting all properties.

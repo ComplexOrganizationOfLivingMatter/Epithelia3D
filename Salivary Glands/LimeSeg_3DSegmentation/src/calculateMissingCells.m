@@ -41,7 +41,7 @@ function [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsB
     subplot(2, 2, 4);
     notFoundCellsApical = setdiff(notFoundCellsApical, noValidCells);
     if isempty(notFoundCellsApical) == 0
-    paint3D(labelledImage, notFoundCellsApical, colours);
+        paint3D(labelledImage, notFoundCellsApical, colours);
         missingCellsStr = strjoin(arrayfun(@num2str, notFoundCellsApical, 'UniformOutput', false), ', ');    
     else
         paint3D(labelledImage, -1, colours);

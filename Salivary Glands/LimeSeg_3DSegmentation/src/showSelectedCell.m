@@ -4,17 +4,16 @@ function [] = showSelectedCell()
 selectCellId = getappdata(0, 'cellId');
 labelledImage = getappdata(0, 'labelledImage');
 selectedZ = getappdata(0, 'selectedZ');
+tipValue = getappdata(0, 'tipValue');
 
 perimImg = bwperim(labelledImage(:, :,  selectedZ) == selectCellId)';
 %imshow(perimImg);
 imageSequence = getappdata(0, 'imageSequence');
 
-imgToShow = imageSequence{selectedZ};
+imgToShow = imageSequence{selectedZ-tipValue-1};
 
-%% CARE!!! WITH THE TIP VALUE
-tipValue = 4;
 imgToShow = addTipsImg3D(tipValue+1, imgToShow);
-imgToShow = imgToShow(:, :, 6);
+imgToShow = imgToShow(:, :, tipValue+2);
 imgToShow(perimImg == 1) = 65536;
 imshow(imgToShow');
 hold on;

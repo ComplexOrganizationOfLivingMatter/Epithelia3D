@@ -1,4 +1,4 @@
-function [colours] = exportAsImageSequence(labelledImage, outputDir, colours)
+function [colours] = exportAsImageSequence(labelledImage, outputDir, colours, tipValue)
 %EXPORTASIMAGESEQUENCE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -12,7 +12,7 @@ function [colours] = exportAsImageSequence(labelledImage, outputDir, colours)
     end
     
     figure('Visible', 'off');
-    for numZ = 1:size(labelledImage, 3)
+    for numZ = 1+tipValue+1:(size(labelledImage, 3)-tipValue+1)
         imshow(labelledImage(:, :, numZ)+1, colours);
         set(gcf, 'units','normalized','outerposition',[0 0 1 1]);
         centroids = regionprops(labelledImage(:, :, numZ), 'Centroid');
