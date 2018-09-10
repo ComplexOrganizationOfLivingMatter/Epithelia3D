@@ -8,6 +8,8 @@ dataDirs = dir('data/*/');
 
 resizeImg = 0.25;
 
+tipValue = 4;
+
 for numDir = 3:size(dataDirs, 1)
     
     actualFile = dataDirs(numDir);
@@ -39,15 +41,14 @@ for numDir = 3:size(dataDirs, 1)
 
         labelledImage = getappdata(0, 'labelledImage');
 
-        exportAsImageSequence(labelledImage, fullfile(actualFile.folder, actualFile.name, 'Cells', 'labelledSequence', filesep));
-        
+        exportAsImageSequence(labelledImage, fullfile(actualFile.folder, actualFile.name, 'Cells', 'labelledSequence', filesep), colours, tipValue);
         
         %% Calculate neighbours and plot missing cells
-        [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer);
+        [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
         
         polygonDistributions(numDir - 2, :) = {apical3dInfo, basal3dInfo};
         
-%         labelledImage = importImageSequence(labelledImage, fullfile(actualFile.folder, actualFile.name, 'Cells', 'labelledSequence', filesep));
+%         labelledImage = importImageSequence(labelledImage, fullfile(actualFile.folder, actualFile.name, 'Cells', 'labelledSequence', filesep), tipValue);
 %         
 %         [apical3dInfo] = calculateNeighbours3D(apicalLayer);
 %         [basal3dInfo] = calculateNeighbours3D(basalLayer);
