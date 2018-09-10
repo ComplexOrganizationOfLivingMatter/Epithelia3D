@@ -104,7 +104,7 @@ selectedZ = getappdata(0, 'selectedZ');
 
 [x, y] = find(newCellRegion);
 
-newIndices = sub2ind(size(labelledImage), y, x, ones(length(x), 1)*selectedZ);
+newIndices = sub2ind(size(labelledImage), x, y, ones(length(x), 1)*selectedZ);
 
 labelledImage(newIndices) = selectCellId;
 

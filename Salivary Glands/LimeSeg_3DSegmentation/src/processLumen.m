@@ -10,7 +10,7 @@ function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, label
     labelledImage(lumenImage == 1) = 0;
     
     %% Get apical layer by dilating the lumen
-    se = strel('sphere', 5);
+    se = strel('sphere', 3);
     dilatedLumen = imdilate(lumenImage, se);
     apicalLayer = dilatedLumen .* labelledImage;
     
