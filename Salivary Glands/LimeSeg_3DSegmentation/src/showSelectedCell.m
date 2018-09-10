@@ -11,6 +11,10 @@ imageSequence = getappdata(0, 'imageSequence');
 
 imgToShow = imageSequence{selectedZ};
 
+%% CARE!!! WITH THE TIP VALUE
+tipValue = 4;
+imgToShow = addTipsImg3D(tipValue+1, imgToShow);
+imgToShow = imgToShow(:, :, 6);
 imgToShow(perimImg == 1) = 65536;
 imshow(imgToShow');
 hold on;
