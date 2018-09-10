@@ -11,10 +11,14 @@ imageSequence = getappdata(0, 'imageSequence');
 
 imgToShow = imageSequence{selectedZ};
 
-[xOld, yOld, zOld] = ind2sub(size(perimImg),find(perimImg == 1));
-newIndices = sub2ind(size(imgToShow), xOld, yOld, zOld);
-
-imgToShow(newIndices) = 65536;
-imshow(imgToShow);
+imgToShow(perimImg == 1) = 65536;
+imshow(imgToShow');
+hold on;
+[xIndices, yIndices] = find(labelledImage(:, :,  selectedZ) == selectCellId);
+if isempty(xIndices) == 0
+    s = scatter(yIndices,xIndices,'filled','SizeData',10);
+    hold off
+    alpha(s,.7)
+end
 end
 
