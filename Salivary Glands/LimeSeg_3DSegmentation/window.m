@@ -67,7 +67,7 @@ setappdata(0, 'cellId', '1');
 for numImg = 3:size(imageSequenceFiles, 1)
     actualFile = imageSequenceFiles(numImg);
     actualImg = imread(fullfile(actualFile.folder, actualFile.name));
-    imageSequence(end+1) = {imresize3(actualImg, resizeImg)};
+    imageSequence(end+1) = {imresize3(actualImg, resizeImg, 'nearest')};
 end
 
 setappdata(0,'imageSequence',imageSequence);
@@ -164,5 +164,9 @@ function insertROI_Callback(hObject, eventdata, handles)
 % hObject    handle to insertROI (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-newCellRegion = roipoly;
+roiMask = getappdata(0, 'roiMask');
+delete(roiMask);
+roiMask = impoly;
+setappdata(0,'roiMask', roiMask);
+newCellRegion = createMask(roiMask);
 setappdata(0,'newCellRegion', newCellRegion);

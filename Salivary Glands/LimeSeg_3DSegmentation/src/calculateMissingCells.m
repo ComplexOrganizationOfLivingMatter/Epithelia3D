@@ -1,5 +1,5 @@
 function [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer)
-%CHECKIFEVERYTHINGISOK Summary of this function goes here
+%CALCULATEMISSINGCELLS Summary of this function goes here
 %   Detailed explanation goes here
 
     [apical3dInfo] = calculateNeighbours3D(apicalLayer);
