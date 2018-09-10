@@ -26,21 +26,25 @@ function [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsB
     %Basal missing cells
     missingCellsStr = [];
     subplot(2, 2, 3);
-    paint3D(labelledImage, notFoundCellsBasal, colours);
-    paint3D(lumenImage, 1);
     if isempty(notFoundCellsBasal) == 0
+        paint3D(labelledImage, notFoundCellsBasal, colours);
         missingCellsStr = strjoin(arrayfun(@num2str, notFoundCellsBasal, 'UniformOutput', false), ', ');
+    else
+        paint3D(labelledImage, -1, colours);
     end
     
+    paint3D(lumenImage, 1);
     title(strcat('Missing basal cells: ', missingCellsStr));
 
     %Apical missing cells
     subplot(2, 2, 4);
-    paint3D(labelledImage, notFoundCellsApical, colours);
-    paint3D(lumenImage, 1);
     if isempty(notFoundCellsApical) == 0
-        missingCellsStr = strjoin(arrayfun(@num2str, notFoundCellsApical, 'UniformOutput', false), ', ');
+    paint3D(labelledImage, notFoundCellsApical, colours);
+        missingCellsStr = strjoin(arrayfun(@num2str, notFoundCellsApical, 'UniformOutput', false), ', ');    
+    else
+        paint3D(labelledImage, -1, colours);
     end
+    paint3D(lumenImage, 1);
     
     title(strcat('Missing apical cells: ', missingCellsStr));
 
