@@ -1,6 +1,6 @@
-function varargout = insertValidCells(varargin)
-% insertValidCells MATLAB code for insertValidCells.fig
-%      insertValidCells, by itself, creates a new insertValidCells or raises the existing
+function varargout = insertNoValidCells(varargin)
+% insertNoValidCells MATLAB code for insertNoValidCells.fig
+%      insertNoValidCells, by itself, creates a new insertValidCells or raises the existing
 %      singleton*.
 %
 %      H = insertValidCells returns the handle to a new insertValidCells or the handle to
@@ -22,14 +22,14 @@ function varargout = insertValidCells(varargin)
 
 % Edit the above text to modify the response to help insertValidCells
 
-% Last Modified by GUIDE v2.5 10-Sep-2018 11:49:51
+% Last Modified by GUIDE v2.5 10-Sep-2018 12:12:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @insertValidCells_OpeningFcn, ...
-                   'gui_OutputFcn',  @insertValidCells_OutputFcn, ...
+                   'gui_OpeningFcn', @insertNoValidCells_OpeningFcn, ...
+                   'gui_OutputFcn',  @insertNoValidCells_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -45,7 +45,7 @@ end
 
 
 % --- Executes just before insertValidCells is made visible.
-function insertValidCells_OpeningFcn(hObject, eventdata, handles, varargin)
+function insertNoValidCells_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -58,12 +58,12 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes insertValidCells wait for user response (see UIRESUME)
-% uiwait(handles.figure1);
+%UIWAIT makes insertValidCells wait for user response (see UIRESUME)
+uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = insertValidCells_OutputFcn(hObject, eventdata, handles) 
+function varargout = insertNoValidCells_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -71,6 +71,9 @@ function varargout = insertValidCells_OutputFcn(hObject, eventdata, handles)
 
 % Get default command line output from handles structure
 varargout{1} = handles.output;
+
+% The figure can be deleted now
+delete(handles.figure1);
 
 
 
@@ -82,10 +85,18 @@ function edit1_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit1 as text
 %        str2double(get(hObject,'String')) returns contents of edit1 as a double
 noValidCells = get(hObject,'String');
-noValidCells = strtrim(noValidCells, ' ');
 noValidCellsStr = strsplit(noValidCells, ',');
-noValidCells = cellfun(@double, noValidCellsStr);
-setappdata(0, 'noValidCells', noValidCells)
+noValidCellsStr = cellfun(@(x) strrep(x, ' ', ''), noValidCellsStr, 'UniformOutput', false);
+noValidCells = cellfun(@str2double, noValidCellsStr);
+handles.output = noValidCells;
+
+% Update handles structure
+guidata(hObject, handles);
+
+% Use UIRESUME instead of delete because the OutputFcn needs
+% to get the updated handles structure.
+uiresume(handles.figure1);
+
 
 
 % --- Executes during object creation, after setting all properties.
@@ -106,4 +117,21 @@ function okButton_Callback(hObject, eventdata, handles)
 % hObject    handle to okButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-noValidCells = getappdata(0, 'noValidCells');
+% Use UIRESUME instead of delete because the OutputFcn needs
+% to get the updated handles structure.
+uiresume(handles.figure1);
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+if isequal(get(hObject, 'waitstatus'), 'waiting')
+    % The GUI is still in UIWAIT, us UIRESUME
+    uiresume(hObject);
+else
+    % The GUI is no longer waiting, just close it
+    delete(hObject);
+end
