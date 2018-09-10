@@ -93,10 +93,6 @@ handles.output = noValidCells;
 % Update handles structure
 guidata(hObject, handles);
 
-% Use UIRESUME instead of delete because the OutputFcn needs
-% to get the updated handles structure.
-uiresume(handles.figure1);
-
 
 
 % --- Executes during object creation, after setting all properties.
@@ -119,6 +115,7 @@ function okButton_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Use UIRESUME instead of delete because the OutputFcn needs
 % to get the updated handles structure.
+
 uiresume(handles.figure1);
 
 

@@ -1,9 +1,11 @@
-function [] = paint3D(labelledImage, showingCells)
+function [] = paint3D(labelledImage, showingCells, colours)
 %PAINT3D Summary of this function goes here
 %   Detailed explanation goes here
 
-    colours = colorcube(max(labelledImage(:)));
-    colours = colours(randperm(max(labelledImage(:))), :);
+    if exist('colours', 'var') == 0
+        colours = colorcube(max(labelledImage(:)));
+        colours = colours(randperm(max(labelledImage(:))), :);
+    end
     if exist('showingCells', 'var') == 0
         showingCells = 1:max(labelledImage(:));
     end

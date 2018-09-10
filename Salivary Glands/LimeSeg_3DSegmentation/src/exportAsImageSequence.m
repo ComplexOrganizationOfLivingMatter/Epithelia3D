@@ -1,4 +1,4 @@
-function [] = exportAsImageSequence(labelledImage, outputDir)
+function [colours] = exportAsImageSequence(labelledImage, outputDir)
 %EXPORTASIMAGESEQUENCE Summary of this function goes here
 %   Detailed explanation goes here
 

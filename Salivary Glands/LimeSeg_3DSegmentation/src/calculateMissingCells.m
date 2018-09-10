@@ -1,4 +1,4 @@
-function [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer)
+function [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours)
 %CALCULATEMISSINGCELLS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -12,27 +12,37 @@ function [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsB
 
     %% Plot with missing cells
     figure;
+    set(gcf, 'units','normalized','outerposition',[0 0 1 1]);
     %Basal plot
     subplot(2, 2, 1);
-    paint3D(basalLayer);
+    paint3D(basalLayer, [], colours);
     title('Basal layer');
 
     %Apical plot
     subplot(2, 2, 2);
-    paint3D(apicalLayer);
+    paint3D(apicalLayer, [], colours);
     title('Apical layer');
 
     %Basal missing cells
+    missingCellsStr = [];
     subplot(2, 2, 3);
-    paint3D(labelledImage, notFoundCellsBasal);
+    paint3D(labelledImage, notFoundCellsBasal, colours);
     paint3D(lumenImage, 1);
-    title('Not found cells in basal layer');
+    if isempty(notFoundCellsBasal) == 0
+        missingCellsStr = strjoin(arrayfun(@num2str, notFoundCellsBasal, 'UniformOutput', false), ', ');
+    end
+    
+    title(strcat('Missing basal cells: ', missingCellsStr));
 
     %Apical missing cells
     subplot(2, 2, 4);
-    paint3D(labelledImage, notFoundCellsApical);
+    paint3D(labelledImage, notFoundCellsApical, colours);
     paint3D(lumenImage, 1);
-    title('Not found cells in apical layer');
+    if isempty(notFoundCellsApical) == 0
+        missingCellsStr = strjoin(arrayfun(@num2str, notFoundCellsApical, 'UniformOutput', false), ', ');
+    end
+    
+    title(strcat('Missing apical cells: ', missingCellsStr));
 
     [answer] = isEverythingCorrect();
 end
