@@ -14,6 +14,10 @@
 
 ### Basic lumen's pipeline
 
+1.- Segment the lumen of the images, taking a bit more than is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.
+2.- Once the lumen is properly segmented, import it to FIJI.
+3.- Follow the steps of http://imagej.net/LimeSeg# section 'Skeleton seg', where the seeds are selected to build the egg chamber skeleton.
+4.- Save your results.
 
 
 ### Refine
@@ -22,7 +26,7 @@ If a cell is not properly formed, try put the seed closer to the region not cove
 
 ### Advices
 
-- Save the ROIs often, not just at the end of the pipeline 
+- Save the ROIs often, not just at the end of the pipeline.
 
 ### Shortcuts
 
@@ -32,3 +36,5 @@ F1 -> 'Clear all'
 F2 -> 'Sphere Seg (advanced)'
 F3 -> 'Show Overlay'
 F4 -> 'Hide Overlay'
+
+where the first thing is the key we want to assign and the second is the command.
