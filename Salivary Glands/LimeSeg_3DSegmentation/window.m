@@ -56,7 +56,7 @@ handles.output = hObject;
 
 set(0, 'currentfigure', hObject); 
 
-setappdata(0, 'labelledImageTemp', labelledImage);
+setappdata(0, 'labelledImageTemp', getappdata(0, 'labelledImage'));
 
 % Update handles structure
 guidata(hObject, handles);
