@@ -16,6 +16,7 @@ imgToShow = imageSequence{selectedZ-(tipValue+1)};
 imgToShow = addTipsImg3D(tipValue+1, imgToShow);
 imgToShow = imgToShow(:, :, tipValue+2);
 % imgToShow(perimImg == 1) = 65536;
+cla('reset') 
 imshow(imgToShow');
 hold on;
 [xIndices, yIndices] = find(labelledImage(:, :,  selectedZ) == selectCellId);

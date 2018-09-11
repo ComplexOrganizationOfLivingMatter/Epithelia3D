@@ -28,7 +28,7 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, polygonDistri
         setappdata(0,'resizeImg',resizeImg);
         setappdata(0,'tipValue', tipValue);
 
-        %     [noValidCells] = insertNoValidCells();
+        [noValidCells] = insertNoValidCells();
 
         [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
 
