@@ -29,8 +29,9 @@ for numDir = 3:size(dataDirs, 1)
     
     setappdata(0,'outputDir',fullfile(actualFile.folder, actualFile.name));
     setappdata(0,'labelledImage',labelledImage);
+    setappdata(0, 'lumenImage', lumenImage);
     setappdata(0,'resizeImg',resizeImg);
-    setappdata(0, 'tipValue', tipValue);
+    setappdata(0,'tipValue', tipValue);
     
     [noValidCells] = insertNoValidCells();
     
@@ -41,7 +42,11 @@ for numDir = 3:size(dataDirs, 1)
         h = window();
         waitfor(h);
         
-        labelledImage = getappdata(0, 'labelledImage');
+        savingResults = saveResults();
+        
+        if isequal(savingResults.output, 'Yes')
+            labelledImage = getappdata(0, 'labelledImageTemp');
+        end
         
         exportAsImageSequence(labelledImage, fullfile(actualFile.folder, actualFile.name, 'Cells', 'labelledSequence', filesep), colours, tipValue);
         

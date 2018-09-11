@@ -4,12 +4,13 @@ function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, label
     lumenFile = dir(fullfile(lumenDir, '**', '*.ply'));
     lumenPC = pcread(fullfile(lumenFile.folder, lumenFile.name));
     %pcshow(lumenPC);
-    pixelLocations = round(double(lumenPC.Location)*resizeImg)+tipValue+1;
-    lumenImage = zeros(size(labelledImage));
+    pixelLocations = round(double(lumenPC.Location)*resizeImg);
+    lumenImage = zeros(size(labelledImage)-((tipValue+1)*2));
     [lumenImage] = addCellToImage(pixelLocations, lumenImage, 1);
+    lumenImage = addTipsImg3D(tipValue+1, lumenImage);
+    lumenImage = double(lumenImage);
     labelledImage(lumenImage == 1) = 0;
     
     %% Get apical layer by dilating the lumen
     [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
-    
 end
