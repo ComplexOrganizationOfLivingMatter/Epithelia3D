@@ -22,7 +22,7 @@ function varargout = window(varargin)
 
 % Edit the above text to modify the response to help window
 
-% Last Modified by GUIDE v2.5 06-Sep-2018 16:59:12
+% Last Modified by GUIDE v2.5 11-Sep-2018 10:37:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -112,7 +112,7 @@ newIndices = sub2ind(size(labelledImage), x, y, ones(length(x), 1)*selectedZ);
 labelledImage(newIndices) = selectCellId;
 
 %Smooth surface of next and previos Z
-labelledImage = smoothCellContour3D(labelledImage, selectCellId, [selectedZ+1 selectedZ-1]);
+labelledImage = smoothCellContour3D(labelledImage, selectCellId, [selectedZ+3:selectedZ-3]);
 
 
 setappdata(0, 'labelledImage', labelledImage);
@@ -182,3 +182,58 @@ roiMask = impoly(gca);
 setappdata(0,'roiMask', roiMask);
 newCellRegion = createMask(roiMask);
 setappdata(0,'newCellRegion', newCellRegion);
+
+
+% --- Executes on button press in increaseID.
+function increaseID_Callback(hObject, eventdata, handles)
+% hObject    handle to increaseID (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+newValue = getappdata(0, 'cellId')+1;
+labelledImage = getappdata(0, 'labelledImage');
+
+if newValue <= max(labelledImage(:))
+    setappdata(0, 'cellId', newValue);
+    set(handles.tbCellId,'string',num2str(newValue));
+    showSelectedCell();
+end
+
+% --- Executes on button press in decreaseID.
+function decreaseID_Callback(hObject, eventdata, handles)
+% hObject    handle to decreaseID (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+newValue = getappdata(0, 'cellId')-1;
+if newValue > 0
+    setappdata(0, 'cellId', newValue);
+    set(handles.tbCellId,'string',num2str(newValue));
+    showSelectedCell();
+end
+
+% --- Executes on button press in increaseZ.
+function increaseZ_Callback(hObject, eventdata, handles)
+% hObject    handle to increaseZ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+newValue = getappdata(0, 'selectedZ')+1;
+labelledImage = getappdata(0, 'labelledImage');
+tipValue = getappdata(0, 'tipValue');
+
+if newValue <= (size(labelledImage, 3)-tipValue+1)
+    setappdata(0, 'selectedZ', newValue);
+    set(handles.tbZFrame,'string',num2str(newValue-tipValue-1));
+    showSelectedCell();
+end
+
+% --- Executes on button press in decreaseZ.
+function decreaseZ_Callback(hObject, eventdata, handles)
+% hObject    handle to decreaseZ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+newValue = getappdata(0, 'selectedZ')-1;
+if newValue >= 1
+    tipValue = getappdata(0, 'tipValue');
+    setappdata(0, 'selectedZ', newValue);
+    set(handles.tbZFrame,'string',num2str(newValue-tipValue-1));
+    showSelectedCell();
+end

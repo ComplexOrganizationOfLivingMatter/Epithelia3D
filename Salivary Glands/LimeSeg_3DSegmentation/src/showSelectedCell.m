@@ -6,7 +6,7 @@ labelledImage = getappdata(0, 'labelledImage');
 selectedZ = getappdata(0, 'selectedZ');
 tipValue = getappdata(0, 'tipValue');
 
-perimImg = bwperim(labelledImage(:, :,  selectedZ) == selectCellId)';
+% perimImg = bwperim(labelledImage(:, :,  selectedZ) == selectCellId)';
 %imshow(perimImg);
 imageSequence = getappdata(0, 'imageSequence');
 
@@ -14,7 +14,7 @@ imgToShow = imageSequence{selectedZ-tipValue-1};
 
 imgToShow = addTipsImg3D(tipValue+1, imgToShow);
 imgToShow = imgToShow(:, :, tipValue+2);
-imgToShow(perimImg == 1) = 65536;
+% imgToShow(perimImg == 1) = 65536;
 imshow(imgToShow');
 hold on;
 [xIndices, yIndices] = find(labelledImage(:, :,  selectedZ) == selectCellId);
