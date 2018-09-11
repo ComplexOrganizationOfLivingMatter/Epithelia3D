@@ -1,4 +1,4 @@
-function [] = pipeline()
+function [polygon_distribution_Apical, polygon_distribution_Basal, polygonDistributions] = pipeline()
 %PIPELINE Summary of this function goes here
 %   Detailed explanation goes here
     selpath = uigetdir('data');
