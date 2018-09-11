@@ -21,37 +21,39 @@ for numDir = 3:size(dataDirs, 1)
     
     imgSize = round(size(demoImg)*resizeImg);
     
-    [labelledImage, basalLayer] = processCells(fullfile(actualFile.folder, actualFile.name, 'Cells', filesep), resizeImg, imgSize);
+    [labelledImage, basalLayer] = processCells(fullfile(actualFile.folder, actualFile.name, 'Cells', filesep), resizeImg, imgSize, tipValue);
     
-    [labelledImage, apicalLayer, lumenImage] = processLumen(fullfile(actualFile.folder, actualFile.name, 'Lumen', filesep), labelledImage, resizeImg);
+    [labelledImage, apicalLayer, lumenImage] = processLumen(fullfile(actualFile.folder, actualFile.name, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
     
-    [colours] = exportAsImageSequence(labelledImage, fullfile(actualFile.folder, actualFile.name, 'Cells', 'labelledSequence', filesep));
+    [colours] = exportAsImageSequence(labelledImage, fullfile(actualFile.folder, actualFile.name, 'Cells', 'labelledSequence', filesep), [], tipValue);
     
     setappdata(0,'outputDir',fullfile(actualFile.folder, actualFile.name));
     setappdata(0,'labelledImage',labelledImage);
     setappdata(0,'resizeImg',resizeImg);
+    setappdata(0, 'tipValue', tipValue);
     
-    [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer);
+    [noValidCells] = insertNoValidCells();
+    
+    [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
     
     %% Insert no valid cells
-    [noValidCells] = insertNoValidCells();
     while isequal(answer, 'No')
         h = window();
         waitfor(h);
-
+        
         labelledImage = getappdata(0, 'labelledImage');
-
+        
         exportAsImageSequence(labelledImage, fullfile(actualFile.folder, actualFile.name, 'Cells', 'labelledSequence', filesep), colours, tipValue);
         
         %% Calculate neighbours and plot missing cells
+        [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
+        [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
+        
         [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
         
         polygonDistributions(numDir - 2, :) = {apical3dInfo, basal3dInfo};
         
 %         labelledImage = importImageSequence(labelledImage, fullfile(actualFile.folder, actualFile.name, 'Cells', 'labelledSequence', filesep), tipValue);
-%         
-%         [apical3dInfo] = calculateNeighbours3D(apicalLayer);
-%         [basal3dInfo] = calculateNeighbours3D(basalLayer);
-
+        
     end
 end

@@ -10,11 +10,6 @@ function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, label
     labelledImage(lumenImage == 1) = 0;
     
     %% Get apical layer by dilating the lumen
-    se = strel('sphere', 3);
-    dilatedLumen = imdilate(lumenImage, se);
-    apicalLayer = dilatedLumen .* labelledImage;
+    [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
     
-%     [x,y,z] = ind2sub(size(apicalLayer),find(apicalLayer>0));
-%     figure;
-%     pcshow([x,y,z]);
 end
