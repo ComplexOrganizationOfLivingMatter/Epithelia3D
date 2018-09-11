@@ -4,12 +4,17 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, polygonDistri
     selpath = uigetdir('data');
 
     if isempty(selpath) == 0
+        outputDir = selpath;
+        
+        mkdir(fullfile(outputDir, 'Cells', 'OutputLimeSeg'));
+        mkdir(fullfile(outputDir, 'ImageSequence'));
+        mkdir(fullfile(outputDir, 'Lumen', 'OutputLimeSeg'));
+        
 
         resizeImg = 0.25;
 
         tipValue = 4;
 
-        outputDir = selpath;
         imageSequenceFiles = dir(fullfile(outputDir, 'ImageSequence'));
         demoFile =  imageSequenceFiles(3);
         demoImg = imread(fullfile(demoFile.folder, demoFile.name));
