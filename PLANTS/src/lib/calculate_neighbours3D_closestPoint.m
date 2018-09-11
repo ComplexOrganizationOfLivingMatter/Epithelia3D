@@ -1,6 +1,6 @@
 function [neighbourhoodInfo] = calculate_neighbours3D_closestPoint(L_img)
     %% Generate neighbours
-    se = strel('sphere',2);
+    se = strel('sphere',1);
     cells=unique(L_img)';
     cells=cells(cells~=0);
 %     imgPerim = uint16(bwperim(L_img)) .* L_img;
