@@ -15,7 +15,7 @@ function [labelledImage] = smoothCellContour3D(labelledImage, idCell, zToSmooth)
     
     inPixels = inShape(cellShape, xToCheck, yToCheck, zToCheck);
     
-    for numInPixels = find(inPixels)
+    for numInPixels = find(inPixels)'
         labelledImage(xToCheck(numInPixels), yToCheck(numInPixels), zToCheck(numInPixels)) = idCell;
     end
 end
