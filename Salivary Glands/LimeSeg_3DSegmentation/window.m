@@ -111,6 +111,10 @@ newIndices = sub2ind(size(labelledImage), x, y, ones(length(x), 1)*selectedZ);
 
 labelledImage(newIndices) = selectCellId;
 
+%Smooth surface of next and previos Z
+labelledImage = smoothCellContour3D(labelledImage, selectCellId, [selectedZ+1 selectedZ-1]);
+
+
 setappdata(0, 'labelledImage', labelledImage);
 showSelectedCell();
 
@@ -174,7 +178,7 @@ function insertROI_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 roiMask = getappdata(0, 'roiMask');
 delete(roiMask);
-roiMask = impoly;
+roiMask = impoly(gca);
 setappdata(0,'roiMask', roiMask);
 newCellRegion = createMask(roiMask);
 setappdata(0,'newCellRegion', newCellRegion);
