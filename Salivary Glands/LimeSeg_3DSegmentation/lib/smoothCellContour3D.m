@@ -4,7 +4,7 @@ function [labelledImage] = smoothCellContour3D(labelledImage, idCell, zToSmooth)
 
     [x,y,z] = ind2sub(size(labelledImage),find(labelledImage == idCell));
     
-    cellShape = alphaShape(x,y,z, Inf);
+    cellShape = alphaShape(x,y,z);
     
     [x,y,z] = ind2sub(size(labelledImage),find(labelledImage ~= idCell));
     pixelsToCheck = ismember(z, zToSmooth);
@@ -16,7 +16,7 @@ function [labelledImage] = smoothCellContour3D(labelledImage, idCell, zToSmooth)
     inPixels = inShape(cellShape, xToCheck, yToCheck, zToCheck);
     
     for numInPixels = find(inPixels)
-        labelledImage(x(numInPixels), y(numInPixels), z(numInPixels)) = idCell;
+        labelledImage(xToCheck(numInPixels), yToCheck(numInPixels), zToCheck(numInPixels)) = idCell;
     end
 end
 

@@ -18,7 +18,6 @@ function [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue)
 %     [x,y,z] = ind2sub(size(basalLayer),find(basalLayer>0));
 %     figure;
 %     pcshow([x,y,z]);
-    labelledImage = double(labelledImage);
     basalLayer = labelledImage .* basalLayer;
 end
 
