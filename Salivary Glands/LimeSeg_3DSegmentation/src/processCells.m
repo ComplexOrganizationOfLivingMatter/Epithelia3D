@@ -2,7 +2,7 @@ function [labelledImage, basalLayer] = processCells(directoryOfCells, resizeImg,
 %PROCESSCELLS Summary of this function goes here
 %   Detailed explanation goes here
 
-    cellFiles = dir(fullfile(directoryOfCells, 'state', 'cell_*'));
+    cellFiles = dir(fullfile(directoryOfCells, 'OutputLimeSeg', 'cell_*'));
     
     labelledImage = zeros(imgSize(1), imgSize(2), 1);
 

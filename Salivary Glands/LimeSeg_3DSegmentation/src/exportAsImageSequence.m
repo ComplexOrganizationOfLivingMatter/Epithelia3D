@@ -26,7 +26,7 @@ function [colours] = exportAsImageSequence(labelledImage, outputDir, colours, ti
         end
         fig = gcf;
         fig.InvertHardcopy = 'off';
-        saveas(gcf,fullfile(outputDir, strcat('labelledImage_', num2str(numZ-tipValue-1), '.png')))
+        saveas(gcf,fullfile(outputDir, strcat('labelledImage_', num2str(numZ-(tipValue+1)), '.png')))
         %imwrite(labelledImage(:, :, numZ), , );
     end
 end

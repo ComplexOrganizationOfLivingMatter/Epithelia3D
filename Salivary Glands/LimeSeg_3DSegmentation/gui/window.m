@@ -22,7 +22,7 @@ function varargout = window(varargin)
 
 % Edit the above text to modify the response to help window
 
-% Last Modified by GUIDE v2.5 06-Sep-2018 16:59:12
+% Last Modified by GUIDE v2.5 11-Sep-2018 10:37:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,6 +55,8 @@ function window_OpeningFcn(hObject, eventdata, handles, varargin)
 handles.output = hObject;
 
 set(0, 'currentfigure', hObject); 
+
+setappdata(0, 'labelledImageTemp', getappdata(0, 'labelledImage'));
 
 % Update handles structure
 guidata(hObject, handles);
@@ -100,23 +102,27 @@ function save_Callback(hObject, eventdata, handles)
 % hObject    handle to save (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+roiMask = getappdata(0, 'roiMask');
+delete(roiMask);
 newCellRegion = getappdata(0, 'newCellRegion');
 selectCellId = getappdata(0, 'cellId');
-labelledImage = getappdata(0, 'labelledImage');
+labelledImage = getappdata(0, 'labelledImageTemp');
 selectedZ = getappdata(0, 'selectedZ');
 
-[x, y] = find(newCellRegion);
+if sum(newCellRegion(:)) > 0
+    [x, y] = find(newCellRegion);
 
-newIndices = sub2ind(size(labelledImage), x, y, ones(length(x), 1)*selectedZ);
+    newCellRegion = zeros(size(newCellRegion));
+    newIndices = sub2ind(size(labelledImage), x, y, ones(length(x), 1)*selectedZ);
 
-labelledImage(newIndices) = selectCellId;
+    labelledImage(newIndices) = selectCellId;
 
-%Smooth surface of next and previos Z
-labelledImage = smoothCellContour3D(labelledImage, selectCellId, [selectedZ+1 selectedZ-1]);
+    %Smooth surface of next and previos Z
+    labelledImage = smoothCellContour3D(labelledImage, selectCellId, (selectedZ-3):(selectedZ+3));
 
-
-setappdata(0, 'labelledImage', labelledImage);
-showSelectedCell();
+    setappdata(0, 'labelledImageTemp', labelledImage);
+    showSelectedCell();
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -150,10 +156,10 @@ function tbZFrame_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of tbZFrame as text
 %        str2double(get(hObject,'String')) returns contents of tbZFrame as a double
 tipValue = getappdata(0, 'tipValue');
-labelledImage = getappdata(0, 'labelledImage');
+labelledImage = getappdata(0, 'labelledImageTemp');
 newFrameValue = str2double(get(hObject,'String'));
 if newFrameValue > 0 && newFrameValue + tipValue + 1 <= size(labelledImage, 3)
-    setappdata(0, 'selectedZ', newFrameValue + tipValue + 1);
+    setappdata(0, 'selectedZ', newFrameValue + (tipValue + 1));
     showSelectedCell();
 end
 
@@ -179,6 +185,62 @@ function insertROI_Callback(hObject, eventdata, handles)
 roiMask = getappdata(0, 'roiMask');
 delete(roiMask);
 roiMask = impoly(gca);
-setappdata(0,'roiMask', roiMask);
 newCellRegion = createMask(roiMask);
+setappdata(0,'roiMask', roiMask);
 setappdata(0,'newCellRegion', newCellRegion);
+
+
+% --- Executes on button press in increaseID.
+function increaseID_Callback(hObject, eventdata, handles)
+% hObject    handle to increaseID (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+newValue = getappdata(0, 'cellId')+1;
+labelledImage = getappdata(0, 'labelledImageTemp');
+
+if newValue <= max(labelledImage(:))
+    setappdata(0, 'cellId', newValue);
+    set(handles.tbCellId,'string',num2str(newValue));
+    showSelectedCell();
+end
+
+% --- Executes on button press in decreaseID.
+function decreaseID_Callback(hObject, eventdata, handles)
+% hObject    handle to decreaseID (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+newValue = getappdata(0, 'cellId')-1;
+if newValue > 0
+    setappdata(0, 'cellId', newValue);
+    set(handles.tbCellId,'string',num2str(newValue));
+    showSelectedCell();
+end
+
+% --- Executes on button press in increaseZ.
+function increaseZ_Callback(hObject, eventdata, handles)
+% hObject    handle to increaseZ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+newValue = getappdata(0, 'selectedZ')+1;
+labelledImage = getappdata(0, 'labelledImageTemp');
+tipValue = getappdata(0, 'tipValue');
+
+if newValue <= (size(labelledImage, 3)-(tipValue+1))
+    setappdata(0, 'selectedZ', newValue);
+    set(handles.tbZFrame,'string',num2str(newValue-(tipValue+1)));
+    showSelectedCell();
+end
+
+% --- Executes on button press in decreaseZ.
+function decreaseZ_Callback(hObject, eventdata, handles)
+% hObject    handle to decreaseZ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+newValue = getappdata(0, 'selectedZ')-1;
+tipValue = getappdata(0, 'tipValue');
+if newValue >= (tipValue+2)
+    tipValue = getappdata(0, 'tipValue');
+    setappdata(0, 'selectedZ', newValue);
+    set(handles.tbZFrame,'string',num2str(newValue-(tipValue+1)));
+    showSelectedCell();
+end
