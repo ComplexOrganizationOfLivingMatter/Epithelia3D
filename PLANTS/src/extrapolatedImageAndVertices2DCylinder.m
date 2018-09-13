@@ -1,4 +1,4 @@
-function extrapolatedImageAndVertices2DCylinder(name,layer1,layer2,verticesInfoLayer1,verticesInfoLayer2)
+function [totalMaskCyl]=extrapolatedImageAndVertices2DCylinder(name,layer1,layer2,verticesInfoLayer1,verticesInfoLayer2)
     
     
 
@@ -11,12 +11,15 @@ function extrapolatedImageAndVertices2DCylinder(name,layer1,layer2,verticesInfoL
     c=colorcube(double(maxCell));
     indRand=randperm(maxCell);
     
+    
+    totalMaskCyl=cell(1,length(setOfRadii));
+    
     for nSet = 1:length(setOfRadii)
 
         %get 2D image from hypocotil surface
-        [maskNewCyl] = extrapolate3DCylinder2Dplane(setOf3DImages{nSet},setOfRadii{nSet},centers{nSet});
+        totalMaskCyl{nSet} = extrapolate3DCylinder2Dplane(setOf3DImages{nSet},setOfRadii{nSet},centers{nSet});
         
-        figure;imshow(maskNewCyl,c(indRand,:));
+        figure;imshow(totalMaskCyl{nSet},c(indRand,:));
         axis equal
         %get vertices connections
 %         connectVertices(setOfVertices{nSet},setOfRadii{nSet},centers)
