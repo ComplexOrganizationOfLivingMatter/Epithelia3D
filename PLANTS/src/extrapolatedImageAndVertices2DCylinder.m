@@ -14,7 +14,7 @@ function extrapolatedImageAndVertices2DCylinder(name,layer1,layer2,verticesInfoL
     for nSet = 1:length(setOfRadii)
 
         %get 2D image from hypocotil surface
-        [maskNewCyl] = extrapolate3DCylinder2Dplane(setOf3DImages{nSet},setOfRadii{nSet},centers);
+        [maskNewCyl] = extrapolate3DCylinder2Dplane(setOf3DImages{nSet},setOfRadii{nSet},centers{nSet});
         
         figure;imshow(maskNewCyl,c(indRand,:));
         axis equal

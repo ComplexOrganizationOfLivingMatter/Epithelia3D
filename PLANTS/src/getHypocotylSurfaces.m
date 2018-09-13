@@ -1,4 +1,4 @@
-function [layer1,layer2,wrapping1,wrapping2,setOfCells,verticesInfoLayer1,verticesInfoLayer2,verticesInfoWrapping1,verticesInfoWrapping2] = getHypocotylSurfaces(sampleName,rangeY,resizeFactor)
+function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInfoLayer1,verticesInfoLayer2,verticesInfoWrapping1,verticesInfoWrapping2] = getHypocotylSurfaces(sampleName,rangeY,resizeFactor)
 
     disp(sampleName)
 
@@ -17,7 +17,7 @@ function [layer1,layer2,wrapping1,wrapping2,setOfCells,verticesInfoLayer1,vertic
     
     %% Get surfaces 1 and 2 with its cells   
     if exist(['data\' sampleName '\cellsAndSurfacesPerLayer.mat'],'file')
-        load(['data\' sampleName '\cellsAndSurfacesPerLayer.mat'],'layer1','layer2','setOfCells')
+        load(['data\' sampleName '\cellsAndSurfacesPerLayer.mat'],'layer1','layer2','layer1Limited','layer2Limited','setOfCells')
     else
         if exist(['data\' sampleName '\cellsLayer1Correction.mat'],'file') 
             load(['data\' sampleName '\cellsLayer1Correction.mat'],'cellsCorrectLayer1')
@@ -25,7 +25,17 @@ function [layer1,layer2,wrapping1,wrapping2,setOfCells,verticesInfoLayer1,vertic
         else
             [layer1.outerSurface,layer1.innerSurface,layer2.outerSurface,layer2.innerSurface,setOfCells.Layer1,setOfCells.Layer2]=getColHypocotylPerSurfaces(neighbourhoodInfo,uint16(img3d),[]);
         end
-        save(['data\' sampleName '\cellsAndSurfacesPerLayer.mat'],'-v7.3','layer1','layer2','setOfCells')
+        outerLayer1Limit=imresize3(layer1.outerSurface,resizeFactor,'Method','nearest');
+        innerLayer1Limit=imresize3(layer1.innerSurface,resizeFactor,'Method','nearest');
+        outerLayer2Limit=imresize3(layer2.outerSurface,resizeFactor,'Method','nearest');
+        innerLayer2Limit=imresize3(layer2.innerSurface,resizeFactor,'Method','nearest');
+
+        layer1Limited.outerSurface=outerLayer1Limit(:,rangeY(1):rangeY(2),:);
+        layer1Limited.innerSurface=innerLayer1Limit(:,rangeY(1):rangeY(2),:);
+        layer2Limited.outerSurface=outerLayer2Limit(:,rangeY(1):rangeY(2),:);
+        layer2Limited.innerSurface=innerLayer2Limit(:,rangeY(1):rangeY(2),:);
+
+        save(['data\' sampleName '\cellsAndSurfacesPerLayer.mat'],'-v7.3','layer1','layer2','layer1Limited','layer2Limited','setOfCells')
     end
         
     disp('2 - layers captured')
@@ -97,18 +107,17 @@ function [layer1,layer2,wrapping1,wrapping2,setOfCells,verticesInfoLayer1,vertic
         
     disp('6 - vertices captured in wrapping')
     
+    
     %% Get center and axes length from hypocotyl
     if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'file')
         
-        outerLayer1Limit=imresize3(layer1.outerSurface,resizeFactor,'Method','nearest');
-        innerLayer1Limit=imresize3(layer1.innerSurface,resizeFactor,'Method','nearest');
-        outerLayer2Limit=imresize3(layer2.outerSurface,resizeFactor,'Method','nearest');
-        innerLayer2Limit=imresize3(layer2.innerSurface,resizeFactor,'Method','nearest');
-        [centers, radiiBasalLayer1] = calculateCenterRadiusCylSection(outerLayer1Limit(:,rangeY(1):rangeY(2),:),setOfCells.Layer1,['data\' sampleName '\maskLayers\outerMaskLayer1']);
-        [~, radiiApicalLayer1] = calculateCenterRadiusCylSection(innerLayer1Limit(:,rangeY(1):rangeY(2),:),setOfCells.Layer1,['data\' sampleName '\maskLayers\innerMaskLayer1']);
-        [~, radiiBasalLayer2] = calculateCenterRadiusCylSection(outerLayer2Limit(:,rangeY(1):rangeY(2),:),setOfCells.Layer2,['data\' sampleName '\maskLayers\outerMaskLayer2']);
-        [~, radiiApicalLayer2] = calculateCenterRadiusCylSection(innerLayer2Limit(:,rangeY(1):rangeY(2),:),setOfCells.Layer2,['data\' sampleName '\maskLayers\innerMaskLayer2']);
+        [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(layer1Limited.outerSurface,setOfCells.Layer1,['data\' sampleName '\maskLayers\outerMaskLayer1']);
+        [~, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1Limited.innerSurface,setOfCells.Layer1,['data\' sampleName '\maskLayers\innerMaskLayer1']);
+        [~, radiiBasalLayer2] = calculateCenterRadiusCylSection(layer2Limited.outerSurface,setOfCells.Layer2,['data\' sampleName '\maskLayers\outerMaskLayer2']);
+        [~, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2Limited.innerSurface,setOfCells.Layer2,['data\' sampleName '\maskLayers\innerMaskLayer2']);
+        centers{2}=centers{1};centers{3}=centers{1};centers{4}=centers{1};
         save(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
+        
     end
     
     disp('7 - get centroids and infered cylinder axes')
@@ -116,10 +125,10 @@ function [layer1,layer2,wrapping1,wrapping2,setOfCells,verticesInfoLayer1,vertic
     %% Get center and axes length from hypocotyl
     if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZWrapping.mat'],'file')
 
-        [centers, radiiBasalLayer1] = calculateCenterRadiusCylSection(wrapping1.outerSurface,unique(wrapping1.outerSurface),['data\' sampleName '\maskLayers\outerWrappingMaskLayer1']);
-        [~, radiiApicalLayer1] = calculateCenterRadiusCylSection(wrapping1.innerSurface,unique(wrapping1.innerSurface),['data\' sampleName '\maskLayers\innerWrappingMaskLayer1']);
-        [~, radiiBasalLayer2] = calculateCenterRadiusCylSection(wrapping2.outerSurface,unique(wrapping2.outerSurface),['data\' sampleName '\maskLayers\outerWrappingMaskLayer2']);
-        [~, radiiApicalLayer2] = calculateCenterRadiusCylSection(wrapping2.innerSurface,unique(wrapping2.innerSurface),['data\' sampleName '\maskLayers\innerWrappingMaskLayer2']); 
+        [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(wrapping1.outerSurface,unique(wrapping1.outerSurface),['data\' sampleName '\maskLayers\outerWrappingMaskLayer1']);
+        [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(wrapping1.innerSurface,unique(wrapping1.innerSurface),['data\' sampleName '\maskLayers\innerWrappingMaskLayer1']);
+        [centers{3}, radiiBasalLayer2] = calculateCenterRadiusCylSection(wrapping2.outerSurface,unique(wrapping2.outerSurface),['data\' sampleName '\maskLayers\outerWrappingMaskLayer2']);
+        [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(wrapping2.innerSurface,unique(wrapping2.innerSurface),['data\' sampleName '\maskLayers\innerWrappingMaskLayer2']); 
         save(['data\' sampleName '\maskLayers\certerAndRadiusPerZWrapping.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
     end
     
