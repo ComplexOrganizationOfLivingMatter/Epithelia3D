@@ -16,8 +16,14 @@
 
 1.- Segment the lumen of the images, taking a bit more than is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.
 2.- Once the lumen is properly segmented, import it to FIJI.
-3.- Follow the steps of http://imagej.net/LimeSeg# section 'Skeleton seg', where the seeds are selected to build the egg chamber skeleton.
+3.- Follow the steps of http://imagej.net/LimeSeg section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton.
 4.- Save your results.
+6.- The directory should always be empty.
+
+
+### Load results
+
+Load ROI
 
 
 ### Refine
@@ -38,3 +44,7 @@ F3 -> 'Show Overlay'
 F4 -> 'Hide Overlay'
 
 where the first thing is the key we want to assign and the second is the command.
+
+
+### Directories hierarchy
+
