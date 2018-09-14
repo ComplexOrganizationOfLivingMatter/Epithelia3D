@@ -1,8 +1,8 @@
-function [maskNewCyl] = extrapolate3DCylinder2Dplane(img3D,radii,centers)
-
-    radiusAverage=round(mean(vertcat(radii{:})));
+function [maskNewCyl] = extrapolate3DCylinder2Dplane(img3D,radii,centers,hType)
     
+
     [allX,allY,allZ]=ind2sub(size(img3D),find(img3D>0));
+    radiusAverage=round(mean(vertcat(radii{:})));
     
     maskNewCyl=zeros(ceil(2*pi*radiusAverage),max(allY));
     maskInd=zeros(ceil(2*pi*radiusAverage),max(allY));
@@ -11,7 +11,11 @@ function [maskNewCyl] = extrapolate3DCylinder2Dplane(img3D,radii,centers)
         
         %3D to 2D by angle
         centroidYCircle=centers{allY(nInd)};
-        angleWithCentroid = atan2d((allZ(nInd)-centroidYCircle(3)),(allX(nInd)-centroidYCircle(1)));
+        if contains(hType,'B')
+           angleWithCentroid = atan2d((allZ(nInd)-centroidYCircle(1)),(allX(nInd)-centroidYCircle(3)));       
+        else
+           angleWithCentroid = atan2d((allZ(nInd)-centroidYCircle(3)),(allX(nInd)-centroidYCircle(1)));
+        end
         newX=ceil(deg2rad(wrapTo360(angleWithCentroid))*radiusAverage);
         newY=allY(nInd);
         
@@ -29,6 +33,8 @@ function [maskNewCyl] = extrapolate3DCylinder2Dplane(img3D,radii,centers)
             end
             
         end
+%         figure;imshow(maskNewCyl)
+%         close all
     end
 
     

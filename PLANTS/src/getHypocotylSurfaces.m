@@ -14,7 +14,7 @@ function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInf
     end
     
     disp('1 - neighbours calculated')
-    
+     
     %% Get surfaces 1 and 2 with its cells   
     if exist(['data\' sampleName '\cellsAndSurfacesPerLayer.mat'],'file')
         load(['data\' sampleName '\cellsAndSurfacesPerLayer.mat'],'layer1','layer2','layer1Limited','layer2Limited','setOfCells')
@@ -40,22 +40,26 @@ function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInf
         
     disp('2 - layers captured')
     
-    %% Get filled surfaces using the closest point to the wrapping
-   [wrapping1.outerSurface,wrapping1.innerSurface,wrapping2.outerSurface,wrapping2.innerSurface] = fillingLayersColHypocotyl(layer1,layer2,rangeY,resizeFactor,['data\' sampleName '\']);
-    disp('3 - layers closest point')
-    
-    %% Get neighbours of the wrapping
-    if exist(['data\' sampleName '\neighboursInfoClosestPoint.mat'],'file') 
-        load(['data\' sampleName '\neighboursInfoClosestPoint.mat'],'neighbourhoodInfoL1Outer','neighbourhoodInfoL1Inner','neighbourhoodInfoL2Outer','neighbourhoodInfoL2Inner')
-    else
-        [neighbourhoodInfoL1Outer] = calculate_neighbours3D_closestPoint(wrapping1.outerSurface);
-        [neighbourhoodInfoL1Inner] = calculate_neighbours3D_closestPoint(wrapping1.innerSurface);
-        [neighbourhoodInfoL2Outer] = calculate_neighbours3D_closestPoint(wrapping2.outerSurface);
-        [neighbourhoodInfoL2Inner] = calculate_neighbours3D_closestPoint(wrapping2.innerSurface);
-        save(['data\' sampleName '\neighboursInfoClosestPoint.mat'],'-v7.3','neighbourhoodInfoL1Outer','neighbourhoodInfoL1Inner','neighbourhoodInfoL2Outer','neighbourhoodInfoL2Inner')
-    end
-    
-    disp('4 - neighbours closest point')
+%     %% Get filled surfaces using the closest point to the wrapping
+%    [wrapping1.outerSurface,wrapping1.innerSurface,wrapping2.outerSurface,wrapping2.innerSurface] = fillingLayersColHypocotyl(layer1,layer2,rangeY,resizeFactor,['data\' sampleName '\']);
+%     disp('3 - layers closest point')
+wrapping1=[];
+wrapping2=[];
+verticesInfoWrapping1=[];
+verticesInfoWrapping2=[];
+%     
+%     %% Get neighbours of the wrapping
+%     if exist(['data\' sampleName '\neighboursInfoClosestPoint.mat'],'file') 
+%         load(['data\' sampleName '\neighboursInfoClosestPoint.mat'],'neighbourhoodInfoL1Outer','neighbourhoodInfoL1Inner','neighbourhoodInfoL2Outer','neighbourhoodInfoL2Inner')
+%     else
+%         [neighbourhoodInfoL1Outer] = calculate_neighbours3D_closestPoint(wrapping1.outerSurface);
+%         [neighbourhoodInfoL1Inner] = calculate_neighbours3D_closestPoint(wrapping1.innerSurface);
+%         [neighbourhoodInfoL2Outer] = calculate_neighbours3D_closestPoint(wrapping2.outerSurface);
+%         [neighbourhoodInfoL2Inner] = calculate_neighbours3D_closestPoint(wrapping2.innerSurface);
+%         save(['data\' sampleName '\neighboursInfoClosestPoint.mat'],'-v7.3','neighbourhoodInfoL1Outer','neighbourhoodInfoL1Inner','neighbourhoodInfoL2Outer','neighbourhoodInfoL2Inner')
+%     end
+%     
+%     disp('4 - neighbours closest point')
     
     %% Get vertices from surfaces
     if ~exist(['data\' sampleName '\verticesSurfaces.mat'],'file')
@@ -94,45 +98,44 @@ function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInf
         
     disp('5 - vertices captured')
     
-    %% Get vertices from wrapping
-    if ~exist(['data\' sampleName '\verticesWrapping.mat'],'file')
-        verticesInfoWrapping1.Outer=getVertices3D(wrapping1.outerSurface,unique(wrapping1.outerSurface),neighbourhoodInfoL1Outer);
-        verticesInfoWrapping1.Inner=getVertices3D(wrapping1.innerSurface,unique(wrapping1.innerSurface),neighbourhoodInfoL1Inner);
-        verticesInfoWrapping2.Outer=getVertices3D(wrapping2.outerSurface,unique(wrapping2.outerSurface),neighbourhoodInfoL2Outer);
-        verticesInfoWrapping2.Inner=getVertices3D(wrapping2.innerSurface,unique(wrapping2.innerSurface),neighbourhoodInfoL2Inner);
-        save(['data\' sampleName '\verticesWrapping.mat'],'verticesInfoWrapping1','verticesInfoWrapping2')
-    else
-        load(['data\' sampleName '\verticesWrapping.mat'],'verticesInfoWrapping1','verticesInfoWrapping2')
-    end
-        
-    disp('6 - vertices captured in wrapping')
+%     %% Get vertices from wrapping
+%     if ~exist(['data\' sampleName '\verticesWrapping.mat'],'file')
+%         verticesInfoWrapping1.Outer=getVertices3D(wrapping1.outerSurface,unique(wrapping1.outerSurface),neighbourhoodInfoL1Outer);
+%         verticesInfoWrapping1.Inner=getVertices3D(wrapping1.innerSurface,unique(wrapping1.innerSurface),neighbourhoodInfoL1Inner);
+%         verticesInfoWrapping2.Outer=getVertices3D(wrapping2.outerSurface,unique(wrapping2.outerSurface),neighbourhoodInfoL2Outer);
+%         verticesInfoWrapping2.Inner=getVertices3D(wrapping2.innerSurface,unique(wrapping2.innerSurface),neighbourhoodInfoL2Inner);
+%         save(['data\' sampleName '\verticesWrapping.mat'],'verticesInfoWrapping1','verticesInfoWrapping2')
+%     else
+%         load(['data\' sampleName '\verticesWrapping.mat'],'verticesInfoWrapping1','verticesInfoWrapping2')
+%     end
+%         
+%     disp('6 - vertices captured in wrapping')
     
     
     %% Get center and axes length from hypocotyl
     if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'file')
         
         [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(layer1Limited.outerSurface,setOfCells.Layer1,['data\' sampleName '\maskLayers\outerMaskLayer1']);
-        [~, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1Limited.innerSurface,setOfCells.Layer1,['data\' sampleName '\maskLayers\innerMaskLayer1']);
-        [~, radiiBasalLayer2] = calculateCenterRadiusCylSection(layer2Limited.outerSurface,setOfCells.Layer2,['data\' sampleName '\maskLayers\outerMaskLayer2']);
-        [~, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2Limited.innerSurface,setOfCells.Layer2,['data\' sampleName '\maskLayers\innerMaskLayer2']);
-        centers{2}=centers{1};centers{3}=centers{1};centers{4}=centers{1};
+        [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1Limited.innerSurface,setOfCells.Layer1,['data\' sampleName '\maskLayers\innerMaskLayer1']);
+        [centers{3}, radiiBasalLayer2] = calculateCenterRadiusCylSection(layer2Limited.outerSurface,setOfCells.Layer2,['data\' sampleName '\maskLayers\outerMaskLayer2']);
+        [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2Limited.innerSurface,setOfCells.Layer2,['data\' sampleName '\maskLayers\innerMaskLayer2']);
         save(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
         
     end
     
     disp('7 - get centroids and infered cylinder axes')
        
-    %% Get center and axes length from hypocotyl
-    if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZWrapping.mat'],'file')
-
-        [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(wrapping1.outerSurface,unique(wrapping1.outerSurface),['data\' sampleName '\maskLayers\outerWrappingMaskLayer1']);
-        [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(wrapping1.innerSurface,unique(wrapping1.innerSurface),['data\' sampleName '\maskLayers\innerWrappingMaskLayer1']);
-        [centers{3}, radiiBasalLayer2] = calculateCenterRadiusCylSection(wrapping2.outerSurface,unique(wrapping2.outerSurface),['data\' sampleName '\maskLayers\outerWrappingMaskLayer2']);
-        [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(wrapping2.innerSurface,unique(wrapping2.innerSurface),['data\' sampleName '\maskLayers\innerWrappingMaskLayer2']); 
-        save(['data\' sampleName '\maskLayers\certerAndRadiusPerZWrapping.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
-    end
-    
-    disp('8 - get centroids and radius from wrapping cylinder axes')
+%     %% Get center and axes length from hypocotyl
+%     if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZWrapping.mat'],'file')
+% 
+%         [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(wrapping1.outerSurface,unique(wrapping1.outerSurface),['data\' sampleName '\maskLayers\outerWrappingMaskLayer1']);
+%         [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(wrapping1.innerSurface,unique(wrapping1.innerSurface),['data\' sampleName '\maskLayers\innerWrappingMaskLayer1']);
+%         [centers{3}, radiiBasalLayer2] = calculateCenterRadiusCylSection(wrapping2.outerSurface,unique(wrapping2.outerSurface),['data\' sampleName '\maskLayers\outerWrappingMaskLayer2']);
+%         [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(wrapping2.innerSurface,unique(wrapping2.innerSurface),['data\' sampleName '\maskLayers\innerWrappingMaskLayer2']); 
+%         save(['data\' sampleName '\maskLayers\certerAndRadiusPerZWrapping.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
+%     end
+%     
+%     disp('8 - get centroids and radius from wrapping cylinder axes')
     
     
 %     %% draw surfaces
