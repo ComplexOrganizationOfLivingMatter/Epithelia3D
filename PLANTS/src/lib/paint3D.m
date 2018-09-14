@@ -1,12 +1,16 @@
-function [] = paint3D(labelledImage, showingCells)
+function [] = paint3D(varargnin)
 %PAINT3D Summary of this function goes here
 %   Detailed explanation goes here
-
-    colours = colorcube(double(max(labelledImage(:))));
-    colours = colours(randperm(max(labelledImage(:))), :);
-    if isempty(showingCells)
+    if nargin==2 
+        labelledImage=varargnin{1};
+        showingCells=varargnin{2};
+    else
+        labelledImage=varargnin;
         showingCells = 1:max(labelledImage(:));
     end
+    colours = colorcube(double(max(labelledImage(:))));
+    colours = colours(randperm(max(labelledImage(:))), :);
+
     figure;
     for numSeed = showingCells
         % Painting each cell
