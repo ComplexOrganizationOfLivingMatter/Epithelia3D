@@ -53,7 +53,13 @@ If you have to leave and you have not finish the salivary gland, you can always 
 2. Select the folder where you have your images. Remember to have all the directories as explained in the 'Directories hierarchy'.
 3. Go to 'Cells/labelledSequence', where you will find the labelled image for each Z plane.
 4. Find the invalid cells (i.e. cells that does not have the correct neighbours), which will be at the tips of the salivary gland.
-5. When the pop-up dialog shown, insert the numbers of the no valid cells (**comma-sepparted**, e.g. '1, 2, 3, 4').
+5. When the pop-up dialog shown 'Insert the non-valid cells', insert the IDs of the no valid cells (**comma-sepparted**, e.g. '1, 30, 3, 95') and click 'ok!'.
+6. A plot showing from the basal layer (left) and apical (right):
+	1. At top: The layer with all the cells that forms the tube.
+	2. At bottom: The tube in black and the layer with the missing cells. Also in the title there are the ids of the cells.
+7. 
+
+From step to step, it could take some time.
 
 ### Directories hierarchy
 
