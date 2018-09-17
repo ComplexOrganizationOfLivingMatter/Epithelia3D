@@ -27,6 +27,12 @@ If you have to leave and you have not finish the salivary gland, you can always 
 1. Open a ROI Manager.
 2. 'Roi Manager -> More -> Open...'
 
+### Advices
+
+- Save the ROIs often, not just at the end of the pipeline.
+- Prepare yourself using 'shortcuts'.
+- You can show all the ROIs you have created, by pressing 'Show all' in the ROI Manager.
+
 ## Basic lumen's pipeline
 
 1. Segment the lumen of the images, taking a bit more than is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.
@@ -49,7 +55,7 @@ If you have to leave and you have not finish the salivary gland, you can always 
 
 **Solution**: LimeSeg only admits oval ROIs.
 
-- Error: You created a ROI and it is not displayed in the 3D viewer.
+- Error: You created a ROI and it is not displayed in the 3D viewer. You can see if it has not created correctly by inspecting the 'Number of Surefels' is equal to 0 and/or 'Centers' is not a number (NaN).
 
 **Solution 1**: Is the ROI too small? Create a bigger ROI. Smaller ROIs are not captured.
 
@@ -62,12 +68,6 @@ If you have to leave and you have not finish the salivary gland, you can always 
 - Error: The 3D viewer does not finish (you are seing pixels moving and holes in the cells)
 
 **Solution**: 'Plugins -> Limeseg -> Stop optimisation'
-
-### Advices
-
-- Save the ROIs often, not just at the end of the pipeline.
-- Prepare yourself using 'shortcuts'.
-- You can show all the ROIs you have created, by pressing 'Show all' in the ROI Manager.
 
 ### Shortcuts
 
