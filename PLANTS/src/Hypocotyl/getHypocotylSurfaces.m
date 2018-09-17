@@ -43,10 +43,10 @@ function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInf
 %     %% Get filled surfaces using the closest point to the wrapping
 %    [wrapping1.outerSurface,wrapping1.innerSurface,wrapping2.outerSurface,wrapping2.innerSurface] = fillingLayersColHypocotyl(layer1,layer2,rangeY,resizeFactor,['data\' sampleName '\']);
 %     disp('3 - layers closest point')
-wrapping1=[];
-wrapping2=[];
-verticesInfoWrapping1=[];
-verticesInfoWrapping2=[];
+    wrapping1=[];
+    wrapping2=[];
+    verticesInfoWrapping1=[];
+    verticesInfoWrapping2=[];
 %     
 %     %% Get neighbours of the wrapping
 %     if exist(['data\' sampleName '\neighboursInfoClosestPoint.mat'],'file') 
@@ -115,10 +115,10 @@ verticesInfoWrapping2=[];
     %% Get center and axes length from hypocotyl
     if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'file')
         
-        [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(layer1Limited.outerSurface,setOfCells.Layer1,['data\' sampleName '\maskLayers\outerMaskLayer1']);
-        [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1Limited.innerSurface,setOfCells.Layer1,['data\' sampleName '\maskLayers\innerMaskLayer1']);
-        [centers{3}, radiiBasalLayer2] = calculateCenterRadiusCylSection(layer2Limited.outerSurface,setOfCells.Layer2,['data\' sampleName '\maskLayers\outerMaskLayer2']);
-        [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2Limited.innerSurface,setOfCells.Layer2,['data\' sampleName '\maskLayers\innerMaskLayer2']);
+        [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(layer1Limited.outerSurface,['data\' sampleName '\maskLayers\outerMaskLayer1']);
+        [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1Limited.innerSurface,['data\' sampleName '\maskLayers\innerMaskLayer1']);
+        [centers{3}, radiiBasalLayer2] = calculateCenterRadiusCylSection(layer2Limited.outerSurface,['data\' sampleName '\maskLayers\outerMaskLayer2']);
+        [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2Limited.innerSurface,['data\' sampleName '\maskLayers\innerMaskLayer2']);
         save(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
         
     end
@@ -128,10 +128,10 @@ verticesInfoWrapping2=[];
 %     %% Get center and axes length from hypocotyl
 %     if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZWrapping.mat'],'file')
 % 
-%         [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(wrapping1.outerSurface,unique(wrapping1.outerSurface),['data\' sampleName '\maskLayers\outerWrappingMaskLayer1']);
-%         [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(wrapping1.innerSurface,unique(wrapping1.innerSurface),['data\' sampleName '\maskLayers\innerWrappingMaskLayer1']);
-%         [centers{3}, radiiBasalLayer2] = calculateCenterRadiusCylSection(wrapping2.outerSurface,unique(wrapping2.outerSurface),['data\' sampleName '\maskLayers\outerWrappingMaskLayer2']);
-%         [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(wrapping2.innerSurface,unique(wrapping2.innerSurface),['data\' sampleName '\maskLayers\innerWrappingMaskLayer2']); 
+%         [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(wrapping1.outerSurface,['data\' sampleName '\maskLayers\outerWrappingMaskLayer1']);
+%         [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(wrapping1.innerSurface,['data\' sampleName '\maskLayers\innerWrappingMaskLayer1']);
+%         [centers{3}, radiiBasalLayer2] = calculateCenterRadiusCylSection(wrapping2.outerSurface,['data\' sampleName '\maskLayers\outerWrappingMaskLayer2']);
+%         [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(wrapping2.innerSurface,['data\' sampleName '\maskLayers\innerWrappingMaskLayer2']); 
 %         save(['data\' sampleName '\maskLayers\certerAndRadiusPerZWrapping.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
 %     end
 %     
