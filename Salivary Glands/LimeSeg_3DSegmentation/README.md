@@ -13,13 +13,15 @@
 9. Save the cells.
 	1. Plugins -> Limeseg -> Show GUI
 	2. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Cells/OutputLimeSeg/'
-	3. Press 'SaveStateToXmlPly'
+	3. Press 'SaveStateToXmlPly'. A directory will be created for each cell. Don't care about the ids of the cell.
 	
 ### Refining the cells
 
 If a cell is not properly formed, try put the seed closer to the region not covered. You should also consider put a bigger ellipsoidal ROI.
 For this purpose, you can change the ROI characteristics and click 'Update' on the ROI Manager.
 Another option is to create a new ROI and remove the older one.
+
+If the error persists and it is unimprovable, you can always refine the cell boundary in the Matlab's program created by us. 
 
 ### Load results
 
@@ -44,6 +46,21 @@ If you have to leave and you have not finish the salivary gland, you can always 
 5. 2. Plugins -> Limeseg -> Show GUI
 5. 3. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Lumen/OutputLimeSeg/'
 5. 4. Press 'SaveStateToXmlPly'
+
+## Matlab's refining process
+
+1. Execute 'Epithelia3D/Salivary Glands/LimeSeg_3DSegmentation/main.m'
+2. Select the folder you have
+
+### Directories hierarchy
+
+'Cells' -> Save all the information related the cells (ROIs, images...).
+'Cells/OutputLimeSeg' -> Save the cell info from LimeSeg.
+
+'ImageSequence' -> Original image sequence
+
+'Lumen' -> Save here all the information related to the lumen (segmented images of the lumen, ROIs, etc).
+'Lumen/OutputLimeSeg' -> Save the lumen segmented by LimeSeg.
 
 ## TROUBLESHOOTING
 
