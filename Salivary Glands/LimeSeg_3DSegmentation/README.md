@@ -11,9 +11,9 @@
 7. Repeat 2-6 until all the cells have an assigned ROI.
 8. Save the ROIs as a zip. 'Roi Manager -> More -> Save...'
 9. Save the cells.
-9. 1. Plugins -> Limeseg -> Show GUI
-9. 2. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Cells/OutputLimeSeg/'
-9. 3. Press 'SaveStateToXmlPly'
+	1. Plugins -> Limeseg -> Show GUI
+	2. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Cells/OutputLimeSeg/'
+	3. Press 'SaveStateToXmlPly'
 	
 ### Refining the cells
 
