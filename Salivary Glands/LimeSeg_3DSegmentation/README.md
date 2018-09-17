@@ -54,6 +54,9 @@ Error: You created a ROI and it is not displayed in the 3D viewer.
 Error: You see different colours for the same cells
 **Solution**: Clear the 3D viewer. 'Plugins -> Limeseg -> Clear all'
 
+Error: The 3D viewer does not finish (you are seing pixels moving and holes in the cells)
+**Solution**: 'Plugins -> Limeseg -> Stop optimisation'
+
 
 ### Advices
 
