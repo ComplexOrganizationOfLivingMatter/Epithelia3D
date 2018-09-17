@@ -11,9 +11,9 @@
 7. Repeat 2-6 until all the cells have an assigned ROI.
 8. Save the ROIs as a zip. 'Roi Manager -> More -> Save...'
 9. Save the cells:
-	9.1. Plugins -> Limeseg -> Show GUI
-	9.2. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Cells/OutputLimeSeg/'
-	9.3. Press 'SaveStateToXmlPly'
+9.1. Plugins -> Limeseg -> Show GUI
+9.2. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Cells/OutputLimeSeg/'
+9.3. Press 'SaveStateToXmlPly'
 	
 ### Refining the cells
 
@@ -34,10 +34,10 @@ If you have to leave and you have not finish the salivary gland, you can always 
 3. Follow the steps of [LimeSeg](http://imagej.net/LimeSeg) section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton. Select a ROI polygon for each lumen frame.
 4. There has to be a full lumen, with no holes.
 5. Save your results:
-	5.1. First the ROI. 'Roi Manager -> More -> Save...'
-	5.2. Plugins -> Limeseg -> Show GUI
-	5.3. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Lumen/OutputLimeSeg/'
-	5.4. Press 'SaveStateToXmlPly'
+5.1. First the ROI. 'Roi Manager -> More -> Save...'
+5.2. Plugins -> Limeseg -> Show GUI
+5.3. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Lumen/OutputLimeSeg/'
+5.4. Press 'SaveStateToXmlPly'
 
 ## TROUBLESHOOTING
 
