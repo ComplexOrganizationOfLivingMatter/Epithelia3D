@@ -16,14 +16,15 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios, typeOf
         
         %We use L_img a little bit extended for get lateral border
         %vertices.
-        [neighbours, ~] = calculateNeighbours([L_img(:,end-1:end),L_img,L_img(:,1:2)]);
-        [ verticesInfo ] = calculateVertices([L_img(:,end-1:end),L_img,L_img(:,1:2)], neighbours);
-        [ verticesNoValidCellsInfo ] = getVerticesBorderNoValidCells( [L_img(:,end-1:end),L_img,L_img(:,1:2)] );
+        extendedImage = [L_img(:,end-1:end),L_img,L_img(:,1:2)];
+        [neighbours, ~] = calculateNeighbours(extendedImage);
+        [ verticesInfo ] = calculateVertices(extendedImage, neighbours);
+        [ verticesNoValidCellsInfo ] = getVerticesBorderNoValidCells( extendedImage);
         
         %Later we filter for deleting the vertices in the extended zone
-        vertInsideRange=cellfun(@(x) x(2)>2 | x(2)< end-1 ,verticesInfo.verticesPerCell);
+        vertInsideRange=cellfun(@(x) x(2)>2 | x(2) < size(extendedImage, 2)-1 ,verticesInfo.verticesPerCell);
         verticesInfo.verticesPerCell(~vertInsideRange,:)=[];
-        vertNoValCellsInsideRange=cellfun(@(x) x(2)>2 | x(2)< end-1 ,verticesNoValidCellsInfo.verticesPerCell);
+        vertNoValCellsInsideRange=cellfun(@(x) x(2)>2 | x(2)< size(extendedImage, 2)-1 ,verticesNoValidCellsInfo.verticesPerCell);
         verticesNoValidCellsInfo.verticesPerCell(~vertNoValCellsInsideRange,:)=[];
         verticesInfo.verticesPerCell=cellfun(@(x)  [x(1),x(2)-2] ,verticesInfo.verticesPerCell,'UniformOutput',false);
         verticesNoValidCellsInfo.verticesPerCell=cellfun(@(x)  [x(1),x(2)-2] ,verticesNoValidCellsInfo.verticesPerCell,'UniformOutput',false);
