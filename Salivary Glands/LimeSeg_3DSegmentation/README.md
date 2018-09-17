@@ -7,7 +7,7 @@
 3. Plugins -> Limeseg -> Sphere Seg (advanced).
 4. Change parameters (D_0 is optional and Z_Scale is mandatory). Also you should select a color. Tick 'ClearOptimizer'.
 5. Press 'Accept' and wait for the 3D objects to be full and smooth.
-6. **Remember** to clear the 3D viewer each time you run LimeSeg.
+6. **Remember** to clear the 3D viewer each time you run LimeSeg. 'Plugins -> Limeseg -> Clear all'.
 7. Repeat 2-6 until all the cells have an assigned ROI.
 8. Save the ROIs as a zip. 'Roi Manager -> More -> Save...'
 9. Save the cells:
@@ -18,10 +18,14 @@
 ### Refining the cells
 
 If a cell is not properly formed, try put the seed closer to the region not covered. You should also consider put a bigger ellipsoidal ROI.
+For this purpose, you can change the ROI characteristics and click 'Update' on the ROI Manager.
+Another option is to create a new ROI and remove the older one.
 
 ### Load results
 
-To load the results
+If you have to leave and you have not finish the salivary gland, you can always save your work and start over the next day. You only need to load the ROI you previously saved:
+1. Open a ROI Manager.
+2. 'Roi Manager -> More -> Open...'
 
 ## Basic lumen's pipeline
 
@@ -40,16 +44,22 @@ To load the results
 Error: Saving the results using the 'SaveStateToXmlPly' button in the GUI.
 **Solution**: The directory should always be empty.
 
-Error: 
-**Solution**: 
+Error: You have put a non-oval ROI, i.e. intersect ROIs, polygon ROIs, etc.
+**Solution**: LimeSeg only admits oval ROIs.
 
-Error: 
-**Solution**: 
+Error: You created a ROI and it is not displayed in the 3D viewer.
+**Solution 1**: Is the ROI too small? Create a bigger ROI. Smaller ROIs are not captured.
+**Solution 2**: Have you put 2 seeds in the same cell? This could be causing problems.
+
+Error: You see different colours for the same cells
+**Solution**: Clear the 3D viewer. 'Plugins -> Limeseg -> Clear all'
 
 
 ### Advices
 
 - Save the ROIs often, not just at the end of the pipeline.
+- Prepare yourself using 'shortcuts'.
+- You can show all the ROIs you have created, by pressing 'Show all' in the ROI Manager.
 
 ### Shortcuts
 
@@ -61,7 +71,4 @@ F3 -> 'Show Overlay'
 F4 -> 'Hide Overlay'
 
 where the first thing is the key we want to assign and the second is the command.
-
-
-### Directories hierarchy
 
