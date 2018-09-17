@@ -16,10 +16,18 @@
 
 1.- Segment the lumen of the images, taking a bit more than is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.
 2.- Once the lumen is properly segmented, import it to FIJI.
-3.- Follow the steps of http://imagej.net/LimeSeg section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton.
-4.- Save your results.
-6.- The directory should always be empty.
+3.- Follow the steps of http://imagej.net/LimeSeg section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton. Select a ROI polygon for each lumen frame.
+4.- There has to be a full lumen, with no holes.
+5.- Save your results:
+	5.1.- First the ROI. 'Roi Manager -> More -> Save...'
+	5.2.- Plugins -> Limeseg -> Show GUI
+	5.3.- Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Lumen/OutputLimeSeg/'
+	5.4.- Press 'SaveStateToXmlPly'
 
+### Error codes
+
+Error in 
+- The directory should always be empty.
 
 ### Load results
 
