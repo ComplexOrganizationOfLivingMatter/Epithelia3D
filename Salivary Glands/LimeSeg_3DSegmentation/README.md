@@ -53,13 +53,22 @@ If you have to leave and you have not finish the salivary gland, you can always 
 2. Select the folder where you have your images. Remember to have all the directories as explained in the 'Directories hierarchy'.
 3. Go to 'Cells/labelledSequence', where you will find the labelled image for each Z plane.
 4. Find the invalid cells (i.e. cells that does not have the correct neighbours), which will be at the tips of the salivary gland.
-5. When the pop-up dialog shown 'Insert the non-valid cells', insert the IDs of the no valid cells (**comma-sepparted**, e.g. '1, 30, 3, 95') and click 'ok!'.
+5. When the pop-up dialog shown 'Insert the non-valid cells', insert the IDs of the no valid cells (**comma-separated**, e.g. '1, 30, 3, 95') and click 'ok!'.
 6. A plot showing from the basal layer (left) and apical (right):
 	1. At top: The layer with all the cells that forms the tube.
-	2. At bottom: The tube in black and the layer with the missing cells. Also in the title there are the ids of the cells.
-7. 
+	2. At bottom: The tube in black and the layer with the missing cells. Also, in the title there are the ids of the cells.
+7. If there is any missing cell, that means that it does not touch that layer. Therefore, you should change any of the cell's area in its Z planes. For this purpose, you should click on 'Yes' when the dialog 'Do you want to change anything' appears.
+8. Seek for a missing cell and see where it should be touching the lumen or basal layer. This would be the Z plane where the cell is ought to be changed. Select either the whole cell or the new region it should be covering. All the pixels that are in this region, now belong to the selected cell. In addition, Z planes near the actual Z ([-3, +3]), may be changed due to this operation, on the behalf of the smoothness of the 3D cell shape.
+9. Close the window.
+10. If you don't want the new changes, you can discard by clicking in 'No, don't save the changes'. Otherwise, press 'Yes'.
 
 From step to step, it could take some time.
+
+### Tricks
+
+- If you don't want the actual ROI, press again the ROI button.
+- Once you click on 'Save', the only thing you can do if something's wrong, is close the window and press 'No, don't save the changes'.
+- If you change the actual cell id or Z plane, the ROI disappears.
 
 ### Directories hierarchy
 
@@ -91,13 +100,13 @@ From step to step, it could take some time.
 
 **Solution**: Clear the 3D viewer. 'Plugins -> Limeseg -> Clear all'
 
-- Error: The 3D viewer does not finish (you are seing pixels moving and holes in the cells)
+- Error: The 3D viewer does not finish (you are seeing pixels moving and holes in the cells)
 
 **Solution**: 'Plugins -> Limeseg -> Stop optimisation'
 
 ### Shortcuts
 
-We advice to put shortcuts instead of perform all the clicking. To do this, you must 'Plugins -> Shortcuts -> Add shortcut'. We have put:
+We advise to put shortcuts instead of performing all the clicking. To do this, you must 'Plugins -> Shortcuts -> Add shortcut'. We have put:
 
 - F1 -> 'Clear all'
 - F2 -> 'Sphere Seg (advanced)'
@@ -105,4 +114,3 @@ We advice to put shortcuts instead of perform all the clicking. To do this, you 
 - F4 -> 'Hide Overlay'
 
 where the first thing is the key we want to assign and the second is the command.
-
