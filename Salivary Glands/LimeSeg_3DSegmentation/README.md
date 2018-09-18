@@ -1,6 +1,6 @@
 # LimeSeg tutorial
 
-## Basic cell's pipeline
+## Step 1: Basic cell's pipeline
 
 1. Obtain the channel green of the stack and improve the contrast and brightness of all its images.
 2. Select "ellipse" and put an ellipsoidal ROI near the nucleus, but with a slightly bigger radius. Press 'T'.
@@ -35,7 +35,7 @@ If you have to leave and you have not finish the salivary gland, you can always 
 - Prepare yourself using 'shortcuts'.
 - You can show all the ROIs you have created, by pressing 'Show all' in the ROI Manager.
 
-## Basic lumen's pipeline
+## Step 2: Basic lumen's pipeline
 
 1. Segment the lumen of the images, taking a bit more than is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.
 2. Once the lumen is properly segmented, import it to FIJI.
@@ -47,7 +47,7 @@ If you have to leave and you have not finish the salivary gland, you can always 
 	3. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Lumen/OutputLimeSeg/'
 	4. Press 'SaveStateToXmlPly'
 
-## Matlab's refining process
+## Step 3: Matlab's refining process
 
 1. Execute 'Epithelia3D/Salivary Glands/LimeSeg_3DSegmentation/main.m' in Matlab. It is prepared for R2018a.
 2. Select the folder where you have your images. Remember to have all the directories as explained in the 'Directories hierarchy'.
@@ -61,6 +61,7 @@ If you have to leave and you have not finish the salivary gland, you can always 
 8. Seek for a missing cell and see where it should be touching the lumen or basal layer. This would be the Z plane where the cell is ought to be changed. Select either the whole cell or the new region it should be covering. All the pixels that are in this region, now belong to the selected cell. In addition, Z planes near the actual Z ([-3, +3]), may be changed due to this operation, on the behalf of the smoothness of the 3D cell shape.
 9. Close the window.
 10. If you don't want the new changes, you can discard by clicking in 'No, don't save the changes'. Otherwise, press 'Yes'.
+11. Save the polygon distribution of apical and basal in a excel file where all the info is collected.
 
 From step to step, it could take some time.
 
