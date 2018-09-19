@@ -39,7 +39,9 @@ If you have to leave and you have not finish the salivary gland, you can always 
 
 1. Segment the lumen of the images, taking a bit more than is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.
 2. Once the lumen is properly segmented, import it to FIJI.
-3. Follow the steps of [LimeSeg](http://imagej.net/LimeSeg) section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton. Select a ROI polygon for each lumen frame.
+3. Now you have 2 options:
+	1. As if the lumen was a cell, put an spheric ROI, change the parameters (low F_pressure, high D_0) and get a proper lumen.
+	2. Follow the steps of [LimeSeg](http://imagej.net/LimeSeg) section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton. Select a ROI polygon for each lumen frame.
 4. There has to be a full lumen, with no holes.
 5. Save your results:
 	1. First the ROI. 'Roi Manager -> More -> Save...'
