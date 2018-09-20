@@ -11,11 +11,19 @@ function [labelledImage, basalLayer] = processCells(directoryOfCells, resizeImg,
         plyFile = fullfile(cellFiles(numCell).folder, cellFiles(numCell).name, 'T_1.ply');
         ptCloud = pcread(plyFile);
         pixelLocations = round(double(ptCloud.Location)*resizeImg);
-        [labelledImage] = addCellToImage(pixelLocations, labelledImage, numCell);
+        try
+            [labelledImage] = addCellToImage(pixelLocations, labelledImage, numCell);
+        catch ex
+            if isequal(ex.message, 'The alpha shape is empty.')
+                newException = MException(ex.identifier,strcat('There is a cell with no points. Please, check if that cell should have points or, instead, remove the directory: ', cellFiles(numCell).name));
+                throwAsCaller(newException);
+            else
+                throw(ex)
+            end
+        end
         
 %         [x,y,z] = ind2sub(size(labelledImage),find(labelledImage>0));
-%         pcshow([qx(tf),qy(tf),qz(tf)]);
-%         hold on;
+%         pcshow(ptCloud);
     end
     
     %Crop image 3D to minimal bounding box
