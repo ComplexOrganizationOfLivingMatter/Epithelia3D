@@ -24,7 +24,7 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
         labelMask(maskEroded)=nCell;
         maskErodedPerim = bwperim(maskEroded);
         % It is not the perim the zone of 0s or the border
-        dilatedSurroundingCells = imdilate(layerImage~=nCell & layerImage ~= 0, strel('disk', 1));
+        dilatedSurroundingCells = imdilate(layerImage~=nCell, strel('disk', 1));
         perimMask(maskErodedPerim & dilatedSurroundingCells)=1;
     end
     %figure;imshow(labelMask,c)
@@ -53,7 +53,6 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     finalImage=zeros(size(maskWater));
     for nCell = cellsWater'
         finalImage(maskWater==nCell)=labelMask(centroids(nCell,2),centroids(nCell,1));
-       
     end
     %figure;imshow(finalImage,c)
 
