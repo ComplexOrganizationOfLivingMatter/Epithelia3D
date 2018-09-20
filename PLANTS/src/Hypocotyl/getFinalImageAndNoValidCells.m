@@ -4,8 +4,10 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     perimMask=false(size(layerImage));
     
     %open area
+    %This is really doing nothing
     areaValid=bwareaopen(layerImage,15);
     layerImage(~areaValid)=0;
+    %sum(sum(~areaValid & layerImage~=0))
     
     %% delete strange shapes and get perimeters for watershed
     cellsLayer=unique(layerImage);
@@ -16,10 +18,14 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
         mask = zeros(size(labelMask));
         mask(layerImage == nCell) = 1;
         mask = bwareaopen(mask,5);
+        %mask = imfill(mask, 'holes');
         maskDilated = imdilate(mask,strel('disk',3));
         maskEroded = imerode(maskDilated,strel('disk',3));
         labelMask(maskEroded)=nCell;
-        perimMask(bwperim(maskEroded))=1;
+        maskErodedPerim = bwperim(maskEroded);
+        % It is not the perim the zone of 0s or the border
+        dilatedSurroundingCells = imdilate(layerImage~=nCell & layerImage ~= 0, strel('disk', 1));
+        perimMask(maskErodedPerim & dilatedSurroundingCells)=1;
     end
     %figure;imshow(labelMask,c)
     labelMaskPerim=labelMask;
