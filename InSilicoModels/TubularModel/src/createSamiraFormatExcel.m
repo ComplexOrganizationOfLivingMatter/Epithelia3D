@@ -91,7 +91,7 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios, typeOf
                     [~, closestVertex] = sort(matDistance(missingVerticesActual, :));
                     closestVertex(closestVertex == missingVerticesActual) = [];
                     closestVertex = closestVertex(1);
-                    matDistance(missingVerticesActual, closestVertex)
+                    matDistance(missingVerticesActual, closestVertex);
                     if isequal(verticesOfCell(missingVerticesActual, :), verticesOfCell(closestVertex, :)) == 0
                         if isempty(missingVertices)
                             missingVertices = [verticesOfCell(missingVerticesActual, :), verticesOfCell(closestVertex, :)];
@@ -119,9 +119,10 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios, typeOf
                 
                 if any(verticesToReplace) > 0
                     verticesOfCell(verticesToReplace, :) = replaceWith;
-                    verticesOfCell = unique(verticesOfCell, 'rows');
                 end
             end
+            
+            verticesOfCell = unique(verticesOfCell, 'rows');
             
             orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1);
             missingVerticesActual = [];
