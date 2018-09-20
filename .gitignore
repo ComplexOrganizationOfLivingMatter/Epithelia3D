@@ -119,3 +119,4 @@ InSilicoModels/paperCode/SpheroidModel/logFile
 *.ply
 *.mgxm
 *.py
+*.m~
