@@ -107,6 +107,10 @@ From step to step, it could take some time.
 
 **Solution**: 'Plugins -> Limeseg -> Stop optimisation'
 
+- Error: 'There is an empty cell. Please, check if that cell is correct or remove the directory: cell_NumberOfCell'
+
+**Solution**: First, you have to check why that cell appears to have no points. This is probably because you have created the ROI of the cell, but it has disappear throughout the execution of LimeSeg. If that's the case, put that cell correctly and export all the cells again. Otherwise, remove the directory and run the matlab function.
+
 ### Shortcuts
 
 We advise to put shortcuts instead of performing all the clicking. To do this, you must 'Plugins -> Shortcuts -> Add shortcut'. We have put:
