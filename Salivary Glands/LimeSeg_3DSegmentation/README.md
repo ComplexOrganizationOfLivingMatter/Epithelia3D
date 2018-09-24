@@ -2,7 +2,7 @@
 
 ## Step 1: Basic cell's pipeline
 
-1. Obtain the channel green of the stack and improve the contrast and brightness of all its images.
+1. Obtain the channel green of the stack and improve the contrast and brightness of all its images (Image -> Adjust -> Brightness/Contrast).
 2. Select "ellipse" and put an ellipsoidal ROI near the nucleus, but with a slightly bigger radius. Press 'T'.
 3. Plugins -> Limeseg -> Sphere Seg (advanced).
 4. Change parameters (D_0 is optional and Z_Scale is mandatory). Also you should select a color. Tick 'ClearOptimizer'.
