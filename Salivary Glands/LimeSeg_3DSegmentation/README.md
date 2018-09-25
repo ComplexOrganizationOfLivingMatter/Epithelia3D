@@ -5,7 +5,7 @@
 1. Obtain the channel green of the stack and improve the contrast and brightness of all its images (Image -> Adjust -> Brightness/Contrast).
 2. Select "ellipse" and put an ellipsoidal ROI near the nucleus, but with a slightly bigger radius. Press 'T'.
 3. Plugins -> Limeseg -> Sphere Seg (advanced).
-4. Change parameters (D_0 is optional and Z_Scale is mandatory). To calculate Z_Scale you should divide 'Voxel depth'/'Pixel width'. Also you should select a color. Tick 'ClearOptimizer'.
+4. Change parameters (D_0 is optional and Z_Scale is mandatory). To calculate Z_Scale you should divide 'Voxel depth'/'Pixel width': in our case 4.06. Also you should select a color. Tick 'ClearOptimizer'.
 5. Press 'Accept' and wait for the 3D objects to be full and smooth.
 6. **Remember** to clear the 3D viewer each time you run LimeSeg. 'Plugins -> Limeseg -> Clear all'.
 7. Repeat 2-6 until all the cells have an assigned ROI.
