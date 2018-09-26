@@ -1,4 +1,4 @@
-function [polygon_distribution_Apical, polygon_distribution_Basal, polygonDistributions] = pipeline()
+function [polygon_distribution_Apical, polygon_distribution_Basal, polygonDistributions,selpath] = pipeline()
 %PIPELINE Summary of this function goes here
 %   Detailed explanation goes here
     selpath = uigetdir('data');
@@ -15,7 +15,7 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, polygonDistri
 
         tipValue = 4;
 
-        imageSequenceFiles = dir(fullfile(outputDir, 'ImageSequence'));
+        imageSequenceFiles = dir(fullfile(outputDir, 'ImageSequence/*.tif'));
         demoFile =  imageSequenceFiles(3);
         demoImg = imread(fullfile(demoFile.folder, demoFile.name));
 

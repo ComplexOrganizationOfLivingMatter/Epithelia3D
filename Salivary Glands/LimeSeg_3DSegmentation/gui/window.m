@@ -62,7 +62,7 @@ setappdata(0, 'labelledImageTemp', getappdata(0, 'labelledImage'));
 guidata(hObject, handles);
 resizeImg = getappdata(0,'resizeImg');
 outputDir = getappdata(0,'outputDir');
-imageSequenceFiles = dir(fullfile(outputDir, 'ImageSequence'));
+imageSequenceFiles = dir(fullfile(outputDir, 'ImageSequence/*.tif'));
 imageSequence = {};
 
 tipValue = getappdata(0, 'tipValue');

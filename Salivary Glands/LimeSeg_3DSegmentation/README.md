@@ -1,11 +1,11 @@
 # LimeSeg tutorial
 
-## Basic cell's pipeline
+## Step 1: Basic cell's pipeline
 
-1. Obtain the channel green of the stack and improve the contrast and brightness of all its images.
+1. Obtain the channel green of the stack and improve the contrast and brightness of all its images (Image -> Adjust -> Brightness/Contrast).
 2. Select "ellipse" and put an ellipsoidal ROI near the nucleus, but with a slightly bigger radius. Press 'T'.
 3. Plugins -> Limeseg -> Sphere Seg (advanced).
-4. Change parameters (D_0 is optional and Z_Scale is mandatory). Also you should select a color. Tick 'ClearOptimizer'.
+4. Change parameters (D_0 is optional and Z_Scale is mandatory). To calculate Z_Scale you should divide 'Voxel depth'/'Pixel width': in our case 4.06. Also you should select a color. Tick 'ClearOptimizer'.
 5. Press 'Accept' and wait for the 3D objects to be full and smooth.
 6. **Remember** to clear the 3D viewer each time you run LimeSeg. 'Plugins -> Limeseg -> Clear all'.
 7. Repeat 2-6 until all the cells have an assigned ROI.
@@ -35,11 +35,13 @@ If you have to leave and you have not finish the salivary gland, you can always 
 - Prepare yourself using 'shortcuts'.
 - You can show all the ROIs you have created, by pressing 'Show all' in the ROI Manager.
 
-## Basic lumen's pipeline
+## Step 2: Basic lumen's pipeline
 
 1. Segment the lumen of the images, taking a bit more than is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.
 2. Once the lumen is properly segmented, import it to FIJI.
-3. Follow the steps of [LimeSeg](http://imagej.net/LimeSeg) section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton. Select a ROI polygon for each lumen frame.
+3. Now you have 2 options:
+	1. As if the lumen was a cell, put an spheric ROI, change the parameters (low F_pressure, high D_0) and get a proper lumen.
+	2. (OPTION WE ARE USING) Follow the steps of [LimeSeg](http://imagej.net/LimeSeg) section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton. Select a ROI polygon for each lumen frame.
 4. There has to be a full lumen, with no holes.
 5. Save your results:
 	1. First the ROI. 'Roi Manager -> More -> Save...'
@@ -47,7 +49,7 @@ If you have to leave and you have not finish the salivary gland, you can always 
 	3. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Lumen/OutputLimeSeg/'
 	4. Press 'SaveStateToXmlPly'
 
-## Matlab's refining process
+## Step 3: Matlab's refining process
 
 1. Execute 'Epithelia3D/Salivary Glands/LimeSeg_3DSegmentation/main.m' in Matlab. It is prepared for R2018a.
 2. Select the folder where you have your images. Remember to have all the directories as explained in the 'Directories hierarchy'.
@@ -61,6 +63,7 @@ If you have to leave and you have not finish the salivary gland, you can always 
 8. Seek for a missing cell and see where it should be touching the lumen or basal layer. This would be the Z plane where the cell is ought to be changed. Select either the whole cell or the new region it should be covering. All the pixels that are in this region, now belong to the selected cell. In addition, Z planes near the actual Z ([-3, +3]), may be changed due to this operation, on the behalf of the smoothness of the 3D cell shape.
 9. Close the window.
 10. If you don't want the new changes, you can discard by clicking in 'No, don't save the changes'. Otherwise, press 'Yes'.
+11. Save the polygon distribution of apical and basal in a excel file where all the info is collected.
 
 From step to step, it could take some time.
 
@@ -103,6 +106,10 @@ From step to step, it could take some time.
 - Error: The 3D viewer does not finish (you are seeing pixels moving and holes in the cells)
 
 **Solution**: 'Plugins -> Limeseg -> Stop optimisation'
+
+- Error: 'There is an empty cell. Please, check if that cell is correct or remove the directory: cell_NumberOfCell'
+
+**Solution**: First, you have to check why that cell appears to have no points. This is probably because you have created the ROI of the cell, but it has disappear throughout the execution of LimeSeg. If that's the case, put that cell correctly and export all the cells again. Otherwise, remove the directory and run the matlab function.
 
 ### Shortcuts
 
