@@ -12,7 +12,7 @@ function labelMask = assingPixelValuesFromNormalVector(mask,imgLayer,typeLayer)
         xPx = allX(nPx);
         yPx = allY(nPx);
         
-        if imgLayer(xPx,yPx) == 0
+        if imgLayer(yPx,xPx) == 0
         
             % Create a line from point 1 to point 2
             spacing = 0.4;
@@ -46,7 +46,7 @@ function labelMask = assingPixelValuesFromNormalVector(mask,imgLayer,typeLayer)
                 end
                 labelMask(yPx,xPx) = imgLayer(finalY(ind),finalX(ind));
             else
-                labelMask(xPx,yPx) = 0;
+                labelMask(yPx,xPx) = 0;
             end
         else
             labelMask(yPx,xPx) = imgLayer(yPx,xPx);

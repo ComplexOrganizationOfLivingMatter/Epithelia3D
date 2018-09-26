@@ -12,7 +12,7 @@ function [totalImages] = unrollingHypocot(name, path2load,layer1,layer2)
 
         for nImg = 1 : length(setOfImages)
             img3d = setOfImages{nImg};
-            img3d=permute(img3d,[1 3 2]);
+%             img3d=permute(img3d,[1 3 2]);
             img3d(ismember(img3d,noValidCells))=0;
 
             mask3d=false(size(img3d));
