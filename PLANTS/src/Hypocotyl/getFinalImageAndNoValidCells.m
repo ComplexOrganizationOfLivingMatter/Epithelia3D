@@ -27,19 +27,23 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
         dilatedSurroundingCells = imdilate(layerImage~=nCell, strel('disk', 1));
         perimMask(maskErodedPerim & dilatedSurroundingCells)=1;
     end
-    %figure;imshow(labelMask,c)
     labelMaskPerim=labelMask;
+    zerosLabelMask = labelMask==0;
+    zerosLabelMask = bwareaopen(zerosLabelMask,30,4);
+    
+%     figure;imshow(labelMask)
+%     figure;imshow(zerosLabelMask)
     labelMaskPerim(perimMask)=0;
-    %figure;imshow(labelMaskPerim,c)
-    validArea=bwareaopen(labelMaskPerim,20,4);
+%     figure;imshow(labelMaskPerim,c)
+    validArea=bwareaopen(labelMaskPerim,10,4);
     labelMaskPerim(~validArea)=0;
     
     %% Watershed
     maskDist=bwdist(labelMaskPerim>0);
     maskWater=watershed(maskDist,4);
     %figure;imshow(maskWater,c)
-    maskWater(labelMask==0)=0;
-    validArea=bwareaopen(maskWater,20,4);
+    maskWater(zerosLabelMask==1)=0;
+    validArea=bwareaopen(maskWater,10,4);
     maskWater(~validArea)=0;
 
     %figure;imshow(maskWater,c)
@@ -65,7 +69,7 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     validCells = setdiff(unique(finalImage),noValidCells);
     
     noValidCells = noValidCells(noValidCells~=0);
-    %figure;imshow(ismember(finalImage,noValidCells))
+%     figure;imshow(ismember(finalImage,validCells))
 
     
     
