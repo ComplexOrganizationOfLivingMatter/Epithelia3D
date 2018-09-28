@@ -41,7 +41,8 @@ If you have to leave and you have not finish the salivary gland, you can always 
 2. Once the lumen is properly segmented, import it to FIJI.
 3. Now you have 2 options:
 	1. As if the lumen was a cell, put an spheric ROI, change the parameters (low F_pressure, high D_0) and get a proper lumen.
-	2. (OPTION WE ARE USING) Follow the steps of [LimeSeg](http://imagej.net/LimeSeg) section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton. Select a ROI polygon for each lumen frame.
+	2. (OPTION WE ARE USING) Follow the steps of [LimeSeg](http://imagej.net/LimeSeg) section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton. Select a ROI polygon for each lumen frame. It is really important wrap the segmented black lumen locating the polygon ROI over the white zone (never mixing white and black zones). If you have 2 or more separated lumens you should only catch one of them (not more than 1 ROI per Z) . Proper experimental parameters are: D_0 = 10 and F_pressure = 0.01
+	
 4. There has to be a full lumen, with no holes.
 5. Save your results:
 	1. First the ROI. 'Roi Manager -> More -> Save...'
