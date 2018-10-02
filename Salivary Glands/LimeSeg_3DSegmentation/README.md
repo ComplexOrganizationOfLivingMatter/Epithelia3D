@@ -37,7 +37,15 @@ If you have to leave and you have not finish the salivary gland, you can always 
 
 ## Step 2: Basic lumen's pipeline
 
-1. Segment the lumen of the images, taking a bit more that is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.
+1. Segment the lumen of the images, taking a bit more that is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.If you don’t know how to segment the lumen of each image, you can do it with Photoshop following the next steps:
+
+	1. 1.1	Load the image which contains the lumen (file->open->select your image).
+	1. 1.2  Create a new layer (layer->new layer)
+	1. 1.3	Now,you have to select the paint brush at the left screen.
+	1. 1.4  With this function you can segment the lumen point point to point by doing  typing shift key+left click.(
+	you should always locate the segment point of the ROI slightly far from the lumen).
+	1  1.5  After segmenting the lumen, you have to paint the lumen like a black region 
+	
 2. Once the lumen is properly segmented, import it to FIJI.
 3. Now you have 2 options:
 	1. As if the lumen was a cell, put an spheric ROI, change the parameters (low F_pressure, high D_0) and get a proper lumen.
