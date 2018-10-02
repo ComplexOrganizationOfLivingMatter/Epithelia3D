@@ -29,7 +29,7 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     end
     labelMaskPerim=labelMask;
     zerosLabelMask = labelMask==0;
-    zerosLabelMask = bwareaopen(zerosLabelMask,30,4);
+    zerosLabelMask = bwareaopen(zerosLabelMask,70,4);
     
 %     figure;imshow(labelMask)
 %     figure;imshow(zerosLabelMask)

@@ -7,22 +7,34 @@ addpath(genpath('src'))
 for nNam=1:2%length(names)
     if contains(names{nNam},'Hypocot')
         resizeFactor=0.3;
-        rangeY=round([700,1400]*resizeFactor);
+        rangeY=round([700,1400]);
         
+        %% This complex process is only for detecting the cells belonging to each surface
         if ~exist(['data/' names{nNam} '/unrolledHypocotyl.mat'],'file')
-            [layer1,layer2,wrapping1,wrapping2,setOfCells,verticesInfoLayer1,verticesInfoLayer2,verticesInfoWrapping1,verticesInfoWrapping2]=getHypocotylSurfaces(names{nNam},rangeY,resizeFactor);      
-            [unrolledImages] = unrollingHypocot(names{nNam}, '\maskLayers\certerAndRadiusPerZ.mat',layer1,layer2);
-            [~,cellsLayer1,cellsLayer2,~,~]=cleanAndGetMeasurements(['data/' names{nNam} '/'], unrolledImages);
+            [layer1,layer2,wrapping1,wrapping2,setOfCells,verticesInfoLayer1,verticesInfoLayer2,verticesInfoWrapping1,verticesInfoWrapping2]=getHypocotylSurfaces(names{nNam},rangeY*resizeFactor,resizeFactor);      
+            [unrolledImages] = unrollingHypocot(names{nNam},rangeY*resizeFactor,layer1,layer2);
+            [~,cellsLayer1,cellsLayer2,~,~,~,~]=cleanAndGetMeasurements(['data/' names{nNam} '/'], unrolledImages);
             save(['data/' names{nNam} '/unrolledHypocotyl.mat'],'unrolledImages','cellsLayer1','cellsLayer2')
         else
             load(['data/' names{nNam} '/unrolledHypocotyl.mat'],'unrolledImages','cellsLayer1','cellsLayer2')
         end
+        
+        %% Once we have the layer' cells, it is possible get the unrolled Hypocotyl using normal vector extrapolations
+        if ~exist(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'file')
+            %function that fill the Hyp perimeter using the vector imaginary with the centroid
+            [layer1_3D,layer2_3D]=assingCells2maskPerim(names{nNam},resizeFactor,rangeY,cellsLayer1,cellsLayer2);
+            [unrolledImagesQuasiClean] = unrollingHypocot(names{nNam},rangeY,layer1_3D,layer2_3D);
+            save(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'layer1_3D','layer2_3D','unrolledImagesQuasiClean')
 
-        [layer1ImprovingApical,layer2ImprovingApical]=assingCells2maskPerim(names{nNam},resizeFactor,rangeY,cellsLayer1,cellsLayer2);
-        [unrolledImagesForApical] = unrollingHypocot(names{nNam}, '\maskLayers\certerAndRadiusPerZ.mat',layer1ImprovingApical,layer2ImprovingApical);
-        [finalImages,~,~,finalCellsLayer1,finalCellsLayer2]=cleanAndGetMeasurements(['data/' names{nNam} '/'], unrolledImagesForApical);
-        save(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2')
-
+            [finalImages,~,~,finalCellsLayer1,finalCellsLayer2,noValidCellsLayer1,noValidCellsLayer2]=cleanAndGetMeasurements(['data/' names{nNam} '/'], unrolledImagesQuasiClean);
+            save(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2','noValidCellsLayer1','noValidCellsLayer2','-append')
+        else
+            load(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2','noValidCellsLayer1','noValidCellsLayer2')
+        end
+        
+        %% We get the cell properties
+        getGeometricalFeaturesFrom2DImages(['data/' names{nNam} '/'],finalImages,{noValidCellsLayer1,noValidCellsLayer2})
+        
 %         [totalMaskCyl]=extrapolatedImageAndVertices2DCylinder([names{nNam} '\maskLayers\certerAndRadiusPerZ.mat'],layer1,layer2,verticesInfoLayer1,verticesInfoLayer2);
 %         [totalMaskCylWrapping]=extrapolatedImageAndVertices2DCylinder([names{nNam} '\maskLayers\certerAndRadiusPerZWrapping.mat'],wrapping1,wrapping2,verticesInfoWrapping1,verticesInfoWrapping2);
     else

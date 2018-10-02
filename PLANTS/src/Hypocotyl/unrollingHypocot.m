@@ -1,4 +1,4 @@
-function [totalImages] = unrollingHypocot(name, path2load,layer1,layer2)
+function [totalImages] = unrollingHypocot(name,rangeY,layer1,layer2)
 
         setOfImages = {layer1.outerSurface,layer1.innerSurface,layer2.outerSurface,layer2.innerSurface};
         totalImages = cell(length(setOfImages),1);
@@ -10,27 +10,29 @@ function [totalImages] = unrollingHypocot(name, path2load,layer1,layer2)
         uniqueInner2 = unique(layer2.innerSurface) ;
         noValidCells=setdiff(uniqueInner2,uniqueOuter2);
 
+        setLayerNames = {'outerMaskLayer1','innerMaskLayer1','outerMaskLayer2','innerMaskLayer2'};
+        
         for nImg = 1 : length(setOfImages)
             img3d = setOfImages{nImg};
 %             img3d=permute(img3d,[1 3 2]);
             img3d(ismember(img3d,noValidCells))=0;
 
-            mask3d=false(size(img3d));
-            mask3d(img3d>0)=1;
+%             mask3d=false(size(img3d));
+%             mask3d(img3d>0)=1;
+% 
+% 
+%             [x,y,z]=ind2sub(size(mask3d),find(mask3d==1));
+%             shp=alphaShape(x,y,z,200);
+%             %     plot(shp)
+%             [qx,qy,qz]=ind2sub(size(mask3d),find(mask3d>=0));
+%             tf = inShape(shp,qx,qy,qz);
+% 
+%             mask3d=zeros(size(mask3d));
+%             indFilImg=sub2ind(size(mask3d),qx(tf),qy(tf),qz(tf));
+%             mask3d(indFilImg)=1;
 
 
-            [x,y,z]=ind2sub(size(mask3d),find(mask3d==1));
-            shp=alphaShape(x,y,z,200);
-            %     plot(shp)
-            [qx,qy,qz]=ind2sub(size(mask3d),find(mask3d>=0));
-            tf = inShape(shp,qx,qy,qz);
-
-            mask3d=zeros(size(mask3d));
-            indFilImg=sub2ind(size(mask3d),qx(tf),qy(tf),qz(tf));
-            mask3d(indFilImg)=1;
-
-
-            load(['data\' name path2load],'centers')
+            load(['data\' name '\maskLayers\certerAndRadiusPerZ.mat'],'centers')
 
             imgFinalCoordinates=cell(size(img3d,3),1);
             centroids=centers{nImg};
@@ -39,17 +41,18 @@ function [totalImages] = unrollingHypocot(name, path2load,layer1,layer2)
             %         centroidY=mean(cellfun(@(x) x(1),centroids));
 
             for coordZ = 1 : size(img3d,3)
-                centroidCoordZ = centroids{coordZ};
+                centroidCoordZ = centroids{rangeY(1)-1+coordZ};
                 centroidX = centroidCoordZ(3);
                 centroidY = centroidCoordZ(1);
 
-                %% Create perimeter mask
-                mask=false(size(mask3d(:,:,1)));
+                %% Create perimeter mask               
+                mask=false(size(img3d(:,:,1)));
                 mask(img3d(:,:,coordZ)>0)=1;
                 [x,y]=find(mask);
 
-                maskPerim=bwperim(mask3d(:,:,coordZ));
-                [xPerim,yPerim]=find(maskPerim);
+                zPerimMask = imread(['data\' name '\maskLayers\' setLayerNames{nImg} '\' num2str(rangeY(1)-1+coordZ) '.bmp']);
+                zPerimMask=bwperim(zPerimMask);
+                [xPerim,yPerim]=find(zPerimMask);
 
                 %angles coord perim regarding centroid
                 anglePerimCoord = atan2(yPerim - centroidY, xPerim - centroidX);

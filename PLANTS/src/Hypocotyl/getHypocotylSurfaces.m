@@ -61,42 +61,42 @@ function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInf
 %     
 %     disp('4 - neighbours closest point')
     
-    %% Get vertices from surfaces
-    if ~exist(['data\' sampleName '\verticesSurfaces.mat'],'file')
-        verticesInfoLayer1.Outer=getVertices3D(layer1.outerSurface,setOfCells.Layer1,neighbourhoodInfo);
-        verticesInfoLayer1.Outer.verticesPerCell=round(verticesInfoLayer1.Outer.verticesPerCell*resizeFactor);
-        idVertOutlayers=verticesInfoLayer1.Outer.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer1.Outer.verticesPerCell(:,2)>rangeY(2);
-        verticesInfoLayer1.Outer.verticesPerCell(idVertOutlayers,:)=[];
-        verticesInfoLayer1.Outer.verticesPerCell(:,2)=verticesInfoLayer1.Outer.verticesPerCell(:,2)-rangeY(1)+1;
-        verticesInfoLayer1.Outer.verticesConnectCells(idVertOutlayers,:)=[];
-        
-        verticesInfoLayer1.Inner=getVertices3D(layer1.innerSurface,setOfCells.Layer1,neighbourhoodInfo);
-        verticesInfoLayer1.Inner.verticesPerCell=round(verticesInfoLayer1.Inner.verticesPerCell*resizeFactor);
-        idVertOutlayers=verticesInfoLayer1.Inner.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer1.Inner.verticesPerCell(:,2)>rangeY(2);
-        verticesInfoLayer1.Inner.verticesPerCell(idVertOutlayers,:)=[];
-        verticesInfoLayer1.Inner.verticesPerCell(:,2)=verticesInfoLayer1.Inner.verticesPerCell(:,2)-rangeY(1)+1;
-        verticesInfoLayer1.Inner.verticesConnectCells(idVertOutlayers,:)=[];
-
-        verticesInfoLayer2.Outer=getVertices3D(layer1.outerSurface,setOfCells.Layer1,neighbourhoodInfo);
-        verticesInfoLayer2.Outer.verticesPerCell=round(verticesInfoLayer2.Outer.verticesPerCell*resizeFactor);
-        idVertOutlayers=verticesInfoLayer2.Outer.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer2.Outer.verticesPerCell(:,2)>rangeY(2);
-        verticesInfoLayer2.Outer.verticesPerCell(idVertOutlayers,:)=[];
-        verticesInfoLayer2.Outer.verticesPerCell(:,2)=verticesInfoLayer2.Outer.verticesPerCell(:,2)-rangeY(1)+1;
-        verticesInfoLayer2.Outer.verticesConnectCells(idVertOutlayers,:)=[];
-        
-        verticesInfoLayer2.Inner=getVertices3D(layer1.innerSurface,setOfCells.Layer1,neighbourhoodInfo);
-        verticesInfoLayer2.Inner.verticesPerCell=round(verticesInfoLayer2.Inner.verticesPerCell*resizeFactor);
-        idVertOutlayers=verticesInfoLayer2.Inner.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer2.Inner.verticesPerCell(:,2)>rangeY(2);
-        verticesInfoLayer2.Inner.verticesPerCell(idVertOutlayers,:)=[];
-        verticesInfoLayer2.Inner.verticesPerCell(:,2)=verticesInfoLayer2.Inner.verticesPerCell(:,2)-rangeY(1)+1;
-        verticesInfoLayer2.Inner.verticesConnectCells(idVertOutlayers,:)=[];
-        
-        save(['data\' sampleName '\verticesSurfaces.mat'],'verticesInfoLayer1','verticesInfoLayer2')
-    else
-        load(['data\' sampleName '\verticesSurfaces.mat'],'verticesInfoLayer1','verticesInfoLayer2')
-    end
-        
-    disp('5 - vertices captured')
+%     %% Get vertices from surfaces
+%     if ~exist(['data\' sampleName '\verticesSurfaces.mat'],'file')
+%         verticesInfoLayer1.Outer=getVertices3D(layer1.outerSurface,setOfCells.Layer1,neighbourhoodInfo);
+%         verticesInfoLayer1.Outer.verticesPerCell=round(verticesInfoLayer1.Outer.verticesPerCell*resizeFactor);
+%         idVertOutlayers=verticesInfoLayer1.Outer.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer1.Outer.verticesPerCell(:,2)>rangeY(2);
+%         verticesInfoLayer1.Outer.verticesPerCell(idVertOutlayers,:)=[];
+%         verticesInfoLayer1.Outer.verticesPerCell(:,2)=verticesInfoLayer1.Outer.verticesPerCell(:,2)-rangeY(1)+1;
+%         verticesInfoLayer1.Outer.verticesConnectCells(idVertOutlayers,:)=[];
+%         
+%         verticesInfoLayer1.Inner=getVertices3D(layer1.innerSurface,setOfCells.Layer1,neighbourhoodInfo);
+%         verticesInfoLayer1.Inner.verticesPerCell=round(verticesInfoLayer1.Inner.verticesPerCell*resizeFactor);
+%         idVertOutlayers=verticesInfoLayer1.Inner.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer1.Inner.verticesPerCell(:,2)>rangeY(2);
+%         verticesInfoLayer1.Inner.verticesPerCell(idVertOutlayers,:)=[];
+%         verticesInfoLayer1.Inner.verticesPerCell(:,2)=verticesInfoLayer1.Inner.verticesPerCell(:,2)-rangeY(1)+1;
+%         verticesInfoLayer1.Inner.verticesConnectCells(idVertOutlayers,:)=[];
+% 
+%         verticesInfoLayer2.Outer=getVertices3D(layer1.outerSurface,setOfCells.Layer1,neighbourhoodInfo);
+%         verticesInfoLayer2.Outer.verticesPerCell=round(verticesInfoLayer2.Outer.verticesPerCell*resizeFactor);
+%         idVertOutlayers=verticesInfoLayer2.Outer.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer2.Outer.verticesPerCell(:,2)>rangeY(2);
+%         verticesInfoLayer2.Outer.verticesPerCell(idVertOutlayers,:)=[];
+%         verticesInfoLayer2.Outer.verticesPerCell(:,2)=verticesInfoLayer2.Outer.verticesPerCell(:,2)-rangeY(1)+1;
+%         verticesInfoLayer2.Outer.verticesConnectCells(idVertOutlayers,:)=[];
+%         
+%         verticesInfoLayer2.Inner=getVertices3D(layer1.innerSurface,setOfCells.Layer1,neighbourhoodInfo);
+%         verticesInfoLayer2.Inner.verticesPerCell=round(verticesInfoLayer2.Inner.verticesPerCell*resizeFactor);
+%         idVertOutlayers=verticesInfoLayer2.Inner.verticesPerCell(:,2)<rangeY(1) | verticesInfoLayer2.Inner.verticesPerCell(:,2)>rangeY(2);
+%         verticesInfoLayer2.Inner.verticesPerCell(idVertOutlayers,:)=[];
+%         verticesInfoLayer2.Inner.verticesPerCell(:,2)=verticesInfoLayer2.Inner.verticesPerCell(:,2)-rangeY(1)+1;
+%         verticesInfoLayer2.Inner.verticesConnectCells(idVertOutlayers,:)=[];
+%         
+%         save(['data\' sampleName '\verticesSurfaces.mat'],'verticesInfoLayer1','verticesInfoLayer2')
+%     else
+%         load(['data\' sampleName '\verticesSurfaces.mat'],'verticesInfoLayer1','verticesInfoLayer2')
+%     end
+%         
+%     disp('5 - vertices captured')
     
 %     %% Get vertices from wrapping
 %     if ~exist(['data\' sampleName '\verticesWrapping.mat'],'file')
@@ -111,17 +111,19 @@ function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInf
 %         
 %     disp('6 - vertices captured in wrapping')
     
+    verticesInfoLayer1 = [];
+    verticesInfoLayer2 = [];
     
     %% Get center and axes length from hypocotyl
-    if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'file')
+%     if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'file')
         
-        [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(layer1Limited.outerSurface,['data\' sampleName '\maskLayers\outerMaskLayer1']);
-        [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1Limited.innerSurface,['data\' sampleName '\maskLayers\innerMaskLayer1']);
-        [centers{3}, radiiBasalLayer2] = calculateCenterRadiusCylSection(layer2Limited.outerSurface,['data\' sampleName '\maskLayers\outerMaskLayer2']);
-        [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2Limited.innerSurface,['data\' sampleName '\maskLayers\innerMaskLayer2']);
+        [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(layer1.outerSurface,['data\' sampleName '\maskLayers\outerMaskLayer1']);
+        [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1.innerSurface,['data\' sampleName '\maskLayers\innerMaskLayer1']);
+        [centers{3}, radiiBasalLayer2] = calculateCenterRadiusCylSection(layer2.outerSurface,['data\' sampleName '\maskLayers\outerMaskLayer2']);
+        [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2.innerSurface,['data\' sampleName '\maskLayers\innerMaskLayer2']);
         save(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
         
-    end
+%     end
     
     disp('7 - get centroids and infered cylinder axes')
        

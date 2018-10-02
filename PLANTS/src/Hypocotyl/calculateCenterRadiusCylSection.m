@@ -10,7 +10,7 @@ function [centers, radii] = calculateCenterRadiusCylSection(img3d,name2save)
     [qx,qy,qz]=ind2sub(size(mask3d),find(mask3d>=0));
     tf = inShape(shp,qx,qy,qz);
     
-    mask3d=zeros(size(mask3d));
+    mask3d=uint16(zeros(size(mask3d)));
     indFilImg=sub2ind(size(mask3d),qx(tf),qy(tf),qz(tf));
     mask3d(indFilImg)=1;
     

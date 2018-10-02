@@ -7,8 +7,8 @@ function [layer1,layer2] = assingCells2maskPerim(sampleName,resizeFactor,rangeY,
     nameMaskOuter2=['data\' sampleName '\maskLayers\outerMaskLayer2\'];
     
     img3d=uint16(img3d);
-    img3dResized=imresize3(img3d,resizeFactor,'Method','nearest');
-    img3dResizedLimits=img3dResized(:,rangeY(1):rangeY(2),:);
+%     img3dResized=imresize3(img3d,resizeFactor,'Method','nearest');
+    img3dResizedLimits=img3d(:,rangeY(1):rangeY(2),:);
     totalCells=unique(img3dResizedLimits);
     
     cellsNoLayer1=setdiff(totalCells,cellsLayer1);
@@ -28,10 +28,10 @@ function [layer1,layer2] = assingCells2maskPerim(sampleName,resizeFactor,rangeY,
 
     for nY = 1 : size(img3dResizedLimits,2)
         
-        maskInner1=imread([nameMaskInner1 num2str(nY) '.bmp']);
-        maskInner2=imread([nameMaskInner2 num2str(nY) '.bmp']);
-        maskOuter1=imread([nameMaskOuter1 num2str(nY) '.bmp']);
-        maskOuter2=imread([nameMaskOuter2 num2str(nY) '.bmp']);
+        maskInner1=imread([nameMaskInner1 num2str(nY+rangeY(1)-1) '.bmp']);
+        maskInner2=imread([nameMaskInner2 num2str(nY+rangeY(1)-1) '.bmp']);
+        maskOuter1=imread([nameMaskOuter1 num2str(nY+rangeY(1)-1) '.bmp']);
+        maskOuter2=imread([nameMaskOuter2 num2str(nY+rangeY(1)-1) '.bmp']);
         
         imgYLayer1 = permute(maskLayer1(:,nY,:),[1,3,2]); 
         imgYLayer2 = permute(maskLayer2(:,nY,:),[1,3,2]); 
