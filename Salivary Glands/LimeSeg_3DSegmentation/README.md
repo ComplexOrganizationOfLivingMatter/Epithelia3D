@@ -37,11 +37,20 @@ If you have to leave and you have not finish the salivary gland, you can always 
 
 ## Step 2: Basic lumen's pipeline
 
-1. Segment the lumen of the images, taking a bit more that is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.
+1. Segment the lumen of the images, taking a bit more that is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.If you don’t know how to segment the lumen of each image, you can do it with Photoshop following the next steps:
+
+	1. 1.1	Load the image which contains the lumen (file->open->select your image).
+	1. 1.2  Create a new layer (layer->new layer)
+	1. 1.3	Now,you have to select the paint brush at the left screen.
+	1. 1.4  With this function you can segment the lumen point point to point by doing  typing shift key+left click.(
+	you should always locate the segment point of the ROI slightly far from the lumen).
+	1  1.5  After segmenting the lumen, you have to paint the lumen like a black region 
+	
 2. Once the lumen is properly segmented, import it to FIJI.
 3. Now you have 2 options:
 	1. As if the lumen was a cell, put an spheric ROI, change the parameters (low F_pressure, high D_0) and get a proper lumen.
-	2. (OPTION WE ARE USING) Follow the steps of [LimeSeg](http://imagej.net/LimeSeg) section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton. Select a ROI polygon for each lumen frame.
+	2. (OPTION WE ARE USING) Follow the steps of [LimeSeg](http://imagej.net/LimeSeg) section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton. Select a ROI polygon for each lumen frame. It is really important wrap the segmented black lumen locating the polygon ROI over the white zone (never mixing white and black zones). If you have 2 or more separated lumens you should only catch one of them (not more than 1 ROI per Z) . Proper experimental parameters are: D_0 = 10 and F_pressure = -0.01
+	
 4. There has to be a full lumen, with no holes.
 5. Save your results:
 	1. First the ROI. 'Roi Manager -> More -> Save...'

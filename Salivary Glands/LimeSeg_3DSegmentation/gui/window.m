@@ -72,6 +72,8 @@ setappdata(0, 'cellId', 1);
 for numImg = 3:size(imageSequenceFiles, 1)
     actualFile = imageSequenceFiles(numImg);
     actualImg = imread(fullfile(actualFile.folder, actualFile.name));
+    actualImg = flip(actualImg);
+    actualImg = imrotate(actualImg, 270);
     imageSequence(end+1) = {imresize3(actualImg, resizeImg, 'nearest')};
 end
 
