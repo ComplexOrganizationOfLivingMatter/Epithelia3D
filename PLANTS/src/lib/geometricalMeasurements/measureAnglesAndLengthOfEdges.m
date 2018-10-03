@@ -1,4 +1,4 @@
-function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthOfEdges( L_basal,neighs_basal,neighs_apical)
+function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthOfEdges( L_basal,neighs_basal,neighs_apical,noValidCells)
 %MEASUREANGLESANDLENGTHOFEDGES calculate the edge length and angle from all
 %the possible edges classifing between transition and non-transition edges
 
@@ -6,6 +6,9 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     pairOfNeighsBasal=(cellfun(@(x, y) [y*ones(length(x),1),x],neighs_basal',num2cell(1:length(neighs_basal)),'UniformOutput',false));
     uniquePairOfNeighBasal=unique(vertcat(pairOfNeighsBasal{:}),'rows');
     uniquePairOfNeighBasal=unique([min(uniquePairOfNeighBasal,[],2),max(uniquePairOfNeighBasal,[],2)],'rows');
+    %dicard pair of neigh, when the 2 cells are no valid cells
+    uniquePairOfNeighBasal= uniquePairOfNeighBasal(sum(ismember(uniquePairOfNeighBasal,noValidCells),2) < 2,:);
+    
     basalData=struct('edgeLength',zeros(size(uniquePairOfNeighBasal,1),1),'edgeAngle',zeros(size(uniquePairOfNeighBasal,1),1));
     
     %loop dilating all cells

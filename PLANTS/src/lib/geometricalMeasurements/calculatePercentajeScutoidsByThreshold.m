@@ -1,4 +1,4 @@
-function [scutoids,numberOfCellsInNoTransitions,numberOfCellsLossingOrWinning,frequencyOfChangesPerCell] = calculatePercentajeScutoidsByThreshold(validCells,noValidCells,neighApical,neighBasal,totalEdges,thresholdRes)
+function [tableScutoids] = calculatePercentajeScutoidsByThreshold(validCells,noValidCells,neighApical,neighBasal,totalEdges,thresholdRes)
 %CALCULATEPERCENTAJESCUTOIDSBYTHRESHOLD calculate the presence of scutoids
 %that pass the edge length threshold in both layers (apical and basal)
 
@@ -40,32 +40,21 @@ function [scutoids,numberOfCellsInNoTransitions,numberOfCellsLossingOrWinning,fr
             %scutoids
             scutoids=validCells(ismember(validCells,cellsWithTransition));
 
-            winningNeighCells(ismember(winningNeighCells,noValidCells))=[];
-            lossingNeighCells(ismember(lossingNeighCells,noValidCells))=[];
-
-            winningPerCell=cell2mat(arrayfun(@(x) sum(sum(ismember(winningNeighCells,x))),1:numSeeds,'UniformOutput',false));
-            lossingPerCell=cell2mat(arrayfun(@(x) sum(sum(ismember(lossingNeighCells,x))),1:numSeeds,'UniformOutput',false));
-            motifsTransitionPerCell=cell2mat(arrayfun(@(x,y) sum([x,y]),winningPerCell,lossingPerCell,'UniformOutput',false));
+%             winningNeighCells(ismember(winningNeighCells,noValidCells))=[];
+%             lossingNeighCells(ismember(lossingNeighCells,noValidCells))=[];
 
             %number of presences
-            numberOfCellsWinning(1,nSurfRat)=length(unique(winningNeighCells))/length(validCells);
-            numberOfCellsLossing(1,nSurfRat)=length(unique(lossingNeighCells))/length(validCells);
-            numberOfCellsLossingOrWinning(1,nSurfRat)=length(scutoids)/length(validCells);
-            numberOfCellsInNoTransitions(1,nSurfRat)=(1-numberOfCellsLossingOrWinning(1,nSurfRat));
-            frequencyOfChangesPerCell(1,nSurfRat)=mean(motifsTransitionPerCell(validCells));
+            numberOfCellsLossingOrWinning = length(scutoids)/length(validCells);
+            numberOfCellsInNoTransitions = (1-numberOfCellsLossingOrWinning);
+            frequencyOfChangesPerCell = sum(ismember(cellsWithTransition,validCells))/length(validCells);
 
-            %Data for histograms
-            winningNeigh(nSurfRat,:)=[sum(winningPerCell(validCells)==0),sum(winningPerCell(validCells)==1),sum(winningPerCell(validCells)==2),sum(winningPerCell(validCells)==3),sum(winningPerCell(validCells)==4)...
-                sum(winningPerCell(validCells)==5),sum(winningPerCell(validCells)==6),sum(winningPerCell(validCells)==7),sum(winningPerCell(validCells)==8),sum(winningPerCell(validCells)==9),sum(winningPerCell(validCells)==10)]/length(validCells);
-            lossingNeigh(nSurfRat,:)=[sum(lossingPerCell(validCells)==0),sum(lossingPerCell(validCells)==1),sum(lossingPerCell(validCells)==2),sum(lossingPerCell(validCells)==3),sum(lossingPerCell(validCells)==4)...
-                sum(lossingPerCell(validCells)==5),sum(lossingPerCell(validCells)==6),sum(lossingPerCell(validCells)==7),sum(lossingPerCell(validCells)==8),sum(lossingPerCell(validCells)==9),sum(lossingPerCell(validCells)==10)]/length(validCells);
-            transitionPerCell(nSurfRat,:)=[sum(motifsTransitionPerCell(validCells)==0),sum(motifsTransitionPerCell(validCells)==1),sum(motifsTransitionPerCell(validCells)==2),sum(motifsTransitionPerCell(validCells)==3),sum(motifsTransitionPerCell(validCells)==4)...
-                sum(motifsTransitionPerCell(validCells)==5),sum(motifsTransitionPerCell(validCells)==6),sum(motifsTransitionPerCell(validCells)==7),sum(motifsTransitionPerCell(validCells)==8),sum(motifsTransitionPerCell(validCells)==9),sum(motifsTransitionPerCell(validCells)==10)]/length(validCells);
         else
-            numberOfCellsInNoTransitions(1,nSurfRat) = 1;
-            scutoids = [];
+            numberOfCellsInNoTransitions = 1;
+            scutoids = nan;
             numberOfCellsLossingOrWinning = 0;
             frequencyOfChangesPerCell = 0;
         end
+        
+        tableScutoids = array2table([scutoids,numberOfCellsLossingOrWinning,numberOfCellsInNoTransitions,frequencyOfChangesPerCell],'VariableNames',{'scutoidCells','percScutoid','percNoScutoid','transitionsPerCell'});
 
 end
