@@ -16,6 +16,8 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, polygonDistri
         tipValue = 4;
 
         imageSequenceFiles = dir(fullfile(outputDir, 'ImageSequence/*.tif'));
+        NoValidFiles = startsWith({imageSequenceFiles.name},'._','IgnoreCase',true);
+        imageSequenceFiles=imageSequenceFiles(~NoValidFiles);
         demoFile =  imageSequenceFiles(3);
         demoImg = imread(fullfile(demoFile.folder, demoFile.name));
 
