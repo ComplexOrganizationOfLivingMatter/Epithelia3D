@@ -20,15 +20,6 @@ function [labelledImage] = addCellToImage(pixelLocations, labelledImage, numCell
 
     %filledCell = imfill(labelledImage == numCell, [pixelLocations(numPixel, 1)+1, pixelLocations(numPixel, 2)+1, pixelLocations(numPixel, 3)+1], 4);
     
-    cellShape = alphaShape(pixelLocations, 20);
-    [qx,qy,qz]=ind2sub(size(labelledImage),find(labelledImage == 0));
-    try
-        tf = inShape(cellShape,qx,qy,qz);
-        inCellIndices = sub2ind(size(labelledImage), qx(tf), qy(tf), qz(tf));
-        labelledImage(inCellIndices) = numCell;
-        %labelledImage(filledCell) = numCell;
-    catch ex
-        ex.rethrow();
-    end
+    [labelledImage] = smoothObject(labelledImage,pixelLocations, numCell);
 end
 
