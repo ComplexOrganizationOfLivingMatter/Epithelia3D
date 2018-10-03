@@ -6,12 +6,14 @@ addpath(genpath(fullfile('..', '..', 'InSilicoModels', 'TubularModel', 'src')));
 
 close all
 
-TypeOfAnalysis = ChooseTypeOfAnalysis();
-if isequal(TypeOfAnalysis, 'Preliminary')
-    LabelImageSequence
-    TypeOfAnalysis = ChooseTypeOfAnalysis();
-elseif isequal(TypeOfAnalysis, 'Complete')
-    [polygon_distribution_Apical, polygon_distribution_Basal, polygonDistributions,selpath] = pipeline();
-    save(strcat(selpath,'polygon_distribution_Apical.mat'))
-    save(strcat(selpath,'polygon_distribution_Basal.mat'))
+typeOfAnalysis = ChooseTypeOfAnalysis();
+while ~isequal(typeOfAnalysis, '')
+    if isequal(typeOfAnalysis, 'Preliminary')
+        LabelImageSequence();
+    elseif isequal(typeOfAnalysis, 'Complete')
+        [polygon_distribution_Apical, polygon_distribution_Basal, polygonDistributions,selpath] = pipeline();
+        save(strcat(selpath,'polygon_distribution_Apical.mat'))
+        save(strcat(selpath,'polygon_distribution_Basal.mat'))
+    end
+    typeOfAnalysis = ChooseTypeOfAnalysis();
 end

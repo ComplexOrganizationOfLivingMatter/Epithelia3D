@@ -52,7 +52,7 @@ function ChooseTypeOfAnalysis_OpeningFcn(hObject, eventdata, handles, varargin)
 % varargin   command line arguments to ChooseTypeOfAnalysis (see VARARGIN)
 
 % Choose default command line output for ChooseTypeOfAnalysis
-handles.output = 'Yes';
+handles.output = '';
 
 % Update handles structure
 guidata(hObject, handles);
