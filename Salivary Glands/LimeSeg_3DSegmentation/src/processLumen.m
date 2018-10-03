@@ -6,6 +6,7 @@ function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, label
     %pcshow(lumenPC);
     pixelLocations = round(double(lumenPC.Location)*resizeImg);
     lumenImage = zeros(size(labelledImage)-((tipValue+1)*2));
+    lumenImage = imrotate(lumenImage, -270);
     [lumenImage] = addCellToImage(pixelLocations, lumenImage, 1);
     lumenImage = addTipsImg3D(tipValue+1, lumenImage);
     lumenImage = double(lumenImage);
