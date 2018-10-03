@@ -1,4 +1,4 @@
-function [finalImages,cellsLayer1Outer,cellsLayer2Outer,cellsLayer1,cellsLayer2,noValidCellsLayer1,noValidCellsLayer2]=cleanAndGetMeasurements(name2save,deployedImg)
+function [finalImages,cellsLayer1Outer,cellsLayer2Outer,cellsLayer1,cellsLayer2,noValidCellsLayer1,noValidCellsLayer2]=cleanUnrolledImages(name2save,deployedImg)
 
     layer1Outer=deployedImg{1};
     layer1Inner=deployedImg{2};
