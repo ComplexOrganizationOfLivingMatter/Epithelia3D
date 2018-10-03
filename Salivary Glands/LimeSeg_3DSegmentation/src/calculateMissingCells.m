@@ -3,6 +3,7 @@ function [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsB
 %   Detailed explanation goes here
 
     allCells = unique(labelledImage(:));
+    allCells(allCells == 0) = [];
     
     [apical3dInfo] = calculateNeighbours3D(apicalLayer);
     if length(allCells) ~= length(apical3dInfo.neighbourhood)
