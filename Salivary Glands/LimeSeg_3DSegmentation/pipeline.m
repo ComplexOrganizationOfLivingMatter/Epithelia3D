@@ -56,18 +56,17 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, polygonDistri
                 [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
 
                 [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
-
-                validCells = setdiff(1:max(labelledImage(:)), noValidCells);
-
-                [polygon_distribution_Apical] = calculate_polygon_distribution(cellfun(@length, apical3dInfo.neighbourhood), validCells);
-                [polygon_distribution_Basal] = calculate_polygon_distribution(cellfun(@length, basal3dInfo.neighbourhood), validCells);
-                polygonDistributions = {apical3dInfo.neighbourhood(validCells), basal3dInfo.neighbourhood(validCells)};
-                
-                
             else
                 [answer] = isEverythingCorrect();
             end
         end
+        
+        %% Calculate neighbours and plot missing cells
+        validCells = setdiff(1:max(labelledImage(:)), noValidCells);
+        
+        [polygon_distribution_Apical] = calculate_polygon_distribution(cellfun(@length, apical3dInfo.neighbourhood), validCells);
+        [polygon_distribution_Basal] = calculate_polygon_distribution(cellfun(@length, basal3dInfo.neighbourhood), validCells);
+        polygonDistributions = {apical3dInfo.neighbourhood(validCells), basal3dInfo.neighbourhood(validCells)};
     end
 end
 
