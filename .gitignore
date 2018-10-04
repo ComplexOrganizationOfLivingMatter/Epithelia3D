@@ -121,3 +121,4 @@ InSilicoModels/paperCode/SpheroidModel/logFile
 *.py
 *.m~
 *.rtf
+*.nd2
