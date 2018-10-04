@@ -1,4 +1,4 @@
-function [layer1,layer2] = assingCells2maskPerim(sampleName,resizeFactor,rangeY,cellsLayer1,cellsLayer2)
+function [layer1,layer2] = assingCells2maskPerim(sampleName,rangeY,cellsLayer1,cellsLayer2)
 
     load(['data\' sampleName '\image3d_' strrep(sampleName,' ','_') '.mat'],'img3d');
     nameMaskInner1=['data\' sampleName '\maskLayers\innerMaskLayer1\'];
