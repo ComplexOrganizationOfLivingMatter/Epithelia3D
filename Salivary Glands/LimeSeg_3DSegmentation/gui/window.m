@@ -71,7 +71,7 @@ tipValue = getappdata(0, 'tipValue');
 setappdata(0, 'selectedZ', 1+tipValue+1);
 setappdata(0, 'cellId', 1);
 
-for numImg = 3:size(imageSequenceFiles, 1)
+for numImg = 1:size(imageSequenceFiles, 1)
     actualFile = imageSequenceFiles(numImg);
     actualImg = imread(fullfile(actualFile.folder, actualFile.name));
     actualImg = flip(actualImg);
