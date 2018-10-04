@@ -1,10 +1,13 @@
-function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInfoLayer1,verticesInfoLayer2,verticesInfoWrapping1,verticesInfoWrapping2] = getHypocotylSurfaces(sampleName,rangeY,resizeFactor)
+function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInfoLayer1,verticesInfoLayer2,verticesInfoWrapping1,verticesInfoWrapping2] = getHypocotylSurfaces(sampleName,rangeY,resizeFactor,zScaleFactorHyp)
 
     disp(sampleName)
 
     load(['data\' sampleName '\image3d_' strrep(sampleName,' ','_') '.mat'],'img3d');
-    img3d=uint16(img3d);
-
+%% only apply these 3 lines of code the first time 
+    %     img3d=uint16(img3d);
+%     img3d=imresize3(img3d,[size(img3d,1),size(img3d,2),size(img3d,3)/zScaleFactorHyp],'nearest');
+%     save(['data\' sampleName '\image3d_' strrep(sampleName,' ','_') '.mat'],'img3d');
+%     
     %% Get neighbours 3d
     if ~exist(['data\' sampleName '\neighboursInfo.mat'],'file')
         [neighbourhoodInfo] = calculate_neighbours3D(img3d);
@@ -115,7 +118,7 @@ function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInf
     verticesInfoLayer2 = [];
     
     %% Get center and axes length from hypocotyl
-%     if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'file')
+    if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'file')
         
         [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(layer1.outerSurface,['data\' sampleName '\maskLayers\outerMaskLayer1']);
         [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1.innerSurface,['data\' sampleName '\maskLayers\innerMaskLayer1']);
@@ -123,7 +126,7 @@ function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInf
         [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2.innerSurface,['data\' sampleName '\maskLayers\innerMaskLayer2']);
         save(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
         
-%     end
+    end
     
     disp('7 - get centroids and infered cylinder axes')
        
