@@ -3,7 +3,8 @@ function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, label
 %   Detailed explanation goes here
 
     lumenStack = dir(fullfile(lumenDir, 'SegmentedLumen', '*.tif'));
-    
+    NoValidFiles = startsWith({lumenStack.name},'._','IgnoreCase',true);
+    lumenStack=lumenStack(~NoValidFiles);
     lumenImage = zeros(size(labelledImage)-((tipValue+1)*2));
     lumenImage = imrotate(lumenImage, -270);
     for numZ = 1:size(lumenStack, 1)
