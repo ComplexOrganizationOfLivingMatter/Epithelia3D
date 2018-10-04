@@ -46,7 +46,7 @@ function [tableScutoids] = calculatePercentajeScutoidsByThreshold(validCells,noV
             %number of presences
             numberOfCellsLossingOrWinning = length(scutoids)/length(validCells);
             numberOfCellsInNoTransitions = (1-numberOfCellsLossingOrWinning);
-            frequencyOfChangesPerCell = sum(ismember(cellsWithTransition,validCells))/length(validCells);
+            frequencyOfChangesPerCell = sum(ismember(cellsWithTransition(:),validCells))/length(validCells);
 
         else
             numberOfCellsInNoTransitions = 1;
@@ -55,6 +55,6 @@ function [tableScutoids] = calculatePercentajeScutoidsByThreshold(validCells,noV
             frequencyOfChangesPerCell = 0;
         end
         
-        tableScutoids = array2table([scutoids,numberOfCellsLossingOrWinning,numberOfCellsInNoTransitions,frequencyOfChangesPerCell],'VariableNames',{'scutoidCells','percScutoid','percNoScutoid','transitionsPerCell'});
+        tableScutoids = cell2table([{scutoids},{numberOfCellsLossingOrWinning},{numberOfCellsInNoTransitions},{frequencyOfChangesPerCell}],'VariableNames',{'scutoidCells','percScutoid','percNoScutoid','transitionsPerCell'});
 
 end
