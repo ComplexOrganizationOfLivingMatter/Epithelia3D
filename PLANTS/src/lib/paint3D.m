@@ -4,13 +4,18 @@ function [] = paint3D(varargin)
     if nargin==2 
         labelledImage=varargin{1};
         showingCells=varargin{2};
-        
+        colours = colorcube(double(max(labelledImage(:))));
+        colours = colours(randperm(max(labelledImage(:))), :);
+    elseif nargin == 3
+        labelledImage=varargin{1};
+        showingCells=varargin{2};
+        colours=varargin{3};
     else
         labelledImage=varargin;
         showingCells = 1:max(labelledImage(:));
+        colours = colorcube(double(max(labelledImage(:))));
+        colours = colours(randperm(max(labelledImage(:))), :);
     end
-    colours = colorcube(double(max(labelledImage(:))));
-    colours = colours(randperm(max(labelledImage(:))), :);
 
     figure;
     for numSeed = unique(showingCells)'
