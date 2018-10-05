@@ -6,7 +6,7 @@ function [layer1Limited,layer2Limited,wrapping1,wrapping2,setOfCells,verticesInf
 %% only apply these 3 lines of code the first time 
     %     img3d=uint16(img3d);
 %     img3d=imresize3(img3d,[size(img3d,1),size(img3d,2),size(img3d,3)/zScaleFactorHyp],'nearest');
-%     save(['data\' sampleName '\image3d_' strrep(sampleName,' ','_') '.mat'],'img3d');
+%     save(['data\' sampleName '\image3d_' strrep(sampleName,' ','_') '.mat'],'img3d','-v7.3');
 %     
     %% Get neighbours 3d
     if ~exist(['data\' sampleName '\neighboursInfo.mat'],'file')
