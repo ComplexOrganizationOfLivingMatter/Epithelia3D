@@ -72,7 +72,6 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
 %         noValidCells = unique([L_img(:, 1)', L_img(1, :), L_img(:, end)', L_img(end, :)]);
 %         
 %         validCells = setdiff(1:maxCells, noValidCells);
-        figure('Visible', 'off', 'units','normalized','outerposition',[0 0 1 1]);
         faceColours = [1 1 1; 1 1 0; 1 0.5 0];
         edgeColours = [0 0 1; 0 1 0];
         
@@ -140,44 +139,40 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
             % I.e. from bigger numbers to smaller ones
             % Or the second vertex should in the left hand of the first
             [newOrderX, newOrderY] = poly2cw(verticesOfCell(orderBoundary(1:end-1), 1), verticesOfCell(orderBoundary(1:end-1), 2));
-            
-            faceColour = faceColours(cellWithVertices{numCell, 5}+1, :); 
-            patch(newOrderX, newOrderY, faceColour);
-            hold on;
-            
-            text(mean(newOrderX) - 20, mean(newOrderY), num2str(cellWithVertices{numCell, 3}));
-            
             verticesRadius = [];
-            previousVertex = [newOrderX(end), newOrderY(end)];
-            
-            edgeColour = edgeColours(cellWithVertices{numCell, 4}+1, :);
+           
             for numVertex = 1:length(newOrderX)
-                plot([previousVertex(1), newOrderX(numVertex)], [previousVertex(2), newOrderY(numVertex)], 'Color', edgeColour, 'LineWidth', 3);
-                hold on;
-                plot(newOrderX(numVertex), newOrderY(numVertex), '*r')
-                previousVertex = [newOrderX(numVertex), newOrderY(numVertex)];
                 verticesRadius(end+1) = newOrderX(numVertex);
                 verticesRadius(end+1) = newOrderY(numVertex);
             end
-            for numMissingVertex = missingVerticesActual
-                plot(verticesOfCell(numMissingVertex, 1), verticesOfCell(numMissingVertex, 2), 'Oc')
-            end
+           
+            cellsVoronoi = [nSurfR, cellWithVertices{numCell, 3:5}, {verticesRadius}];
+            samiraTableVoronoi = [samiraTableVoronoi; cellsVoronoi];
             
-            samiraTableVoronoi = [samiraTableVoronoi; nSurfR, cellWithVertices{numCell, 3:5}, {verticesRadius}];
+            
         end
-        
+        %Plot and save vertices simulations
+        plotVerticesPerSurfaceRatio(samiraTableVoronoi((end-numCell+1):end,:),dir2save,nameSplitted,'Voronoi',nSurfR)
+            
         if nSurfR == 1
             samiraTableFrusta = samiraTableVoronoi(:,1:4);
             verticesSR1=samiraTableVoronoi(:,5);
             samiraTableFrustaSR = samiraTableVoronoi;
+            samiraTableFrusta_SRColumn = cellfun(@(x) round(x*nSurfR),samiraTableFrusta(:,1),'UniformOutput',false);
         else
             samiraTableFrusta_SRColumn = cellfun(@(x) round(x*nSurfR),samiraTableFrusta(:,1),'UniformOutput',false);
             verticesSR_frusta = cellfun(@(x) round([x(1:2:length(x)-1);x(2:2:length(x))*nSurfR]),verticesSR1,'UniformOutput',false);
             verticesSR_frusta = cellfun(@(x) x(:)',verticesSR_frusta,'UniformOutput',false);
-            samiraTableFrustaSR =  [samiraTableFrustaSR;samiraTableFrusta_SRColumn,samiraTableFrusta(:,2:4),verticesSR_frusta];
+            cellsFrusta = [samiraTableFrusta_SRColumn,samiraTableFrusta(:,2:4),verticesSR_frusta];
+            samiraTableFrustaSR =  [samiraTableFrustaSR;cellsFrusta];
+            
+            %Plot frusta
+            plotVerticesPerSurfaceRatio(cellsFrusta,dir2save,nameSplitted,'Frusta',nSurfR)
+
         end
         
-        print(strcat(dir2save, '\plot_Voronoi_realization', nameSplitted{2} , '_SurfaceRatio_', num2str(nSurfR), '_', date, '.png'), '-dpng', '-r300');
+        
+        
     end
     samiraTableVoronoiT = cell2table(samiraTableVoronoi, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
     samiraTableFrustaT = cell2table(samiraTableFrustaSR, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
