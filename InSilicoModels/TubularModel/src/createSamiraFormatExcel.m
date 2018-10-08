@@ -2,7 +2,7 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios, typeOf
 %CREATESAMIRAFORMATEXCEL Summary of this function goes here
 %   Detailed explanation goes here
 %
-%   Example: createSamiraFormatExcel('..\data\tubularVoronoiModel\expansion\2048x4096_200seeds\Image_2_Diagram_5\', 1.6667)
+%   Example: createSamiraFormatExcel('..\data\tubularVoronoiModel\expansion\2048x4096_200seeds\Image_2_Diagram_5\', 1.6667, 'Frusta')
     addpath(genpath('lib'))
     
     maxDistance = 4;
