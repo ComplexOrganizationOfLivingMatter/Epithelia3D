@@ -161,9 +161,21 @@ function [samiraTable] = createSamiraFormatExcel(pathFile, surfaceRatios, typeOf
             
             samiraTable = [samiraTable; nSurfR, cellWithVertices{numCell, 3:5}, {verticesRadius}];
         end
-        print(strcat(strjoin(pathSplitted(1:end-2), '\'), '\plot_', typeOfSimulation, '_realization', nameSplitted{2} , '_SurfaceRatio_', num2str(nSurfR), '_', date, '.png'), '-dpng', '-r300');
+        
+        if nSurfR == 1
+            
+            samiraTableFrusta = samiraTable(:,1:4);
+            verticesSR1=samiraTable(:,5);
+            samiraTableFrustaSR = samiraTable;
+            
+        else
+            verticesSR_frusta = cellfun(@(x) x(2:2:length(x))*nSurfR,verticesSR1);
+            samiraTableFrustaSR =  [samiraTableFrustaSR;samiraTableFrusta,verticesSR_frusta];
+        end
+        
+        print(strcat(strjoin(pathSplitted(1:end-2), '\'), '\plot_Voronoi_realization', nameSplitted{2} , '_SurfaceRatio_', num2str(nSurfR), '_', date, '.png'), '-dpng', '-r300');
     end
     samiraTableT = cell2table(samiraTable, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
     
-    writetable(samiraTableT, strcat(strjoin(pathSplitted(1:end-2), '\'), '\', typeOfSimulation, '_realization', nameSplitted{2} ,'_samirasFormat_', date, '.xls'));
+    writetable(samiraTableT, strcat(strjoin(pathSplitted(1:end-2), '\'), '\Voronoi_realization', nameSplitted{2} ,'_samirasFormat_', date, '.xls'));
 end
