@@ -29,7 +29,7 @@ for nNam=1:2%length(names)
             [unrolledImagesQuasiClean] = unrollingHypocot(names{nNam},rangeY,layer1_3D,layer2_3D);
             save(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'layer1_3D','layer2_3D','unrolledImagesQuasiClean')
 
-            [finalImages,~,~,finalCellsLayer1,finalCellsLayer2,noValidCellsLayer1,noValidCellsLayer2]=cleanUnrolledImage(['data/' names{nNam} '/'], unrolledImagesQuasiClean);
+            [finalImages,~,~,finalCellsLayer1,finalCellsLayer2,noValidCellsLayer1,noValidCellsLayer2]=cleanUnrolledImages(['data/' names{nNam} '/'], unrolledImagesQuasiClean);
             save(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2','noValidCellsLayer1','noValidCellsLayer2','-append')
 %         else
 %             load(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2','noValidCellsLayer1','noValidCellsLayer2')
