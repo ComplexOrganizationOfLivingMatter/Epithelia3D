@@ -23,7 +23,7 @@ function LabelImageSequence()
 
         [labelledImage] = processCells(fullfile(outputDir, 'Cells', filesep), resizeImg, imgSize, tipValue);
 
-        exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledImage', filesep), [], tipValue);
+        exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), [], tipValue);
     end
 end
 
