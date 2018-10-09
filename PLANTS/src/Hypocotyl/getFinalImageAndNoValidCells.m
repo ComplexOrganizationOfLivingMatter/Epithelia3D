@@ -5,7 +5,7 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     
     %open area
     %This is really doing nothing
-    areaValid=bwareaopen(layerImage,15);
+    areaValid=bwareaopen(layerImage,50);
     layerImage(~areaValid)=0;
     %sum(sum(~areaValid & layerImage~=0))
     
@@ -35,7 +35,7 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
 %     figure;imshow(zerosLabelMask)
     labelMaskPerim(perimMask)=0;
 %     figure;imshow(labelMaskPerim,c)
-    validArea=bwareaopen(labelMaskPerim,10,4);
+    validArea=bwareaopen(labelMaskPerim,50,4);
     labelMaskPerim(~validArea)=0;
     
     %% Watershed
