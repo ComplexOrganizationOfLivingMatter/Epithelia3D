@@ -158,7 +158,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
             samiraTableFrusta = samiraTableVoronoi(:,1:4);
             verticesSR1=samiraTableVoronoi(:,5);
             samiraTableFrustaSR = samiraTableVoronoi;
-            samiraTableFrusta_SRColumn = cellfun(@(x) round(x*nSurfR),samiraTableFrusta(:,1),'UniformOutput',false);
+            samiraTableFrusta_SRColumn = cellfun(@(x) x*nSurfR,samiraTableFrusta(:,1),'UniformOutput',false);
         else
             samiraTableFrusta_SRColumn = cellfun(@(x) round(x*nSurfR),samiraTableFrusta(:,1),'UniformOutput',false);
             verticesSR_frusta = cellfun(@(x) round([x(1:2:length(x)-1);x(2:2:length(x))*nSurfR]),verticesSR1,'UniformOutput',false);
