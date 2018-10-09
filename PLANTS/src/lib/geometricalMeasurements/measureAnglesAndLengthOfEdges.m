@@ -1,4 +1,4 @@
-function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthOfEdges( L_basal,neighs_basal,neighs_apical,noValidCells)
+function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthOfEdges( L_basal,neighs_basal,neighs_apical,noValidCells,neighThres)
 %MEASUREANGLESANDLENGTHOFEDGES calculate the edge length and angle from all
 %the possible edges classifing between transition and non-transition edges
 
@@ -13,19 +13,24 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     
     %loop dilating all cells
     cellsDilated=cell(max(max(uniquePairOfNeighBasal)),1);
-    se=strel('disk',2);
+    se=strel('disk',neighThres-2);
     for nCell=unique(uniquePairOfNeighBasal)'
-     mask=zeros(size(L_basal));
-     mask(L_basal==nCell)=1;
-     cellsDilated{nCell}=logical(imdilate(mask,se));
+        mask=zeros(size(L_basal));
+        mask(L_basal==nCell)=1;
+        cellsDilated{nCell}=logical(imdilate(mask,se));
     end
     
     %loop to get edge length and angle for each pair of neighborings
     for nCell=1:size(uniquePairOfNeighBasal,1)
         mask=cellsDilated{uniquePairOfNeighBasal(nCell,1)}.*cellsDilated{uniquePairOfNeighBasal(nCell,2)};
         edge1=regionprops(mask,'MajorAxisLength','Orientation');
-        basalData(nCell).edgeLength=sum(vertcat(edge1.MajorAxisLength));
-        basalData(nCell).edgeAngle=edge1.Orientation;
+%         if isempty(edge1)
+%             basalData.edgeLength(nCell)=nan;
+%             basalData.edgeAngle(nCell)=nan;
+%         else
+            basalData.edgeLength(nCell)=sum(vertcat(edge1.MajorAxisLength));
+            basalData.edgeAngle(nCell)=edge1.Orientation;
+%         end
     end
     
     %get edges of transitions
@@ -39,12 +44,12 @@ function [ basalDataTransition,basalDataNoTransition ] = measureAnglesAndLengthO
     
     %define transition edge length and angle
     basalDataTransition=struct('edgeLength',zeros(sum(indexesEdgesTransition),1),'edgeAngle',zeros(sum(indexesEdgesTransition),1));
-    basalDataTransition.edgeLength=cat(1,basalData(indexesEdgesTransition).edgeLength);
-    basalDataTransition.edgeAngle=abs(cat(1,basalData(indexesEdgesTransition).edgeAngle));
+    basalDataTransition.edgeLength=cat(1,basalData.edgeLength(indexesEdgesTransition));
+    basalDataTransition.edgeAngle=abs(cat(1,basalData.edgeAngle(indexesEdgesTransition)));
     
     %define no transition transition edge length and angle
-    basalDataNoTransition.edgeLength=cat(1,basalData(logical(1-indexesEdgesTransition)).edgeLength);
-    basalDataNoTransition.edgeAngle=abs(cat(1,basalData(logical(1-indexesEdgesTransition)).edgeAngle));
+    basalDataNoTransition.edgeLength=cat(1,basalData.edgeLength(logical(1-indexesEdgesTransition)));
+    basalDataNoTransition.edgeAngle=abs(cat(1,basalData.edgeAngle(logical(1-indexesEdgesTransition))));
     
     %basalDataTransition
     anglesTransition=cat(1,basalDataTransition(:).edgeAngle);

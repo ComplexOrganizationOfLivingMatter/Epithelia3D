@@ -15,8 +15,8 @@ function getGeometricalFeaturesFrom2DImages(name2save,finalImagesPerLayer,noVali
     validCells = validCells(validCells~=0);
 
     %neighbours in apical and basal
-    neighBasal = calculateNeighbours(basalLayer, neighRadius);
-    neighApical = calculateNeighbours(apicalLayer, neighRadius);
+    neighBasal = calculateNeighbours(basalLayer, ceil(thresholdRes));
+    neighApical = calculateNeighbours(apicalLayer, ceil(neighRadius));
 
     %calculate polygon distribution
     [polyDistBasal]=calculate_polygon_distribution( cellfun(@(x) length(x), neighBasal), validCells );
@@ -26,8 +26,8 @@ function getGeometricalFeaturesFrom2DImages(name2save,finalImagesPerLayer,noVali
 
     
     %measure edge length and angles
-    [ totalEdges.basalTransition, totalEdges.basalNoTransition ] = measureAnglesAndLengthOfEdges( basalLayer,neighBasal,neighApical,noValidCells);
-    [ totalEdges.apicalTransition, totalEdges.apicalNoTransition ] = measureAnglesAndLengthOfEdges( apicalLayer,neighApical,neighBasal,noValidCells);
+    [ totalEdges.basalTransition, totalEdges.basalNoTransition ] = measureAnglesAndLengthOfEdges( basalLayer,neighBasal,neighApical,noValidCells,ceil(thresholdRes));
+    [ totalEdges.apicalTransition, totalEdges.apicalNoTransition ] = measureAnglesAndLengthOfEdges( apicalLayer,neighApical,neighBasal,noValidCells,ceil(thresholdRes));
 
     %calculate number of scutoids
     [tableScutoids] = calculatePercentajeScutoidsByThreshold(validCells,noValidCells,neighApical,neighBasal,totalEdges,thresholdRes);
