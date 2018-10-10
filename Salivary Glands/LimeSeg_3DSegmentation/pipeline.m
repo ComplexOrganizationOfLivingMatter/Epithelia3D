@@ -1,4 +1,4 @@
-function [validCells,polygon_distribution_Apical, polygon_distribution_Basal, polygonDistributions,selpath] = pipeline()
+function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribution_Basal, polygonDistributions,selpath] = pipeline()
 %PIPELINE Summary of this function goes here
 %   Detailed explanation goes here
     selpath = uigetdir('data');
@@ -60,6 +60,8 @@ function [validCells,polygon_distribution_Apical, polygon_distribution_Basal, po
                 [answer] = isEverythingCorrect();
             end
         end
+        %% Save apical and basal 3d information
+        save(fullfile(selpath,'3d_layers_info.mat'), 'labelledImage', 'basalLayer', 'apicalLayer', 'apical3dInfo', 'basal3dInfo', '-v7.3')
         
         %% Calculate neighbours and plot missing cells
         validCells = setdiff(1:max(labelledImage(:)), noValidCells);

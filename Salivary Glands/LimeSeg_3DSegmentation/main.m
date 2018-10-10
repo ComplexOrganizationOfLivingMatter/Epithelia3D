@@ -11,10 +11,10 @@ while ~isequal(typeOfAnalysis, '')
     if isequal(typeOfAnalysis, 'Preliminary')
         LabelImageSequence();
     elseif isequal(typeOfAnalysis, 'Complete')
-        [validCells,polygon_distribution_Apical, polygon_distribution_Basal, polygonDistributions,selpath] = pipeline();
-        save(fullfile(selpath,'polygon_distribution_Apical.mat'))
-        save(fullfile(selpath,'polygon_distribution_Basal.mat'))
-        
+        [noValidCells,validCells,polygon_distribution_Apical, polygon_distribution_Basal, polygonDistributions,selpath] = pipeline();
+        save(fullfile(selpath,'polygon_distribution.mat'), 'polygon_distribution_Apical', 'polygon_distribution_Basal', 'polygonDistributions')
+        save(fullfile(selpath,'label_cells.mat'), 'noValidCells', 'ValidCells')
+       
         if sum([polygon_distribution_Apical{2,:}])|| sum([polygon_distribution_Basal{2,:}])
             IncorrectApicalCells= find(~cellfun(@FindIncorrectCells,(polygonDistributions{1,1})));
             IncorrectBasalCells= find(~cellfun(@FindIncorrectCells,(polygonDistributions{1,2})));
