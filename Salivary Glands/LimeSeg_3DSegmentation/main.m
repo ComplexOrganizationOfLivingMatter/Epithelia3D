@@ -13,7 +13,7 @@ while ~isequal(typeOfAnalysis, '')
     elseif isequal(typeOfAnalysis, 'Complete')
         [noValidCells,validCells,polygon_distribution_Apical, polygon_distribution_Basal, polygonDistributions,selpath] = pipeline();
         save(fullfile(selpath,'polygon_distribution.mat'), 'polygon_distribution_Apical', 'polygon_distribution_Basal', 'polygonDistributions')
-        save(fullfile(selpath,'label_cells.mat'), 'noValidCells', 'ValidCells')
+        save(fullfile(selpath,'label_cells.mat'), 'noValidCells', 'validCells')
        
         if sum([polygon_distribution_Apical{2,:}])|| sum([polygon_distribution_Basal{2,:}])
             IncorrectApicalCells= find(~cellfun(@FindIncorrectCells,(polygonDistributions{1,1})));
