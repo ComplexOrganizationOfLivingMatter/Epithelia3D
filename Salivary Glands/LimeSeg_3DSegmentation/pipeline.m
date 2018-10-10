@@ -8,7 +8,7 @@ function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribut
         
         mkdir(fullfile(outputDir, 'Cells', 'OutputLimeSeg'));
         mkdir(fullfile(outputDir, 'ImageSequence'));
-        mkdir(fullfile(outputDir, 'Lumen', 'OutputLimeSeg'));
+        mkdir(fullfile(outputDir, 'Lumen'));
         
 
         resizeImg = 0.25;
