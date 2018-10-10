@@ -33,6 +33,10 @@ setOfSeeds=200;
 apicalReductions=1:-0.1:0.1;
 % basalExpansions= 1./apicalReductions;
 basalExpansions=[];
+
+initialVoronoiDiagramNumber = 5;
+
+
 %if your RAM memory is quite high (96 gb or more), you could execute this loop with a parfor    
 for i=1:length(setOfSeeds) 
         
@@ -45,7 +49,7 @@ for i=1:length(setOfSeeds)
             %% 2 - Projection of Voronoi seeds to another cylindrical surface and generation of Voronoi cells
             %the next main, also carry out the measurements of edge length, edge angles and scutoids
             %presence
-%             mainTubularVoronoiModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W,thresholdPixelsScutoid)
+            mainTubularVoronoiModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W,thresholdPixelsScutoid,initialVoronoiDiagramNumber)
 
             %% 3- Control model (all frusta) and its line-tension energy
             mainTubularControlModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W)

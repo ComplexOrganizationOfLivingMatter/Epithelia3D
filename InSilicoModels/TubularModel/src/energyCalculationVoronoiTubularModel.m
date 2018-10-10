@@ -1,4 +1,4 @@
-function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSurfaces,numRandoms,typeProjection,nSeeds,basalExpansions,apicalReductions)
+function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSurfaces,numRandoms,typeProjection,nSeeds,basalExpansions,apicalReductions,diagramNumber)
 %ENERGYCALCULATIONVORONOITUBULARMODEL calculate all the parameters
 %neccesary for the line-tension minimization model in different tables:
 % TableTransitionEnergy: all motifs with transitions
@@ -27,7 +27,7 @@ function energyCalculationVoronoiTubularModel(directory2save,nameOfFolder,numSur
 
         for nRand=1:numRandoms
             
-            name2load=['Image_' num2str(nRand) '_Diagram_5'];
+            name2load=['Image_' num2str(nRand) '_Diagram_' num2str(diagramNumber)];
             load([directory2save typeProjection '\' nameOfFolder name2load '\'  name2load '.mat'],'listLOriginalProjection')
             
             

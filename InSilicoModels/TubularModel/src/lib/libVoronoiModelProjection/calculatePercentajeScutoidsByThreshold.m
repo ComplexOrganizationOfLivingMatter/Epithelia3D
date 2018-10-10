@@ -1,9 +1,9 @@
-function calculatePercentajeScutoidsByThreshold(pathTube,numSeeds,H,W,totalRandom,projection,thresholdRes)
+function calculatePercentajeScutoidsByThreshold(pathTube,numSeeds,H,W,totalRandom,projection,thresholdRes,diagramNumber)
 %CALCULATEPERCENTAJESCUTOIDSBYTHRESHOLD calculate the presence of scutoids
 %that pass the edge length threshold in both layers (apical and basal)
 numberOfRows=11;
 path2load=[pathTube projection '\' num2str(W) 'x' num2str(H) '_' num2str(numSeeds) 'seeds\'];
-load([path2load 'Image_1_Diagram_5\Image_1_Diagram_5.mat'],'listLOriginalProjection')
+load([path2load 'Image_1_Diagram_' num2str(diagramNumber) '\Image_1_Diagram_' num2str(diagramNumber) '.mat'],'listLOriginalProjection')
 listSurfaceRatios=listLOriginalProjection.surfaceRatio;
     
 numOfSurfaceRatios=length(listSurfaceRatios);
@@ -22,7 +22,7 @@ listFrequencyOfChangesPerCell=zeros(numOfSurfaceRatios,totalRandom);
 for nRand = 1:totalRandom
     
     %Load projections data
-    load([path2load 'Image_' num2str(nRand) '_Diagram_5\Image_' num2str(nRand) '_Diagram_5.mat'],'listLOriginalProjection','totalCellMotifs','totalEdges')
+    load([path2load 'Image_' num2str(nRand) '_Diagram_' num2str(diagramNumber) '\Image_' num2str(nRand) '_Diagram_' num2str(diagramNumber) '.mat'],'listLOriginalProjection','totalCellMotifs','totalEdges')
        
     %initiallize variables
     numberOfCellsWinning=zeros(1,size(listLOriginalProjection,1));
