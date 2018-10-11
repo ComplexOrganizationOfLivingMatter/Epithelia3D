@@ -3,7 +3,50 @@ function [] = unrollTube(img3d)
 %   Detailed explanation goes here
 
     %% Rotate the gland
+    imgProperties = regionprops3(img3d>0, {'Orientation', 'BoundingBox'});
+%     img3dCropped = imcrop(img3d, imgProperties.BoundingBox);
+
     
+    
+    
+    imgProperties = regionprops3(img3dOrigin>0, {'Orientation', 'Centroid'});
+    
+    
+    imgProperties = regionprops3(img3d>0, {'Orientation', 'PrincipalAxisLength'})
+    
+    
+%     %img3dRotated = imrotate3(img3d, 90, [1 0 0],'nearest','loose','FillValues',0);
+%     rotationMatrix = rotz(angleRotation(3))*roty(angleRotation(2))*rotx(angleRotation(1));
+%     rotationMatrix(:, 4) = 0;
+%     rotationMatrix(4, :) = 0;
+%     rotationMatrix(4, 4) = 1;
+        angleRotation = deg2rad(90-cat(2,imgProperties.Orientation));
+%     bbox = round(imgProperties.BoundingBox);
+%     M = makehgtform('xrotate', angleRotation(1));
+%     M = makehgtform('yrotate', angleRotation(1));
+    rotationMatrix = makehgtform('zrotate', angleRotation(1)); %X axis
+    img3dRotated = imwarp(img3d, affine3d(rotationMatrix));
+    
+    imgProperties = regionprops3(img3dRotated>0, {'Orientation', 'PrincipalAxisLength'})
+%     
+    img3dRotated = img3d;
+    
+    
+    for numCoord = 1:3
+        angleRotation = regionprops3(img3dRotated>0, {'Orientation', 'PrincipalAxisLength'});
+        
+        angleRotation = cat(2,angleRotation.Orientation);
+        img3dRotated = img3dRotated';
+        angleRotation = regionprops3(img3dRotated>0, {'Orientation', 'PrincipalAxisLength'});
+
+        angleSelected = [0 0 0];
+        angleSelected(numCoord) = 1;
+        img3dRotated = imrotate3(img3dRotated, angleRotation(numCoord), angleSelected,'nearest','loose','FillValues',0);
+        imgProperties = regionprops3(img3dRotated>0, {'Orientation', 'PrincipalAxisLength'});
+
+    end
+    
+    imgProperties = regionprops3(img3dRotated>0, {'Orientation', 'PrincipalAxisLength'});
     
     %% Unroll
     imgFinalCoordinates=cell(size(img3d,3),1);
