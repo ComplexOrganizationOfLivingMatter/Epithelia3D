@@ -52,11 +52,11 @@ If you have to leave and you have not finish the salivary gland, you can always 
 	
 	*note: If the lumen is divided in different pieces, you have to segment each lumen's piece one by one in the same image as   	         "islands".
 
-	1. 6  Finally you have to paint the images which don't contain the lumen as white images, you can do this automatically 	         creating an action in photoshop (actions->new action), from this moment photoshop will capture all the things that you 	 	do,therefore you have to do these steps:
+	1. 6  Finally you have to paint the images which don't contain the lumen as white images, you can do this automatically 	         creating an action in photoshop (actions->new action), from this moment photoshop will capture all the things that you 	 	 do,therefore you have to do these steps:
 	
-	-Add a new layer-> paint it as white.
-	-Save the image
-	-Close image
+	 -Add a new layer-> paint it as white.
+	 -Save the image
+	 -Close image
 	
 	Later, click in file->automate->bundle , select the action that you have created and selected a folder which only contains the 	         images that don't contain the lumen because this action is applied to all the images in the folder.
 	
