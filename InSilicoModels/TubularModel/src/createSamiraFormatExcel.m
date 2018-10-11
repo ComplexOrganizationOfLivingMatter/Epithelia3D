@@ -154,13 +154,13 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
         %Plot and save vertices simulations
         plotVerticesPerSurfaceRatio(samiraTableVoronoi((end-numCell+1):end,:),dir2save,nameSplitted,'Voronoi',nSurfR)
             
+        %Create frusta table 
+        samiraTableFrusta_SRColumn = cellfun(@(x) x*nSurfR,samiraTableFrusta(:,1),'UniformOutput',false);
         if nSurfR == 1
             samiraTableFrusta = samiraTableVoronoi(:,1:4);
             verticesSR1=samiraTableVoronoi(:,5);
             samiraTableFrustaSR = samiraTableVoronoi;
-            samiraTableFrusta_SRColumn = cellfun(@(x) x*nSurfR,samiraTableFrusta(:,1),'UniformOutput',false);
         else
-            samiraTableFrusta_SRColumn = cellfun(@(x) round(x*nSurfR),samiraTableFrusta(:,1),'UniformOutput',false);
             verticesSR_frusta = cellfun(@(x) round([x(1:2:length(x)-1);x(2:2:length(x))*nSurfR]),verticesSR1,'UniformOutput',false);
             verticesSR_frusta = cellfun(@(x) x(:)',verticesSR_frusta,'UniformOutput',false);
             cellsFrusta = [samiraTableFrusta_SRColumn,samiraTableFrusta(:,2:4),verticesSR_frusta];
