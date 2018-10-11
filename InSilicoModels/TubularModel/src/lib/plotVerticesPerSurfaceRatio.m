@@ -1,4 +1,4 @@
-function plotVerticesPerSurfaceRatio(cellsVertices,dir2save,nameSplitted,nameSimulation,nSurfR)
+function plotVerticesPerSurfaceRatio(cellsVertices,missingVerticesCoord,dir2save,nameSplitted,nameSimulation,nSurfR)
 
     figure('Visible', 'off', 'units','normalized','outerposition',[0 0 1 1]);
     faceColours = [1 1 1; 1 1 0; 1 0.5 0];
@@ -26,6 +26,14 @@ function plotVerticesPerSurfaceRatio(cellsVertices,dir2save,nameSplitted,nameSim
         text(round(mean(vertsX(1:end-1))) - 20, round(mean(vertsY(1:end-1))), num2str(cellsVertices{nRow,2}));
         hold on
     end
+    
+    if ~isempty(missingVerticesCoord)
+        for nVertMis = size(missingVerticesCoord,2)
+            hold on
+            plot(missingVerticesCoord(nVertMis,1), missingVerticesCoord(nVertMis,2), 'Oc')
+        end
+    end
+
     
     print([dir2save, '\plot_', nameSimulation,'_realization', nameSplitted{2} , '_SurfaceRatio_', num2str(nSurfR), '_', date, '.png'], '-dpng', '-r300');
     
