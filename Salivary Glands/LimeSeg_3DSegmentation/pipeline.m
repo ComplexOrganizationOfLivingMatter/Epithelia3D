@@ -2,7 +2,7 @@ function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribut
 %PIPELINE Summary of this function goes here
 %   Detailed explanation goes here
     selpath = uigetdir('data');
-
+ 
     if isempty(selpath) == 0
         outputDir = selpath;
         
@@ -22,21 +22,27 @@ function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribut
         demoImg = imread(fullfile(demoFile.folder, demoFile.name));
 
         imgSize = round(size(demoImg)*resizeImg);
-
-        [labelledImage, basalLayer] = processCells(fullfile(outputDir, 'Cells', filesep), resizeImg, imgSize, tipValue);
-
-        [labelledImage, apicalLayer, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
-
-        [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), [], tipValue);
-
-        setappdata(0,'outputDir', outputDir);
-        setappdata(0,'labelledImage',labelledImage);
-        setappdata(0, 'lumenImage', lumenImage);
-        setappdata(0,'resizeImg',resizeImg);
-        setappdata(0,'tipValue', tipValue);
-
-        [noValidCells] = insertNoValidCells();
-
+        
+        if exist(fullfile(selpath, '3d_layers_info.mat')) == 2
+           load(fullfile(selpath,'3d_layers_info.mat'))
+        else
+            [labelledImage, basalLayer] = processCells(fullfile(outputDir, 'Cells', filesep), resizeImg, imgSize, tipValue);
+        end    
+            [labelledImage, apicalLayer, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
+            
+            [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), [], tipValue);
+            
+            setappdata(0,'outputDir', outputDir);
+            setappdata(0,'labelledImage',labelledImage);
+            setappdata(0, 'lumenImage', lumenImage);
+            setappdata(0,'resizeImg',resizeImg);
+            setappdata(0,'tipValue', tipValue);
+        
+        if exist(fullfile(selpath, 'valid_cells.mat')) == 2
+           load(fullfile(selpath,'valid_cells.mat'))
+        else    
+            [noValidCells] = insertNoValidCells();
+        end
         [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
 
         %% Insert no valid cells
@@ -50,12 +56,13 @@ function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribut
                 labelledImage = getappdata(0, 'labelledImageTemp');
                 close all
                 exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
-
+                
                 %% Calculate neighbours and plot missing cells
-                [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
-                [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
-
-                [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
+                if ~exist(fullfile(selpath, '3d_layers_info.mat')) == 2
+                    [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
+                    [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
+                    [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
+                end
             else
                 [answer] = isEverythingCorrect();
             end
