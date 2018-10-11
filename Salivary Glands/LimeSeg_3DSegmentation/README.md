@@ -39,12 +39,26 @@ If you have to leave and you have not finish the salivary gland, you can always 
 
 1. Segment the lumen of the images, taking a bit more that is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.If you don’t know how to segment the lumen of each image, you can do it with Photoshop following the next steps:
 
-	1. 1.1	Load the image which contains the lumen (file->open->select your image).
-	1. 1.2  Create a new layer (layer->new layer)
-	1. 1.3	Now,you have to select the paint brush at the left screen.
-	1. 1.4  With this function you can segment the lumen point point to point by doing  typing shift key+left click.(
+	1. 1  Load the image which contains the lumen (file->open->select your image).
+	
+	1. 2  Create a new layer (layer->new layer).
+	
+	1. 3  Now,you have to select the paint brush at the left screen.
+	
+	1. 4  With this function you can segment the lumen point to point by typing shift key+left click.(
 	you should always locate the segment point of the ROI slightly far from the lumen).
-	1  1.5  After segmenting the lumen, you have to paint the lumen like a black region 
+	
+	1. 5  After segmenting the lumen, you have to paint the lumen like a black region with the paint bucket tool,ensure that the              whole lumen is black by clicking in the lumen region twice , because if there is some space between the lumen border and the         	  black region,there will be an undesireable lines around the lumen.Moreover you have to paint the rest of the image of white              colour.
+	
+	*note: If the lumen is divided in different pieces, you have to segment each lumen's piece one by one in the same image as   	         "islands".
+
+	1. 6  Finally you have to paint the images which don't contain the lumen as white images, you can do this automatically 	         creating an action in photoshop (actions->new action), from this moment photoshop will capture all the things that you 	 	 do,therefore you have to do these steps:
+	
+	 -Add a new layer-> paint it as white.
+	 -Save the image
+	 -Close image
+	
+	Later, click in file->automate->bundle , select the action that you have created and selected a folder which only contains the 	         images that don't contain the lumen because this action is applied to all the images in the folder.
 	
 2. Once the lumen is properly segmented, import it to FIJI.
 3. Now you have 2 options:
