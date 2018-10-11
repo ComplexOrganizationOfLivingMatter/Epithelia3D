@@ -1,4 +1,4 @@
-function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribution_Basal, polygonDistributions,selpath] = pipeline()
+function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribution_Basal, NeighboursData,selpath] = pipeline()
 %PIPELINE Summary of this function goes here
 %   Detailed explanation goes here
     selpath = uigetdir('data');
@@ -68,7 +68,7 @@ function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribut
         
         [polygon_distribution_Apical] = calculate_polygon_distribution(cellfun(@length, apical3dInfo.neighbourhood), validCells);
         [polygon_distribution_Basal] = calculate_polygon_distribution(cellfun(@length, basal3dInfo.neighbourhood), validCells);
-        polygonDistributions = {apical3dInfo.neighbourhood(validCells), basal3dInfo.neighbourhood(validCells)};
+        NeighboursData = {apical3dInfo.neighbourhood, basal3dInfo.neighbourhood};
     end
 end
 
