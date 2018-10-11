@@ -85,7 +85,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
             verticesOfCell(1:numberOfVertices, 1) = verticesOfCellInit(1:2:end);
             verticesOfCell(1:numberOfVertices, 2) = verticesOfCellInit(2:2:end);
             
-            orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.35);
+            orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1);
             if length(orderBoundary)-1 ~= size(verticesOfCell, 1)
                 missingVerticesCell = setdiff(1:size(verticesOfCell, 1), orderBoundary);
                 for missingVerticesActual = missingVerticesCell
@@ -128,7 +128,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
             
             verticesOfCell = unique(verticesOfCell, 'rows');
             
-            orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.35);
+            orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1);
             missingVerticesActual = [];
             if length(orderBoundary)-1 ~= size(verticesOfCell, 1)
                disp(strcat('Warning: cell number', num2str(cellWithVertices{numCell, 3}), ' may be wrongly done'));
