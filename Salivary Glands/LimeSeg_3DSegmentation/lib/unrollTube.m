@@ -3,7 +3,6 @@ function [] = unrollTube(img3d)
 %   Detailed explanation goes here
 
     %% Rotate the gland
-    
     [Y, X, Z] = ndgrid(1:size(img3d,1), 1:size(img3d,2), 1:size(img3d,3));
     XYZ0 = [X(:), Y(:), Z(:), zeros(numel(X),1)];
     
@@ -17,9 +16,8 @@ function [] = unrollTube(img3d)
     nY = round(reshape(newXYZ0(:,2), size(Y)));
     nZ = round(reshape(newXYZ0(:,3), size(Z)));
 
-    %paint3D(img3dRotated)
 %     figure; pcshow([X(img3d(:)>0), Y(img3d(:)>0), Z(img3d(:)>0)])
-    figure; pcshow([nX(img3d(:)>0), nY(img3d(:)>0), nZ(img3d(:)>0)])
+%     figure; pcshow([nX(img3d(:)>0), nY(img3d(:)>0), nZ(img3d(:)>0)])
     
     img3DRotated = zeros(max(nX(:)), max(nY(:)), max(nZ(:)));
     
@@ -29,50 +27,52 @@ function [] = unrollTube(img3d)
     
 
     %% Unroll
+    pixelSizeThreshold = 0;
+    
+    img3d = permute(img3DRotated, [1 3 2]);
     imgFinalCoordinates=cell(size(img3d,3),1);
-    centroids=centers{nImg};
-
-    %         centroidX=mean(cellfun(@(x) x(3),centroids));
-    %         centroidY=mean(cellfun(@(x) x(1),centroids));
-
+    
     for coordZ = 1 : size(img3d,3)
-        centroidCoordZ = centroids{rangeY(1)-1+coordZ};
-        centroidX = centroidCoordZ(3);
-        centroidY = centroidCoordZ(1);
+        [x, y] = find(img3d(:, :, coordZ) > 0);
+        
+        if length(x) > pixelSizeThreshold
+            centroidCoordZ = mean([x, y]); % Centroid of each real Y of the cylinder
+            centroidX = centroidCoordZ(1);
+            centroidY = centroidCoordZ(2);
 
-        %% Create perimeter mask
-        mask=false(size(img3d(:,:,1)));
-        mask(img3d(:,:,coordZ)>0)=1;
-        [x,y]=find(mask);
+            %% Create perimeter mask
+            mask=false(size(img3d(:,:,1)));
+            mask(img3d(:,:,coordZ)>0)=1;
+            [x,y]=find(mask);
 
-        zPerimMask = imread(['data\' name '\maskLayers\' setLayerNames{nImg} '\' num2str(rangeY(1)-1+coordZ) '.bmp']);
-        zPerimMask=bwperim(zPerimMask);
-        [xPerim,yPerim]=find(zPerimMask);
+            zPerimMask=bwperim(img3d(:, :, coordZ));
+            imwrite(zPerimMask, strcat('perim_z', num2str(coordZ), '.jpg'));
+            [xPerim, yPerim]=find(zPerimMask);
 
-        %angles coord perim regarding centroid
-        anglePerimCoord = atan2(yPerim - centroidY, xPerim - centroidX);
-        %find the sorted order
-        [anglePerimCoordSort,~] = sort(anglePerimCoord);
+            %angles coord perim regarding centroid
+            anglePerimCoord = atan2(yPerim - centroidY, xPerim - centroidX);
+            %find the sorted order
+            [anglePerimCoordSort,~] = sort(anglePerimCoord);
 
-        %% labelled mask
-        maskLabel=img3d(:,:,coordZ);
-        %angles label coord regarding centroid
-        angleLabelCoord = atan2(y - centroidY, x - centroidX);
+            %% labelled mask
+            maskLabel=img3d(:,:,coordZ);
+            %angles label coord regarding centroid
+            angleLabelCoord = atan2(y - centroidY, x - centroidX);
 
-        %% Assing label to pixels of perimeters
-        %If a perimeter coordinate have no label pixels in a range of pi/45 radians, it label is 0
-        orderedLabels = zeros(1,length(anglePerimCoordSort));
-        for nCoord = 1:length(anglePerimCoordSort)
-            [M,ind]=min(abs(angleLabelCoord - anglePerimCoordSort(nCoord)));
-            if M < pi/135
-                orderedLabels(nCoord)=maskLabel(x(ind(1)),y(ind(1)));
-            else
-                orderedLabels(nCoord)=0;
+            %% Assing label to pixels of perimeters
+            %If a perimeter coordinate have no label pixels in a range of pi/45 radians, it label is 0
+            orderedLabels = zeros(1,length(anglePerimCoordSort));
+            for nCoord = 1:length(anglePerimCoordSort)
+                [M,ind]=min(abs(angleLabelCoord - anglePerimCoordSort(nCoord)));
+                if M < pi/135
+                    orderedLabels(nCoord)=maskLabel(x(ind(1)),y(ind(1)));
+                else
+                    orderedLabels(nCoord)=0;
+                end
             end
+
+            imgFinalCoordinates{coordZ} = orderedLabels;
         end
-
-        imgFinalCoordinates{coordZ} = orderedLabels;
-
     end
 
     %% Reconstruct deployed img
@@ -84,7 +84,7 @@ function [] = unrollTube(img3d)
         deployedImg(coordZ,1:length(rowOfCoord)) = rowOfCoord;
     end
 
-    %        figure;imshow(deployedImg,c(orderRand,:))
-    totalImages{nImg} = deployedImg;
+    colours = colorcube(200);
+    figure;imshow(deployedImg,colours)
 end
 
