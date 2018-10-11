@@ -45,7 +45,11 @@ function [] = unrollTube(img3d)
             mask(img3d(:,:,coordZ)>0)=1;
             [x,y]=find(mask);
 
-            zPerimMask=bwperim(img3d(:, :, coordZ));
+            %zPerimMask=bwperim(imgToPerim);
+            imgToPerim = img3d(:, :, coordZ);
+            imgToPerim = imdilate(imgToPerim, strel( 'disk', 5));
+            imgToPerim = imerode(imgToPerim, strel('disk', 5));
+            zPerimMask=bwperim(imgToPerim);
             imwrite(zPerimMask, strcat('perim_z', num2str(coordZ), '.jpg'));
             [xPerim, yPerim]=find(zPerimMask);
 
@@ -86,5 +90,9 @@ function [] = unrollTube(img3d)
 
     colours = colorcube(200);
     figure;imshow(deployedImg,colours)
+    
+    [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(deployedImg,colours);
+    
+    figure;imshow(finalImage,colours)
 end
 
