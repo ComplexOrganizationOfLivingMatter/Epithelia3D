@@ -77,6 +77,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
         
         %% Looking for missing vertices
         missingVertices = [];
+        missingVerticesCoord = [];
         for numCell = 1:size(cellWithVertices, 1)
             verticesOfCellInit = cellWithVertices{numCell, end};
             numberOfVertices = (size(verticesOfCellInit, 2)/2);
@@ -84,7 +85,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
             verticesOfCell(1:numberOfVertices, 1) = verticesOfCellInit(1:2:end);
             verticesOfCell(1:numberOfVertices, 2) = verticesOfCellInit(2:2:end);
             
-            orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1);
+            orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.35);
             if length(orderBoundary)-1 ~= size(verticesOfCell, 1)
                 missingVerticesCell = setdiff(1:size(verticesOfCell, 1), orderBoundary);
                 for missingVerticesActual = missingVerticesCell
@@ -127,12 +128,13 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
             
             verticesOfCell = unique(verticesOfCell, 'rows');
             
-            orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1);
+            orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.35);
             missingVerticesActual = [];
             if length(orderBoundary)-1 ~= size(verticesOfCell, 1)
                disp(strcat('Warning: cell number', num2str(cellWithVertices{numCell, 3}), ' may be wrongly done'));
                disp('Correcting...')
                missingVerticesActual = setdiff(1:size(verticesOfCell, 1), orderBoundary);
+               missingVerticesCoord = [missingVerticesCoord;verticesOfCell(missingVerticesActual,:)];
             end
             
             % Should be connected clockwise
@@ -152,7 +154,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
             
         end
         %Plot and save vertices simulations
-        plotVerticesPerSurfaceRatio(samiraTableVoronoi((end-numCell+1):end,:),dir2save,nameSplitted,'Voronoi',nSurfR)
+        plotVerticesPerSurfaceRatio(samiraTableVoronoi((end-numCell+1):end,:),missingVerticesCoord,dir2save,nameSplitted,'Voronoi',nSurfR)
             
         %Create frusta table 
         if nSurfR == 1
@@ -169,7 +171,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
             samiraTableFrustaSR =  [samiraTableFrustaSR;cellsFrusta];
             
             %Plot frusta
-            plotVerticesPerSurfaceRatio(cellsFrusta,dir2save,nameSplitted,'Frusta',nSurfR)
+            plotVerticesPerSurfaceRatio(cellsFrusta,[],dir2save,nameSplitted,'Frusta',nSurfR)
 
         end
         
