@@ -28,7 +28,7 @@ function plotVerticesPerSurfaceRatio(cellsVertices,missingVerticesCoord,dir2save
     end
     
     if ~isempty(missingVerticesCoord)
-        for nVertMis = size(missingVerticesCoord,2)
+        for nVertMis = size(missingVerticesCoord,1)
             hold on
             plot(missingVerticesCoord(nVertMis,1), missingVerticesCoord(nVertMis,2), 'Oc')
         end
