@@ -86,7 +86,11 @@ function [totalImages] = unrollingHypocot(name,rangeY,layer1,layer2)
 
             for coordZ = 1 : size(img3d,3)
                 rowOfCoord = imgFinalCoordinates{coordZ};
-                deployedImg(coordZ,1:length(rowOfCoord)) = rowOfCoord;
+                nEmptyPixels = 0;
+                if length(rowOfCoord) < ySize
+                    nEmptyPixels = floor((ySize - length(rowOfCoord)) / 2);
+                end
+                deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
             end
 
             %        figure;imshow(deployedImg,c(orderRand,:))
