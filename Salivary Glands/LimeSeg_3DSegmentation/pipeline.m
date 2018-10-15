@@ -63,6 +63,7 @@ function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribut
                     [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
                     [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
                 end
+                
             else
                 [answer] = isEverythingCorrect();
             end
