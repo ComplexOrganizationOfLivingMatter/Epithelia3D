@@ -21,9 +21,6 @@ while ~isequal(typeOfAnalysis, '')
         IncorrectApicalCells= find(~cellfun(@FindIncorrectCells,(NeighboursData{1,1})));
         IncorrectBasalCells= find(~cellfun(@FindIncorrectCells,(NeighboursData{1,2})));
     end
-    
-    
-    
-    
+     
     typeOfAnalysis = ChooseTypeOfAnalysis();
 end
