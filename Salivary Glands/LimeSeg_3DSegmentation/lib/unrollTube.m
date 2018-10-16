@@ -1,4 +1,4 @@
-function [] = unrollTube(img3d, changingAngle)
+function [] = unrollTube(img3d, inputDir)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -51,7 +51,6 @@ function [] = unrollTube(img3d, changingAngle)
             imgToPerim = imdilate(imgToPerim, strel( 'disk', 5));
             imgToPerim = imerode(imgToPerim, strel('disk', 5));
             zPerimMask=bwperim(imgToPerim);
-            imwrite(zPerimMask, strcat('perim_z', num2str(coordZ), '.jpg'));
             [xPerim, yPerim]=find(zPerimMask);
             
             %angles coord perim regarding centroid
@@ -88,8 +87,8 @@ function [] = unrollTube(img3d, changingAngle)
 
     %% Reconstruct deployed img
     ySize=max(cellfun(@length, imgFinalCoordinates3x));
+    deployedImg3x = zeros(size(img3d,3),ySize);
     deployedImg = zeros(size(img3d,3),ySize);
-    deployedImgMask = zeros(size(img3d,3),ySize);
     for coordZ = 1 : size(img3d,3)
         rowOfCoord3x = imgFinalCoordinates3x{coordZ};
         rowOfCoord = imgFinalCoordinates{coordZ};
@@ -100,8 +99,8 @@ function [] = unrollTube(img3d, changingAngle)
             nEmptyPixels = floor((ySize - length(rowOfCoord)) / 2);
 
         end
-        deployedImg(coordZ, 1 + nEmptyPixels3x : length(rowOfCoord3x) + nEmptyPixels3x) = rowOfCoord3x;
-        deployedImgMask(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
+        deployedImg3x(coordZ, 1 + nEmptyPixels3x : length(rowOfCoord3x) + nEmptyPixels3x) = rowOfCoord3x;
+        deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
 
     end
 
@@ -109,14 +108,29 @@ function [] = unrollTube(img3d, changingAngle)
 %     figure;imshow(deployedImg,colours)
 %     figure;imshow(deployedImgMask,colours)
 
-    [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(deployedImg,colours);
+    %% Getting correct border cells, valid cells and no valid cells
+    [wholeImage,~,~] = getFinalImageAndNoValidCells(deployedImg3x,colours);
+    [~, ~,noValidCells] = getFinalImageAndNoValidCells(deployedImg3x(:, round(ySize/3):round(ySize*2/3)),colours);
     
-    figure;imshow(finalImage,colours)
-    relabelFinalImage = bwlabel(finalImage,4);
-    labelsFinal = unique(relabelFinalImage(deployedImgMask>0));
-    finalImage(~ismember(relabelFinalImage,labelsFinal))=0;
-    figure;imshow(finalImage,colours)
+%     figure;imshow(finalImage,colours)
+    %% We only keep the cells in the middle
+    relabelFinalImage = bwlabel(wholeImage,4);
+    labelsFinal = unique(relabelFinalImage(deployedImg>0));
+    midSectionImage = wholeImage;
+    midSectionImage(~ismember(relabelFinalImage,labelsFinal))=0;
+%     figure;imshow(finalImage(:, round(ySize/3):round(ySize*2/3)),colours)
 
-    %figure;imshow(ismember(finalImage, validCells).*finalImage,colours)
+    [~,~,noValidCellsMask] = getFinalImageAndNoValidCells(midSectionImage(:, round(ySize/3):round(ySize*2/3)),colours);
+
+%     figure;imshow(ismember(finalImage, validCellsMask).*finalImage,colours)
+    
+    %% We keep the valid cells from that middle image
+    validCellsFinal  = setdiff(1:max(midSectionImage(:)), intersect(noValidCellsMask, noValidCells));
+    finalImageWithValidCells = ismember(midSectionImage, validCellsFinal).*midSectionImage;
+%     figure;imshow(finalImageWithValidCells,colours)
+    
+    imwrite(finalImageWithValidCells(:, round(ySize/3):round(ySize*2/3)), colours, fullfile(inputDir, strcat('img_MidSection_ValidCells_', date, '.jpg')));
+    imwrite(finalImageWithValidCells, colours, fullfile(inputDir, strcat('img_ValidCells_', date, '.jpg')));
+    imwrite(wholeImage, colours, fullfile(inputDir, strcat('img_WholeImage_', date, '.jpg')));
 end
 
