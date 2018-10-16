@@ -79,8 +79,8 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursDat
         [polygon_distribution_Basal] = calculate_polygon_distribution(cellfun(@length, basal3dInfo.neighbourhood), validCells);
         neighboursData = {apical3dInfo.neighbourhood, basal3dInfo.neighbourhood};
 
-        unrollTube(basalLayer, fullfile(selpath, 'basal_'));
-        unrollTube(basalLayer, fullfile(selpath, 'apical_'));
+        unrollTube(basalLayer, fullfile(selpath, 'basal_'), colours);
+        unrollTube(apicalLayer, fullfile(selpath, 'apical_'), colours);
     end
 end
 

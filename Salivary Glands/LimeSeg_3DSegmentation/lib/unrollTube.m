@@ -1,4 +1,4 @@
-function [] = unrollTube(img3d, outputDir)
+function [] = unrollTube(img3d, outputDir, colours)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -27,7 +27,7 @@ function [] = unrollTube(img3d, outputDir)
     
 
     %% Unroll
-    pixelSizeThreshold = 0;
+    pixelSizeThreshold = 1;
     
     img3d = permute(img3DRotated, [1 3 2]);
     imgFinalCoordinates=cell(size(img3d,3),1);
@@ -103,8 +103,6 @@ function [] = unrollTube(img3d, outputDir)
         deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
 
     end
-
-    colours = colorcube(200);
 %     figure;imshow(deployedImg,colours)
 %     figure;imshow(deployedImgMask,colours)
 
@@ -129,8 +127,8 @@ function [] = unrollTube(img3d, outputDir)
     finalImageWithValidCells = ismember(midSectionImage, validCellsFinal).*midSectionImage;
 %     figure;imshow(finalImageWithValidCells,colours)
     
-    imwrite(finalImageWithValidCells(:, round(ySize/3):round(ySize*2/3)), colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.jpg'));
-    imwrite(finalImageWithValidCells, colours, strcat(outputDir, '_', 'img_ValidCells_', date, '.jpg'));
-    imwrite(wholeImage, colours, strcat(outputDir, '_', 'img_WholeImage_', date, '.jpg'));
+    imwrite(finalImageWithValidCells(:, round(ySize/3):round(ySize*2/3)), colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.tif'));
+    imwrite(finalImageWithValidCells, colours, strcat(outputDir, '_', 'img_ValidCells_', date, '.tif'));
+    imwrite(wholeImage, colours, strcat(outputDir, '_', 'img_WholeImage_', date, '.tif'));
 end
 
