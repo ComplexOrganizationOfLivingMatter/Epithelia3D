@@ -1,4 +1,4 @@
-function [] = unrollTube(img3d, inputDir)
+function [] = unrollTube(img3d, outputDir)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -129,8 +129,8 @@ function [] = unrollTube(img3d, inputDir)
     finalImageWithValidCells = ismember(midSectionImage, validCellsFinal).*midSectionImage;
 %     figure;imshow(finalImageWithValidCells,colours)
     
-    imwrite(finalImageWithValidCells(:, round(ySize/3):round(ySize*2/3)), colours, fullfile(inputDir, strcat('img_MidSection_ValidCells_', date, '.jpg')));
-    imwrite(finalImageWithValidCells, colours, fullfile(inputDir, strcat('img_ValidCells_', date, '.jpg')));
-    imwrite(wholeImage, colours, fullfile(inputDir, strcat('img_WholeImage_', date, '.jpg')));
+    imwrite(finalImageWithValidCells(:, round(ySize/3):round(ySize*2/3)), colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.jpg'));
+    imwrite(finalImageWithValidCells, colours, strcat(outputDir, '_', 'img_ValidCells_', date, '.jpg'));
+    imwrite(wholeImage, colours, strcat(outputDir, '_', 'img_WholeImage_', date, '.jpg'));
 end
 
