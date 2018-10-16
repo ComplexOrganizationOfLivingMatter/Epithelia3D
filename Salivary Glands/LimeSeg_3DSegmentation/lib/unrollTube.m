@@ -1,4 +1,4 @@
-function [] = unrollTube(img3d)
+function [] = unrollTube(img3d, changingAngle)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -31,7 +31,8 @@ function [] = unrollTube(img3d)
     
     img3d = permute(img3DRotated, [1 3 2]);
     imgFinalCoordinates=cell(size(img3d,3),1);
-    
+    imgFinalCoordinates3x=cell(size(img3d,3),1);
+
     for coordZ = 1 : size(img3d,3)
         [x, y] = find(img3d(:, :, coordZ) > 0);
         
@@ -52,11 +53,15 @@ function [] = unrollTube(img3d)
             zPerimMask=bwperim(imgToPerim);
             imwrite(zPerimMask, strcat('perim_z', num2str(coordZ), '.jpg'));
             [xPerim, yPerim]=find(zPerimMask);
-
+            
             %angles coord perim regarding centroid
             anglePerimCoord = atan2(yPerim - centroidY, xPerim - centroidX);
             %find the sorted order
             [anglePerimCoordSort,~] = sort(anglePerimCoord);
+            
+%             anglePerimCoordSort = repmat(anglePerimCoordSort, 3, 1);
+%             x = repmat(x, 3, 1);
+%             y = repmat(y, 3, 1);
 
             %% labelled mask
             maskLabel=img3d(:,:,coordZ);
@@ -75,24 +80,43 @@ function [] = unrollTube(img3d)
                 end
             end
 
+            imgFinalCoordinates3x{coordZ} = repmat(orderedLabels,1,3);
             imgFinalCoordinates{coordZ} = orderedLabels;
+
         end
     end
 
     %% Reconstruct deployed img
-    ySize=max(cellfun(@length, imgFinalCoordinates));
+    ySize=max(cellfun(@length, imgFinalCoordinates3x));
     deployedImg = zeros(size(img3d,3),ySize);
-
+    deployedImgMask = zeros(size(img3d,3),ySize);
     for coordZ = 1 : size(img3d,3)
+        rowOfCoord3x = imgFinalCoordinates3x{coordZ};
         rowOfCoord = imgFinalCoordinates{coordZ};
-        deployedImg(coordZ,1:length(rowOfCoord)) = rowOfCoord;
+
+        nEmptyPixels3x = 0;
+        if length(rowOfCoord3x) < ySize
+            nEmptyPixels3x = floor((ySize - length(rowOfCoord3x)) / 2);
+            nEmptyPixels = floor((ySize - length(rowOfCoord)) / 2);
+
+        end
+        deployedImg(coordZ, 1 + nEmptyPixels3x : length(rowOfCoord3x) + nEmptyPixels3x) = rowOfCoord3x;
+        deployedImgMask(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
+
     end
 
     colours = colorcube(200);
-    figure;imshow(deployedImg,colours)
-    
+%     figure;imshow(deployedImg,colours)
+%     figure;imshow(deployedImgMask,colours)
+
     [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(deployedImg,colours);
     
     figure;imshow(finalImage,colours)
+    relabelFinalImage = bwlabel(finalImage,4);
+    labelsFinal = unique(relabelFinalImage(deployedImgMask>0));
+    finalImage(~ismember(relabelFinalImage,labelsFinal))=0;
+    figure;imshow(finalImage,colours)
+
+    %figure;imshow(ismember(finalImage, validCells).*finalImage,colours)
 end
 
