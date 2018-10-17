@@ -61,7 +61,7 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursDat
                 exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
 
                 %% Calculate neighbours and plot missing cells
-                if ~exist(fullfile(selpath, '3d_layers_info.mat')) == 2
+                if exist(fullfile(selpath, '3d_layers_info.mat')) == 0
                     [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
                     [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
                     [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
