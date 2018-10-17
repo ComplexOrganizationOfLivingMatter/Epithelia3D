@@ -18,6 +18,13 @@ function [] = unrollTube(img3d, outputDir, colours)
 
 %     figure; pcshow([X(img3d(:)>0), Y(img3d(:)>0), Z(img3d(:)>0)])
 %     figure; pcshow([nX(img3d(:)>0), nY(img3d(:)>0), nZ(img3d(:)>0)])
+    if ~isempty ( nY < 0) 
+       nY = abs(min(nY(:))) + 1 + nY; 
+    end
+    
+    if ~isempty ( nX < 0) 
+       nX = abs(min(nX(:))) + 1 + nX; 
+    end
     
     img3DRotated = zeros(max(nX(:)), max(nY(:)), max(nZ(:)));
     
