@@ -9,9 +9,12 @@ W=2400;
 distanceBetwSeeds=5;%minimum distances between seeds, avoiding overlaping
 thresholdPixelsScutoid=4;
 setOfSeeds=400;
-apicalReductions=[1, 1/1.15];
+% apicalReductions=[1, 1/1.15];
+apicalReductions=[1, 1/1.33];
 basalExpansions=[];
-initialVoronoiDiagramNumber = 5;
+% initialVoronoiDiagramNumber = 5;
+initialVoronoiDiagramNumber = 12;
+
 addpath(genpath('D:\Pedro\Epithelia3D\InSilicoModels\TubularModel\src\'))
 
 for i = length(setOfSeeds)

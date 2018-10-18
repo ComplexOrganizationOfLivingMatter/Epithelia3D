@@ -21,7 +21,7 @@ for nNam=1:2%length(names)
         else
             load(['data/' names{nNam} '/unrolledHypocotyl.mat'],'unrolledImages','cellsLayer1','cellsLayer2')
         end
-%         
+        
         %% Once we have the layer' cells, it is possible get the unrolled Hypocotyl using normal vector extrapolations
         if ~exist(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'file')
 %             function that fill the Hyp perimeter using the vector imaginary with the centroid
@@ -32,10 +32,10 @@ for nNam=1:2%length(names)
             [finalImages,~,~,finalCellsLayer1,finalCellsLayer2,noValidCellsLayer1,noValidCellsLayer2]=cleanUnrolledImages(['data/' names{nNam} '/'], unrolledImagesQuasiClean);
             save(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2','noValidCellsLayer1','noValidCellsLayer2','-append')
         else
-            load(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2','noValidCellsLayer1','noValidCellsLayer2')
+            load(['data/' names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2','noValidCellsLayer1','noValidCellsLayer2','layer1_3D','layer2_3D','unrolledImagesQuasiClean')
         end
-%         
-%         %% We get the cell properties
+        
+        %% We get the cell properties
         getGeometricalFeaturesFrom2DImages(['data/' names{nNam} '/resultMeasurements/layer1'],finalImages(1:2),noValidCellsLayer1)      
         getGeometricalFeaturesFrom2DImages(['data/' names{nNam} '/resultMeasurements/layer2'],finalImages(3:4),noValidCellsLayer2)
 
