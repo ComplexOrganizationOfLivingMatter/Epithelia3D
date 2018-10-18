@@ -1,4 +1,4 @@
-function [] = unrollTube(img3d)
+function [] = unrollTube(img3d, outputDir, colours)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -18,6 +18,13 @@ function [] = unrollTube(img3d)
 
 %     figure; pcshow([X(img3d(:)>0), Y(img3d(:)>0), Z(img3d(:)>0)])
 %     figure; pcshow([nX(img3d(:)>0), nY(img3d(:)>0), nZ(img3d(:)>0)])
+    if ~isempty ( nY < 0) 
+       nY = abs(min(nY(:))) + 1 + nY; 
+    end
+    
+    if ~isempty ( nX < 0) 
+       nX = abs(min(nX(:))) + 1 + nX; 
+    end
     
     img3DRotated = zeros(max(nX(:)), max(nY(:)), max(nZ(:)));
     
@@ -27,11 +34,12 @@ function [] = unrollTube(img3d)
     
 
     %% Unroll
-    pixelSizeThreshold = 0;
+    pixelSizeThreshold = 1;
     
     img3d = permute(img3DRotated, [1 3 2]);
     imgFinalCoordinates=cell(size(img3d,3),1);
-    
+    imgFinalCoordinates3x=cell(size(img3d,3),1);
+
     for coordZ = 1 : size(img3d,3)
         [x, y] = find(img3d(:, :, coordZ) > 0);
         
@@ -50,13 +58,16 @@ function [] = unrollTube(img3d)
             imgToPerim = imdilate(imgToPerim, strel( 'disk', 5));
             imgToPerim = imerode(imgToPerim, strel('disk', 5));
             zPerimMask=bwperim(imgToPerim);
-            imwrite(zPerimMask, strcat('perim_z', num2str(coordZ), '.jpg'));
             [xPerim, yPerim]=find(zPerimMask);
-
+            
             %angles coord perim regarding centroid
             anglePerimCoord = atan2(yPerim - centroidY, xPerim - centroidX);
             %find the sorted order
             [anglePerimCoordSort,~] = sort(anglePerimCoord);
+            
+%             anglePerimCoordSort = repmat(anglePerimCoordSort, 3, 1);
+%             x = repmat(x, 3, 1);
+%             y = repmat(y, 3, 1);
 
             %% labelled mask
             maskLabel=img3d(:,:,coordZ);
@@ -75,24 +86,56 @@ function [] = unrollTube(img3d)
                 end
             end
 
+            imgFinalCoordinates3x{coordZ} = repmat(orderedLabels,1,3);
             imgFinalCoordinates{coordZ} = orderedLabels;
+
         end
     end
 
     %% Reconstruct deployed img
-    ySize=max(cellfun(@length, imgFinalCoordinates));
+    ySize=max(cellfun(@length, imgFinalCoordinates3x));
+    deployedImg3x = zeros(size(img3d,3),ySize);
     deployedImg = zeros(size(img3d,3),ySize);
-
     for coordZ = 1 : size(img3d,3)
+        rowOfCoord3x = imgFinalCoordinates3x{coordZ};
         rowOfCoord = imgFinalCoordinates{coordZ};
-        deployedImg(coordZ,1:length(rowOfCoord)) = rowOfCoord;
-    end
 
-    colours = colorcube(200);
-    figure;imshow(deployedImg,colours)
+        nEmptyPixels3x = 0;
+        if length(rowOfCoord3x) < ySize
+            nEmptyPixels3x = floor((ySize - length(rowOfCoord3x)) / 2);
+            nEmptyPixels = floor((ySize - length(rowOfCoord)) / 2);
+
+        end
+        deployedImg3x(coordZ, 1 + nEmptyPixels3x : length(rowOfCoord3x) + nEmptyPixels3x) = rowOfCoord3x;
+        deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
+
+    end
+%     figure;imshow(deployedImg,colours)
+%     figure;imshow(deployedImgMask,colours)
+
+    %% Getting correct border cells, valid cells and no valid cells
+    [wholeImage,~,~] = getFinalImageAndNoValidCells(deployedImg3x,colours);
+    [~, ~,noValidCells] = getFinalImageAndNoValidCells(deployedImg3x(:, round(ySize/3):round(ySize*2/3)),colours);
     
-    [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(deployedImg,colours);
+%     figure;imshow(finalImage,colours)
+    %% We only keep the cells in the middle
+    relabelFinalImage = bwlabel(wholeImage,4);
+    labelsFinal = unique(relabelFinalImage(deployedImg>0));
+    midSectionImage = wholeImage;
+    midSectionImage(~ismember(relabelFinalImage,labelsFinal))=0;
+%     figure;imshow(finalImage(:, round(ySize/3):round(ySize*2/3)),colours)
+
+    [~,~,noValidCellsMask] = getFinalImageAndNoValidCells(midSectionImage(:, round(ySize/3):round(ySize*2/3)),colours);
+
+%     figure;imshow(ismember(finalImage, validCellsMask).*finalImage,colours)
     
-    figure;imshow(finalImage,colours)
+    %% We keep the valid cells from that middle image
+    validCellsFinal  = setdiff(1:max(midSectionImage(:)), intersect(noValidCellsMask, noValidCells));
+    finalImageWithValidCells = ismember(midSectionImage, validCellsFinal).*midSectionImage;
+%     figure;imshow(finalImageWithValidCells,colours)
+    
+    imwrite(finalImageWithValidCells(:, round(ySize/3):round(ySize*2/3))+1, colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.tif'));
+    imwrite(finalImageWithValidCells+1, colours, strcat(outputDir, '_', 'img_ValidCells_', date, '.tif'));
+    imwrite(wholeImage+1, colours, strcat(outputDir, '_', 'img_WholeImage_', date, '.tif'));
 end
 

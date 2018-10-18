@@ -1,15 +1,15 @@
-function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribution_Basal, NeighboursData,selpath] = pipeline()
+function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursData,selpath] = pipeline()
 %PIPELINE Summary of this function goes here
 %   Detailed explanation goes here
     selpath = uigetdir('data');
- 
+
     if isempty(selpath) == 0
         outputDir = selpath;
-        
+
         mkdir(fullfile(outputDir, 'Cells', 'OutputLimeSeg'));
         mkdir(fullfile(outputDir, 'ImageSequence'));
         mkdir(fullfile(outputDir, 'Lumen'));
-        
+
 
         resizeImg = 0.25;
 
@@ -22,26 +22,29 @@ function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribut
         demoImg = imread(fullfile(demoFile.folder, demoFile.name));
 
         imgSize = round(size(demoImg)*resizeImg);
-        
+
         if exist(fullfile(selpath, '3d_layers_info.mat')) == 2
-           load(fullfile(selpath,'3d_layers_info.mat'))
+            load(fullfile(selpath,'3d_layers_info.mat'))
         else
             [labelledImage, basalLayer] = processCells(fullfile(outputDir, 'Cells', filesep), resizeImg, imgSize, tipValue);
-        end    
-            [labelledImage, apicalLayer, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
-            
-            [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), [], tipValue);
-            
-            setappdata(0,'outputDir', outputDir);
-            setappdata(0,'labelledImage',labelledImage);
-            setappdata(0, 'lumenImage', lumenImage);
-            setappdata(0,'resizeImg',resizeImg);
-            setappdata(0,'tipValue', tipValue);
+        end
         
-        if exist(fullfile(selpath, 'valid_cells.mat')) == 2
-           load(fullfile(selpath,'valid_cells.mat'))
-        else    
+        [labelledImage, apicalLayer, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
+
+        [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), [], tipValue);
+
+        setappdata(0,'outputDir', outputDir);
+        setappdata(0,'labelledImage',labelledImage);
+        setappdata(0, 'lumenImage', lumenImage);
+        setappdata(0,'resizeImg',resizeImg);
+        setappdata(0,'tipValue', tipValue);
+
+        if exist(fullfile(selpath, 'valid_cells.mat'), 'file')
+            load(fullfile(selpath,'valid_cells.mat'))
+        else
             [noValidCells] = insertNoValidCells();
+            validCells = setdiff(1:max(labelledImage(:)), noValidCells);
+            save(fullfile(selpath,'valid_cells.mat'), 'noValidCells', 'validCells')
         end
         [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
 
@@ -56,27 +59,28 @@ function [noValidCells,validCells,polygon_distribution_Apical, polygon_distribut
                 labelledImage = getappdata(0, 'labelledImageTemp');
                 close all
                 exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
-                
+
                 %% Calculate neighbours and plot missing cells
-                if ~exist(fullfile(selpath, '3d_layers_info.mat')) == 2
+                if exist(fullfile(selpath, '3d_layers_info.mat')) == 0
                     [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
                     [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
                     [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
                 end
-                
+
             else
                 [answer] = isEverythingCorrect();
             end
         end
         %% Save apical and basal 3d information
         save(fullfile(selpath,'3d_layers_info.mat'), 'labelledImage', 'basalLayer', 'apicalLayer', 'apical3dInfo', 'basal3dInfo', '-v7.3')
-        
+
         %% Calculate neighbours and plot missing cells
-        validCells = setdiff(1:max(labelledImage(:)), noValidCells);
-        
         [polygon_distribution_Apical] = calculate_polygon_distribution(cellfun(@length, apical3dInfo.neighbourhood), validCells);
         [polygon_distribution_Basal] = calculate_polygon_distribution(cellfun(@length, basal3dInfo.neighbourhood), validCells);
-        NeighboursData = {apical3dInfo.neighbourhood, basal3dInfo.neighbourhood};
+        neighboursData = {apical3dInfo.neighbourhood, basal3dInfo.neighbourhood};
+
+        unrollTube(basalLayer, fullfile(selpath, 'basal'), colours);
+        unrollTube(apicalLayer, fullfile(selpath, 'apical'), colours);
     end
 end
 
