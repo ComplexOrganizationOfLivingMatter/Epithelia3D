@@ -2,7 +2,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
 %CREATESAMIRAFORMATEXCEL Summary of this function goes here
 %   Detailed explanation goes here
 %
-%   Example: createSamiraFormatExcel('..\data\tubularVoronoiModel\expansion\2048x4096_200seeds\Image_2_Diagram_5\', 1.6667, 'Frusta')
+%   Example: createSamiraFormatExcel('..\data\tubularVoronoiModel\expansion\2048x4096_200seeds\Image_2_Diagram_5\', 1.6667)
     addpath(genpath('lib'))
     
     maxDistance = 4;
@@ -18,7 +18,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
         mkdir(dir2save)
     end
     for nSurfR = [1 surfaceRatios]
-        L_img = listLOriginalProjection.L_originalProjection{round(listLOriginalProjection.surfaceRatio,3)==round(nSurfR,3)};
+        L_img = listLOriginalProjection{round([listLOriginalProjection{:,1}],3)==round(nSurfR,3),2};
         
         %We use L_img a little bit extended for get lateral border
         %vertices.
