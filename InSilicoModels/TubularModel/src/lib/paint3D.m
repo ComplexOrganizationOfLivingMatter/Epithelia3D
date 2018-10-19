@@ -24,7 +24,7 @@ function [] = paint3D(varargin)
         colours = colorcube(double(max(labelledImage(:))));
         colours = colours(randperm(max(labelledImage(:))), :);
     end
-    figure;
+%     figure;
 
     if size(unique(showingCells),1) > size(unique(showingCells),2)
         showingCells = unique(showingCells)';

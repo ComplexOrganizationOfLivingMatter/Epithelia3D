@@ -41,8 +41,8 @@ function [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsB
     if isempty(notFoundCellsBasal) == 0
         paint3D(labelledImage, notFoundCellsBasal, colours);
         missingCellsStr = strjoin(arrayfun(@num2str, notFoundCellsBasal, 'UniformOutput', false), ', ');
-    else
-        paint3D(labelledImage, -1, colours);
+%     else
+%         paint3D(labelledImage, [], colours);
     end
     
     paint3D(lumenImage, 1);
@@ -54,8 +54,8 @@ function [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsB
     if isempty(notFoundCellsApical) == 0
         paint3D(labelledImage, notFoundCellsApical, colours);
         missingCellsStr = strjoin(arrayfun(@num2str, notFoundCellsApical, 'UniformOutput', false), ', ');    
-    else
-        paint3D(labelledImage, -1, colours);
+%     else
+%         paint3D(labelledImage, [], colours);
     end
     paint3D(lumenImage, 1);
     
