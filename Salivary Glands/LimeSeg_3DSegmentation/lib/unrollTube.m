@@ -1,4 +1,4 @@
-function [] = unrollTube(img3d, outputDir, colours)
+function [] = unrollTube(img3d, outputDir, noValidCells, colours)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -115,7 +115,7 @@ function [] = unrollTube(img3d, outputDir, colours)
 
     %% Getting correct border cells, valid cells and no valid cells
     [wholeImage,~,~] = getFinalImageAndNoValidCells(deployedImg3x,colours);
-    [~, ~,noValidCells] = getFinalImageAndNoValidCells(deployedImg3x(:, round(ySize/3):round(ySize*2/3)),colours);
+    %[~, ~,noValidCells] = getFinalImageAndNoValidCells(deployedImg3x(:, round(ySize/3):round(ySize*2/3)),colours);
     
 %     figure;imshow(finalImage,colours)
     %% We only keep the cells in the middle
@@ -125,19 +125,19 @@ function [] = unrollTube(img3d, outputDir, colours)
     midSectionImage(~ismember(relabelFinalImage,labelsFinal))=0;
 %     figure;imshow(finalImage(:, round(ySize/3):round(ySize*2/3)),colours)
 
-    [~,~,noValidCellsMask] = getFinalImageAndNoValidCells(midSectionImage(:, round(ySize/3):round(ySize*2/3)),colours);
+    %[~,~,noValidCellsMask] = getFinalImageAndNoValidCells(midSectionImage(:, round(ySize/3):round(ySize*2/3)),colours);
 
 %     figure;imshow(ismember(finalImage, validCellsMask).*finalImage,colours)
     
     %% We keep the valid cells from that middle image
-    validCellsFinal  = setdiff(1:max(midSectionImage(:)), intersect(noValidCellsMask, noValidCells));
+    validCellsFinal  = setdiff(1:max(midSectionImage(:)), noValidCells);
     finalImageWithValidCells = ismember(midSectionImage, validCellsFinal).*midSectionImage;
 %     figure;imshow(finalImageWithValidCells,colours)
     
-    imwrite(finalImageWithValidCells(:, round(ySize/3):round(ySize*2/3))+1, colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.tif'));
-    imwrite(finalImageWithValidCells+1, colours, strcat(outputDir, '_', 'img_ValidCells_', date, '.tif'));
+    imwrite(midSectionImage+1, colours, strcat(outputDir, '_', 'img_MidSection_', date, '.tif'));
+    imwrite(finalImageWithValidCells+1, colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.tif'));
     imwrite(wholeImage+1, colours, strcat(outputDir, '_', 'img_WholeImage_', date, '.tif'));
     
-    save(strcat(outputDir, '_', 'img_', date, '.mat'), 'finalImageWithValidCells', 'midSectionImage', 'validCellsFinal');
+    save(strcat(outputDir, '_', 'img_', date, '.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal');
 end
 
