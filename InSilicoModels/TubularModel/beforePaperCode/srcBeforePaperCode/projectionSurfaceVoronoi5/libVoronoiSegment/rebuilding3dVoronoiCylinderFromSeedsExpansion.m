@@ -32,10 +32,16 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     idOutlCells = find(outlinesCells);
     [xZer,yZer,zZer] = ind2sub(size(voronoi3D),idOutlCells);
 
-    seedsId = find(maskGlobalImage);
+    seedsId = find(maskOfGlobalImage);
     [xSeeds,ySeeds,zSeeds] = ind2sub(size(voronoi3D),seedsId);
-    pD = pdist2([xZer,yZer,zZer],[xSeeds,ySeeds,zSeeds]);
-    [~,posMin] = min(pD,[],2);
+    
+    posMin = zeros(length(xZer),1);
+    
+    for i = 1:length(xZer)
+        pD = pdist2([xZer(i),yZer(i),zZer(i)],[xSeeds,ySeeds,zSeeds]);
+        [~,posMin(i)] = min(pD);
+    end
+    
     voronoi3D(idOutlCells) = voronoi3D(seedsId(posMin));
     voronoi3D(imgInvalidRegion==1)=0;
 
@@ -46,8 +52,8 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     for nC = nCells'
         mask2 = zeros(size(voronoi3D));
         mask2(voronoi3D==nC)=1;
-        imgErode = imerode(mask2,strel('sphere',1));
-        imgDilate = imdilate(imgErode,strel('sphere',1));
+        imgErode = imerode(mask2,strel('sphere',2));
+        imgDilate = imdilate(imgErode,strel('sphere',2));
         mask1(imgDilate>0) = nC;
     end
 
@@ -56,7 +62,7 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     for nZPix = idZerosIsolated'
         maskPx = false(size(voronoi3D));
         maskPx(nZPix)=1;
-        pxDil = imdilate(maskPx,strel('sphere',1));
+        pxDil = imdilate(maskPx,strel('sphere',3));
         pxOverl = mask1(pxDil);
         try
             [a,b] = hist(pxOverl(pxOverl>0),unique(pxOverl(pxOverl>0)));
@@ -90,17 +96,20 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     
 
     %% Get final image and surfaces of interest
-%     img3Dfinal= zeros(2*R_basal+1,2*R_basal+1,H_apical);
+        img3Dfinal= zeros(2*R_basal+1,2*R_basal+1,H_apical);
 %     for numSeed=1:numTotalSeeds
 %         cell3d=info3DCell{numSeed}.image3d;
 %         img3Dfinal(img3Dfinal==0)=img3Dfinal(img3Dfinal==0)+cell3d(img3Dfinal==0);
 %     end
 %     
+    img3DApicalSurface = [];
+    img3DBasalSurface = [];
+    img3DIntermediateSurface = [];
 %     [img3DApicalSurface,img3DBasalSurface,img3DIntermediateSurface]=get3dImageAndSurfaces(R_basal,H_apical,equalBasalRadius,equalApicalRadius,equalIntermediateRadius,intermediateSurfaceRatios,img3Dfinal);  
 
     mkdir(path2save)
-    save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'info3Dcell','apicalCylinderSeedsPositions','basalCylinderSeedsPositions','-v7.3');
-    savefig(f,[path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '_.fig'])
+    save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'info3DCell','apicalCylinderSeedsPositions','basalCylinderSeedsPositions','-v7.3');
+%     savefig(f,[path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '_.fig'])
 
 end
 

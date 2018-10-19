@@ -22,9 +22,9 @@ function main3dVoronoiSegmentCylinder (H_apical,W_apical,numSeeds,numTotalImages
         name2save= ['Image_' num2str(numImage) '_' num2str(numSeeds) 'seeds'];
         tic
         %tridimensional reconstruction info
-        [seedsInfo,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DIntermediateSurface]=rebuilding3dVoronoiCylinderFromSeedsExpansion( initialSeeds, H_apical, W_apical, surfaceRatio,reductionFactor,intermediateSurfaceRatios,name2save,path2save);
+        [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DIntermediateSurface]=rebuilding3dVoronoiCylinderFromSeedsExpansion( initialSeeds, W_apical, H_apical, surfaceRatio,reductionFactor,intermediateSurfaceRatios,name2save,path2save);
 
-        
+        stlReconstruction(info3DCell,path2save,numImage)
 %         %% neighbours
 %         %%in apical and basal surface
 %         [neighApical3D,~]=calculate_neighbours3D(img3DApicalSurface);
