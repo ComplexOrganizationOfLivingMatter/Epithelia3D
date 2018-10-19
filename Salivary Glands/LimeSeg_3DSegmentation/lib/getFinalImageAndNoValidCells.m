@@ -63,7 +63,7 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     %% Get valid & no valid Cells
     maskNoValidCell=imdilate(imdilate(finalImage>0,strel('disk',2))==0,strel('disk',5));
     noValidCells = unique(finalImage(maskNoValidCell));   
-    borderCells = unique([unique(finalImage(1:2,:));unique(finalImage(end-1:end,:));unique(finalImage(:,1:2));unique(finalImage(:,end-1:end))]);
+    borderCells = unique([unique(finalImage(1:2,:));unique(finalImage(end-1:end,:))]);
     noValidCells = unique([noValidCells;borderCells]);  
     
     validCells = setdiff(unique(finalImage),noValidCells);
