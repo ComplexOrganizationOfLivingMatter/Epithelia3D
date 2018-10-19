@@ -134,10 +134,10 @@ function [] = unrollTube(img3d, outputDir, noValidCells, colours)
     finalImageWithValidCells = ismember(midSectionImage, validCellsFinal).*midSectionImage;
 %     figure;imshow(finalImageWithValidCells,colours)
     
-    imwrite(finalImageWithValidCells(:, round(ySize/3):round(ySize*2/3))+1, colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.tif'));
-    imwrite(finalImageWithValidCells+1, colours, strcat(outputDir, '_', 'img_ValidCells_', date, '.tif'));
+    imwrite(midSectionImage+1, colours, strcat(outputDir, '_', 'img_MidSection_', date, '.tif'));
+    imwrite(finalImageWithValidCells+1, colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.tif'));
     imwrite(wholeImage+1, colours, strcat(outputDir, '_', 'img_WholeImage_', date, '.tif'));
     
-    save(strcat(outputDir, '_', 'img_', date, '.mat'), 'finalImageWithValidCells', 'midSectionImage');
+    save(strcat(outputDir, '_', 'img_', date, '.mat'), 'finalImageWithValidCells', 'midSectionImage', 'validCellsFinal');
 end
 
