@@ -18,7 +18,14 @@ function [] = paint3D(varargin)
     end
 
     figure;
-    for numSeed = unique(showingCells)'
+
+    if size(unique(showingCells),1) > size(unique(showingCells),2)
+        showingCells = unique(showingCells)';
+    else
+        showingCells = unique(showingCells);
+    end
+
+    for numSeed = showingCells
         % Painting each cell
         [x,y,z] = ind2sub(size(labelledImage),find(labelledImage == numSeed));
         pcshow([x,y,z], colours(numSeed, :));
