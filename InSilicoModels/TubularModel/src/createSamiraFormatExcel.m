@@ -9,6 +9,16 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
 
     pathSplitted = strsplit(pathFile, '\');
     nameOfSimulation = pathSplitted{end-1};
+    
+    %% Salivary gland
+%     load(pathFile);
+%     
+%     extendedImage = bwlabel(wholeImage > 0, 4);
+%     [neighbours, ~] = calculateNeighbours(extendedImage);
+%     [ verticesInfo ] = calculateVertices(extendedImage, neighbours);
+%     [ verticesNoValidCellsInfo ] = getVerticesBorderNoValidCells(extendedImage);
+    
+    %% Simulations
     load(strcat(pathFile, nameOfSimulation,'.mat'), 'listLOriginalProjection');
     
     nameSplitted = strsplit(nameOfSimulation, '_');
@@ -18,6 +28,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
         mkdir(dir2save)
     end
     for nSurfR = [1 surfaceRatios]
+        
         L_img = listLOriginalProjection{round([listLOriginalProjection{:,1}],3)==round(nSurfR,3),2};
         
         %We use L_img a little bit extended for get lateral border

@@ -15,14 +15,18 @@ function [ L_original ] = generateCylindricalVoronoi(seeds_values,H,W)
         bgm_x3 = DL_x3 == 0;            % Cells = 0 , outline = 1.
         Voronoi_x3=bgm_x3;
 
-        L_original_x3=bwlabel(1-Voronoi_x3,8);  % Label cells
+%         L_original_x3=bwlabel(1-Voronoi_x3,8);  % Label cells
         
         %% Label correctly cells of the lateral edges
         Voronoi_x2=Voronoi_x3(:,W+1:end);
         L_original_x2=bwlabel(1-Voronoi_x2,8);
         
         % Get sort labels right border
-        right_border_cells=L_original_x2(:,W+1);
+        right_border_cells=L_original_x2(:,W:W+1);
+        noRepVal = right_border_cells(:,1) ~= right_border_cells(:,2);
+        right_border_cells(noRepVal,:) = 0;
+        right_border_cells = right_border_cells(:,1);
+        
         [cel_1,idx_1]=unique(right_border_cells);
         if length(idx_1)>1
              Rig=[cel_1(2:end),idx_1(2:end)];
@@ -34,6 +38,8 @@ function [ L_original ] = generateCylindricalVoronoi(seeds_values,H,W)
         
         %Get sort labels left border
         left_border_cells=L_original_x2(:,1);
+        left_border_cells(noRepVal,:) = 0;
+        
         [cel_2,idx_2]=unique(left_border_cells);
         if length(idx_1)>1
             Lef=[cel_2(2:end),idx_2(2:end)];
