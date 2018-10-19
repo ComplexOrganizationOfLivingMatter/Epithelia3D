@@ -138,6 +138,6 @@ function [] = unrollTube(img3d, outputDir, noValidCells, colours)
     imwrite(finalImageWithValidCells+1, colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.tif'));
     imwrite(wholeImage+1, colours, strcat(outputDir, '_', 'img_WholeImage_', date, '.tif'));
     
-    save(strcat(outputDir, '_', 'img_', date, '.mat'), 'finalImageWithValidCells', 'midSectionImage', 'validCellsFinal');
+    save(strcat(outputDir, '_', 'img_', date, '.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal');
 end
 
