@@ -6,12 +6,16 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
 
     for numCell = 1:size(cellWithVertices, 1)
 
-        verticesOfCellInit = cellWithVertices{numCell, end};
+        if isempty(missingVertices) == 0
+            verticesOfCellInit = cellWithVertices{numCell, end};
 
-        numberOfVertices = (size(verticesOfCellInit, 2)/2);
-        verticesOfCell = [];
-        verticesOfCell(1:numberOfVertices, 1) = verticesOfCellInit(1:2:end);
-        verticesOfCell(1:numberOfVertices, 2) = verticesOfCellInit(2:2:end);
+            numberOfVertices = (size(verticesOfCellInit, 2)/2);
+            verticesOfCell = [];
+            verticesOfCell(1:numberOfVertices, 1) = verticesOfCellInit(1:2:end);
+            verticesOfCell(1:numberOfVertices, 2) = verticesOfCellInit(2:2:end);
+        else
+            verticesOfCell = cellWithVertices{numCell};
+        end
 
         %Replace the missing cells
         for numPair = 1:size(missingVertices, 1)
@@ -23,7 +27,7 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
             end
         end
 
-        verticesOfCell = unique(verticesOfCell, 'rows');
+        verticesOfCell = double(unique(verticesOfCell, 'rows'));
 
         orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1);
         counter = 0.05;
