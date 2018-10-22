@@ -1,10 +1,10 @@
-function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(verticesInfo, verticesNoValidCellsInfo, extendedImage, L_img)
+function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(verticesInfo, verticesNoValidCellsInfo, extendedImage, L_img, nSurfR, pathSplitted, nameOfSimulation)
 %TABLEWITHSAMIRAFORMAT Summary of this function goes here
 %   Detailed explanation goes here
 %
 
     maxDistance = 4;
-    
+    samiraTableVoronoi = {};
     %Later we filter for deleting the vertices in the extended zone
     vertInsideRange=cellfun(@(x) x(2)>2 | x(2) < size(extendedImage, 2)-1 ,verticesInfo.verticesPerCell);
     verticesInfo.verticesPerCell(~vertInsideRange,:)=[];
@@ -136,7 +136,10 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(verticesInfo
         cellsVoronoi = [nSurfR, cellWithVertices{numCell, 3:5}, {verticesRadius}];
         samiraTableVoronoi = [samiraTableVoronoi; cellsVoronoi];
 
-
+        %Plot
+        nameSplitted = strsplit(nameOfSimulation, '_');
+        dir2save = strcat(strjoin(pathSplitted(1:end-2), '\'),'\verticesSamira\');
+        plotVerticesPerSurfaceRatio(samiraTableVoronoi((end-numCell+1):end,:),missingVerticesCoord,dir2save,nameSplitted,'Voronoi',nSurfR)
     end
     
 end

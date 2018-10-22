@@ -1,4 +1,4 @@
-function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
+function [samiraTableVoronoi] = createSamiraFormatExcel_Simulations(pathFile, surfaceRatios)
 %CREATESAMIRAFORMATEXCEL Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -29,10 +29,11 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
         [ verticesInfo ] = calculateVertices(extendedImage, neighbours);
         [ verticesNoValidCellsInfo ] = getVerticesBorderNoValidCells( extendedImage);
         
-        [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(verticesInfo, verticesNoValidCellsInfo, extendedImage, L_img);
+        [samiraTableVoronoiActualSR, cellsVoronoi] = tableWithSamiraFormat(verticesInfo, verticesNoValidCellsInfo, extendedImage, L_img, nSurfR, pathSplitted, nameOfSimulation);
         
-        %Plot and save vertices simulations
-        plotVerticesPerSurfaceRatio(samiraTableVoronoi((end-numCell+1):end,:),missingVerticesCoord,dir2save,nameSplitted,'Voronoi',nSurfR)
+        samiraTableVoronoi = [samiraTableVoronoi; samiraTableVoronoiActualSR];
+        
+        %save vertices simulations
         
         %Create frusta table 
         if nSurfR == 1
