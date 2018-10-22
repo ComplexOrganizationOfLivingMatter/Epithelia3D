@@ -3,6 +3,8 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile)
 %   Detailed explanation goes here
     addpath(genpath('lib'))
 
+    maxDistance = 4;
+    
     %% Salivary gland
     load(pathFile);
     
@@ -11,6 +13,11 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile)
     corners = corners.selectUniform(9*length(validCellsFinal), size(midSectionImgToCalculateCorners));
 %     figure;imshow(midSectionImgToCalculateCorners); hold on;
 %     plot(corners.selectUniform(9*length(validCellsFinal), size(midSectionImgToCalculateCorners)));
+
+    % Calculate vertices connecting 3 cells and add them to the list
+    extendedImage = wholeImage;
+    [neighbours, ~] = calculateNeighbours(extendedImage);
+    [ verticesInfoOf3Fold ] = calculateVertices(extendedImage, neighbours);
 
     %We found the closest white pixels to the pixels we found in black
     [whitePixelsY, whitePixelsX] = find(midSectionImgToCalculateCorners);
@@ -21,6 +28,8 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile)
     
     cellVertices = cell(max(wholeImage(:)), 1);
     
+    allVertices = single(vertcat(verticesInfoOf3Fold.verticesPerCell{:}));
+    
     for numVertexCells = 1:corners.Count
         %hold on; plot(corners.Location(numVertexCells, 1), corners.Location(numVertexCells, 2), 'r+');
         if midSectionImgToCalculateCorners(round(corners.Location(numVertexCells, 2)), round(corners.Location(numVertexCells, 1))) == 0
@@ -30,38 +39,36 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile)
             corners.Location(numVertexCells, :) = round(corners.Location(numVertexCells, :));
         end
         
-        imgToDilate(corners.Location(numVertexCells, 2), corners.Location(numVertexCells, 1)) = 1;
+        [minDistance, minDistIndex] = pdist2(allVertices, corners.Location(numVertexCells, :), 'euclidean', 'Smallest', 1);
         
-        dilatedImg = imdilate(imgToDilate, se);
-        
-        verticesInfo(numVertexCells).verticesPerCell = corners.Location(numVertexCells, :);
-        
-        cellsConnectedByVertex = unique(wholeImage(dilatedImg>0));
-        cellsConnectedByVertex(cellsConnectedByVertex == 0) = [];
-        
-        for newCellVertices = cellsConnectedByVertex'
-            cellVertices{newCellVertices} = vertcat(cellVertices{newCellVertices}, corners.Location(numVertexCells, :));
+        if minDistance >= maxDistance
+            imgToDilate(corners.Location(numVertexCells, 2), corners.Location(numVertexCells, 1)) = 1;
+
+            dilatedImg = imdilate(imgToDilate, se);
+
+            verticesInfo(numVertexCells).verticesPerCell = corners.Location(numVertexCells, :);
+
+            cellsConnectedByVertex = unique(wholeImage(dilatedImg>0));
+            cellsConnectedByVertex(cellsConnectedByVertex == 0) = [];
+
+            for newCellVertices = cellsConnectedByVertex'
+                cellVertices{newCellVertices} = vertcat(cellVertices{newCellVertices}, corners.Location(numVertexCells, :));
+            end
+            verticesInfo(numVertexCells).verticesConnectCells = cellsConnectedByVertex;
+
+            imgToDilate(corners.Location(numVertexCells, 2), corners.Location(numVertexCells, 1)) = 0;
         end
-        verticesInfo(numVertexCells).verticesConnectCells = cellsConnectedByVertex;
-        
-        imgToDilate(corners.Location(numVertexCells, 2), corners.Location(numVertexCells, 1)) = 0;
     end
 
 %     figure;imshow(midSectionImgToCalculateCorners); hold on;
 %     plot(corners);
-    
-    extendedImage = wholeImage;
 
-    % Calculate vertices connecting 3 cells and add them to the list
-    [neighbours, ~] = calculateNeighbours(extendedImage);
-    [ verticesInfoOf3Fold ] = calculateVertices(extendedImage, neighbours);
+    for numCell = 1:max(extendedImage(:))
+        newVertices = verticesInfoOf3Fold.verticesPerCell(any(ismember(verticesInfoOf3Fold.verticesConnectCells, numCell), 2), :);
+        actualVertices = vertcat(cellVertices{newCellVertices}, newVertices{:});
+        cellVertices{newCellVertices} = actualVertices;
+    end
     
-    
-    verticesInfoAll.verticesConnectCells = verticesInfoOf3Fold.verticesConnectCells
-    
-    verticesInfoAll = verticesInfoOf3Fold;
-    
-    [verticesInfoAll.verticesConnectCells, {verticesInfo(:).verticesConnectCells}]
     
     %midCells = unique(extendedImage(finalImageWithValidCells>0));
     eulerNumberOfCells = regionprops(finalImageWithValidCells, 'all');
@@ -78,7 +85,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile)
 %     verticesNoValidCellsInfo.verticesConnectCells = verticesInfoOf3Fold.verticesConnectCells(borderCellsOfNewLabels);
 %     verticesNoValidCellsInfo.verticesPerCell = verticesInfoOf3Fold.verticesPerCell(borderCellsOfNewLabels);
     
-    [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(verticesInfo, verticesNoValidCellsInfo, extendedImage, finalImageWithValidCells);
+    [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellVertices, []);
     
     samiraTableT = cell2table(samiraTableVoronoi, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
 
