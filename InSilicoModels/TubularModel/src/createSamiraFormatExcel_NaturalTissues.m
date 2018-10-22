@@ -1,4 +1,4 @@
-function [] = createSamiraFormatExcel_NaturalTissues(pathFile)
+function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
 %CREATESAMIRAFORMATEXCEL_NATURALTISSUES Summary of this function goes here
 %   Detailed explanation goes here
     addpath(genpath('lib'))
@@ -85,7 +85,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile)
 %     verticesNoValidCellsInfo.verticesConnectCells = verticesInfoOf3Fold.verticesConnectCells(borderCellsOfNewLabels);
 %     verticesNoValidCellsInfo.verticesPerCell = verticesInfoOf3Fold.verticesPerCell(borderCellsOfNewLabels);
     
-    [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellVertices, []);
+    [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellVertices, [], -1, strsplit(pathFile, '\'), nameOfSimulation);
     
     samiraTableT = cell2table(samiraTableVoronoi, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
 
