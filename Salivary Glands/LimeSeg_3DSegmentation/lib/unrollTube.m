@@ -1,4 +1,4 @@
-function [] = unrollTube(img3d, outputDir, noValidCells, colours)
+function [neighs_real,sides_cells] = unrollTube(img3d, outputDir, noValidCells, colours)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -133,6 +133,7 @@ function [] = unrollTube(img3d, outputDir, noValidCells, colours)
     validCellsFinal  = setdiff(1:max(midSectionImage(:)), noValidCells);
     finalImageWithValidCells = ismember(midSectionImage, validCellsFinal).*midSectionImage;
 %     figure;imshow(finalImageWithValidCells,colours)
+    [neighs_real,sides_cells]=calculateNeighbours(midSectionImage);
     
     imwrite(midSectionImage+1, colours, strcat(outputDir, '_', 'img_MidSection_', date, '.tif'));
     imwrite(finalImageWithValidCells+1, colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.tif'));
