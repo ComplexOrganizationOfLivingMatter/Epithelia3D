@@ -29,7 +29,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
         [ verticesInfo ] = calculateVertices(extendedImage, neighbours);
         [ verticesNoValidCellsInfo ] = getVerticesBorderNoValidCells( extendedImage);
         
-        [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(verticesInfo, verticesNoValidCellsInfo, extendedImage, L_img)
+        [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(verticesInfo, verticesNoValidCellsInfo, extendedImage, L_img);
         
         %Plot and save vertices simulations
         plotVerticesPerSurfaceRatio(samiraTableVoronoi((end-numCell+1):end,:),missingVerticesCoord,dir2save,nameSplitted,'Voronoi',nSurfR)
@@ -52,9 +52,6 @@ function [samiraTableVoronoi] = createSamiraFormatExcel(pathFile, surfaceRatios)
             plotVerticesPerSurfaceRatio(cellsFrusta,[],dir2save,nameSplitted,'Frusta',nSurfR)
 
         end
-        
-        
-        
     end
     samiraTableVoronoiT = cell2table(samiraTableVoronoi, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
     samiraTableFrustaT = cell2table(samiraTableFrustaSR, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
