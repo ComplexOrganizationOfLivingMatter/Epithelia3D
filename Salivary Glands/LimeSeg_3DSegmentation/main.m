@@ -6,7 +6,7 @@ addpath(genpath(fullfile('..', '..', 'InSilicoModels', 'TubularModel', 'src')));
 
 close all
 
-[polygon_distribution_Apical, polygon_distribution_Basal, NeighboursData,selpath] = pipeline();
+[polygon_distribution_Apical, polygon_distribution_Basal, NeighboursData,neighboursUnrollTube,polygon_distribution_UnrollTube,selpath] = pipeline();
 save(fullfile(selpath,'polygon_distribution.mat'), 'polygon_distribution_Apical', 'polygon_distribution_Basal', 'NeighboursData')
     
 if sum([polygon_distribution_Apical{2,:}]) || sum([polygon_distribution_Basal{2,:}])

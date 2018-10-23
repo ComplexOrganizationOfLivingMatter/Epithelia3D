@@ -1,4 +1,4 @@
-function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursData,selpath] = pipeline()
+function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursData,neighboursUnrollTube,polygon_distribution_UnrollTube,selpath] = pipeline()
 %PIPELINE Summary of this function goes here
 %   Detailed explanation goes here
     selpath = uigetdir('data');
@@ -74,13 +74,17 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursDat
         %% Save apical and basal 3d information
         save(fullfile(selpath,'3d_layers_info.mat'), 'labelledImage', 'basalLayer', 'apicalLayer', 'apical3dInfo', 'basal3dInfo', '-v7.3')
 
-        %% Calculate neighbours and plot missing cells
+        %% Calculate poligon distribution and Unroll the tube.
         [polygon_distribution_Apical] = calculate_polygon_distribution(cellfun(@length, apical3dInfo.neighbourhood), validCells);
         [polygon_distribution_Basal] = calculate_polygon_distribution(cellfun(@length, basal3dInfo.neighbourhood), validCells);
         neighboursData = {apical3dInfo.neighbourhood, basal3dInfo.neighbourhood};
 
-        unrollTube(basalLayer, fullfile(selpath, 'basal'), noValidCells, colours);
-        unrollTube(apicalLayer, fullfile(selpath, 'apical'), noValidCells, colours);
+        [neighs_basal,basal_cells] = unrollTube(basalLayer, fullfile(selpath, 'basal'), noValidCells, colours);
+        [polygon_distribution_UnrollTubeBasal] = calculate_polygon_distribution(basal_cells, validCells);
+        [neighs_apical,apical_cells] = unrollTube(apicalLayer, fullfile(selpath, 'apical'), noValidCells, colours);
+        [polygon_distribution_UnrollTubeApical] = calculate_polygon_distribution(apical_cells, validCells);
+        neighboursUnrollTube = {neighs_apical,neighs_basal};
+        polygon_distribution_UnrollTube = {polygon_distribution_UnrollTubeApical,polygon_distribution_UnrollTubeBasal};
     end
 end
 
