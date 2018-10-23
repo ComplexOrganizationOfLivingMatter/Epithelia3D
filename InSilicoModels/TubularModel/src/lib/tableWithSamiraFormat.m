@@ -24,20 +24,28 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
 
         verticesOfCell = double(unique(verticesOfCell, 'rows'));
 
-        orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1);
-        counter = 0.05;
-        while length(orderBoundary)-1 < size(verticesOfCell, 1) && counter < 0.9
-            orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1+counter);
-            counter = counter + 0.5;
-        end
-
-        missingVerticesActual = [];
-        if length(orderBoundary)-1 ~= size(verticesOfCell, 1)
-            disp(strcat('Warning: cell number', num2str(cellWithVertices{numCell, 3}), ' may be wrongly done'));
-            disp('Correcting...')
-            missingVerticesActual = setdiff(1:size(verticesOfCell, 1), orderBoundary);
-            missingVerticesCoord = [missingVerticesCoord;verticesOfCell(missingVerticesActual,:)];
-        end
+        userConfig = struct('xy',verticesOfCell, 'showProg',false,'showResult',false); 
+        resultStruct = tspo_ga(userConfig);
+        
+        
+        
+        orderBoundary = [resultStruct.optRoute resultStruct.optRoute(1)];
+%         figure; plot(verticesOfCell(:, 1), verticesOfCell(:, 2), 'r*')
+%         hold on;
+%         plot(verticesOfCell(orderBoundary, 1), verticesOfCell(orderBoundary, 2));
+%         counter = 0.05;
+%         while length(orderBoundary)-1 < size(verticesOfCell, 1) && counter < 0.7
+%             orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1+counter);
+%             counter = counter + 0.05;
+%         end
+% 
+%         missingVerticesActual = [];
+%         if length(orderBoundary)-1 ~= size(verticesOfCell, 1)
+%             disp(strcat('Warning: cell number', num2str(cellWithVertices{numCell, 3}), ' may be wrongly done'));
+%             disp('Correcting...')
+%             missingVerticesActual = setdiff(1:size(verticesOfCell, 1), orderBoundary);
+%             missingVerticesCoord = [missingVerticesCoord;verticesOfCell(missingVerticesActual,:)];
+%         end
 
         % Should be connected clockwise
         % I.e. from bigger numbers to smaller ones
