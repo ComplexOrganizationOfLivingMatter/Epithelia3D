@@ -103,7 +103,12 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_Simulations(pathFile, su
     samiraTableVoronoiT = cell2table(samiraTableVoronoi, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
     samiraTableFrustaT = cell2table(samiraTableFrustaSR, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
 
+    newVoronoiCrossesTable = lookFor4cellsJunctionsAndExportTheExcel(samiraTableVoronoiT);
+    newFrustaCrossesTable = lookFor4cellsJunctionsAndExportTheExcel(samiraTableFrustaT);
+
     writetable(samiraTableVoronoiT, strcat(dir2save, '\Voronoi_realization', nameSplitted{2} ,'_samirasFormat_', date, '.xls'));
     writetable(samiraTableFrustaT, strcat(dir2save, '\Frusta_realization', nameSplitted{2} ,'_samirasFormat_', date, '.xls'));
+    writetable(newVoronoiCrossesTable, strcat(dir2save, '\Voronoi_realization', nameSplitted{2} ,'_VertCrosses_', date, '.xls'));
+    writetable(newFrustaCrossesTable, strcat(dir2save, '\Frusta_realization', nameSplitted{2} ,'_VertCrosses_', date, '.xls'));
 
 end
