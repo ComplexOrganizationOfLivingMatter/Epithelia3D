@@ -1,4 +1,4 @@
-function [] = unrollTube(img3d, outputDir, noValidCells, colours)
+function [neighs_real,sides_cells] = unrollTube(img3d, outputDir, noValidCells, colours)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -133,10 +133,25 @@ function [] = unrollTube(img3d, outputDir, noValidCells, colours)
     validCellsFinal  = setdiff(1:max(midSectionImage(:)), noValidCells);
     finalImageWithValidCells = ismember(midSectionImage, validCellsFinal).*midSectionImage;
 %     figure;imshow(finalImageWithValidCells,colours)
+    [neighs_real,sides_cells]=calculateNeighbours(midSectionImage);
+    
+%     figure,imshow(midSectionImage, colours);
+%     set(gcf, 'units','normalized','outerposition',[0 0 1 1]);
+%     centroids = regionprops(midSectionImage, 'Centroid');
+%     centroids = vertcat(centroids.Centroid);
+%     for numCentroid = 1:size(centroids, 1)
+%         if mean(colours(numCentroid+1, :)) < 0.4
+%             text(centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(numCentroid), 'HorizontalAlignment', 'center', 'Color', 'white');
+%         else
+%             text(centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(numCentroid), 'HorizontalAlignment', 'center');
+%         end
+%     end
     
     imwrite(midSectionImage+1, colours, strcat(outputDir, '_', 'img_MidSection_', date, '.tif'));
     imwrite(finalImageWithValidCells+1, colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.tif'));
     imwrite(wholeImage+1, colours, strcat(outputDir, '_', 'img_WholeImage_', date, '.tif'));
+    
+
     
     save(strcat(outputDir, '_', 'img_', date, '.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal');
 end
