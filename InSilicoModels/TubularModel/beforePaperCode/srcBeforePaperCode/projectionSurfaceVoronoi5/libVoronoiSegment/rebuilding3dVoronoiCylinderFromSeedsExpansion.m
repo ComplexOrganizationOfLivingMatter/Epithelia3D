@@ -87,12 +87,12 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     %cost.
     
 %     f=figure('Visible','on');
-    for numSeed=1:numTotalSeeds
-        [voxelsCoordinates]=info3DCell{numSeed}.pxCoordinates;
+%     for numSeed=1:numTotalSeeds
+%         [voxelsCoordinates]=info3DCell{numSeed}.pxCoordinates;
 %         cellFigure = alphaShape(voxelsCoordinates(:,1), voxelsCoordinates(:,2), voxelsCoordinates(:,3),10);
 %         plot(cellFigure, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
 %         hold on;
-    end
+%     end
     
 
     %% Get final image and surfaces of interest
