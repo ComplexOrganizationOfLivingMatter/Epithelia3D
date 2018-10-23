@@ -1,4 +1,4 @@
-function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVertices, missingVertices, nSurfR, pathSplitted, nameOfSimulation)
+function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVertices,cellCentroids, missingVertices, nSurfR, pathSplitted, nameOfSimulation)
 %TABLEWITHSAMIRAFORMAT Summary of this function goes here
 %   Detailed explanation goes here
 %
@@ -24,12 +24,18 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
 
         verticesOfCell = double(unique(verticesOfCell, 'rows'));
 
-        userConfig = struct('xy',verticesOfCell, 'showProg',false,'showResult',false); 
-        resultStruct = tspo_ga(userConfig);
+        imaginaryCentroid = cellCentroids(cellWithVertices{numCell,3},:);
+        vectorForAng = bsxfun(@minus, verticesOfCell, imaginaryCentroid ); %// vectors connecting the central point and the dots
+        th = atan2(vectorForAng(:,2),vectorForAng(:,1)); %// angle above x axis
+        [~, angleOrder] = sort(th); 
+        newVertOrder = verticesOfCell(angleOrder,:); 
+        newVertOrder = [newVertOrder; newVertOrder(1,:)];
         
-        
-        
-        orderBoundary = [resultStruct.optRoute resultStruct.optRoute(1)];
+%         userConfig = struct('xy',verticesOfCell, 'showProg',false,'showResult',false); 
+%         resultStruct = tspo_ga(userConfig);
+%         orderBoundary = [resultStruct.optRoute resultStruct.optRoute(1)];
+
+
 %         figure; plot(verticesOfCell(:, 1), verticesOfCell(:, 2), 'r*')
 %         hold on;
 %         plot(verticesOfCell(orderBoundary, 1), verticesOfCell(orderBoundary, 2));
@@ -50,8 +56,14 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
         % Should be connected clockwise
         % I.e. from bigger numbers to smaller ones
         % Or the second vertex should in the left hand of the first
-        [newOrderX, newOrderY] = poly2cw(verticesOfCell(orderBoundary(1:end-1), 1), verticesOfCell(orderBoundary(1:end-1), 2));
+        [newOrderX, newOrderY] = poly2cw(newVertOrder((1:end-1), 1), newVertOrder((1:end-1), 2));
         verticesRadius = [];
+        
+%         figure;       
+        hold on
+        plot(newVertOrder(:, 1), newVertOrder(:, 2))
+        hold on
+        plot(verticesOfCell(:, 1), verticesOfCell(:, 2), 'r+');
 
         for numVertex = 1:length(newOrderX)
             verticesRadius(end+1) = newOrderX(numVertex);
