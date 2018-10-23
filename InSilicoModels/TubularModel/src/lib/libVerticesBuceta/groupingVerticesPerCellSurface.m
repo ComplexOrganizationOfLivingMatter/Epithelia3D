@@ -5,17 +5,31 @@ function cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,ve
     radius=W/(2*pi);
     %%Cells are formed by a set of vertices
     for nCell=1:max(max(L_img))
-        [nRowValid,~,~]=find(verticesInfo.verticesConnectCells==nCell);
-        [~,nRowNoValid,~]=find(horzcat(verticesNoValidCellsInfo.verticesConnectCells{:})==nCell);
+        if isstruct(verticesInfo)
+            [nRowValid,~,~]=find(verticesInfo.verticesConnectCells==nCell);
+            [~,nRowNoValid,~]=find(horzcat(verticesNoValidCellsInfo.verticesConnectCells{:})==nCell);
+        else
+            nRowValid = verticesInfo{nCell};
+            nRowNoValid = verticesNoValidCellsInfo{nCell};
+        end
 
         booleanNoValidCell=1 ;
         if isempty(nRowNoValid)
            booleanNoValidCell=0 ;
         end
 
-        cellVertices= [verticesInfo.verticesPerCell(nRowValid,:);verticesNoValidCellsInfo.verticesPerCell(nRowNoValid)];
+        if isstruct(verticesInfo)
+            cellVertices= [verticesInfo.verticesPerCell(nRowValid,:);verticesNoValidCellsInfo.verticesPerCell(nRowNoValid)];
+            vert=vertcat(cellVertices{:}); 
+        else
+            if isempty(nRowValid) == 0
+                vert= [nRowValid(:, 2:-1:1)];
+            else
+                vert= [nRowNoValid(:, 2:-1:1)];
+            end
+        end
 
-        vert=vertcat(cellVertices{:});                
+                       
 
         %checking border cells
         distBetwVert=pdist(vert);
@@ -23,10 +37,10 @@ function cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,ve
             indRightBorder = vert(:,2) > W/2;
             vertRight = vert;
             vertLeft = vert;
-
+            
             vertRight(~indRightBorder,2)=vert(~indRightBorder,2)+W;
             vertLeft(indRightBorder,2)=vert(indRightBorder,2)-W;
-
+            
             row1={nRand radius nCell booleanNoValidCell 1 reshape(vertLeft.', 1, [])};
             row2={nRand radius nCell booleanNoValidCell 2 reshape(vertRight.', 1, [])};
             row=[row1;row2];

@@ -3,19 +3,14 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
 %   Detailed explanation goes here
 %
     samiraTableVoronoi = {};
-
+    missingVerticesCoord = [];
     for numCell = 1:size(cellWithVertices, 1)
-
-        if isempty(missingVertices) == 0
-            verticesOfCellInit = cellWithVertices{numCell, end};
-
-            numberOfVertices = (size(verticesOfCellInit, 2)/2);
-            verticesOfCell = [];
-            verticesOfCell(1:numberOfVertices, 1) = verticesOfCellInit(1:2:end);
-            verticesOfCell(1:numberOfVertices, 2) = verticesOfCellInit(2:2:end);
-        else
-            verticesOfCell = cellWithVertices{numCell};
-        end
+        verticesOfCellInit = cellWithVertices{numCell, end};
+        
+        numberOfVertices = (size(verticesOfCellInit, 2)/2);
+        verticesOfCell = [];
+        verticesOfCell(1:numberOfVertices, 1) = verticesOfCellInit(1:2:end);
+        verticesOfCell(1:numberOfVertices, 2) = verticesOfCellInit(2:2:end);
 
         %Replace the missing cells
         for numPair = 1:size(missingVertices, 1)
@@ -61,6 +56,7 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
     %Plot
     nameSplitted = strsplit(nameOfSimulation, '_');
     dir2save = strcat(strjoin(pathSplitted(1:end-2), '\'),'\verticesSamira\');
-    plotVerticesPerSurfaceRatio(samiraTableVoronoi((end-numCell+1):end,:),missingVerticesCoord,dir2save,nameSplitted,'Voronoi',nSurfR)
+    mkdir(dir2save)
+    plotVerticesPerSurfaceRatio(samiraTableVoronoi((end-numCell+1):end,:),missingVerticesCoord,dir2save,nameSplitted,'Natural',nSurfR)
 end
 
