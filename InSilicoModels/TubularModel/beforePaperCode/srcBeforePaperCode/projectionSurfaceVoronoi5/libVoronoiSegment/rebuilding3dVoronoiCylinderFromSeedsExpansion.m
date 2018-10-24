@@ -28,6 +28,7 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
 	voronoi3D=watershed(distSegments,26);
 
     %% filling zero pixels as outlinesCells
+    imgInvalidRegion = imresize3(imgInvalidRegion,size(voronoi3D),'nearest');
     outlinesCells = (voronoi3D==0 & imgInvalidRegion==0);
     idOutlCells = find(outlinesCells);
     [xZer,yZer,zZer] = ind2sub(size(voronoi3D),idOutlCells);
@@ -79,7 +80,7 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     numTotalSeeds=size(initialSeeds, 1);
     info3DCell=cell(numTotalSeeds,1);
     for numSeed = 1:numTotalSeeds
-        [info3DCell{numSeed}]=storingDataPer3DCell(numSeed,R_basal,H_apical,maskOfGlobalImage,colours,voronoi3D);
+        [info3DCell{numSeed}]=storingDataPer3DCell(numSeed,maskOfGlobalImage,colours,voronoi3D);
     end
 
     %% plot 3d reconstruction ---- This section is out of the last loop
@@ -96,7 +97,7 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     
 
     %% Get final image and surfaces of interest
-        img3Dfinal= zeros(2*R_basal+1,2*R_basal+1,H_apical);
+        img3Dfinal= zeros(size(voronoi3D));
 %     for numSeed=1:numTotalSeeds
 %         cell3d=info3DCell{numSeed}.image3d;
 %         img3Dfinal(img3Dfinal==0)=img3Dfinal(img3Dfinal==0)+cell3d(img3Dfinal==0);
