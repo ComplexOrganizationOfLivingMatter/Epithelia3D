@@ -23,14 +23,12 @@ function cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,ve
             vert=vertcat(cellVertices{:}); 
         else
             if isempty(nRowValid) == 0
-                vert= [nRowValid(:, 2:-1:1)];
+                vert= [nRowValid];
             else
-                vert= [nRowNoValid(:, 2:-1:1)];
+                vert= [nRowNoValid];
             end
         end
-
-                       
-
+        
         %checking border cells
         distBetwVert=pdist(vert);
         if any(distBetwVert > W/2)
