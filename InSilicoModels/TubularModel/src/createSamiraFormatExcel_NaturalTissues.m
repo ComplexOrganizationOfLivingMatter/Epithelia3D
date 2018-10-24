@@ -109,8 +109,11 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
 
     newCrossesTable = lookFor4cellsJunctionsAndExportTheExcel(samiraTableT);
     
-    writetable(samiraTableT, strcat(dir2save, '\samirasFormat_', date, '.xls'));
-    writetable(newCrossesTable, strcat(dir2save, '\Voronoi_realization', nameSplitted{2} ,'_VertCrosses_', date, '.xls'));
-
+    splitPath = strsplit(pathFile,{'\','/'});
+   	typeOfSurface = strsplit(splitPath{end},'_');
+    typeOfSurface = typeOfSurface{1};
+    dir2save = fullfile(splitPath{1:end-1});
+    writetable(samiraTableT, strcat(dir2save, '\',typeOfSurface,'_',nameOfSimulation,'_vertSamirasFormat_', date, '.xls'));
+    writetable(newCrossesTable, strcat(dir2save, '\',typeOfSurface,'_',nameOfSimulation,'_vertCrossesSamirasFormat_', date, '.xls'));
 end
 
