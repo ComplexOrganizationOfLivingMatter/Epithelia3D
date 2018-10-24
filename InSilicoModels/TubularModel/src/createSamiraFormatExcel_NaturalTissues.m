@@ -15,7 +15,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
 %     plot(corners.selectUniform(9*length(validCellsFinal), size(midSectionImgToCalculateCorners)));
 
     % Calculate vertices connecting 3 cells and add them to the list
-    extendedImage = midSectionImage';
+    extendedImage = midSectionImage;
     [neighbours, ~] = calculateNeighbours(extendedImage);
     [ verticesInfoOf3Fold ] = calculateVertices(extendedImage, neighbours);
 
@@ -46,13 +46,13 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
 
             dilatedImg = imdilate(imgToDilate, se);
 
-            verticesInfo(numVertexCells).verticesPerCell = corners.Location(numVertexCells, :);
+            verticesInfo(numVertexCells).verticesPerCell = corners.Location(numVertexCells, 2:-1:1);
 
-            cellsConnectedByVertex = unique(wholeImage(dilatedImg>0));
+            cellsConnectedByVertex = unique(midSectionImage(dilatedImg>0));
             cellsConnectedByVertex(cellsConnectedByVertex == 0) = [];
 
             for newCellVertices = cellsConnectedByVertex'
-                cellVertices{newCellVertices} = vertcat(cellVertices{newCellVertices}, corners.Location(numVertexCells, :));
+                cellVertices{newCellVertices} = vertcat(cellVertices{newCellVertices}, corners.Location(numVertexCells, 2:-1:1));
             end
             verticesInfo(numVertexCells).verticesConnectCells = cellsConnectedByVertex;
 
@@ -70,7 +70,8 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
     borderCellsOfNewLabels = borderCells;
 
     %noBorderCells = setdiff(midCells, borderCellsOfNewLabels);
-    noBorderCells = validCellsFinal;
+    validCells = validCellsFinal;
+    noValidCells = setdiff(1:max(wholeImage(:)), validCells);
 
     for numCell = validCellsFinal
         newVertices = verticesInfoOf3Fold.verticesPerCell(any(ismember(verticesInfoOf3Fold.verticesConnectCells, numCell), 2), :);
@@ -92,17 +93,18 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
 %     verticesNoValidCellsInfo.verticesPerCell = verticesInfoOf3Fold.verticesPerCell(borderCellsOfNewLabels);
 
     cellVerticesNoValid = cellVertices;
-    cellVerticesNoValid(noBorderCells) = {[]};
+    cellVerticesNoValid(validCells) = {[]};
     
     cellVerticesValid = cellVertices;
-    cellVerticesValid(noBorderCells == 0) = {[]};
+    cellVerticesValid(noValidCells) = {[]};
 
     ySize = size(wholeImage, 2);
-    cellInfoWithVertices = groupingVerticesPerCellSurface(wholeImage(:, (ySize/3):(2*ySize/3))', cellVerticesValid, cellVerticesNoValid, [], 1);
-    
+    cellInfoWithVertices = groupingVerticesPerCellSurface(wholeImage(:, (ySize/3):(2*ySize/3)), cellVerticesValid, cellVerticesNoValid, [], 1, borderCells);
+
     cellInfoWithVertices(cellfun(@isempty, cellInfoWithVertices(:, 6)), :) = [];
+    cellInfoWithVertices(cellfun(@(x) ismember(x, noValidCells), cellInfoWithVertices(:, 3)), :) = [];
     
-    figure;imshow(finalImageWithValidCells);
+    figure;imshow(finalImageWithValidCells');
     [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellInfoWithVertices,cat(1,validCellsProp.Centroid), [], -1, strsplit(pathFile, '\'), nameOfSimulation);
     
     samiraTableT = cell2table(samiraTableVoronoi, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
