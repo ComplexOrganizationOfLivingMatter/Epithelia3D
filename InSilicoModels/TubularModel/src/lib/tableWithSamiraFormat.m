@@ -24,34 +24,42 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
 
         verticesOfCell = double(unique(verticesOfCell, 'rows'));
 
-        imaginaryCentroid = cellCentroids(cellWithVertices{numCell,3},:);
-        vectorForAng = bsxfun(@minus, verticesOfCell, imaginaryCentroid ); %// vectors connecting the central point and the dots
-        th = atan2(vectorForAng(:,2),vectorForAng(:,1)); %// angle above x axis
-        [~, angleOrder] = sort(th); 
-        newVertOrder = verticesOfCell(angleOrder,:); 
-        newVertOrder = [newVertOrder; newVertOrder(1,:)];
+        %Here we consider 3 methods to connect the vertices, and we choose
+        %the method with more area into the polyshape.
+        imaginaryCentroidMeanVert = mean(verticesOfCell);
+        vectorForAngMean = bsxfun(@minus, verticesOfCell, imaginaryCentroidMeanVert );
+        thMean = atan2(vectorForAngMean(:,2),vectorForAngMean(:,1));
+        [~, angleOrderMean] = sort(thMean); 
+        newVertOrderMean = verticesOfCell(angleOrderMean,:); 
+        newVertOrderMean = [newVertOrderMean; newVertOrderMean(1,:)];
         
-%         userConfig = struct('xy',verticesOfCell, 'showProg',false,'showResult',false); 
-%         resultStruct = tspo_ga(userConfig);
-%         orderBoundary = [resultStruct.optRoute resultStruct.optRoute(1)];
+        centroidCell = cellCentroids(cellWithVertices{numCell,3},:);
+        vectorForAngCent = bsxfun(@minus, verticesOfCell, centroidCell );
+        thCent = atan2(vectorForAngCent(:,2),vectorForAngCent(:,1));
+        [~, angleOrderCent] = sort(thCent); 
+        newVertOrderCent = verticesOfCell(angleOrderCent,:); 
+        newVertOrderCent = [newVertOrderCent; newVertOrderCent(1,:)];
+        
+        areaMeanCentroid = polyarea(newVertOrderMean(:,1),newVertOrderMean(:,2));
+        areaCellCentroid = polyarea(newVertOrderCent(:,1),newVertOrderCent(:,2));
+        
+        userConfig = struct('xy',verticesOfCell, 'showProg',false,'showResult',false); 
+        resultStruct = tspo_ga(userConfig);
+        orderBoundary = [resultStruct.optRoute resultStruct.optRoute(1)];
 
+        newVertSalesman = verticesOfCell(orderBoundary, :);
+        newVertSalesman = [newVertSalesman; newVertSalesman(1,:)];
+        areaVertSalesman = polyarea(newVertSalesman(:,1),newVertSalesman(:,2));
 
-%         figure; plot(verticesOfCell(:, 1), verticesOfCell(:, 2), 'r*')
-%         hold on;
-%         plot(verticesOfCell(orderBoundary, 1), verticesOfCell(orderBoundary, 2));
-%         counter = 0.05;
-%         while length(orderBoundary)-1 < size(verticesOfCell, 1) && counter < 0.7
-%             orderBoundary = boundary(verticesOfCell(:, 1), verticesOfCell(:, 2), 0.1+counter);
-%             counter = counter + 0.05;
-%         end
-% 
-%         missingVerticesActual = [];
-%         if length(orderBoundary)-1 ~= size(verticesOfCell, 1)
-%             disp(strcat('Warning: cell number', num2str(cellWithVertices{numCell, 3}), ' may be wrongly done'));
-%             disp('Correcting...')
-%             missingVerticesActual = setdiff(1:size(verticesOfCell, 1), orderBoundary);
-%             missingVerticesCoord = [missingVerticesCoord;verticesOfCell(missingVerticesActual,:)];
-%         end
+        if (areaVertSalesman >= areaMeanCentroid) && (areaVertSalesman >= areaCellCentroid)
+            newVertOrder = newVertSalesman;
+        else
+            if areaMeanCentroid >= areaCellCentroid
+                newVertOrder = newVertOrderMean;
+            else
+                newVertOrder = newVertOrderCent;
+            end
+        end
 
         % Should be connected clockwise
         % I.e. from bigger numbers to smaller ones
@@ -73,6 +81,7 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
         cellsVoronoi = [nSurfR, cellWithVertices{numCell, 3:5}, {verticesRadius}];
         samiraTableVoronoi = [samiraTableVoronoi; cellsVoronoi];
     end
+    
     %Plot
     nameSplitted = strsplit(nameOfSimulation, '_');
     dir2save = strcat(strjoin(pathSplitted(1:end-2), '\'),'\verticesSamira\');
