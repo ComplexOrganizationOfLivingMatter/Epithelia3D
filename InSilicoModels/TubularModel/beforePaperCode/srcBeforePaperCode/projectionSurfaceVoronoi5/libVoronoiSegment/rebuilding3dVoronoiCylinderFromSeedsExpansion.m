@@ -77,10 +77,25 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     colours = colorcube(size(initialSeeds, 1));
 
     %% Store info per each 3d cell and relabel waterImage with the label seeds
-    numTotalSeeds=size(initialSeeds, 1);
-    info3DCell=cell(numTotalSeeds,1);
+    mkdir(path2save)
+
+    numTotalSeeds = size(initialSeeds, 1);
+    info3DCell = {};
+    save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'], 'info3DCell', '-v7.3');
+
+    numImage = 1;
     for numSeed = 1:numTotalSeeds
-        [info3DCell{numSeed}]=storingDataPer3DCell(numSeed,maskOfGlobalImage,colours,voronoi3D);
+        infoCell = struct();
+        info3DCell{1}=storingDataPer3DCell(numSeed,maskOfGlobalImage,colours,voronoi3D);
+        nStruct = ['cell_' num2str(numSeed)];
+        infoCell.(nStruct) = info3DCell{1};
+        
+        [x,y,z]=findND(info3DCell{1}.region);
+        coord=[x,y,z];
+        shp=alphaShape(coord,5);
+        [F,V]=shp.boundaryFacets;
+        stlwrite([path2save 'Image_' num2str(numImage) 'sltCell' num2str(numSeed) '_redFactor_' num2str(reductionFactor) '.stl'],F,V)
+        save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'-struct','infoCell','-append');
     end
 
     %% plot 3d reconstruction ---- This section is out of the last loop
@@ -97,19 +112,19 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     
 
     %% Get final image and surfaces of interest
-        img3Dfinal= zeros(size(voronoi3D));
+%     img3Dfinal= zeros(size(voronoi3D));
 %     for numSeed=1:numTotalSeeds
 %         cell3d=info3DCell{numSeed}.image3d;
 %         img3Dfinal(img3Dfinal==0)=img3Dfinal(img3Dfinal==0)+cell3d(img3Dfinal==0);
 %     end
 %     
+    img3Dfinal = [];
     img3DApicalSurface = [];
     img3DBasalSurface = [];
     img3DIntermediateSurface = [];
 %     [img3DApicalSurface,img3DBasalSurface,img3DIntermediateSurface]=get3dImageAndSurfaces(R_basal,H_apical,equalBasalRadius,equalApicalRadius,equalIntermediateRadius,intermediateSurfaceRatios,img3Dfinal);  
 
-    mkdir(path2save)
-    save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'info3DCell','apicalCylinderSeedsPositions','basalCylinderSeedsPositions','-v7.3');
+%     save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'info3DCell','apicalCylinderSeedsPositions','basalCylinderSeedsPositions','-v7.3');
 %     savefig(f,[path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '_.fig'])
 
 end
