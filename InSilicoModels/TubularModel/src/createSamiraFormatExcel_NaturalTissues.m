@@ -109,7 +109,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
     cellInfoWithVertices(cellfun(@(x) ismember(x, noValidCells), cellInfoWithVertices(:, 3)), :) = [];
     
 %     figure;imshow(finalImageWithValidCells');
-    [samiraTable, cellsVoronoi] = tableWithSamiraFormat(cellInfoWithVertices, cat(1,validCellsProp.Centroid), [], -1, strsplit(pathFile, '\'), nameOfSimulation);
+    [samiraTable, cellsVoronoi] = tableWithSamiraFormat(cellInfoWithVertices, cat(1,validCellsProp.Centroid), [], surfaceRatio, strsplit(pathFile, '\'), nameOfSimulation);
     
     samiraTableT = cell2table(samiraTable, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
 
