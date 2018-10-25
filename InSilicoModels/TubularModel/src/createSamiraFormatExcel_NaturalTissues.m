@@ -18,6 +18,8 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
     extendedImage = midSectionImage;
     [neighbours, ~] = calculateNeighbours(extendedImage);
     [ verticesInfoOf3Fold ] = calculateVertices(extendedImage, neighbours);
+    
+    [verticesInfoOf3Fold] = removingVeryCloseVertices(verticesInfoOf3Fold, maxDistance);
 
     %We found the closest white pixels to the pixels we found in black
     [whitePixelsY, whitePixelsX] = find(midSectionImgToCalculateCorners);
@@ -28,7 +30,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
     
     cellVertices = cell(max(wholeImage(:)), 1);
     
-    allVertices = single(vertcat(verticesInfoOf3Fold.verticesPerCell{:}));
+    allVertices = single(unique(vertcat(verticesInfoOf3Fold.verticesPerCell{:}), 'rows'));
     
     for numVertexCells = 1:corners.Count
         %hold on; plot(corners.Location(numVertexCells, 1), corners.Location(numVertexCells, 2), 'r+');
@@ -39,7 +41,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
             corners.Location(numVertexCells, :) = round(corners.Location(numVertexCells, :));
         end
         
-        [minDistance, minDistIndex] = pdist2(allVertices, corners.Location(numVertexCells, :), 'euclidean', 'Smallest', 1);
+        [minDistance, ~] = pdist2(allVertices, corners.Location(numVertexCells, 2:-1:1), 'euclidean', 'Smallest', 1);
         
         if minDistance >= maxDistance
             imgToDilate(corners.Location(numVertexCells, 2), corners.Location(numVertexCells, 1)) = 1;
@@ -57,6 +59,8 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
             verticesInfo(numVertexCells).verticesConnectCells = cellsConnectedByVertex;
 
             imgToDilate(corners.Location(numVertexCells, 2), corners.Location(numVertexCells, 1)) = 0;
+            
+            allVertices(end+1, :) = corners.Location(numVertexCells, 2:-1:1);
         end
     end
 
@@ -64,7 +68,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
 %     plot(corners);
 
     %midCells = unique(extendedImage(finalImageWithValidCells>0));
-    validCellsProp = regionprops(finalImageWithValidCells, 'EulerNumber','Centroid');
+    validCellsProp = regionprops(midSectionImage, 'EulerNumber','Centroid');
     borderCells = find([validCellsProp.EulerNumber] > 1);
     %borderCellsOfNewLabels = unique(extendedImage(ismember(finalImageWithValidCells, borderCells)));
     borderCellsOfNewLabels = borderCells;
@@ -76,7 +80,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
     for numCell = validCellsFinal
         newVertices = verticesInfoOf3Fold.verticesPerCell(any(ismember(verticesInfoOf3Fold.verticesConnectCells, numCell), 2), :);
         actualVertices = vertcat(cellVertices{numCell}, newVertices{:});
-        cellVertices{numCell} = actualVertices;
+        cellVertices{numCell} = unique(actualVertices, 'rows');
         
         
 %         figure;
@@ -104,11 +108,12 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
     cellInfoWithVertices(cellfun(@isempty, cellInfoWithVertices(:, 6)), :) = [];
     cellInfoWithVertices(cellfun(@(x) ismember(x, noValidCells), cellInfoWithVertices(:, 3)), :) = [];
     
-    figure;imshow(finalImageWithValidCells');
-    [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellInfoWithVertices,cat(1,validCellsProp.Centroid), [], -1, strsplit(pathFile, '\'), nameOfSimulation);
+%     figure;imshow(finalImageWithValidCells');
+    [samiraTable, cellsVoronoi] = tableWithSamiraFormat(cellInfoWithVertices, cat(1,validCellsProp.Centroid), [], -1, strsplit(pathFile, '\'), nameOfSimulation);
     
-    samiraTableT = cell2table(samiraTableVoronoi, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
+    samiraTableT = cell2table(samiraTable, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
 
+%     figure;imshow(finalImageWithValidCells');
     newCrossesTable = lookFor4cellsJunctionsAndExportTheExcel(samiraTableT);
     
     splitPath = strsplit(pathFile,{'\','/'});
