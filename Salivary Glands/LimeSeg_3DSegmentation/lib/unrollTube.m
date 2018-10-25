@@ -114,9 +114,10 @@ function [neighs_real,sides_cells] = unrollTube(img3d, outputDir, noValidCells, 
 %     figure;imshow(deployedImgMask,colours)
 
     %% Getting correct border cells, valid cells and no valid cells
-    [wholeImage,~,~] = getFinalImageAndNoValidCells(deployedImg3x,colours);
+    [wholeImage,BordersCells,ValidCells] = getFinalImageAndNoValidCells(deployedImg3x,colours);
     %[~, ~,noValidCells] = getFinalImageAndNoValidCells(deployedImg3x(:, round(ySize/3):round(ySize*2/3)),colours);
-    
+%     TotalCells = {ValidCells; BordersNoValidCells};
+   
 %     figure;imshow(finalImage,colours)
     %% We only keep the cells in the middle
     relabelFinalImage = bwlabel(wholeImage,4);
@@ -135,10 +136,11 @@ function [neighs_real,sides_cells] = unrollTube(img3d, outputDir, noValidCells, 
 %     figure;imshow(finalImageWithValidCells,colours)
     [neighs_real,sides_cells]=calculateNeighbours(midSectionImage);
     
-%     figure,imshow(midSectionImage, colours);
+%     figure,imshow(midSectionImage+1, colours);
 %     set(gcf, 'units','normalized','outerposition',[0 0 1 1]);
-%     centroids = regionprops(midSectionImage, 'Centroid');
+%     centroids{1,1} = regionprops(midSectionImage, 'Centroid');
 %     centroids = vertcat(centroids.Centroid);
+%     centroids=centroids(ValidCells);
 %     for numCentroid = 1:size(centroids, 1)
 %         if mean(colours(numCentroid+1, :)) < 0.4
 %             text(centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(numCentroid), 'HorizontalAlignment', 'center', 'Color', 'white');
