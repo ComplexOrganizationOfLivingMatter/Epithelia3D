@@ -95,7 +95,11 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
         shp=alphaShape(coord,5);
         [F,V]=shp.boundaryFacets;
         stlwrite([path2save 'Image_' num2str(numImage) 'sltCell' num2str(numSeed) '_redFactor_' num2str(reductionFactor) '.stl'],F,V)
-        save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'-struct','infoCell','-append');
+        try
+            save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'-struct','infoCell','-append');
+        catch
+            disp(['info_' nStruct ' not saved'])
+        end
     end
 
     %% plot 3d reconstruction ---- This section is out of the last loop
