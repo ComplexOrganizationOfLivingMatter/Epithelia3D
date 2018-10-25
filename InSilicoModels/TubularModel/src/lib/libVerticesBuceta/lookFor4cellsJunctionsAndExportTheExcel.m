@@ -10,10 +10,12 @@ function newVoronoiCrossesTable = lookFor4cellsJunctionsAndExportTheExcel(vorono
     for SR = voronoiSR'
         
         indSR = voronoiTable.Radius==SR;
-                
-        coordX = vertcat(table2cell(voronoiTable(indSR,5:2:end-1)));
+        
+        verticesOfCell = [voronoiTable{indSR, end}];
+        
+        coordX = cellfun(@(x) x(1:2:end-1), verticesOfCell, 'UniformOutput', false);
         coordX = [coordX{:}]';
-        coordY = vertcat(table2cell(voronoiTable(indSR,6:2:end)));
+        coordY = cellfun(@(x) x(2:2:end), verticesOfCell, 'UniformOutput', false);
         coordY = [coordY{:}]';
         coordXY = [coordX,coordY];
         uniqueXY = unique(coordXY,'rows');
@@ -24,16 +26,16 @@ function newVoronoiCrossesTable = lookFor4cellsJunctionsAndExportTheExcel(vorono
             crossesPos = find(crossesVert);
             nRowTable = rem(crossesPos,sum(indSR));
             nRowTable(nRowTable==0) = sum(indSR);
-
+            
             verticesCrosses = coordXY(crossesVert,:);
-
+            
             indSR = find(indSR);
-            for nRow = 1:length(indSR)           
+            for nRow = 1:length(indSR)
                 if sum(nRowTable==nRow)>0
                     vertRow = verticesCrosses(nRowTable==nRow,:);
                     cellVerticesRep{indSR(nRow)} = reshape(vertRow',[1,numel(vertRow)]);
                 end
-            end            
+            end
         end
     end
     
