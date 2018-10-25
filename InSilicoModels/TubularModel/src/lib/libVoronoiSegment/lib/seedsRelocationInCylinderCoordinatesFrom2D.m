@@ -8,12 +8,19 @@ function [basalCylinderSeedsPositions,apicalCylinderSeedsPositions]=seedsRelocat
     
     basalCylinderSeedsPositions.x=round(R_basal*cosd(angleOfSeedsLocation))+R_basal+1;
     basalCylinderSeedsPositions.y=round(R_basal*sind(angleOfSeedsLocation))+R_basal+1;
-    basalCylinderSeedsPositions.z=round(initialSeeds(:,1));
+    
 
     %initial location of seeds. 
     apicalCylinderSeedsPositions.x=round(R_apical*cosd(angleOfSeedsLocation))+R_basal+1;
     apicalCylinderSeedsPositions.y=round(R_apical*sind(angleOfSeedsLocation))+R_basal+1;
-    apicalCylinderSeedsPositions.z=round(initialSeeds(:,1));
+    
+    if sum(initialSeeds(:,1)<0.5) > 0
+        basalCylinderSeedsPositions.z=floor(initialSeeds(:,1))+1;
+        apicalCylinderSeedsPositions.z=floor(initialSeeds(:,1))+1;
+    else
+        basalCylinderSeedsPositions.z=round(initialSeeds(:,1));
+        apicalCylinderSeedsPositions.z=round(initialSeeds(:,1));
+    end
     
 end
 

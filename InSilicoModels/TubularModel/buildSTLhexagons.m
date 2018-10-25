@@ -26,4 +26,4 @@ load([fullPath 'Image_1_Diagram_5.mat'],'listLOriginalProjection','listSeedsProj
 
 %%STL frusta tube full of hexagons
 imgApical = listLOriginalProjection.L_originalProjection{3,1};
-createFrustaCylinderStl(W_apical, H_apical,imgApical, surfaceRatio,reductionFactor,intermediateSurfaceRatios,name2save,[fullPath 'stlInfo\Frusta\'])
+createFrustaCylinderStl(H_apical,W_apical,imgApical, surfaceRatio,reductionFactor,intermediateSurfaceRatios,name2save,[fullPath 'stlInfo\Frusta\reductionFactor_' num2str(reductionFactor) '\'])
