@@ -136,6 +136,11 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
 %     figure;imshow(finalImageWithValidCells,colours)
     [neighs_real,sides_cells]=calculateNeighbours(midSectionImage);
     
+    if length(sides_cells) ~= max(img3d(:))
+        sides_cells(end+1:end+(max(img3d(:)) - length(sides_cells))) = 0;
+        neighs_real(end+1:end+(max(img3d(:)) - length(sides_cells))) = [];
+    end
+    
 %     figure,imshow(midSectionImage+1, colours);
 %     set(gcf, 'units','normalized','outerposition',[0 0 1 1]);
 %     centroids{1,1} = regionprops(midSectionImage, 'Centroid');
@@ -161,7 +166,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     imageNewLabelsMid = imageNewLabels(:, midRange);
     borderCellsDuplicated = unique(imageNewLabelsMid(ismember(finalImageWithValidCells(:, midRange), borderCells)));
     finalImageWithValidCells(ismember(imageNewLabels, borderCellsDuplicated)) = 0;
-    figure; imshow(finalImageWithValidCells+1, colours);
+    %figure; imshow(finalImageWithValidCells+1, colours);
     areaOfValidCells = sum(finalImageWithValidCells(:)>0);
     
     if exist('apicalArea', 'var') == 0
