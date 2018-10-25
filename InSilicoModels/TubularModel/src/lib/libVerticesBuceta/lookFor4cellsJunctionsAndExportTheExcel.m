@@ -10,29 +10,36 @@ function newVoronoiCrossesTable = lookFor4cellsJunctionsAndExportTheExcel(vorono
     for SR = voronoiSR'
         
         indSR = voronoiTable.Radius==SR;
-                
-        coordX = vertcat(table2cell(voronoiTable(indSR,5:2:end-1)));
+        
+        verticesOfCell = [voronoiTable{indSR, end}];
+        
+        coordX = cellfun(@(x) x(1:2:end-1), verticesOfCell, 'UniformOutput', false);
         coordX = [coordX{:}]';
-        coordY = vertcat(table2cell(voronoiTable(indSR,6:2:end)));
+        coordY = cellfun(@(x) x(2:2:end), verticesOfCell, 'UniformOutput', false);
         coordY = [coordY{:}]';
         coordXY = [coordX,coordY];
         uniqueXY = unique(coordXY,'rows');
         numRepet = arrayfun(@(x,y) sum(ismember(coordXY,[x y],'rows')),uniqueXY(:,1),uniqueXY(:,2));
         crossesVert = ismember(coordXY,uniqueXY(numRepet>3,:),'rows') & ~isnan(coordXY(:,1));
-        crossesPos = find(crossesVert);
-        nRowTable = rem(crossesPos,sum(indSR));
-        nRowTable(nRowTable==0) = sum(indSR);
         
-        verticesCrosses = coordXY(crossesVert,:);
-        
-        indSR = find(indSR);
-        for nRow = 1:length(indSR)           
-            if sum(nRowTable==nRow)>0
-                vertRow = verticesCrosses(nRowTable==nRow,:);
-                cellVerticesRep{indSR(nRow)} = reshape(vertRow',[1,numel(vertRow)]);
+        if sum(crossesVert) > 0
+            crossesPos = find(crossesVert);
+            nRowTable = rem(crossesPos,sum(indSR));
+            nRowTable(nRowTable==0) = sum(indSR);
+            
+            verticesCrosses = coordXY(crossesVert,:);
+            
+            indSR = find(indSR);
+            for nRow = 1:length(indSR)
+                if sum(nRowTable==nRow)>0
+                    vertRow = verticesCrosses(nRowTable==nRow,:);
+%                     for numVert = 1:size(vertRow, 1)
+%                         hold on; plot(vertRow(numVert, 1), vertRow(numVert, 2), 'r*');
+%                     end
+                    cellVerticesRep{indSR(nRow)} = reshape(vertRow',[1,numel(vertRow)]);
+                end
             end
-        end        
-        
+        end
     end
     
     newVoronoiCrossesTable = voronoiTable(:,1:4);

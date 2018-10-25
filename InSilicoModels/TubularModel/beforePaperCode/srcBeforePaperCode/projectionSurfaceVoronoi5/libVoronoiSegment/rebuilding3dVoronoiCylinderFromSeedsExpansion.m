@@ -28,6 +28,7 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
 	voronoi3D=watershed(distSegments,26);
 
     %% filling zero pixels as outlinesCells
+    imgInvalidRegion = imresize3(imgInvalidRegion,size(voronoi3D),'nearest');
     outlinesCells = (voronoi3D==0 & imgInvalidRegion==0);
     idOutlCells = find(outlinesCells);
     [xZer,yZer,zZer] = ind2sub(size(voronoi3D),idOutlCells);
@@ -76,10 +77,29 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     colours = colorcube(size(initialSeeds, 1));
 
     %% Store info per each 3d cell and relabel waterImage with the label seeds
-    numTotalSeeds=size(initialSeeds, 1);
-    info3DCell=cell(numTotalSeeds,1);
+    mkdir(path2save)
+
+    numTotalSeeds = size(initialSeeds, 1);
+    info3DCell = {};
+    save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'], 'info3DCell', '-v7.3');
+
+    numImage = 1;
     for numSeed = 1:numTotalSeeds
-        [info3DCell{numSeed}]=storingDataPer3DCell(numSeed,R_basal,H_apical,maskOfGlobalImage,colours,voronoi3D);
+        infoCell = struct();
+        info3DCell{1}=storingDataPer3DCell(numSeed,maskOfGlobalImage,colours,voronoi3D);
+        nStruct = ['cell_' num2str(numSeed)];
+        infoCell.(nStruct) = info3DCell{1};
+        
+        [x,y,z]=findND(info3DCell{1}.region);
+        coord=[x,y,z];
+        shp=alphaShape(coord,5);
+        [F,V]=shp.boundaryFacets;
+        stlwrite([path2save 'Image_' num2str(numImage) 'sltCell' num2str(numSeed) '_redFactor_' num2str(reductionFactor) '.stl'],F,V)
+        try
+            save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'-struct','infoCell','-append');
+        catch
+            disp(['info_' nStruct ' not saved'])
+        end
     end
 
     %% plot 3d reconstruction ---- This section is out of the last loop
@@ -96,19 +116,19 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     
 
     %% Get final image and surfaces of interest
-        img3Dfinal= zeros(2*R_basal+1,2*R_basal+1,H_apical);
+%     img3Dfinal= zeros(size(voronoi3D));
 %     for numSeed=1:numTotalSeeds
 %         cell3d=info3DCell{numSeed}.image3d;
 %         img3Dfinal(img3Dfinal==0)=img3Dfinal(img3Dfinal==0)+cell3d(img3Dfinal==0);
 %     end
 %     
+    img3Dfinal = [];
     img3DApicalSurface = [];
     img3DBasalSurface = [];
     img3DIntermediateSurface = [];
 %     [img3DApicalSurface,img3DBasalSurface,img3DIntermediateSurface]=get3dImageAndSurfaces(R_basal,H_apical,equalBasalRadius,equalApicalRadius,equalIntermediateRadius,intermediateSurfaceRatios,img3Dfinal);  
 
-    mkdir(path2save)
-    save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'info3DCell','apicalCylinderSeedsPositions','basalCylinderSeedsPositions','-v7.3');
+%     save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'info3DCell','apicalCylinderSeedsPositions','basalCylinderSeedsPositions','-v7.3');
 %     savefig(f,[path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '_.fig'])
 
 end

@@ -2,7 +2,7 @@
 
 ## Step 1: Basic cell's pipeline
 
-1. Obtain the channel green of the stack and improve the contrast and brightness of all its images (Image -> Adjust -> Brightness/Contrast).
+1. Obtain the channel with the phalloidin staining of the stack.Now you have to improve the brightness and contrast,you can do this by clicking in "Process" (process->Enhance Contrast), select "Normalize" and "Process all X slides" (X is the number of slides).If the process wasn't successful, you would have to change pixel saturation percentage.
 2. Select "ellipse" and put an ellipsoidal ROI near the nucleus, but with a slightly bigger radius. Press 'T'.
 3. Plugins -> Limeseg -> Sphere Seg (advanced).
 4. Change parameters (D_0 is optional and Z_Scale is mandatory). To calculate Z_Scale you should divide 'Voxel depth'/'Pixel width': in our case 4.06. Also you should select a color. Tick 'ClearOptimizer'.

@@ -155,6 +155,6 @@ function [neighs_real,sides_cells] = unrollTube(img3d, outputDir, noValidCells, 
     
 
     
-    save(strcat(outputDir, '_', 'img_', date, '.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal');
+    save(strcat(outputDir, '_', 'img.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal');
 end
 

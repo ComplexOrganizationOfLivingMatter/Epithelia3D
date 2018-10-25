@@ -47,7 +47,7 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
         resultStruct = tspo_ga(userConfig);
         orderBoundary = [resultStruct.optRoute resultStruct.optRoute(1)];
 
-        newVertSalesman = verticesOfCell(orderBoundary, :);
+        newVertSalesman = verticesOfCell(orderBoundary(1:end-1), :);
         newVertSalesman = [newVertSalesman; newVertSalesman(1,:)];
         areaVertSalesman = polyarea(newVertSalesman(:,1),newVertSalesman(:,2));
 
@@ -67,11 +67,11 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
         [newOrderX, newOrderY] = poly2cw(newVertOrder((1:end-1), 1), newVertOrder((1:end-1), 2));
         verticesRadius = [];
         
-%         figure;       
-        hold on
-        plot(newVertOrder(:, 1), newVertOrder(:, 2))
-        hold on
-        plot(verticesOfCell(:, 1), verticesOfCell(:, 2), 'r+');
+% %         figure;       
+%         hold on
+%         plot(newVertOrder(:, 1), newVertOrder(:, 2))
+%         hold on
+%         plot(verticesOfCell(:, 1), verticesOfCell(:, 2), 'r+');
 
         for numVertex = 1:length(newOrderX)
             verticesRadius(end+1) = newOrderX(numVertex);

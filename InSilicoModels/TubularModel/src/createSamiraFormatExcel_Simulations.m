@@ -40,7 +40,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_Simulations(pathFile, su
         [verticesInfo] = removingVeryCloseVertices(verticesInfo, maxDistance);
         
         %Grouping cells
-        cellWithVertices = groupingVerticesPerCellSurface(L_img, verticesInfo, verticesNoValidCellsInfo, [], 1);
+        cellWithVertices = groupingVerticesPerCellSurface(L_img, verticesInfo, verticesNoValidCellsInfo, [], 1, []);
         
         %% Looking for missing vertices
         missingVertices = [];
@@ -75,7 +75,9 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_Simulations(pathFile, su
             end
         end
         
-        [samiraTableVoronoiActualSR, cellsVoronoi] = tableWithSamiraFormat(cellWithVertices, missingVertices, nSurfR, pathSplitted, nameOfSimulation);
+        cellsProp = regionprops(extendedImage, 'Centroid');
+        
+        [samiraTableVoronoiActualSR, cellsVoronoi] = tableWithSamiraFormat(cellWithVertices, cat(1,cellsProp.Centroid), missingVertices, nSurfR, pathSplitted, nameOfSimulation);
         
         samiraTableVoronoi = [samiraTableVoronoi; samiraTableVoronoiActualSR];
         

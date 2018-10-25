@@ -1,4 +1,4 @@
-function  [imgInvalidRegion,equalBasalRadius,equalApicalRadius]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_apical,H)
+function  [imgInvalidRegion,equalBasalRadius,equalApicalRadius,equalIntermediateRadius]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_apical,H,intermediateSurfaceRatio)
 
 %this function provides the invalid region in which we don't want operate
 %and  the cylindrical surfaces from a given radius =
@@ -25,6 +25,17 @@ function  [imgInvalidRegion,equalBasalRadius,equalApicalRadius]=get3DCylinderLim
     imgInvalidRegion=majorThanBasalRadius+minorThanApicalRadius;
     imgInvalidRegion=repmat(imgInvalidRegion,1,1,H);
 
+    
+    %work with intermediate radius that are smaller than R_basal
+    intermediateRadius=intermediateSurfaceRatio(intermediateSurfaceRatio<(R_basal/R_apical))*R_apical;
+    equalIntermediateRadius=cell(length(intermediateRadius),1);
+    
+    %get intermediate layers
+    for nLayer=1:length(intermediateRadius)
+        majorThanIntermediateRadius=cell2mat(arrayfun(@(x,y) (x-a_pointCentral)^2+(y-b_pointCentral)^2 > intermediateRadius(nLayer)^2 ,allXs,allYs,'UniformOutput',false));   
+        equalIntermediateRadius2D=logical(imdilate(majorThanIntermediateRadius,strel('disk',1))-majorThanIntermediateRadius);
+        equalIntermediateRadius{nLayer}=repmat(equalIntermediateRadius2D,1,1,H);
+    end
     
     
 

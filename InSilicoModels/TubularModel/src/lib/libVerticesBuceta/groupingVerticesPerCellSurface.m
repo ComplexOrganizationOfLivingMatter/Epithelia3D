@@ -1,4 +1,4 @@
-function cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,verticesNoValidCellsInfo,cellWithVertices,nRand)
+function cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,verticesNoValidCellsInfo,cellWithVertices,nRand, borderCells)
     
 
     [~,W]=size(L_img);
@@ -27,23 +27,36 @@ function cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,ve
             else
                 vert= [nRowNoValid];
             end
+            
+            %vert(:, 2) = vert(:, 2) - W;
         end
         
         %checking border cells
         distBetwVert=pdist(vert);
-        if any(distBetwVert > W/2)
-            indRightBorder = vert(:,2) > W/2;
-            vertRight = vert;
-            vertLeft = vert;
-            
-            vertRight(~indRightBorder,2)=vert(~indRightBorder,2)+W;
-            vertLeft(indRightBorder,2)=vert(indRightBorder,2)-W;
+        
+        if ismember(nCell, borderCells)
+            indRightBorder = (vert(:,2) - W) > W/2;
+            vertRight = vert(indRightBorder, :);
+            vertLeft = vert(~indRightBorder, :);
             
             row1={nRand radius nCell booleanNoValidCell 1 reshape(vertLeft.', 1, [])};
             row2={nRand radius nCell booleanNoValidCell 2 reshape(vertRight.', 1, [])};
             row=[row1;row2];
         else
-            row={nRand radius nCell booleanNoValidCell 0 reshape(vert.', 1, [])};
+            if any(distBetwVert > W/2) && isstruct(verticesInfo)
+                indRightBorder = vert(:,2) > W/2;
+                vertRight = vert;
+                vertLeft = vert;
+
+                vertRight(~indRightBorder,2)=vert(~indRightBorder,2)+W;
+                vertLeft(indRightBorder,2)=vert(indRightBorder,2)-W;
+
+                row1={nRand radius nCell booleanNoValidCell 1 reshape(vertLeft.', 1, [])};
+                row2={nRand radius nCell booleanNoValidCell 2 reshape(vertRight.', 1, [])};
+                row=[row1;row2];
+            else
+                row={nRand radius nCell booleanNoValidCell 0 reshape(vert.', 1, [])};
+            end
         end
         cellWithVertices = [cellWithVertices;row];
     end

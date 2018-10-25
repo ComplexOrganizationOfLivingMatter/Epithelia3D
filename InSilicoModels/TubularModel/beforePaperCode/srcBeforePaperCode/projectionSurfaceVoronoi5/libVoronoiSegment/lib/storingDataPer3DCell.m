@@ -1,10 +1,10 @@
-function [info3Dcell]=storingDataPer3DCell(numSeed,R_basal,H_apical,maskOfGlobalImage,colours,voronoi3D)
+function [info3Dcell]=storingDataPer3DCell(numSeed,maskOfGlobalImage,colours,voronoi3D)
     
     %Initialize 3D cell
     info3Dcell=struct('ID',0,'region',0,'volume',0,'colour',0,'pxCoordinates',0,'image3d',0);
     %chose a seed to work
-    img3Dactual = zeros(2*R_basal+1,2*R_basal+1,H_apical);  
-    
+    img3Dactual = zeros(size(voronoi3D));  
+
     %label overlapping in watershed and initial seed
     uniqueIndex=voronoi3D(maskOfGlobalImage==numSeed);
     uniqueIndex=mode(uniqueIndex(uniqueIndex~=0));
