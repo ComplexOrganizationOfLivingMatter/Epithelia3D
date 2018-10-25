@@ -64,7 +64,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
 %     plot(corners);
 
     %midCells = unique(extendedImage(finalImageWithValidCells>0));
-    validCellsProp = regionprops(finalImageWithValidCells, 'EulerNumber','Centroid');
+    validCellsProp = regionprops(midSectionImage, 'EulerNumber','Centroid');
     borderCells = find([validCellsProp.EulerNumber] > 1);
     %borderCellsOfNewLabels = unique(extendedImage(ismember(finalImageWithValidCells, borderCells)));
     borderCellsOfNewLabels = borderCells;
@@ -76,7 +76,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
     for numCell = validCellsFinal
         newVertices = verticesInfoOf3Fold.verticesPerCell(any(ismember(verticesInfoOf3Fold.verticesConnectCells, numCell), 2), :);
         actualVertices = vertcat(cellVertices{numCell}, newVertices{:});
-        cellVertices{numCell} = actualVertices;
+        cellVertices{numCell} = unique(actualVertices, 'rows');
         
         
 %         figure;
@@ -104,10 +104,10 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
     cellInfoWithVertices(cellfun(@isempty, cellInfoWithVertices(:, 6)), :) = [];
     cellInfoWithVertices(cellfun(@(x) ismember(x, noValidCells), cellInfoWithVertices(:, 3)), :) = [];
     
-    figure;imshow(finalImageWithValidCells');
-    [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellInfoWithVertices,cat(1,validCellsProp.Centroid), [], -1, strsplit(pathFile, '\'), nameOfSimulation);
+%     figure;imshow(finalImageWithValidCells');
+    [samiraTable, cellsVoronoi] = tableWithSamiraFormat(cellInfoWithVertices, cat(1,validCellsProp.Centroid), [], -1, strsplit(pathFile, '\'), nameOfSimulation);
     
-    samiraTableT = cell2table(samiraTableVoronoi, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
+    samiraTableT = cell2table(samiraTable, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
 
     newCrossesTable = lookFor4cellsJunctionsAndExportTheExcel(samiraTableT);
     

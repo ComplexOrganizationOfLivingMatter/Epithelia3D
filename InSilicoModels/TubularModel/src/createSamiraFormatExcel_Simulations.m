@@ -77,7 +77,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_Simulations(pathFile, su
         
         cellsProp = regionprops(extendedImage, 'Centroid');
         
-        [samiraTableVoronoiActualSR, cellsVoronoi] = tableWithSamiraFormat(cellWithVertices, cat(1,validCellsProp.Centroid), missingVertices, nSurfR, pathSplitted, nameOfSimulation);
+        [samiraTableVoronoiActualSR, cellsVoronoi] = tableWithSamiraFormat(cellWithVertices, cat(1,cellsProp.Centroid), missingVertices, nSurfR, pathSplitted, nameOfSimulation);
         
         samiraTableVoronoi = [samiraTableVoronoi; samiraTableVoronoiActualSR];
         
