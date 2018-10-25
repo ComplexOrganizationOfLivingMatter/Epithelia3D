@@ -80,11 +80,11 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursDat
         [polygon_distribution_Basal] = calculate_polygon_distribution(cellfun(@length, basal3dInfo.neighbourhood), validCells);
         neighboursData = {apical3dInfo.neighbourhood, basal3dInfo.neighbourhood};
 
-        [neighs_apical,apical_cells, apicalAreaValidCells] = unrollTube(apicalLayer, fullfile(selpath,  'Results', 'apical'), noValidCells, colours);
-        [polygon_distribution_UnrollTubeApical] = calculate_polygon_distribution(apical_cells, validCells);
+        [neighs_apical,sides_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayer, fullfile(selpath,  'Results', 'apical'), noValidCells, colours);
+        [neighs_basal,basal_cells_apical] = unrollTube(basalLayer, fullfile(selpath, 'Results', 'basal'), noValidCells, colours, apicalAreaValidCells);
         
-        [neighs_basal,basal_cells] = unrollTube(basalLayer, fullfile(selpath, 'Results', 'basal'), noValidCells, colours, apicalAreaValidCells);
-        [polygon_distribution_UnrollTubeBasal] = calculate_polygon_distribution(basal_cells, validCells);
+        [polygon_distribution_UnrollTubeApical] = calculate_polygon_distribution(sides_cells_apical, validCells);
+        [polygon_distribution_UnrollTubeBasal] = calculate_polygon_distribution(basal_cells_apical, validCells);
         
         neighboursUnrollTube = {neighs_apical,neighs_basal};
         polygon_distribution_UnrollTube = {polygon_distribution_UnrollTubeApical,polygon_distribution_UnrollTubeBasal};

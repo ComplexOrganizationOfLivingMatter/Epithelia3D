@@ -15,12 +15,19 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
 %     plot(corners.selectUniform(9*length(validCellsFinal), size(midSectionImgToCalculateCorners)));
 
     % Calculate vertices connecting 3 cells and add them to the list
+    %extendedImage = wholeImage;
     extendedImage = midSectionImage;
     [neighbours, ~] = calculateNeighbours(extendedImage);
     [ verticesInfoOf3Fold ] = calculateVertices(extendedImage, neighbours);
     
     [verticesInfoOf3Fold] = removingVeryCloseVertices(verticesInfoOf3Fold, maxDistance);
 
+%     [correctPixelsX, correctPixelsY] = find(imdilate(midSectionImage, strel('disk', 3)) > 0);
+%     
+%     verticesInsideRange = cellfun(@(x) ismember(x, [correctPixelsX, correctPixelsY], 'rows'), verticesInfoOf3Fold.verticesPerCell);
+%     verticesInfoOf3Fold.verticesConnectCells(verticesInsideRange == 0, :) = [];
+%     verticesInfoOf3Fold.verticesPerCell(verticesInsideRange == 0) = [];
+    
     %We found the closest white pixels to the pixels we found in black
     [whitePixelsY, whitePixelsX] = find(midSectionImgToCalculateCorners);
     whitePixelsY = single(whitePixelsY);
