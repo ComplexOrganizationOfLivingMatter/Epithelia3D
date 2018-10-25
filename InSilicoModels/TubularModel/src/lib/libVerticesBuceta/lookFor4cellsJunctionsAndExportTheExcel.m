@@ -33,9 +33,9 @@ function newVoronoiCrossesTable = lookFor4cellsJunctionsAndExportTheExcel(vorono
             for nRow = 1:length(indSR)
                 if sum(nRowTable==nRow)>0
                     vertRow = verticesCrosses(nRowTable==nRow,:);
-                    for numVert = 1:size(vertRow, 1)
-                        hold on; plot(vertRow(numVert, 1), vertRow(numVert, 2), 'r*');
-                    end
+%                     for numVert = 1:size(vertRow, 1)
+%                         hold on; plot(vertRow(numVert, 1), vertRow(numVert, 2), 'r*');
+%                     end
                     cellVerticesRep{indSR(nRow)} = reshape(vertRow',[1,numel(vertRow)]);
                 end
             end
