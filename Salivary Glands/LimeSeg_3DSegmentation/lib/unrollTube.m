@@ -1,4 +1,4 @@
-function [neighs_real,sides_cells] = unrollTube(img3d, outputDir, noValidCells, colours)
+function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours, apicalArea)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -151,8 +151,22 @@ function [neighs_real,sides_cells] = unrollTube(img3d, outputDir, noValidCells, 
     imwrite(finalImageWithValidCells+1, colours, strcat(outputDir, '_', 'img_MidSection_ValidCells_', date, '.tif'));
     imwrite(wholeImage+1, colours, strcat(outputDir, '_', 'img_WholeImage_', date, '.tif'));
     
-
+    %% Calculating surface ratio
+    validCellsProp = regionprops(midSectionImage, 'EulerNumber');
+    borderCells = find([validCellsProp.EulerNumber] > 1);
+    midRange = 1:round(size(finalImageWithValidCells, 2)/2);
+    imageNewLabels = bwlabel(finalImageWithValidCells, 4);
+    imageNewLabelsMid = imageNewLabels(:, midRange);
+    borderCellsDuplicated = unique(imageNewLabelsMid(ismember(finalImageWithValidCells(:, midRange), borderCells)));
+    finalImageWithValidCells(ismember(imageNewLabels, borderCellsDuplicated)) = 0;
+    figure; imshow(finalImageWithValidCells+1, colours);
+    areaOfValidCells = sum(finalImageWithValidCells(:)>0);
     
-    save(strcat(outputDir, '_', 'img.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal');
+    if exist('apicalArea', 'var') == 0
+        surfaceRatio = 1;
+    else
+        surfaceRatio = areaOfValidCells / apicalArea;
+    end
+    save(strcat(outputDir, '_', 'img.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal', 'surfaceRatio');
 end
 
