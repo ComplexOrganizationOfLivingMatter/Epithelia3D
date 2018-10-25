@@ -30,4 +30,3 @@ initialSeeds = listSeedsProjected.seedsApical{3,1};
 initialSeeds = initialSeeds(:,2:3);
 initialSeeds(:,2) = initialSeeds(:,2)+1;
 [info3DCell,~,~,~,~]=rebuilding3dVoronoiCylinderFromSeedsExpansion( initialSeeds, W_apical, H_apical, surfaceRatio,reductionFactor,intermediateSurfaceRatios,name2save,[fullPath 'stlInfo\']);
-stlReconstruction(info3DCell,[fullPath 'stlInfo\'],numImage)
