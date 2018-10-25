@@ -47,7 +47,7 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
         resultStruct = tspo_ga(userConfig);
         orderBoundary = [resultStruct.optRoute resultStruct.optRoute(1)];
 
-        newVertSalesman = verticesOfCell(orderBoundary, :);
+        newVertSalesman = verticesOfCell(orderBoundary(1:end-1), :);
         newVertSalesman = [newVertSalesman; newVertSalesman(1,:)];
         areaVertSalesman = polyarea(newVertSalesman(:,1),newVertSalesman(:,2));
 

@@ -109,6 +109,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
     
     samiraTableT = cell2table(samiraTable, 'VariableNames',{'Radius', 'CellIDs', 'TipCells', 'BorderCell','verticesValues_x_y'});
 
+%     figure;imshow(finalImageWithValidCells');
     newCrossesTable = lookFor4cellsJunctionsAndExportTheExcel(samiraTableT);
     
     splitPath = strsplit(pathFile,{'\','/'});
