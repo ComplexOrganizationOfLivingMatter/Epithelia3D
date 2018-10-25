@@ -81,8 +81,6 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
 
     numTotalSeeds = size(initialSeeds, 1);
     info3DCell = {};
-    save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'], 'info3DCell', '-v7.3');
-
     numImage = 1;
     for numSeed = 1:numTotalSeeds
         infoCell = struct();
