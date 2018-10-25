@@ -23,7 +23,7 @@ function plotVerticesPerSurfaceRatio(cellsVertices,missingVerticesCoord,dir2save
             plot(vertsX(nVert), vertsY(nVert), '*r');
         end
         
-        text(round(mean(vertsX(1:end-1))) - 20, round(mean(vertsY(1:end-1))), num2str(cellsVertices{nRow,2}));
+        text(round(mean(vertsX(1:end-1))), round(mean(vertsY(1:end-1))), num2str(cellsVertices{nRow,2}));
         hold on
     end
     
