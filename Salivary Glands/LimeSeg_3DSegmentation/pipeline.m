@@ -27,12 +27,13 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursDat
         if exist(fullfile(selpath, 'Results', '3d_layers_info.mat')) == 2
             load(fullfile(selpath, 'Results', '3d_layers_info.mat'))
         else
+            colours = [];
             [labelledImage, basalLayer] = processCells(fullfile(outputDir, 'Cells', filesep), resizeImg, imgSize, tipValue);
         end
         
         [labelledImage, apicalLayer, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
 
-        [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), [], tipValue);
+        [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
 
         setappdata(0,'outputDir', outputDir);
         setappdata(0,'labelledImage',labelledImage);
@@ -73,7 +74,7 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursDat
             end
         end
         %% Save apical and basal 3d information
-        save(fullfile(selpath, 'Results', '3d_layers_info.mat'), 'labelledImage', 'basalLayer', 'apicalLayer', 'apical3dInfo', 'basal3dInfo', '-v7.3')
+        save(fullfile(selpath, 'Results', '3d_layers_info.mat'), 'labelledImage', 'basalLayer', 'apicalLayer', 'apical3dInfo', 'basal3dInfo', 'colours', '-v7.3')
 
         %% Calculate poligon distribution and Unroll the tube.
         [polygon_distribution_Apical] = calculate_polygon_distribution(cellfun(@length, apical3dInfo.neighbourhood), validCells);

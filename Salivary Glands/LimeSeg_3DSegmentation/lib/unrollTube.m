@@ -141,7 +141,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
         neighs_real(end+1:end+(max(img3d(:)) - length(sides_cells))) = [];
     end
     
-    figure ('units','normalized','outerposition',[0 0 1 1], 'visible', 'off');
+    h = figure ('units','normalized','outerposition',[0 0 1 1], 'visible', 'off');
     imshow(midSectionImage+1, colours);
     midSectionNewLabels = bwlabel(midSectionImage, 4);
     centroids = regionprops(midSectionNewLabels, 'Centroid');
@@ -149,14 +149,13 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     for numCentroid = 1:size(centroids, 1)
         labelSeed = midSectionImage(centroids(numCentroid, 2), centroids(numCentroid, 1));
         if mean(colours(labelSeed+1, :)) < 0.4
-            text(centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center', 'Color', 'white');
+            text(h, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center', 'Color', 'white');
         else
-            text(centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center');
+            text(h, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center');
         end
     end
-    fig = gcf;
-    fig.InvertHardcopy = 'off';
-    saveas(gcf, strcat(outputDir, '_', 'img_MidSection.tif'));
+    h.InvertHardcopy = 'off';
+    saveas(h, strcat(outputDir, '_', 'img_MidSection.tif'));
     imwrite(finalImageWithValidCells+1, colours, strcat(outputDir, '_', 'img_MidSection_ValidCells.tif'));
     imwrite(wholeImage+1, colours, strcat(outputDir, '_', 'img_WholeImage.tif'));
     
