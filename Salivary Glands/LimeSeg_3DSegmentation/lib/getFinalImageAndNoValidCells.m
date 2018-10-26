@@ -23,8 +23,8 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
         
         maskDilated = imdilate(mask,strel('disk',3));
         maskEroded = imerode(maskDilated,strel('disk',2));
-        if sum(mask(:)) <= 200
-            maskEroded = imerode(maskDilated,strel('disk',1));
+        if sum(mask(:)) <= 400
+            maskEroded = imerode(maskDilated,strel('disk',2));
             smallCellsImg(maskEroded) = 1;
         end
         labelMask(maskEroded)=nCell;
