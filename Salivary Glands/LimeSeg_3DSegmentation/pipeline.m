@@ -81,11 +81,16 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursDat
         [polygon_distribution_Basal] = calculate_polygon_distribution(cellfun(@length, basal3dInfo.neighbourhood), validCells);
         neighboursData = {apical3dInfo.neighbourhood, basal3dInfo.neighbourhood};
 
-        [neighs_apical,sides_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayer, fullfile(selpath,  'Results', 'apical'), noValidCells, colours);
-        [neighs_basal,basal_cells_apical] = unrollTube(basalLayer, fullfile(selpath, 'Results', 'basal'), noValidCells, colours, apicalAreaValidCells);
+        [neighs_apical,side_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayer, fullfile(selpath,  'Results', 'apical'), noValidCells, colours);
+        [neighs_basal,side_cells_basal] = unrollTube(basalLayer, fullfile(selpath, 'Results', 'basal'), noValidCells, colours, apicalAreaValidCells);
         
-        [polygon_distribution_UnrollTubeApical] = calculate_polygon_distribution(sides_cells_apical, validCells);
-        [polygon_distribution_UnrollTubeBasal] = calculate_polygon_distribution(basal_cells_apical, validCells);
+        missingCellsUnroll = find(side_cells_basal<3 | side_cells_apical<3, 1);
+        if isempty(missingCellsUnroll) == 0
+            msgbox(strcat('CARE!! Missing (or ill formed) cells at unrolltube: ', strjoin(arrayfun(@num2str, missingCellsUnroll, 'UniformOutput', false), ' ')))
+        end
+        
+        [polygon_distribution_UnrollTubeApical] = calculate_polygon_distribution(side_cells_apical, validCells);
+        [polygon_distribution_UnrollTubeBasal] = calculate_polygon_distribution(side_cells_basal, validCells);
         
         neighboursUnrollTube = {neighs_apical,neighs_basal};
         polygon_distribution_UnrollTube = {polygon_distribution_UnrollTubeApical,polygon_distribution_UnrollTubeBasal};
