@@ -17,11 +17,12 @@ function [colours] = exportAsImageSequence(labelledImage, outputDir, colours, ti
         set(h, 'units','normalized','outerposition',[0 0 1 1]);
         centroids = regionprops(labelledImage(:, :, numZ), 'Centroid');
         centroids = vertcat(centroids.Centroid);
+        ax = get(h, 'Children');
         for numCentroid = 1:size(centroids, 1)
             if mean(colours(numCentroid+1, :)) < 0.4
-                text(h, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(numCentroid), 'HorizontalAlignment', 'center', 'Color', 'white');
+                text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(numCentroid), 'HorizontalAlignment', 'center', 'Color', 'white');
             else
-                text(h, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(numCentroid), 'HorizontalAlignment', 'center');
+                text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(numCentroid), 'HorizontalAlignment', 'center');
             end
         end
         h.InvertHardcopy = 'off';

@@ -146,12 +146,13 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     midSectionNewLabels = bwlabel(midSectionImage, 4);
     centroids = regionprops(midSectionNewLabels, 'Centroid');
     centroids = round(vertcat(centroids.Centroid));
+    ax = get(h, 'Children');
     for numCentroid = 1:size(centroids, 1)
         labelSeed = midSectionImage(centroids(numCentroid, 2), centroids(numCentroid, 1));
         if mean(colours(labelSeed+1, :)) < 0.4
-            text(h, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center', 'Color', 'white');
+            text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center', 'Color', 'white');
         else
-            text(h, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center');
+            text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center');
         end
     end
     h.InvertHardcopy = 'off';
