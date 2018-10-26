@@ -1,26 +1,13 @@
-function [] = calculateVerticesConnectionHexagons()
+function [] = calculateVerticesConnectionHexagons(dir2save,listLOriginalProjection,initialSurfaceRatio,intermediateSurfaceRatio,basalSurfaceRatio,VoronoiOutput)
     %%calculateVerticesConnectionHexagons
-    addpath(genpath('lib'))
 
-    H_initial=512;
-    W_initial=1024;
-    n_seeds=520;
-    rootPath='..\beforePaperCode\dataBeforePaperCode\voronoiModel\reduction\cylinderOfHexagons\';
-    dir2save=[num2str(H_initial) 'x' num2str(W_initial) '_' num2str(n_seeds) 'seeds\'];
-
-    initialSurfaceRatio = 0.3;
-    intermediateSurfaceRatio=0.5;
-    basalSurfaceRatio=0.9;
     surfaceRatios=[initialSurfaceRatio,intermediateSurfaceRatio,basalSurfaceRatio];
     nRand=1;
     cellWithVertices={};
     dataVertID={};
     pairOfVerticesTotal={};
 
-    load([rootPath dir2save 'Image_1_Diagram_5.mat'],'listSeedsProjected','listLOriginalProjection')
-
     %Voronoi or Frusta output
-    VoronoiOutput = 1;
     if VoronoiOutput
         disp('---------------Voronoi results--------------');
         outputKind = 'Voronoi';
@@ -36,22 +23,37 @@ function [] = calculateVerticesConnectionHexagons()
 
     for nSurfR=surfaceRatios
 
+        L_img = listLOriginalProjection.L_originalProjection{round(listLOriginalProjection.surfaceRatio,3)==round(nSurfR,3)};
+        L_img=[L_img(:,(end-round(size(L_img,2)/3)-1):end),L_img(:,1:(round(2*size(L_img,2)/3)))];
+        
+        if initialSurfaceRatio == nSurfR
+            initialL_img = L_img;
+            borderCells = unique([unique(L_img(:,1:2));unique(L_img(:,(end-1):end))]);
+           [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(initialL_img,dataVertID,pairOfVerticesTotal,nRand,RadiusMax);
+            
+        else
+            if VoronoiOutput
+                %We get the L_img from earlier steps
+                [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(L_img,dataVertID,pairOfVerticesTotal,nRand,RadiusMax, nSurfR/initialSurfaceRatio);
+            else
+                L_img = imresize(initialL_img,[size(initialL_img,1),round(size(initialL_img,2)*(nSurfR/initialSurfaceRatio))],'nearest');
+                
+                BWdst = bwdist(L_img);
+                waterImg = watershed(BWdst);
+                mask = waterImg;
+                for nLab = 1:max(waterImg(:)) 
+                    [x,y] = find(waterImg == nLab);
+                    meanVal = round(mean([x,y]));
+                    mask(waterImg == nLab) = L_img(meanVal(1),meanVal(2)) ;
+                end
+                L_img = double(mask);
+                [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(L_img,dataVertID,pairOfVerticesTotal,nRand,RadiusMax, nSurfR/initialSurfaceRatio);
+            end
+        end
         %1- vertices located in Cylinder 3D position over the surface
         %2- vertices in contact over the surface
-        L_img = listLOriginalProjection.L_originalProjection{round(listLOriginalProjection.surfaceRatio,3)==round(nSurfR,3)};
-
-        L_img=[L_img(:,end-5:end),L_img(:,1:end-5)];
-        if initialSurfaceRatio == nSurfR || VoronoiOutput
-            initialL_img = L_img;
-
-            [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(L_img,dataVertID,pairOfVerticesTotal,nRand,RadiusMax);
-        else
-            %We get the L_img from earlier steps
-            [dataVertID,pairOfVerticesTotal,verticesInfo,verticesNoValidCellsInfo]=extract3dCoordInCylinderSurface(initialL_img,dataVertID,pairOfVerticesTotal,nRand,RadiusMax, nSurfR/initialSurfaceRatio);
-        end
-
-        %%3- cells composed by N-vertices
-        %cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,verticesNoValidCellsInfo,cellWithVertices,nRand);
+        %3- cells composed by N-vertices
+        cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,verticesNoValidCellsInfo,cellWithVertices,nRand,borderCells);
     end
 
 
@@ -84,7 +86,7 @@ function [] = calculateVerticesConnectionHexagons()
     %% Removing the vertices that are irrelevant
     % We created a line between each pair of vertices and see if any other
     % vertex overlap with this line.
-    thresholdDistance = 1.5;
+    thresholdDistance = 3;
     verticesToDelete = [];
     newUnions = [];
     for numCell = 1:size(cellsVerts, 1)
@@ -143,16 +145,7 @@ function [] = calculateVerticesConnectionHexagons()
     vertices3dTable=cell2table(dataVertID,'VariableNames',{'radius','verticeID','coordX','coordY','coordZ','cellIDs'});
 
     %% Visualizing the model
-    
-    % Representing a cell
-    verticesToShowIDs = cellsVerts{1, 2};
-
-    %representing joined vertices
-    figure;
-    for numVertex = verticesToShowIDs
-        plot3(vertices3dTable.coordX(vertices3dTable.verticeID == numVertex), vertices3dTable.coordY(vertices3dTable.verticeID == numVertex), vertices3dTable.coordZ(vertices3dTable.verticeID == numVertex), '*');
-    end
-    
+   
     tipCellsAndItsVertices = {};
     
     colours = colorcube(200);
@@ -165,13 +158,16 @@ function [] = calculateVerticesConnectionHexagons()
             shapeCell = alphaShape(vertices3dTable.coordX(vertexIndices), vertices3dTable.coordY(vertexIndices), vertices3dTable.coordZ(vertexIndices), Inf);
             plot(shapeCell, 'FaceColor', colours(numCell, :), 'EdgeColor', 'none');
             hold on
+            plot3(vertices3dTable.coordX(vertexIndices), vertices3dTable.coordY(vertexIndices), vertices3dTable.coordZ(vertexIndices),'*')
+            hold on
         else
             tipCellsAndItsVertices(end+1, :) = {numCell, find(vertexIndices)};
         end
     end
     
     figure;
-    
+    hold on;
+
     verticesToShowIDs = cellsVerts{33, 2};
     
     for nPair=size(pairOfVerticesTable,1):-1:1
@@ -185,6 +181,7 @@ function [] = calculateVerticesConnectionHexagons()
 
             plot3([x1,x2],[y1,y2],[z1,z2])
             hold on;
+
         end
     end
 
@@ -195,38 +192,38 @@ function [] = calculateVerticesConnectionHexagons()
     % Each line would be like:
     % - Radius. Cell ID. Vertex1 (x, y). Vertex2 (x,y)...
     disp('Exporting');
-    apicalRadius = min(radiusCyl);
-    basalRadius = max(radiusCyl);
+%     apicalRadius = min(radiusCyl);
+%     basalRadius = max(radiusCyl);
+%     
+%     samiraTable = {};
+%     for numRadius = [apicalRadius, basalRadius]
+%         verticesWithActualRadius = dataVertID([dataVertID{:, 1}] == numRadius, :);
+%         actualVerticesIds = [verticesWithActualRadius{:, 2}];
+%         
+%         for numCell = 1:size(cellsVerts, 1)
+%             verticesOfCell = cellsVerts{numCell, 2};
+%             verticesOfCellWithActualRadius = verticesOfCell(ismember(verticesOfCell, actualVerticesIds));
+%             
+%             actualPairTotalVertices = pairTotalVertices(all(ismember(pairTotalVertices, verticesOfCellWithActualRadius), 2), :);
+%             
+%             % Should be connected clockwise
+%             % I.e. from bigger numbers to smaller ones
+%             % Or the second vertex should in the left hand of the first
+%             
+%             % \TODO refactor to use this function:
+%             [newOrderX, newOrderY] = poly2cw(verticesOfCell(:, 1), verticesOfCell(:, 2));
+%             
+%             verticesRadius = dataVertID(ismember([dataVertID{:, 2}], newOrderOfVertices), 3:5)';
+%             samiraTable(end+1, :) = {numRadius, numCell, [verticesRadius{:}]};
+%         end
+%     end
+    mkdir([dir2save 'vertices\'])
+    writetable(cellVerticesTable,[dir2save 'vertices\cellsWithVerticesIDs_' outputKind '_' date '.xls'])
+    writetable(vertices3dTable,[dir2save 'vertices\tableVerticesCoordinates3D_' outputKind '_' date '.xls'])
+    writetable(pairOfVerticesTable,[dir2save 'vertices\tableConnectionsOfVertices3D_' outputKind '_' date '.xls'])
+    writetable(tipCellsAndItsVerticesTable,[dir2save 'vertices\tipCells_' outputKind '_' date '.xls'])
     
-    samiraTable = {};
-    for numRadius = [apicalRadius, basalRadius]
-        verticesWithActualRadius = dataVertID([dataVertID{:, 1}] == numRadius, :);
-        actualVerticesIds = [verticesWithActualRadius{:, 2}];
-        
-        for numCell = 1:size(cellsVerts, 1)
-            verticesOfCell = cellsVerts{numCell, 2};
-            verticesOfCellWithActualRadius = verticesOfCell(ismember(verticesOfCell, actualVerticesIds));
-            
-            actualPairTotalVertices = pairTotalVertices(all(ismember(pairTotalVertices, verticesOfCellWithActualRadius), 2), :);
-            
-            % Should be connected clockwise
-            % I.e. from bigger numbers to smaller ones
-            % Or the second vertex should in the left hand of the first
-            
-            % \TODO refactor to use this function:
-            [newOrderX, newOrderY] = poly2cw(verticesOfCell(:, 1), verticesOfCell(:, 2));
-            
-            verticesRadius = dataVertID(ismember([dataVertID{:, 2}], newOrderOfVertices), 3:5)';
-            samiraTable(end+1, :) = {numRadius, numCell, [verticesRadius{:}]};
-        end
-    end
-    
-    %writetable(cellVerticesTable,[rootPath dir2save 'cellsWithVerticesIDs_' outputKind '_' date '.xls'])
-    %writetable(vertices3dTable,[rootPath dir2save 'tableVerticesCoordinates3D_' outputKind '_' date '.xls'])
-    %writetable(pairOfVerticesTable,[rootPath dir2save 'tableConnectionsOfVertices3D_' outputKind '_' date '.xls'])
-    %writetable(tipCellsAndItsVerticesTable,[rootPath dir2save 'tipCells_' outputKind '_' date '.xls'])
-    samiraTable
-    
+%     writetable(samiraTable,[dir2save 'vertices\samiraFormat_' outputKind '_' date '.xls'])
     
 end
 
