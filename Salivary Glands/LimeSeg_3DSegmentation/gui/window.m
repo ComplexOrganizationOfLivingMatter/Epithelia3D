@@ -107,25 +107,29 @@ function save_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 roiMask = getappdata(0, 'roiMask');
-delete(roiMask);
-newCellRegion = getappdata(0, 'newCellRegion');
-selectCellId = getappdata(0, 'cellId');
-labelledImage = getappdata(0, 'labelledImageTemp');
-selectedZ = getappdata(0, 'selectedZ');
+if roiMask ~= -1
+    delete(roiMask);
+    roiMask = -1;
+    setappdata(0, 'roiMask', roiMask);
+    newCellRegion = getappdata(0, 'newCellRegion');
+    selectCellId = getappdata(0, 'cellId');
+    labelledImage = getappdata(0, 'labelledImageTemp');
+    selectedZ = getappdata(0, 'selectedZ');
 
-if sum(newCellRegion(:)) > 0
-    [x, y] = find(newCellRegion);
+    if sum(newCellRegion(:)) > 0
+        [x, y] = find(newCellRegion);
 
-    newCellRegion = zeros(size(newCellRegion));
-    newIndices = sub2ind(size(labelledImage), x, y, ones(length(x), 1)*selectedZ);
+        newCellRegion = zeros(size(newCellRegion));
+        newIndices = sub2ind(size(labelledImage), x, y, ones(length(x), 1)*selectedZ);
 
-    labelledImage(newIndices) = selectCellId;
+        labelledImage(newIndices) = selectCellId;
 
-    %Smooth surface of next and previos Z
-    labelledImage = smoothCellContour3D(labelledImage, selectCellId, (selectedZ-3):(selectedZ+3));
+        %Smooth surface of next and previos Z
+        labelledImage = smoothCellContour3D(labelledImage, selectCellId, (selectedZ-3):(selectedZ+3));
 
-    setappdata(0, 'labelledImageTemp', labelledImage);
-    showSelectedCell();
+        setappdata(0, 'labelledImageTemp', labelledImage);
+        showSelectedCell();
+    end
 end
 
 
@@ -187,7 +191,9 @@ function insertROI_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 roiMask = getappdata(0, 'roiMask');
-delete(roiMask);
+if roiMask ~= -1
+    delete(roiMask);
+end
 roiMask = impoly(gca);
 newCellRegion = createMask(roiMask);
 setappdata(0,'roiMask', roiMask);
