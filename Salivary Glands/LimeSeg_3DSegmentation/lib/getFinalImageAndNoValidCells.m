@@ -2,6 +2,7 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
 
     labelMask=zeros(size(layerImage));
     perimMask=false(size(layerImage));
+    smallCellsImg = zeros(size(layerImage));
     
     %open area
     %This is really doing nothing
@@ -19,8 +20,13 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
         mask(layerImage == nCell) = 1;
         mask = bwareaopen(mask,5);
         %mask = imfill(mask, 'holes');
+        
         maskDilated = imdilate(mask,strel('disk',3));
-        maskEroded = imerode(maskDilated,strel('disk',3));
+        maskEroded = imerode(maskDilated,strel('disk',2));
+        if sum(mask(:)) <= 200
+            maskEroded = imerode(maskDilated,strel('disk',1));
+            smallCellsImg(maskEroded) = 1;
+        end
         labelMask(maskEroded)=nCell;
         maskErodedPerim = bwperim(maskEroded);
         % It is not the perim the zone of 0s or the border
@@ -30,21 +36,25 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     labelMaskPerim=labelMask;
     zerosLabelMask = labelMask==0;
     zerosLabelMask = bwareaopen(zerosLabelMask,70,4);
+    zerosLabelMask = bwfill(zerosLabelMask, 'holes');
+    zerosLabelMask = ~bwfill(zerosLabelMask == 0, 'holes');
     
-%     figure;imshow(labelMask)
+%     figure;imshow(labelMask+1, c)
 %     figure;imshow(zerosLabelMask)
     labelMaskPerim(perimMask)=0;
 %     figure;imshow(labelMaskPerim,c)
     validArea=bwareaopen(labelMaskPerim,50,4);
-    labelMaskPerim(~validArea)=0;
+    labelMaskPerim(~validArea & smallCellsImg == 0)=0;
     
     %% Watershed
     maskDist=bwdist(labelMaskPerim>0);
     maskWater=watershed(maskDist,4);
+%     maskDist=bwdist(maskWater>0);
+%     maskWater=watershed(maskDist,4);
     %figure;imshow(maskWater,c)
     maskWater(zerosLabelMask==1)=0;
     validArea=bwareaopen(maskWater,10,4);
-    maskWater(~validArea)=0;
+    maskWater(~validArea & smallCellsImg == 0)=0;
 
     %figure;imshow(maskWater,c)
     
@@ -58,13 +68,31 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     dilatedMask = zeros(size(maskWater));
     for nCell = cellsWater'
         dilatedMask(centroids(nCell,2),centroids(nCell,1)) = 1;
-        valuesSurroundingCentroid = labelMask(imdilate(dilatedMask, strel('disk', 2))> 0);
+        valuesSurroundingCentroid = labelMask(imdilate(dilatedMask, strel('disk', 3))> 0);
         mostFrequentValue = mode(valuesSurroundingCentroid);
         finalImage(maskWater==nCell) = mostFrequentValue;
         
-        dilatedMask(centroids(nCell,2),centroids(nCell,1)) = 1;
+        dilatedMask(centroids(nCell,2),centroids(nCell,1)) = 0;
     end
-    %figure;imshow(finalImage,c)
+%     figure;imshow(finalImage+1,c)
+    
+    %% Unifying splitted near cells
+    connected4 = [0 1 0; 1 0 1; 0 1 0];
+    
+    edgePixels = find(finalImage == 0 & zerosLabelMask == 0);
+%     hold on;
+    for edgePixel = edgePixels'
+        dilatedMask(edgePixel) = 1;
+        values4Connected = finalImage(imdilate(dilatedMask, connected4)>0);
+        values4ConnectedUnique = unique(values4Connected);
+        values4ConnectedUnique(values4ConnectedUnique==0) = [];
+        if length(values4ConnectedUnique) == 1
+            finalImage(edgePixel) = values4ConnectedUnique;
+%             [x,y] = ind2sub(size(finalImage), edgePixel);
+%             plot(y, x, '*r')
+        end
+        dilatedMask(edgePixel) = 0;
+    end
 
     %% Get valid & no valid Cells
     maskNoValidCell=imdilate(imdilate(finalImage>0,strel('disk',2))==0,strel('disk',5));
