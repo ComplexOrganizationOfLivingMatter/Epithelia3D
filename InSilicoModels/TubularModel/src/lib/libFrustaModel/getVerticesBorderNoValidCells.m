@@ -41,6 +41,10 @@ function [ verticesNoValidCellsInfo ] = getVerticesBorderNoValidCells(L_img )
                end
            end
         end
+        if length(row)> 1
+           row = round(mean(row));
+           col = round(mean(col));
+        end
         vertices{j}=[row,col];
         neighboursVertices{j}=cellsNeigh;
         
