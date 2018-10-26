@@ -55,8 +55,14 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     cellsWater=cellsWater(cellsWater~=0);
     
     finalImage=zeros(size(maskWater));
+    dilatedMask = zeros(size(maskWater));
     for nCell = cellsWater'
-        finalImage(maskWater==nCell)=labelMask(centroids(nCell,2),centroids(nCell,1));
+        dilatedMask(centroids(nCell,2),centroids(nCell,1)) = 1;
+        valuesSurroundingCentroid = labelMask(imdilate(dilatedMask, strel('disk', 2))> 0);
+        mostFrequentValue = mode(valuesSurroundingCentroid);
+        finalImage(maskWater==nCell) = mostFrequentValue;
+        
+        dilatedMask(centroids(nCell,2),centroids(nCell,1)) = 1;
     end
     %figure;imshow(finalImage,c)
 
