@@ -1,4 +1,4 @@
-function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursData,NeighboursUnrollTube,polygon_distribution_UnrollTube,selpath] = pipeline()
+function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_distribution_UnrollTube,selpath] = pipeline()
 %PIPELINE Summary of this function goes here
 %   Detailed explanation goes here
     selpath = uigetdir('data');
@@ -79,7 +79,10 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursDat
         %% Calculate poligon distribution and Unroll the tube.
         [polygon_distribution_Apical] = calculate_polygon_distribution(cellfun(@length, apical3dInfo.neighbourhood), validCells);
         [polygon_distribution_Basal] = calculate_polygon_distribution(cellfun(@length, basal3dInfo.neighbourhood), validCells);
-        neighboursData = {apical3dInfo.neighbourhood, basal3dInfo.neighbourhood};
+        neighbours_data = table(apical3dInfo.neighbourhood, basal3dInfo.neighbourhood);
+        polygon_distribution = table(polygon_distribution_Apical, polygon_distribution_Basal);
+        neighbours_data.Properties.VariableNames = {'Apical','Basal'};
+        polygon_distribution.Properties.VariableNames = {'Apical','Basal'};
 
         [neighs_apical,side_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayer, fullfile(selpath,  'Results', 'apical'), noValidCells, colours);
         [neighs_basal,side_cells_basal] = unrollTube(basalLayer, fullfile(selpath, 'Results', 'basal'), noValidCells, colours, apicalAreaValidCells);
@@ -91,9 +94,10 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursDat
         
         [polygon_distribution_UnrollTubeApical] = calculate_polygon_distribution(side_cells_apical, validCells);
         [polygon_distribution_UnrollTubeBasal] = calculate_polygon_distribution(side_cells_basal, validCells);
-        
-        NeighboursUnrollTube = {neighs_apical,neighs_basal};
-        polygon_distribution_UnrollTube = {polygon_distribution_UnrollTubeApical,polygon_distribution_UnrollTubeBasal};
+        neighbours_UnrollTube = table(neighs_apical,neighs_basal);
+        polygon_distribution_UnrollTube = table(polygon_distribution_UnrollTubeApical,polygon_distribution_UnrollTubeBasal);
+        neighbours_UnrollTube.Properties.VariableNames = {'Apical','Basal'};
+        polygon_distribution_UnrollTube.Properties.VariableNames = {'Apical','Basal'};
     end
 end
 

@@ -1,5 +1,5 @@
-function [IncorrectCells]=FindIncorrectCells(NeighboursData)
+function [IncorrectCells]=FindIncorrectCells(neighbours_data)
 
-TotalNeighbours=sum(length(NeighboursData));
-IncorrectCells = isempty(find(TotalNeighbours < 3 | TotalNeighbours > 10));
+total_neighbours=sum(length(neighbours_data));
+IncorrectCells = isempty(find(total_neighbours < 3 | total_neighbours > 10));
 end 
