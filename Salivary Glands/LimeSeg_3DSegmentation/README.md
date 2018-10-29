@@ -3,7 +3,7 @@
 ## Step 0: Pre-processing
 
 0. Open the images in FIJI and keep the channel whose cell outlines are better. If the nuclei appear it could be a problem
-1. The images suffer from photobleaching and, also, due to depth, the intensity of the fluorescence, decay with time. To solve this, you can use "Image" -> "Adjust" -> "Bleach correction".
+1. The images suffer from photobleaching and, also, due to depth, the intensity of the fluorescence, decay with time. To solve this, you can use "Image" -> "Adjust" -> "Bleach correction". Select "Exponential fit". 'OK'.
 2. Now you have to improve the brightness and contrast, you can do this by clicking in "Image" -> "Adjust" -> "Brightness/Contrast". You can either click on 'Auto' or change manually the parameters until you obtain a good result in which the cell lines are clear, but not too saturated. Then, press on 'Apply' and apply it to all the stack.
 
 
