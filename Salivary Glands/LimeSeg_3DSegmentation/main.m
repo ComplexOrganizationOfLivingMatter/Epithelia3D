@@ -6,14 +6,11 @@ addpath(genpath(fullfile('..', '..', 'InSilicoModels', 'TubularModel', 'src')));
 
 close all
 
-[polygon_distribution_Apical, polygon_distribution_Basal, NeighboursData,NeighboursUnrollTube,polygon_distribution_UnrollTube,selpath] = pipeline();
+[polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_distribution_UnrollTube,selpath] = pipeline();
 
-if sum([polygon_distribution_Apical{2,:}]) || sum([polygon_distribution_Basal{2,:}])
-    incorrectApicalCells= find(~cellfun(@FindIncorrectCells,(NeighboursData{1,1})));
-    incorrectBasalCells= find(~cellfun(@FindIncorrectCells,(NeighboursData{1,2})));
+if round(sum(cellfun(@sum,(polygon_distribution.Apical{1,1}(2,:))))) ~=1 || round(sum(cellfun(@sum,(polygon_distribution.Basal{1,1}(2,:))))) ~= 1
+    incorrectApicalCells= find(~cellfun(@FindIncorrectCells,(neighbours_data.Apical{1,1})));
+    incorrectBasalCells= find(~cellfun(@FindIncorrectCells,(neighbours_data.Basal{1,1})));
 end
 
-polygon_distribution_UnrollTube=cell2table(polygon_distribution_UnrollTube,'VariableNames',{'Apical' 'Basal'});
-NeighboursData=cell2table(NeighboursData,'VariableNames',{'Apical' 'Basal'});
-NeighboursUnrollTube=cell2table(NeighboursUnrollTube,'VariableNames',{'Apical' 'Basal'});
-save(fullfile(selpath,'Results/polygon_distribution.mat'), 'polygon_distribution_Apical', 'polygon_distribution_Basal', 'NeighboursData', 'NeighboursUnrollTube','polygon_distribution_UnrollTube')
+save(fullfile(selpath,'Results/polygon_distribution.mat'), 'polygon_distribution', 'neighbours_data', 'neighbours_UnrollTube','polygon_distribution_UnrollTube')
