@@ -14,6 +14,6 @@ if sum([polygon_distribution_Apical{2,:}]) || sum([polygon_distribution_Basal{2,
 end
 
 polygon_distribution_UnrollTube=cell2table(polygon_distribution_UnrollTube,'VariableNames',{'Apical' 'Basal'});
-NeighboursData=cell2struct(NeighboursData,'VariableNames',{'Apical' 'Basal'});
-neighboursUnrollTube=cell2struct(neighboursUnrollTube,'VariableNames',{'Apical' 'Basal'});
+NeighboursData=cell2table(NeighboursData,'VariableNames',{'Apical' 'Basal'});
+neighboursUnrollTube=cell2table(neighboursUnrollTube,'VariableNames',{'Apical' 'Basal'});
 save(fullfile(selpath,'Results/polygon_distribution.mat'), 'polygon_distribution_Apical', 'polygon_distribution_Basal', 'NeighboursData')
