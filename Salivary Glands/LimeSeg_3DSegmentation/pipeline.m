@@ -1,4 +1,4 @@
-function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursData,neighboursUnrollTube,polygon_distribution_UnrollTube,selpath] = pipeline()
+function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursData,NeighboursUnrollTube,polygon_distribution_UnrollTube,selpath] = pipeline()
 %PIPELINE Summary of this function goes here
 %   Detailed explanation goes here
     selpath = uigetdir('data');
@@ -92,7 +92,7 @@ function [polygon_distribution_Apical, polygon_distribution_Basal, neighboursDat
         [polygon_distribution_UnrollTubeApical] = calculate_polygon_distribution(side_cells_apical, validCells);
         [polygon_distribution_UnrollTubeBasal] = calculate_polygon_distribution(side_cells_basal, validCells);
         
-        neighboursUnrollTube = {neighs_apical,neighs_basal};
+        NeighboursUnrollTube = {neighs_apical,neighs_basal};
         polygon_distribution_UnrollTube = {polygon_distribution_UnrollTubeApical,polygon_distribution_UnrollTubeBasal};
     end
 end
