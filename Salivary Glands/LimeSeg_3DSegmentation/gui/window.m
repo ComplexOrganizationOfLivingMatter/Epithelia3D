@@ -115,6 +115,7 @@ if roiMask ~= -1
     selectCellId = getappdata(0, 'cellId');
     labelledImage = getappdata(0, 'labelledImageTemp');
     selectedZ = getappdata(0, 'selectedZ');
+    lumenImage = getappdata(0, 'lumenImage');
 
     if sum(newCellRegion(:)) > 0
         [x, y] = find(newCellRegion);
@@ -123,9 +124,10 @@ if roiMask ~= -1
         newIndices = sub2ind(size(labelledImage), x, y, ones(length(x), 1)*selectedZ);
 
         labelledImage(newIndices) = selectCellId;
+        labelledImage(lumenImage>0) = 0;
 
         %Smooth surface of next and previos Z
-        labelledImage = smoothCellContour3D(labelledImage, selectCellId, (selectedZ-3):(selectedZ+3));
+        labelledImage = smoothCellContour3D(labelledImage, selectCellId, (selectedZ-3):(selectedZ+3), lumenImage);
 
         setappdata(0, 'labelledImageTemp', labelledImage);
         showSelectedCell();
