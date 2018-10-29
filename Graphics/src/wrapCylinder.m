@@ -6,7 +6,8 @@
 %uiopen('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiCylinderSR1_ZoomOut.fig',1)
 %uiopen('D:\Pablo\Epithelia3D\InSilicoModels\TubularModel\data\voronoiCylinderSR5.fig',1)
 
-uiopen('D:\Pablo\Epithelia3D\Graphics\data\cylinder_200seeds_SR1_referenceOK_03_04_2018.fig',1)
+%uiopen('D:\Pablo\Epithelia3D\Graphics\data\cylinder_200seeds_SR1_referenceOK_03_04_2018.fig',1)
+uiopen('D:\Pablo\Epithelia3D\Graphics\data\cylinder_4x_200seeds_SR1_referenceOK_04_04_2018.fig',1)
 
 refFig = gca;
 surfaceRatios=[9];
@@ -66,21 +67,24 @@ colours = repmat(colours, 8, 1);
 for i=1:length(surfaceRatios)
     h = figure;
     
+    actualSR = listLOriginalProjection.surfaceRatio(surfaceRatios(i));
     %We put the first cylinder to append the bigger one
-    uiopen('D:\Pablo\Epithelia3D\Graphics\data\cylinder_200seeds_SR1_referenceOK_03_04_2018.fig',1)
+    %uiopen('D:\Pablo\Epithelia3D\Graphics\data\cylinder_200seeds_SR1_referenceOK_03_04_2018.fig',1)
+    uiopen('D:\Pablo\Epithelia3D\Graphics\data\cylinder_4x_200seeds_SR1_referenceOK_04_04_2018.fig',1)
     hold on;
-    Img=cell2mat(listLOriginalProjection.L_originalProjection(surfaceRatios(i)));
-
-    %imgRGB=imresize(listLOriginalProjection.L_originalProjection{1}, [4096 2560], 'nearest');
+    %Img=cell2mat(listLOriginalProjection.L_originalProjection(surfaceRatios(i)));
     
-    imgRGB = Img;
-    imgRGB = imgRGB(1:end/2, :);
+    originalImage = listLOriginalProjection.L_originalProjection{1};
+    imgRGB=imresize(originalImage, [size(originalImage, 1), size(originalImage, 2)*actualSR], 'nearest');
+    
+    %imgRGB = Img;
+    imgRGB = imgRGB((end/4):(end/2), :);
     
     [imgRows,imgCols,imgPlanes] = size(imgRGB);
     [X,Y,Z] = cylinder(imgRows,imgCols);
-    Z=Z*4000*3;
-    X=X*.2*listLOriginalProjection.surfaceRatio(surfaceRatios(i));
-    Y=Y*0.2*listLOriginalProjection.surfaceRatio(surfaceRatios(i));
+    Z=Z*4000;
+    X=X*0.2*actualSR;
+    Y=Y*0.2*actualSR;
     hRef = warp(X,Y,Z,imgRGB,colours);
     hRef.FaceAlpha = 0.9;
     axis equal
@@ -97,6 +101,6 @@ for i=1:length(surfaceRatios)
     
     newFig.Visible = 'off';
     set(get(0,'children'),'Color','w')
-    print(strcat('cylinder_With2Cylinders_Expansion_', num2str(listLOriginalProjection.surfaceRatio(surfaceRatios(i))), '_', date), '-dtiff', '-r600');
+    print(strcat('cylinder_With2Cylinders_Frusta_Expansion_', num2str(actualSR), '_', date), '-dtiff', '-r600');
     hold off;
 end
