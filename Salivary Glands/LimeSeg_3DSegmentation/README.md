@@ -1,8 +1,15 @@
 # LimeSeg tutorial
 
+## Step 0: Pre-processing
+
+0. Open the images in FIJI and keep the channel whose cell outlines are better. If the nuclei appear it could be a problem
+1. The images suffer from photobleaching and, also, due to depth, the intensity of the fluorescence, decay with time. To solve this, you can use "Image" -> "Adjust" -> "Bleach correction".
+2. Now you have to improve the brightness and contrast, you can do this by clicking in "Image" -> "Adjust" -> "Brightness/Contrast". You can either click on 'Auto' or change manually the parameters until you obtain a good result in which the cell lines are clear, but not too saturated. Then, press on 'Apply' and apply it to all the stack.
+
+
 ## Step 1: Basic cell's pipeline
 
-1. Obtain the channel with the phalloidin staining of the stack.Now you have to improve the brightness and contrast,you can do this by clicking in "Process" (process->Enhance Contrast), select "Normalize" and "Process all X slides" (X is the number of slides).If the process wasn't successful, you would have to change pixel saturation percentage.
+1. Open the image, whose cell outlines can be better segmented.
 2. Select "ellipse" and put an ellipsoidal ROI near the nucleus, but with a slightly bigger radius. Press 'T'.
 3. Plugins -> Limeseg -> Sphere Seg (advanced).
 4. Change parameters (D_0 is optional and Z_Scale is mandatory). To calculate Z_Scale you should divide 'Voxel depth'/'Pixel width': in our case 4.06. Also you should select a color. Tick 'ClearOptimizer'.
