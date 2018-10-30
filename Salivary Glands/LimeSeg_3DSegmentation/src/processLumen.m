@@ -1,4 +1,4 @@
-function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, labelledImage, resizeImg, tipValue)
+function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, resizeImg, tipValue)
 %PROCESSLUMEN Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -6,7 +6,6 @@ function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, label
     NoValidFiles = startsWith({lumenStack.name},'._','IgnoreCase',true);
     lumenStack=lumenStack(~NoValidFiles);
     lumenImage = zeros(size(labelledImage)-((tipValue+1)*2));
-    lumenImage = imrotate(lumenImage, -270);
     for numZ = 1:size(lumenStack, 1)
         imgZ = imread(fullfile(lumenStack(numZ).folder, lumenStack(numZ).name));
         
@@ -23,8 +22,6 @@ function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, label
 %     [lumenImage] = addCellToImage(pixelLocations, lumenImage, 1);
     lumenImage = addTipsImg3D(tipValue+1, lumenImage);
     lumenImage = double(lumenImage);
-    lumenImage = flip(lumenImage);
-    lumenImage = imrotate(lumenImage, 270);
     
     [x, y, z] = ind2sub(size(lumenImage), find(lumenImage));
     pixelLocations = [x, y, z];
@@ -32,8 +29,4 @@ function [labelledImage, apicalLayer, lumenImage] = processLumen(lumenDir, label
     [lumenImage] = smoothObject(lumenImage, pixelLocations, 1);
     
     labelledImage(lumenImage == 1) = 0;
-    
-    
-    %% Get apical layer by dilating the lumen
-    [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
 end

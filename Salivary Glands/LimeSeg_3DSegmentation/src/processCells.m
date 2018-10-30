@@ -1,4 +1,4 @@
-function [labelledImage, basalLayer] = processCells(directoryOfCells, resizeImg, imgSize, tipValue)
+function [labelledImage] = processCells(directoryOfCells, resizeImg, imgSize, tipValue)
 %PROCESSCELLS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -47,8 +47,5 @@ function [labelledImage, basalLayer] = processCells(directoryOfCells, resizeImg,
     %% Get basal layer by dilating the empty space
     labelledImage = addTipsImg3D(tipValue+1, labelledImage);
     labelledImage = double(labelledImage);
-    labelledImage = flip(labelledImage);
-    labelledImage = imrotate(labelledImage, 270);
-    [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
 end
 

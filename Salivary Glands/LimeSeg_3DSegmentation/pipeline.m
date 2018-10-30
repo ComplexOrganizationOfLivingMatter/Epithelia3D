@@ -28,16 +28,31 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
             load(fullfile(selpath, 'Results', '3d_layers_info.mat'))
         else
             colours = [];
-            [labelledImage, basalLayer] = processCells(fullfile(outputDir, 'Cells', filesep), resizeImg, imgSize, tipValue);
+            [labelledImage] = processCells(fullfile(outputDir, 'Cells', filesep), resizeImg, imgSize, tipValue);
+            [labelledImage, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
+
+            %% Put both lumen and labelled image at a 90 degrees
+            orientationGland = regionprops3(labelledImage>0, 'Orientation');
+            labelledImage = flip(labelledImage);
+            labelledImage = imrotate(labelledImage, 360 - orientationGland.Orientation(1));
+            lumenImage = flip(lumenImage);
+            lumenImage = imrotate(lumenImage, 360 - orientationGland.Orientation(1));
+
+            %% Get basal layer by dilating the empty space
+            [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
+
+            %% Get apical layer by dilating the lumen
+            [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
+            
+            %% Export image sequence
+            [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
         end
         
-        [labelledImage, apicalLayer, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
-
-        [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
+        
 
         setappdata(0,'outputDir', outputDir);
         setappdata(0,'labelledImage',labelledImage);
-        setappdata(0, 'lumenImage', lumenImage);
+        setappdata(0,'lumenImage', lumenImage);
         setappdata(0,'resizeImg',resizeImg);
         setappdata(0,'tipValue', tipValue);
 
