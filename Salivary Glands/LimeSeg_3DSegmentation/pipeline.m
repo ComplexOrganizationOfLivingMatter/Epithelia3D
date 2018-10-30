@@ -32,7 +32,7 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
             [labelledImage, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
 
             %% Put both lumen and labelled image at a 90 degrees
-            orientationGland = regionprops3(labelledImage>0, 'Orientation');
+            orientationGland = regionprops3(lumenImage>0, 'Orientation');
             labelledImage = flip(labelledImage);
             labelledImage = imrotate(labelledImage, 360 - orientationGland.Orientation(1));
             lumenImage = flip(lumenImage);
