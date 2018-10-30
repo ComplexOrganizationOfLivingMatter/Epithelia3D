@@ -34,9 +34,9 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
             %% Put both lumen and labelled image at a 90 degrees
             orientationGland = regionprops3(lumenImage>0, 'Orientation');
             labelledImage = flip(labelledImage);
-            labelledImage = imrotate(labelledImage, 360 - orientationGland.Orientation(1));
+            labelledImage = imrotate(labelledImage, 330 - orientationGland.Orientation(1));
             lumenImage = flip(lumenImage);
-            lumenImage = imrotate(lumenImage, 360 - orientationGland.Orientation(1));
+            lumenImage = imrotate(lumenImage, 330 - orientationGland.Orientation(1));
 
             %% Get basal layer by dilating the empty space
             [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
@@ -48,8 +48,6 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
             [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
         end
         
-        
-
         setappdata(0,'outputDir', outputDir);
         setappdata(0,'labelledImage',labelledImage);
         setappdata(0,'lumenImage', lumenImage);
@@ -78,7 +76,7 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
                 exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
 
                 %% Calculate neighbours and plot missing cells
-                if exist(fullfile(selpath, '3d_layers_info.mat')) == 0
+                if exist(fullfile(selpath, '3d_layers_info.mat'), 'file') == 0
                     [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
                     [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
                     [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);

@@ -64,7 +64,7 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
         if max(actualImg(:)) > (3 + ismember(numCell, borderCells))
             areasOfCell = regionprops(actualImg, 'Area');
             areasOfCell = [areasOfCell.Area];
-            if sum(areasOfCell >= 100) >= (3 + ismember(numCell, borderCells))
+            if sum(areasOfCell >= 200) >= (3 + ismember(numCell, borderCells))
                 areasToRemove(actualImg > 0 & ismember(actualImg, find(areasOfCell < 100))) = 1;
             else %Here there will always be areas below 100
                 numberOfAreasToRemove = length(areasOfCell) - (3 + ismember(numCell, borderCells));
