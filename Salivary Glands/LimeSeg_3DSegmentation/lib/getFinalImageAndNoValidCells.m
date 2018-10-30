@@ -66,10 +66,10 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
             areasOfCell = regionprops(actualImg, 'Area');
             areasOfCell = [areasOfCell.Area];
             if sum(areasOfCell >= 100) >= (3 + ismember(numCell, borderCells))
-                areasToRemove(actualImg > 0 & ismember(actualImg, areasOfCell >= 100) == 0) = 1;
+                areasToRemove(actualImg > 0 & ismember(actualImg, find(areasOfCell < 100))) = 1;
             else %Here there will always be areas below 100
                 numberOfAreasToRemove = length(areasOfCell) - (3 + ismember(numCell, borderCells));
-                [~, indices] = mink([areasOfCell.Area], numberOfAreasToRemove);
+                [~, indices] = mink(areasOfCell, numberOfAreasToRemove);
                 areasToRemove(actualImg > 0 & ismember(actualImg, indices)) = 1;
             end
         end
