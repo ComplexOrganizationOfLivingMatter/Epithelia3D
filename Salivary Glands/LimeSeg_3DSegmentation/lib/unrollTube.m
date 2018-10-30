@@ -141,18 +141,22 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
         neighs_real(end+1:end+(max(img3d(:)) - length(sides_cells))) = [];
     end
     
+    
     h = figure ('units','normalized','outerposition',[0 0 1 1], 'visible', 'off');
     imshow(midSectionImage+1, colours);
     midSectionNewLabels = bwlabel(midSectionImage, 4);
     centroids = regionprops(midSectionNewLabels, 'Centroid');
     centroids = round(vertcat(centroids.Centroid));
     ax = get(h, 'Children');
+    set(ax,'Units','normalized')
+    set(ax,'Position',[0 0 1 1])
     for numCentroid = 1:size(centroids, 1)
-        labelSeed = midSectionImage(centroids(numCentroid, 2), centroids(numCentroid, 1));
+        labelSeed = midSectionImage(midSectionNewLabels == numCentroid);
+        labelSeed = labelSeed(1);
         if mean(colours(labelSeed+1, :)) < 0.4
-            text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center', 'Color', 'white');
+            text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center', 'Color', 'white', 'FontSize', 6);
         else
-            text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center');
+            text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center', 'FontSize', 6);
         end
     end
     h.InvertHardcopy = 'off';

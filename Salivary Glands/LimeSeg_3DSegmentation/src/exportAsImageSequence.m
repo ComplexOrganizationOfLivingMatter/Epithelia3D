@@ -18,6 +18,8 @@ function [colours] = exportAsImageSequence(labelledImage, outputDir, colours, ti
         centroids = regionprops(labelledImage(:, :, numZ), 'Centroid');
         centroids = vertcat(centroids.Centroid);
         ax = get(h, 'Children');
+        set(ax,'Units','normalized')
+        set(ax,'Position',[0 0 1 1])
         for numCentroid = 1:size(centroids, 1)
             if mean(colours(numCentroid+1, :)) < 0.4
                 text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(numCentroid), 'HorizontalAlignment', 'center', 'Color', 'white');
