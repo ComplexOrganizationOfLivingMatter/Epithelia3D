@@ -83,6 +83,7 @@ for i=1:length(surfaceRatios)
     [imgRows,imgCols,imgPlanes] = size(imgRGB);
     [X,Y,Z] = cylinder(imgRows,imgCols);
     Z=Z*4000;
+    %Z=Z*4000*3;
     X=X*0.2*actualSR;
     Y=Y*0.2*actualSR;
     hRef = warp(X,Y,Z,imgRGB,colours);
