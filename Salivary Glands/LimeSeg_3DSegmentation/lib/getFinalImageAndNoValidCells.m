@@ -41,7 +41,6 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     
     %% Unifying splitted near cells
     connected4 = [0 1 0; 1 0 1; 0 1 0];
-    
     edgePixels = find(labelMaskPerim == 0 & zerosLabelMask == 0);
     dilatedMask = zeros(size(labelMaskPerim));
 %     hold on;
@@ -78,7 +77,6 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
 %     figure;imshow(labelMaskPerim,c)
     %validArea=bwareaopen(labelMaskPerim,50,4);
     labelMaskPerim(~validArea) = 0;
-    
     
     
     %% Watershed
@@ -123,7 +121,4 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     
     noValidCells = noValidCells(noValidCells~=0);
 %     figure;imshow(ismember(finalImage,validCells))
-
-    
-    
 end
