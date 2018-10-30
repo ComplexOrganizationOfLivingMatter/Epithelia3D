@@ -1,4 +1,4 @@
-function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(layerImage,c)
+function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(layerImage,c, borderCells)
 
     labelMask=zeros(size(layerImage));
     perimMask=false(size(layerImage));
@@ -23,10 +23,6 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
         
         maskDilated = imdilate(mask,strel('disk',3));
         maskEroded = imerode(maskDilated,strel('disk',2));
-        if sum(mask(:)) <= 400
-            maskEroded = imerode(maskDilated,strel('disk',2));
-            smallCellsImg(maskEroded) = 1;
-        end
         labelMask(maskEroded)=nCell;
         maskErodedPerim = bwperim(maskEroded);
         % It is not the perim the zone of 0s or the border
@@ -42,9 +38,48 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
 %     figure;imshow(labelMask+1, c)
 %     figure;imshow(zerosLabelMask)
     labelMaskPerim(perimMask)=0;
+    
+    %% Unifying splitted near cells
+    connected4 = [0 1 0; 1 0 1; 0 1 0];
+    
+    edgePixels = find(labelMaskPerim == 0 & zerosLabelMask == 0);
+    dilatedMask = zeros(size(labelMaskPerim));
+%     hold on;
+    for edgePixel = edgePixels'
+        dilatedMask(edgePixel) = 1;
+        values4Connected = labelMaskPerim(imdilate(dilatedMask, connected4)>0);
+        values4ConnectedUnique = unique(values4Connected);
+        values4ConnectedUnique(values4ConnectedUnique==0) = [];
+        if length(values4ConnectedUnique) == 1
+            labelMaskPerim(edgePixel) = values4ConnectedUnique;
+%             [x,y] = ind2sub(size(finalImage), edgePixel);
+%             plot(y, x, '*r')
+        end
+        dilatedMask(edgePixel) = 0;
+    end
+    
+    %% keep 3 areas for each cell, remove the smaller ones
+    areasToRemove = zeros(size(labelMaskPerim));
+    for numCell = cellsLayer'
+        actualImg = bwlabel(labelMaskPerim == numCell, 4);
+        if max(actualImg(:)) > (3 + ismember(numCell, borderCells))
+            areasOfCell = regionprops(actualImg, 'Area');
+            areasOfCell = [areasOfCell.Area];
+            if sum(areasOfCell >= 100) >= (3 + ismember(numCell, borderCells))
+                areasToRemove(actualImg > 0 & ismember(actualImg, areasOfCell >= 100) == 0) = 1;
+            else %Here there will always be areas below 100
+                numberOfAreasToRemove = length(areasOfCell) - (3 + ismember(numCell, borderCells));
+                [~, indices] = mink([areasOfCell.Area], numberOfAreasToRemove);
+                areasToRemove(actualImg > 0 & ismember(actualImg, indices)) = 1;
+            end
+        end
+    end
+    validArea = ~areasToRemove;
 %     figure;imshow(labelMaskPerim,c)
-    validArea=bwareaopen(labelMaskPerim,50,4);
-    labelMaskPerim(~validArea & smallCellsImg == 0)=0;
+    %validArea=bwareaopen(labelMaskPerim,50,4);
+    labelMaskPerim(~validArea) = 0;
+    
+    
     
     %% Watershed
     maskDist=bwdist(labelMaskPerim>0);
@@ -76,23 +111,7 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
     end
 %     figure;imshow(finalImage+1,c)
     
-    %% Unifying splitted near cells
-    connected4 = [0 1 0; 1 0 1; 0 1 0];
     
-    edgePixels = find(finalImage == 0 & zerosLabelMask == 0);
-%     hold on;
-    for edgePixel = edgePixels'
-        dilatedMask(edgePixel) = 1;
-        values4Connected = finalImage(imdilate(dilatedMask, connected4)>0);
-        values4ConnectedUnique = unique(values4Connected);
-        values4ConnectedUnique(values4ConnectedUnique==0) = [];
-        if length(values4ConnectedUnique) == 1
-            finalImage(edgePixel) = values4ConnectedUnique;
-%             [x,y] = ind2sub(size(finalImage), edgePixel);
-%             plot(y, x, '*r')
-        end
-        dilatedMask(edgePixel) = 0;
-    end
 
     %% Get valid & no valid Cells
     maskNoValidCell=imdilate(imdilate(finalImage>0,strel('disk',2))==0,strel('disk',5));

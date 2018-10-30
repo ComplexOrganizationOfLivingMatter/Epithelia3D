@@ -39,6 +39,8 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     img3d = permute(img3DRotated, [1 3 2]);
     imgFinalCoordinates=cell(size(img3d,3),1);
     imgFinalCoordinates3x=cell(size(img3d,3),1);
+    
+    borderCells=cell(size(img3d,3),1);
 
     for coordZ = 1 : size(img3d,3)
         [x, y] = find(img3d(:, :, coordZ) > 0);
@@ -88,9 +90,12 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
 
             imgFinalCoordinates3x{coordZ} = repmat(orderedLabels,1,3);
             imgFinalCoordinates{coordZ} = orderedLabels;
-
+            borderCells{coordZ} = orderedLabels(1);
         end
     end
+    
+    borderCells = unique([borderCells{:}]);
+    borderCells(borderCells == 0) = [];
 
     %% Reconstruct deployed img
     ySize=max(cellfun(@length, imgFinalCoordinates3x));
@@ -114,7 +119,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
 %     figure;imshow(deployedImgMask,colours)
 
     %% Getting correct border cells, valid cells and no valid cells
-    [wholeImage,BordersCells,ValidCells] = getFinalImageAndNoValidCells(deployedImg3x,colours);
+    [wholeImage,~,~] = getFinalImageAndNoValidCells(deployedImg3x,colours, borderCells);
     %[~, ~,noValidCells] = getFinalImageAndNoValidCells(deployedImg3x(:, round(ySize/3):round(ySize*2/3)),colours);
 %     TotalCells = {ValidCells; BordersNoValidCells};
    
