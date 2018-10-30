@@ -44,7 +44,7 @@ If you have to leave and you have not finish the salivary gland, you can always 
 
 ## Step 2: Basic lumen's pipeline
 
-1. Segment the lumen of the images, taking a bit more that is strictly at your sight. I.e. You should paint as a lumen a bit of apical cells.If you don’t know how to segment the lumen of each image, you can do it with Photoshop following the next steps:
+1. Segment the lumen of the images, taking a bit more that is strictly at your sight, i.e. you should paint as a lumen a bit of apical cells. If you don’t know how to segment the lumen of each image, you can do it with Photoshop following the next steps:
 
 	1. Load the image which contains the lumen (file->open->select your image).
 	
