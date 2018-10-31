@@ -28,7 +28,7 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
     %pixelLocations = [x, y, z];
     %[lumenImage] = smoothObject(lumenImage, pixelLocations, 1);
     lumenImageSmoothed = smooth3(lumenImage, 'box', 11);
-    lumenImage = lumenImageSmoothed > (max(lumenImage(:))/8);
+    lumenImage = lumenImageSmoothed > (max(lumenImageSmoothed(:))/8);
     figure; paint3D(lumenImage);
     labelledImage(lumenImage == 1) = 0;
 end
