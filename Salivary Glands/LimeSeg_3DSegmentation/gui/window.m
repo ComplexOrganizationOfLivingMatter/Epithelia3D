@@ -78,7 +78,7 @@ for numImg = 1:size(imageSequenceFiles, 1)
     %actualImg = flip(actualImg);
     actualImg = imrotate(actualImg, -glandOrientation);
     %imageSequence(end+1) = {imresize(fliplr(flip(actualImg')), resizeImg, 'nearest')};
-    imageSequence(end+1) = {imresize(actualImg), resizeImg, 'nearest')};
+    imageSequence(end+1) = {imresize(actualImg, resizeImg, 'nearest')};
 end
 
 setappdata(0,'imageSequence',imageSequence);
