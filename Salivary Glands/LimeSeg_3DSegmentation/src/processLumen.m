@@ -23,10 +23,12 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
     lumenImage = addTipsImg3D(tipValue+1, lumenImage);
     lumenImage = double(lumenImage);
     
-    [x, y, z] = ind2sub(size(lumenImage), find(lumenImage));
-    pixelLocations = [x, y, z];
-    
-    [lumenImage] = smoothObject(lumenImage, pixelLocations, 1);
-    
+    figure; paint3D(lumenImage);
+    %[x, y, z] = ind2sub(size(lumenImage), find(lumenImage));
+    %pixelLocations = [x, y, z];
+    %[lumenImage] = smoothObject(lumenImage, pixelLocations, 1);
+    lumenImageSmoothed = smooth3(lumenImage, 'box', 11);
+    lumenImage = lumenImageSmoothed > (max(lumenImage(:))/8);
+    figure; paint3D(lumenImage);
     labelledImage(lumenImage == 1) = 0;
 end
