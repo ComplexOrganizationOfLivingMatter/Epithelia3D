@@ -17,11 +17,11 @@ imgToShow = addTipsImg3D(tipValue+1, imgToShow);
 imgToShow = imgToShow(:, :, tipValue+2);
 % imgToShow(perimImg == 1) = 65536;
 cla('reset') 
-imshow(imgToShow');
+imshow(imgToShow);
 hold on;
 [xIndices, yIndices] = find(labelledImage(:, :,  selectedZ) == selectCellId);
 if isempty(xIndices) == 0
-    s2 = scatter(yIndices,xIndices, 'blue','filled','SizeData',10);
+    s2 = scatter(yIndices, xIndices, 'blue','filled','SizeData',10);
     hold off
     alpha(s2,.4)
 end
@@ -30,7 +30,7 @@ end
 [xIndices, yIndices] = find(lumenImage(:, :,  selectedZ) == 1);
 if isempty(xIndices) == 0
     hold on
-    s = scatter(yIndices,xIndices, 'red', 'filled','SizeData',10);
+    s = scatter(yIndices, xIndices, 'red', 'filled','SizeData',10);
     hold off
     alpha(s,.5)
 end
