@@ -64,18 +64,20 @@ resizeImg = getappdata(0,'resizeImg');
 outputDir = getappdata(0,'outputDir');
 imageSequenceFiles = dir(fullfile(outputDir, 'ImageSequence/*.tif'));
 NoValidFiles = startsWith({imageSequenceFiles.name},'._','IgnoreCase',true);
-imageSequenceFiles=imageSequenceFiles(~NoValidFiles);
+imageSequenceFiles = imageSequenceFiles(~NoValidFiles);
 imageSequence = {};
 
 tipValue = getappdata(0, 'tipValue');
 setappdata(0, 'selectedZ', 1+tipValue+1);
 setappdata(0, 'cellId', 1);
+glandOrientation = getappdata(0, 'glandOrientation');
 
 for numImg = 1:size(imageSequenceFiles, 1)
     actualFile = imageSequenceFiles(numImg);
     actualImg = imread(fullfile(actualFile.folder, actualFile.name));
     actualImg = flip(actualImg);
-    actualImg = imrotate(actualImg, 270);
+    
+    actualImg = imrotate(actualImg, glandOrientation);
     imageSequence(end+1) = {imresize3(actualImg, resizeImg, 'nearest')};
 end
 
