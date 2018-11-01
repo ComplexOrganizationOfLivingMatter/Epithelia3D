@@ -1,4 +1,4 @@
-function rotatedImg3d = rotateImg3(img3d,sampleName)
+function rotatedImg3d = rotateImg3(img3d)
 
     img3d_reduced=imresize3(img3d,0.05,'nearest');
     orientationObj = regionprops3(img3d_reduced>0, 'Orientation');
@@ -24,5 +24,4 @@ function rotatedImg3d = rotateImg3(img3d,sampleName)
         rotatedImg3d = img3d_rot;
     end
     
-    save(['data\rotatedImage3d_' sampleName '.mat'],'rotatedImg3d','-v7.3');
 end

@@ -1,7 +1,7 @@
 function surfaceCells = getSuperficialCells(img3d)
 
-    [allX,allY,allZ] = ind2sub(size(img3d),find(zeros(max(xCol),max(yRow),max(z))==0));
-    shp = alphaShape([xCol,yRow,z],2);
+    [allX,allY,allZ] = ind2sub(size(img3d),find(zeros(size(img3d))==0));
+    shp = alphaShape([allX,allY,allZ],2);
 
     numPartitions = 100;
     partialPxs = ceil(length(allX)/numPartitions);
