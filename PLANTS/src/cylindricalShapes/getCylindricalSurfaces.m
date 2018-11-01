@@ -37,11 +37,10 @@ function [layer1Limited,layer2Limited,setOfCells] = getCylindricalSurfaces(sampl
     %% Get center and axes length from hypocotyl
     if ~exist(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'file')
         
-        [centers{1}, radiiBasalLayer1] = calculateCenterRadiusCylSection(layer1.outerSurface,['data\' sampleName '\maskLayers\outerMaskLayer1']);
-        [centers{2}, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1.innerSurface,['data\' sampleName '\maskLayers\innerMaskLayer1']);
-        [centers{3}, radiiBasalLayer2] = calculateCenterRadiusCylSection(layer2.outerSurface,['data\' sampleName '\maskLayers\outerMaskLayer2']);
-        [centers{4}, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2.innerSurface,['data\' sampleName '\maskLayers\innerMaskLayer2']);
-        save(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
+        [centers{1},centers{2}, radiiBasalLayer1, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1,sampleName,'Layer1');
+        [centers{3},centers{4}, radiiBasalLayer2, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2,['data\' sampleName '\maskLayers\'],'outerMaskLayer1');
+
+         save(['data\' sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
         
     end
     
