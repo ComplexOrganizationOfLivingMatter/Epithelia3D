@@ -1,20 +1,20 @@
 clear
 close all
-names={'Hypocotyl A','Hypocotyl B','katanin meristem A',...
+names={'Hypocotyl A','Hypocotyl B','test','katanin meristem A',...
     'katanin meristem B','WT meristem A','WT meristem B','root A','root B'};
     
 addpath(genpath('src'))
 
-zScaleFactorHyp = [0.4,0.7];
+zScaleFactorHyp = [0.4,0.7,0.7];
 
-for nNam=1:2%length(names)
-    if contains(names{nNam},'Hypocot')
+for nNam=3%length(names)
+    if contains(names{nNam},'Hypocot') || contains(names{nNam},'test')
         resizeFactor=0.3;
         rangeY=round([700,1400]);
         
         %% This complex process is only for detecting the cells belonging to each surface
         if ~exist(['data/' names{nNam} '/unrolledHypocotyl.mat'],'file')
-            [layer1,layer2,wrapping1,wrapping2,setOfCells,verticesInfoLayer1,verticesInfoLayer2,verticesInfoWrapping1,verticesInfoWrapping2]=getHypocotylSurfaces(names{nNam},rangeY*resizeFactor,resizeFactor,zScaleFactorHyp(nNam));      
+            [layer1,layer2,setOfCells]=getCylindricalSurfaces(names{nNam},rangeY,zScaleFactorHyp(nNam));      
             [unrolledImages] = unrollingHypocot(names{nNam},rangeY*resizeFactor,layer1,layer2);
             [~,cellsLayer1,cellsLayer2,~,~,~,~]=cleanAndGetMeasurements(['data/' names{nNam} '/'], unrolledImages);
             save(['data/' names{nNam} '/unrolledHypocotyl.mat'],'unrolledImages','cellsLayer1','cellsLayer2')
