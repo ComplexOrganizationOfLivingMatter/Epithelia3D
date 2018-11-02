@@ -29,7 +29,7 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
         else
             colours = [];
             [labelledImage] = processCells(fullfile(outputDir, 'Cells', filesep), resizeImg, imgSize, tipValue);
-            [labelledImage, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
+            [labelledImage, lumenImage, glandOrientation] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
 
             %% Get basal layer by dilating the empty space
             [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);

@@ -1,4 +1,4 @@
-function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, resizeImg, tipValue)
+function [labelledImage, lumenImage, glandOrientation] = processLumen(lumenDir, labelledImage, resizeImg, tipValue)
 %PROCESSLUMEN Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -32,61 +32,19 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
     
     %% Smooth lumen to get a more cylinder-like object
     
-    lumenToSmooth = permute(lumenImage, [2 3 1]);
-    
     % We first remove irregularities. Like a pre-smooth.
-    lumenToSmooth = bwmorph3(lumenToSmooth, 'majority');
+    lumenFirstSmooth = bwmorph3(lumenImage, 'majority');
     
-    % Obtaining the number of pixels of each circumference
-    for coordY = 1 : size(lumenToSmooth,3)
-        actualPerim = bwperim(lumenToSmooth(:, :, coordY));
-        areaOfPerims = regionprops(actualPerim, 'Area');
-        areaOfPerims = [areaOfPerims.Area];
-        areaOfPerims(areaOfPerims<10) = [];
-        %pixelsCircumferencePerCoord{coordY} = areaOfPerims;
-        if isempty(areaOfPerims) == 0
-            %imshow(actualPerim)
-        end
-        pixelsCircumferencePerCoord(coordY) = sum(actualPerim(:));
-    end
-    
-    allCircumferences = [pixelsCircumferencePerCoord{:}];
-    allCircumferences = pixelsCircumferencePerCoord(pixelsCircumferencePerCoord~=0);
-    
-    quantilesCircumferences = quantile(allCircumferences,  [0.10, 0.5]);
-    %discardedValues = quantilesCircumferences(1);
-    meadiaPixelsCircumferenceOfGland = quantilesCircumferences(2);
-    
-    %Create array of strel neighborhoods
-    for numStrel = 1:10
-        strelNeighborhoods(numStrel) = sum(strel('disk', numStrel).Neighborhood(:))-1;
-    end
-    
-    % Smoothing object regarding the difference between the number of
-    % pixels in a particular coordY and the calculated median and previous
-    % and next coordYs.
-    for coordY = 1 : size(lumenToSmooth, 3)
-        if pixelsCircumferencePerCoord(coordY) >= discardedValues
-            differenceToAdjust = pixelsCircumferencePerCoord(coordY) - mean(pixelsCircumferencePerCoord(coordY-2:coordY+2));
-            
-            [~, closestStrel] = min(abs(strelNeighborhoods - abs(differenceToAdjust)));
-            
-            if differenceToAdjust > 0 %Erode
-                lumenToSmooth(:, :, coordY) = imerode(lumenToSmooth(:, :, coordY), strel('disk', closestStrel));
-            else %Dilate
-                lumenToSmooth(:, :, coordY) = imdilate(lumenToSmooth(:, :, coordY), strel('disk', closestStrel));
-            end
-        end
-    end
-    
-    lumenImage = permute(lumenToSmooth, [2 3 1]);
-    figure; paint3D(lumenImage);
+    [lumenSmoothed] = smoothPerimeterByAxis(permute(lumenFirstSmooth, [2 3 1]));
+    [lumenSmoothed] = smoothPerimeterByAxis(permute(lumenSmoothed, [3 2 1])); % Real: [1 3 2] in the permute
+    lumenImage = permute(lumenSmoothed, [1 3 2]);
+    %figure; paint3D(lumenImage);
     
     [x, y, z] = ind2sub(size(lumenImage), find(lumenImage));
     pixelLocations = [x, y, z];
     [lumenImageSmoothed] = smoothObject(lumenImage, pixelLocations, 1);
     
-    figure; paint3D(lumenImageSmoothed);
+    %figure; paint3D(lumenImageSmoothed);
     
     %% Remove pixels of lumen from the cells image
     labelledImage(lumenImage == 1) = 0;
