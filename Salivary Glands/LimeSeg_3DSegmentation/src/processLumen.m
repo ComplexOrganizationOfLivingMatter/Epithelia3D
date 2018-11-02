@@ -47,7 +47,7 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
         if isempty(areaOfPerims) == 0
             imshow(actualPerim)
         end
-        %pixelsCircumferencePerCoord(coordY) = mean(actualPerim(:));
+        %pixelsCircumferencePerCoord(coordY) = sum(actualPerim(:));
     end
     
     allCircumferences = [pixelsCircumferencePerCoord{:}];
