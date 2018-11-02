@@ -44,6 +44,8 @@ function [labelledImage, lumenImage, glandOrientation] = processLumen(lumenDir, 
     pixelLocations = [x, y, z];
     [lumenImageSmoothed] = smoothObject(lumenImage, pixelLocations, 1);
     
+    lumenImageSmoothed = imdilate(lumenImageSmoothed, strel('sphere', 3));
+    lumenImage = imerode(lumenImageSmoothed, strel('sphere', 3));
     %figure; paint3D(lumenImageSmoothed);
     
     %% Remove pixels of lumen from the cells image
