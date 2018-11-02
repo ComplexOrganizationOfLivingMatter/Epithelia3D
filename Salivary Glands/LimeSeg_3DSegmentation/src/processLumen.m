@@ -43,6 +43,36 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
         pixelsCircumferencePerCoord(coordY) = sum(actualPerim(:));
     end
     
+    quantilesCircumferences = quantile(pixelsCircumferencePerCoord(pixelsCircumferencePerCoord~=0),  [0.10, 0.5]);
+    discardedValues = quantilesCircumferences(1);
+    meadiaPixelsCircumferenceOfGland = quantilesCircumferences(2);
+    
+    %Create array of strel neighborhoods
+    for numStrel = 1:10
+        strelNeighborhoods(numStrel) = sum(strel('disk', numStrel).Neighborhood(:))-1;
+    end
+    
+    % Smoothing object regarding the difference between the number of
+    % pixels in a particular coordY and the calculated median and previous
+    % and next coordYs.
+    for coordY = 1 : size(lumenToSmooth, 3)
+        if pixelsCircumferencePerCoord(coordY) >= discardedValues
+            pixelsCircumferencePerCoord(coordY)
+            differenceToAdjust = pixelsCircumferencePerCoord(coordY) - mean([pixelsCircumferencePerCoord(coordY-1:coordY+1), meadiaPixelsCircumferenceOfGland]);
+            
+            [~, closestStrel] = min(abs(strelNeighborhoods - abs(differenceToAdjust)));
+            
+            if differenceToAdjust > 0 %Erode
+                lumenToSmooth(:, :, coordY) = imerode(lumenToSmooth(:, :, coordY), strel('disk', closestStrel));
+            else %Dilate
+                lumenToSmooth(:, :, coordY) = imdilate(lumenToSmooth(:, :, coordY), strel('disk', closestStrel));
+            end
+        end
+    end
+    
+    lumenImage = permute(lumenToSmooth, [1 3 2]);
+    figure; paint3D(lumenImage);
+    
     [x, y, z] = ind2sub(size(lumenImage), find(lumenImageFirstSmooth));
     pixelLocations = [x, y, z];
     [lumenImageSmoothed] = smoothObject(lumenImageFirstSmooth, pixelLocations, 1);
