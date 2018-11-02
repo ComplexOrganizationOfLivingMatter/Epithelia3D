@@ -32,10 +32,10 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
     
     %% Smooth lumen to get a more cylinder-like object
     
-    % We first remove irregularities. Like a pre-smooth.
-    lumenImageFirstSmooth = bwmorph3(lumenImage, 'majority');
+    lumenToSmooth = permute(lumenImage, [2 3 1]);
     
-    lumenToSmooth = permute(lumenImageFirstSmooth, [2 3 1]);
+    % We first remove irregularities. Like a pre-smooth.
+    lumenToSmooth = bwmorph3(lumenToSmooth, 'majority');
     
     % Obtaining the number of pixels of each circumference
     for coordY = 1 : size(lumenToSmooth,3)
@@ -67,7 +67,7 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
     % and next coordYs.
     for coordY = 1 : size(lumenToSmooth, 3)
         if pixelsCircumferencePerCoord(coordY) >= discardedValues
-            differenceToAdjust = pixelsCircumferencePerCoord(coordY) - mean([pixelsCircumferencePerCoord(coordY-1:coordY+1), meadiaPixelsCircumferenceOfGland]);
+            differenceToAdjust = pixelsCircumferencePerCoord(coordY) - mean(pixelsCircumferencePerCoord(coordY-2:coordY+2));
             
             [~, closestStrel] = min(abs(strelNeighborhoods - abs(differenceToAdjust)));
             
