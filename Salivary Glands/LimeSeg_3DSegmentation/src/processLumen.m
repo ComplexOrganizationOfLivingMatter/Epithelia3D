@@ -43,17 +43,18 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
         areaOfPerims = regionprops(actualPerim, 'Area');
         areaOfPerims = [areaOfPerims.Area];
         areaOfPerims(areaOfPerims<10) = [];
-        pixelsCircumferencePerCoord{coordY} = areaOfPerims;
+        %pixelsCircumferencePerCoord{coordY} = areaOfPerims;
         if isempty(areaOfPerims) == 0
-            imshow(actualPerim)
+            %imshow(actualPerim)
         end
-        %pixelsCircumferencePerCoord(coordY) = sum(actualPerim(:));
+        pixelsCircumferencePerCoord(coordY) = sum(actualPerim(:));
     end
     
     allCircumferences = [pixelsCircumferencePerCoord{:}];
+    allCircumferences = pixelsCircumferencePerCoord(pixelsCircumferencePerCoord~=0);
     
     quantilesCircumferences = quantile(allCircumferences,  [0.10, 0.5]);
-    discardedValues = quantilesCircumferences(1);
+    %discardedValues = quantilesCircumferences(1);
     meadiaPixelsCircumferenceOfGland = quantilesCircumferences(2);
     
     %Create array of strel neighborhoods
@@ -81,11 +82,11 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
     lumenImage = permute(lumenToSmooth, [2 3 1]);
     figure; paint3D(lumenImage);
     
-    [x, y, z] = ind2sub(size(lumenImage), find(lumenImageFirstSmooth));
+    [x, y, z] = ind2sub(size(lumenImage), find(lumenImage));
     pixelLocations = [x, y, z];
-    [lumenImageSmoothed] = smoothObject(lumenImageFirstSmooth, pixelLocations, 1);
+    [lumenImageSmoothed] = smoothObject(lumenImage, pixelLocations, 1);
     
-    %figure; paint3D(lumenImage);
+    figure; paint3D(lumenImageSmoothed);
     
     %% Remove pixels of lumen from the cells image
     labelledImage(lumenImage == 1) = 0;
