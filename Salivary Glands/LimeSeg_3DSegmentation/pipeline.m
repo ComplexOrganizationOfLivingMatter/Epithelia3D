@@ -31,15 +31,6 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
             [labelledImage] = processCells(fullfile(outputDir, 'Cells', filesep), resizeImg, imgSize, tipValue);
             [labelledImage, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
 
-            %% Put both lumen and labelled image at a 90 degrees
-            
-            orientationGland = regionprops3(lumenImage>0, 'Orientation');
-            glandOrientation = -orientationGland.Orientation(1);
-            %labelledImage = flip(labelledImage);
-            labelledImage = imrotate(labelledImage, glandOrientation);
-            %lumenImage = flip(lumenImage);
-            lumenImage = imrotate(lumenImage, glandOrientation);
-
             %% Get basal layer by dilating the empty space
             [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
 

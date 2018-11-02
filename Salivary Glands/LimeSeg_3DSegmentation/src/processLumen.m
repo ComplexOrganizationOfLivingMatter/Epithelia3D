@@ -35,15 +35,24 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
     % We first remove irregularities. Like a pre-smooth.
     lumenImageFirstSmooth = bwmorph3(lumenImage, 'majority');
     
-    lumenToSmooth = permute(lumenImageFirstSmooth, [1 3 2]);
+    lumenToSmooth = permute(lumenImageFirstSmooth, [2 3 1]);
     
     % Obtaining the number of pixels of each circumference
     for coordY = 1 : size(lumenToSmooth,3)
         actualPerim = bwperim(lumenToSmooth(:, :, coordY));
-        pixelsCircumferencePerCoord(coordY) = sum(actualPerim(:));
+        areaOfPerims = regionprops(actualPerim, 'Area');
+        areaOfPerims = [areaOfPerims.Area];
+        areaOfPerims(areaOfPerims<10) = [];
+        pixelsCircumferencePerCoord{coordY} = areaOfPerims;
+        if isempty(areaOfPerims) == 0
+            imshow(actualPerim)
+        end
+        %pixelsCircumferencePerCoord(coordY) = mean(actualPerim(:));
     end
     
-    quantilesCircumferences = quantile(pixelsCircumferencePerCoord(pixelsCircumferencePerCoord~=0),  [0.10, 0.5]);
+    allCircumferences = [pixelsCircumferencePerCoord{:}];
+    
+    quantilesCircumferences = quantile(allCircumferences,  [0.10, 0.5]);
     discardedValues = quantilesCircumferences(1);
     meadiaPixelsCircumferenceOfGland = quantilesCircumferences(2);
     
@@ -57,7 +66,6 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
     % and next coordYs.
     for coordY = 1 : size(lumenToSmooth, 3)
         if pixelsCircumferencePerCoord(coordY) >= discardedValues
-            pixelsCircumferencePerCoord(coordY)
             differenceToAdjust = pixelsCircumferencePerCoord(coordY) - mean([pixelsCircumferencePerCoord(coordY-1:coordY+1), meadiaPixelsCircumferenceOfGland]);
             
             [~, closestStrel] = min(abs(strelNeighborhoods - abs(differenceToAdjust)));
@@ -70,7 +78,7 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
         end
     end
     
-    lumenImage = permute(lumenToSmooth, [1 3 2]);
+    lumenImage = permute(lumenToSmooth, [2 3 1]);
     figure; paint3D(lumenImage);
     
     [x, y, z] = ind2sub(size(lumenImage), find(lumenImageFirstSmooth));
