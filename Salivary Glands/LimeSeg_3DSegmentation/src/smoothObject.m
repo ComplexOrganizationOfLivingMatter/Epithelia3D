@@ -1,7 +1,7 @@
 function [labelledImage] = smoothObject(labelledImage,pixelLocations, numCell)
 %SMOOTHOBJECT Summary of this function goes here
 %   Detailed explanation goes here
-    cellShape = alphaShape(pixelLocations, 20);
+    cellShape = alphaShape(pixelLocations, 10);
     [qx,qy,qz]=ind2sub(size(labelledImage),find(labelledImage == 0));
     try
         tf = inShape(cellShape,qx,qy,qz);

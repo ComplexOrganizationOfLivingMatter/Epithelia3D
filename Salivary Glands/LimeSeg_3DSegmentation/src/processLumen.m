@@ -23,12 +23,32 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
     lumenImage = addTipsImg3D(tipValue+1, lumenImage);
     lumenImage = double(lumenImage);
     
-    figure; paint3D(lumenImage);
-    %[x, y, z] = ind2sub(size(lumenImage), find(lumenImage));
-    %pixelLocations = [x, y, z];
-    %[lumenImage] = smoothObject(lumenImage, pixelLocations, 1);
-    lumenImageSmoothed = smooth3(lumenImage, 'box', 11);
-    lumenImage = lumenImageSmoothed > (max(lumenImageSmoothed(:))/8);
-    figure; paint3D(lumenImage);
+    %% Put both lumen and labelled image at a 90 degrees
+    orientationGland = regionprops3(lumenImage>0, 'Orientation');
+    glandOrientation = -orientationGland.Orientation(1);
+    lumenImage = imrotate(lumenImage, glandOrientation);
+    labelledImage = imrotate(labelledImage, glandOrientation);
+    
+    
+    %% Smooth lumen to get a more cylinder-like object
+    
+    % We first remove irregularities. Like a pre-smooth.
+    lumenImageFirstSmooth = bwmorph3(lumenImage, 'majority');
+    
+    lumenToSmooth = permute(lumenImageFirstSmooth, [1 3 2]);
+    
+    % Obtaining the number of pixels of each circumference
+    for coordY = 1 : size(lumenToSmooth,3)
+        actualPerim = bwperim(lumenToSmooth(:, :, coordY));
+        pixelsCircumferencePerCoord(coordY) = sum(actualPerim(:));
+    end
+    
+    [x, y, z] = ind2sub(size(lumenImage), find(lumenImageFirstSmooth));
+    pixelLocations = [x, y, z];
+    [lumenImageSmoothed] = smoothObject(lumenImageFirstSmooth, pixelLocations, 1);
+    
+    %figure; paint3D(lumenImage);
+    
+    %% Remove pixels of lumen from the cells image
     labelledImage(lumenImage == 1) = 0;
 end
