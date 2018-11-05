@@ -6,11 +6,12 @@ names={'Hypocotyl A','Hypocotyl B','test','katanin meristem A',...
 addpath(genpath('src'))
 
 zScaleFactorHyp = [0.4,0.7,0.7];
+rangeYPlant = {[700,1400],[700,1400],[500,1700]};
 
 for nNam=3%length(names)
     if contains(names{nNam},'Hypocot') || contains(names{nNam},'test')
         resizeFactor=0.3;
-        rangeY=round([700,1400]);
+        rangeY=rangeYPlant{nNam};
         
         %% This complex process is only for detecting the cells belonging to each surface
         if ~exist(['data/' names{nNam} '/unrolledHypocotyl.mat'],'file')

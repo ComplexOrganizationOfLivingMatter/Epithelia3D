@@ -2,7 +2,7 @@ function [layer1,layer2,cellsLayer1,cellsLayer2]=getSplittedCylinderPerSurfaces(
 
     %get superficial cells in Layer 1
     cellsLayer1 = getSuperficialCells(img3d);
-    layer1 = ismember(img3d,cellsLayer1).*img3d;
+    layer1 = uint16(ismember(img3d,cellsLayer1)).*img3d;
     
     propReg=regionprops3(layer1,'Volume');
     volumeCells=cat(1,propReg.Volume);
@@ -24,7 +24,7 @@ function [layer1,layer2,cellsLayer1,cellsLayer2]=getSplittedCylinderPerSurfaces(
     img3dWithoutLayer1(ismember(img3d,unique([cellsLayer1;cells2deleteLayer1]))) = 0;
     cellsLayer2 = getSuperficialCells(img3dWithoutLayer1);
     
-    layer2 = ismember(img3dWithoutLayer1,cellsLayer2).*img3dWithoutLayer1;
+    layer2 = uint16(ismember(img3dWithoutLayer1,cellsLayer2)).*img3dWithoutLayer1;
     
     propReg=regionprops3(layer2,'Volume');
     volumeCells=cat(1,propReg.Volume);
