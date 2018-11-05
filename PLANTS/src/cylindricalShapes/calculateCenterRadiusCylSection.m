@@ -1,12 +1,15 @@
 function [centersOuter, centersInner, radiiOuter, radiiInner] = calculateCenterRadiusCylSection(img3d,name2save,layer2save)
   
+    redFactor = 0.2;
     %Permute image axes
+    img3d = imresize3(img3d,redFactor,'nearest');
+    
     img3d=permute(img3d,[1 3 2]);
     mask3d=false(size(img3d));
     
     %Get alpha shape of layer image
     [x,y,z]=ind2sub(size(img3d),find(img3d>0));
-    shp=alphaShape(x,y,z,50);
+    shp=alphaShape(x,y,z,round(50*redFactor));
 %     plot(shp)
     [qx,qy,qz]=ind2sub(size(img3d),find(img3d>=0));
     
@@ -17,7 +20,7 @@ function [centersOuter, centersInner, radiiOuter, radiiInner] = calculateCenterR
     for nPart = 1 : numPartitions
         subIndCoord = (1 + (nPart-1) * partialPxs) : (nPart * partialPxs);
         if nPart == numPartitions
-            subIndCoord = (1 + (nPart-1) * partialPxs) : length(allX);
+            subIndCoord = (1 + (nPart-1) * partialPxs) : length(qx);
         end
         tf(subIndCoord) = shp.inShape([qx(subIndCoord),qy(subIndCoord),qz(subIndCoord)]);
     end
@@ -32,8 +35,8 @@ function [centersOuter, centersInner, radiiOuter, radiiInner] = calculateCenterR
     name2saveInner = ['data\' name2save '\maskLayers\innerMask' layer2save '\'];
     
     
-    [centersOuter, radiiOuter] = saveImageGettingCentroids(mask3d,name2saveOuter);
-    [centersInner, radiiInner] = saveImageGettingCentroids(innerSurface,name2saveInner);
+    [centersOuter, radiiOuter] = saveImageGettingCentroids(imresize3(logical(uint16(mask3d)),1/redFactor,'nearest'),name2saveOuter);
+    [centersInner, radiiInner] = saveImageGettingCentroids(imresize3(logical(uint16(innerSurface)),1/redFactor,'nearest'),name2saveInner);
 
     
 end
