@@ -113,7 +113,7 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
         polygon_distribution_UnrollTube.Properties.VariableNames = {'Apical','Basal'};
         
         %% Export to excel cellular features
-        calculate_CellularFeatures(apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,selpath)
+        calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,selpath)
     end
 end
 
