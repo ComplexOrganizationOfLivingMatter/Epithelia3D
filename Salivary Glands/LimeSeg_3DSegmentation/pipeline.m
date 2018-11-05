@@ -103,9 +103,9 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
         [neighs_apical,side_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayer, fullfile(selpath,  'Results', 'apical'), noValidCells, colours);
         [neighs_basal,side_cells_basal] = unrollTube(basalLayer, fullfile(selpath, 'Results', 'basal'), noValidCells, colours, apicalAreaValidCells);
         
-        missingCellsUnroll = find(side_cells_basal<3 | side_cells_apical<3, 1);
+        missingCellsUnroll = find(side_cells_basal<3 | side_cells_apical<3);
         if isempty(missingCellsUnroll) == 0
-            msgbox(strcat('CARE!! Missing (or ill formed) cells at unrolltube: ', strjoin(arrayfun(@num2str, missingCellsUnroll, 'UniformOutput', false), ' ')))
+            msgbox(strcat('CARE!! Missing (or ill formed) cells at unrolltube: ', strjoin(arrayfun(@num2str, missingCellsUnroll, 'UniformOutput', false), ', ')))
         end
         
         [polygon_distribution_UnrollTubeApical] = calculate_polygon_distribution(side_cells_apical, validCells);
