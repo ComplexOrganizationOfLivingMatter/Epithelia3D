@@ -1,7 +1,7 @@
 function [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage)
 %GETAPICALFRO3DIMAGE Summary of this function goes here
 %   Detailed explanation goes here
-    se = strel('sphere', 3);
+    se = strel('sphere', 1);
     dilatedLumen = imdilate(lumenImage, se);
     apicalLayer = dilatedLumen .* labelledImage;
     

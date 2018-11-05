@@ -24,7 +24,7 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
 
         imgSize = round(size(demoImg)*resizeImg);
 
-        if exist(fullfile(selpath, 'Results', '3d_layers_info.mat')) == 2
+        if exist(fullfile(selpath, 'Results', '3d_layers_info.mat'), 'file')
             load(fullfile(selpath, 'Results', '3d_layers_info.mat'))
         else
             colours = [];
@@ -79,12 +79,9 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
                 exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
 
                 %% Calculate neighbours and plot missing cells
-                if exist(fullfile(selpath, '3d_layers_info.mat'), 'file') == 0
-                    [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
-                    [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
-                    [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
-                end
-
+                [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
+                [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
+                [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
             else
                 [answer] = isEverythingCorrect();
             end
@@ -103,9 +100,9 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
         [neighs_apical,side_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayer, fullfile(selpath,  'Results', 'apical'), noValidCells, colours);
         [neighs_basal,side_cells_basal] = unrollTube(basalLayer, fullfile(selpath, 'Results', 'basal'), noValidCells, colours, apicalAreaValidCells);
         
-        missingCellsUnroll = find(side_cells_basal<3 | side_cells_apical<3, 1);
+        missingCellsUnroll = find(side_cells_basal<3 | side_cells_apical<3);
         if isempty(missingCellsUnroll) == 0
-            msgbox(strcat('CARE!! Missing (or ill formed) cells at unrolltube: ', strjoin(arrayfun(@num2str, missingCellsUnroll, 'UniformOutput', false), ' ')))
+            msgbox(strcat('CARE!! Missing (or ill formed) cells at unrolltube: ', strjoin(arrayfun(@num2str, missingCellsUnroll, 'UniformOutput', false), ', ')))
         end
         
         [polygon_distribution_UnrollTubeApical] = calculate_polygon_distribution(side_cells_apical, validCells);
