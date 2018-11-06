@@ -6,7 +6,7 @@ function [layer1,layer2,cellsLayer1,cellsLayer2]=getSplittedCylinderPerSurfaces(
     
     propReg=regionprops3(layer1,'Volume');
     volumeCells=cat(1,propReg.Volume);
-    minVolumeCellLayer1 = mean(volumeCells)/5;
+    minVolumeCellLayer1 = mean(volumeCells)/2;
     cells2deleteLayer1=find(volumeCells>0 & volumeCells<minVolumeCellLayer1);
     
     
@@ -28,7 +28,7 @@ function [layer1,layer2,cellsLayer1,cellsLayer2]=getSplittedCylinderPerSurfaces(
     
     propReg=regionprops3(layer2,'Volume');
     volumeCells=cat(1,propReg.Volume);
-    minVolumeCellLayer2 = mean(volumeCells)/5;
+    minVolumeCellLayer2 = mean(volumeCells)/2;
     cells2deleteLayer2=find(volumeCells>0 & volumeCells<minVolumeCellLayer2);
     
     layer2(ismember(layer2,cells2deleteLayer2))=0;
