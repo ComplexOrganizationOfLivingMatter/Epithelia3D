@@ -4,7 +4,10 @@ function [centersOuter, centersInner, radiiOuter, radiiInner] = calculateCenterR
     %Permute image axes
     img3d = imresize3(img3d,redFactor,'nearest');
     
-    img3d=permute(img3d,[1 3 2]);
+    axesLength = regionprops3(img3d,'PrincipalAxisLength');
+    [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength));
+    
+    img3d=permute(img3d,orderLengAxis);
     mask3d=false(size(img3d));
     
     %Get alpha shape of layer image
@@ -25,7 +28,6 @@ function [centersOuter, centersInner, radiiOuter, radiiInner] = calculateCenterR
         tf(subIndCoord) = shp.inShape([qx(subIndCoord),qy(subIndCoord),qz(subIndCoord)]);
     end
     
-    
     indFilImg=sub2ind(size(mask3d),qx(tf),qy(tf),qz(tf));
     mask3d(indFilImg)=1;
     mask3dInvert = ~mask3d;
@@ -35,8 +37,8 @@ function [centersOuter, centersInner, radiiOuter, radiiInner] = calculateCenterR
     name2saveInner = ['data\' name2save '\maskLayers\innerMask' layer2save '\'];
     
     
-    [centersOuter, radiiOuter] = saveImageGettingCentroids(imresize3(logical(uint16(mask3d)),1/redFactor,'nearest'),name2saveOuter);
-    [centersInner, radiiInner] = saveImageGettingCentroids(imresize3(logical(uint16(innerSurface)),1/redFactor,'nearest'),name2saveInner);
+    [centersOuter, radiiOuter] = saveImageGettingCentroids(imresize3(uint16(mask3d),1/redFactor,'nearest'),name2saveOuter);
+    [centersInner, radiiInner] = saveImageGettingCentroids(imresize3(uint16(innerSurface),1/redFactor,'nearest'),name2saveInner);
 
     
 end
