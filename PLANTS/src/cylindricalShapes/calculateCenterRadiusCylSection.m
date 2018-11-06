@@ -4,15 +4,17 @@ function [centersOuter, centersInner, radiiOuter, radiiInner] = calculateCenterR
     %Permute image axes
     img3d = imresize3(img3d,redFactor,'nearest');
     
-    axesLength = regionprops3(img3d,'PrincipalAxisLength');
-    [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength));
+    %defining permuting axes
+    axesLength = regionprops3(img3d>0,'PrincipalAxisLength');
+    [~,maxLeng] = max(cat(1,axesLength.PrincipalAxisLength));
+    [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength(maxLeng(1),:)));
     
     img3d=permute(img3d,orderLengAxis);
     mask3d=false(size(img3d));
     
     %Get alpha shape of layer image
     [x,y,z]=ind2sub(size(img3d),find(img3d>0));
-    shp=alphaShape(x,y,z,round(50*redFactor));
+    shp=alphaShape(x,y,z,round(100*redFactor));
 %     plot(shp)
     [qx,qy,qz]=ind2sub(size(img3d),find(img3d>=0));
     

@@ -14,7 +14,13 @@ function [totalImages] = unrollingHypocot(name,rangeY,layer1,layer2)
         
         for nImg = 1 : length(setOfImages)
             img3d = setOfImages{nImg};
-%             img3d=permute(img3d,[1 3 2]);
+            
+            axesLength = regionprops3(img3d>0,'PrincipalAxisLength');
+            [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength));
+
+            img3d=permute(img3d,orderLengAxis);
+%             mask3d=false(size(img3d));
+            
             img3d(ismember(img3d,noValidCells))=0;
 
 %             mask3d=false(size(img3d));
