@@ -55,7 +55,7 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
         setappdata(0,'lumenImage', lumenImage);
         setappdata(0,'resizeImg',resizeImg);
         setappdata(0,'tipValue', tipValue);
-        setappdata(0, 'glandOrientation', glandOrientation);
+        %setappdata(0, 'glandOrientation', glandOrientation);
 
         if exist(fullfile(selpath, 'Results', 'valid_cells.mat'), 'file')
             load(fullfile(selpath, 'Results', 'valid_cells.mat'))
