@@ -70,7 +70,7 @@ imageSequence = [];
 tipValue = getappdata(0, 'tipValue');
 setappdata(0, 'selectedZ', 1+tipValue+1);
 setappdata(0, 'cellId', 1);
-%glandOrientation = getappdata(0, 'glandOrientation');
+glandOrientation = getappdata(0, 'glandOrientation');
 
 for numImg = 1:size(imageSequenceFiles, 1)
     actualFile = imageSequenceFiles(numImg);
@@ -84,7 +84,7 @@ imageSequence = addTipsImg3D(tipValue+1, double(imageSequence));
 
 % orientationGland = regionprops3(imageSequence>0, 'Orientation');
 % glandOrientation = -orientationGland.Orientation(1);
-% imageSequence = imrotate(imageSequence, glandOrientation);
+imageSequence = imrotate(imageSequence, glandOrientation);
 setappdata(0,'imageSequence',imageSequence);
 
 % This sets up the initial plot - only do when we are invisible
