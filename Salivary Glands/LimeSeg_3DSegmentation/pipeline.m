@@ -33,12 +33,12 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
 
             %% Put both lumen and labelled image at a 90 degrees
             
-            orientationGland = regionprops3(lumenImage>0, 'Orientation');
-            glandOrientation = -orientationGland.Orientation(1);
-            %labelledImage = flip(labelledImage);
-            labelledImage = imrotate(labelledImage, glandOrientation);
-            %lumenImage = flip(lumenImage);
-            lumenImage = imrotate(lumenImage, glandOrientation);
+            %orientationGland = regionprops3(lumenImage>0, 'Orientation');
+            %glandOrientation = -orientationGland.Orientation(1);
+            %labelledImage = imrotate(labelledImage, glandOrientation);
+            %labelledImage = fliplr(labelledImage);
+            %lumenImage = imrotate(lumenImage, glandOrientation);
+            %lumenImage = fliplr(lumenImage);
 
             %% Get basal layer by dilating the empty space
             [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
