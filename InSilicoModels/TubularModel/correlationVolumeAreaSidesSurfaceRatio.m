@@ -1,5 +1,6 @@
 %% LEWIS - EULER 3D
 
+%input parameters
 initialDiagram  = 5;
 nRealizations = 20;
 W_init = 512;
@@ -7,24 +8,25 @@ H_init = 4096;
 nSeeds = 200;
 typeProjection = 'expansion';
 surfaceRatios = 1./(1:-0.1:0.1);
-reductionFactor = 6;
-
+reductionFactor = 4;
+totalCells = 1:nSeeds;
 namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],surfaceRatios,'UniformOutput', false);
 
-totalCells = 1:nSeeds;
-
-rootPath =  ['D:\Pedro\Epithelia3D\InSilicoModels\TubularModel\data\tubularVoronoiModel\' typeProjection '\'];
 
 numNeighPerSurface = cell(nRealizations,1);
 numNeighAccumPerSurfaces = cell(nRealizations,1);
 areaCellsPerSurface = cell(nRealizations,1);
-volumesPerSurface = cell(nRealizations,1);
+volumePerSurface = cell(nRealizations,1);
+
+%path to load and save
+rootPath =  ['D:\Pedro\Epithelia3D\InSilicoModels\TubularModel\data\tubularVoronoiModel\' typeProjection '\'];
+folder = [num2str(W_init) 'x' num2str(H_init) '_' num2str(nSeeds) 'seeds\'];
 
 if ~exist([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
 
     for nImg = 1 : nRealizations
-        folder = [num2str(W_init) 'x' num2str(H_init) '_' num2str(nSeeds) 'seeds\Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) '\'];
-        load([rootPath folder 'Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) '.mat'],'listLOriginalProjection','listSeedsProjected');
+        load([rootPath folder 'Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram)...
+            '\Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) '.mat'],'listLOriginalProjection','listSeedsProjected');
 
         seedsApical = listSeedsProjected.seedsApical{listSeedsProjected.surfaceRatio==1};
         noValidCells = cell(length(surfaceRatios),1);
@@ -57,7 +59,7 @@ if ~exist([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
         numNeighPerSurfaceRealization = cellfun(@(x) length(x),cat(1,neighsSurface{:})');
         numNeighAccumPerSurfacesRealization = cellfun(@(x) length(x),cat(1,neighsAccumSurfaces{:})');
         areaCellsPerSurfaceRealization = cat(2,areaCells{:});
-        volumesPerSurfaceRealization = cat(2,volumes{:});
+        volumePerSurfaceRealization = cat(2,volumes{:});
 
         noValidCellsTotal = unique(cat(2,noValidCells{:}));
         validCellsTotal = setdiff(totalCells,noValidCellsTotal);
@@ -65,13 +67,15 @@ if ~exist([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
         numNeighPerSurface{nImg} = array2table(numNeighPerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
         numNeighAccumPerSurfaces{nImg} = array2table(numNeighAccumPerSurfacesRealization(validCellsTotal,:),'VariableNames',namesSR);
         areaCellsPerSurface{nImg} = array2table(areaCellsPerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
-        volumesPerSurface{nImg} = array2table(volumesPerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
+        volumePerSurface{nImg} = array2table(volumePerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
+        
+        disp(['Completed volume realization - ' num2str(nImg)])
     end
 
-    save([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumesPerSurface')
+    save([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
     
 else
-    load([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumesPerSurface')
+    load([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
 end
 
-% getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumesPerSurface);
+% getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface);
