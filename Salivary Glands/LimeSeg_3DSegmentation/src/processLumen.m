@@ -6,7 +6,6 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
     NoValidFiles = startsWith({lumenStack.name},'._','IgnoreCase',true);
     lumenStack=lumenStack(~NoValidFiles);
     lumenImage = zeros(size(labelledImage)-((tipValue+1)*2));
-    lumenImage = imrotate(lumenImage, -270);
     for numZ = 1:size(lumenStack, 1)
         imgZ = imread(fullfile(lumenStack(numZ).folder, lumenStack(numZ).name));
         
@@ -23,13 +22,17 @@ function [labelledImage, lumenImage] = processLumen(lumenDir, labelledImage, res
 %     [lumenImage] = addCellToImage(pixelLocations, lumenImage, 1);
     lumenImage = addTipsImg3D(tipValue+1, lumenImage);
     lumenImage = double(lumenImage);
-    lumenImage = flip(lumenImage);
-    lumenImage = imrotate(lumenImage, 270);
     
     [x, y, z] = ind2sub(size(lumenImage), find(lumenImage));
     pixelLocations = [x, y, z];
     
     [lumenImage] = smoothObject(lumenImage, pixelLocations, 1);
+    
+    lumenImageLabel = bwlabeln(lumenImage,26);
+    volume = regionprops3(lumenImageLabel,'Volume');
+    [~,indMax] = max(cat(1,volume.Volume));
+    lumenImage = lumenImageLabel==indMax;
+    
     
     labelledImage(lumenImage == 1) = 0;
 end

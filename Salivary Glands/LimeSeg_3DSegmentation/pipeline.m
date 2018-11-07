@@ -36,9 +36,7 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
             orientationGland = regionprops3(lumenImage>0, 'Orientation');
             glandOrientation = -orientationGland.Orientation(1);
             labelledImage = imrotate(labelledImage, glandOrientation);
-            %labelledImage = fliplr(labelledImage);
             lumenImage = imrotate(lumenImage, glandOrientation);
-            %lumenImage = fliplr(lumenImage);
 
             %% Get basal layer by dilating the empty space
             [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
@@ -87,7 +85,7 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
             end
         end
         %% Save apical and basal 3d information
-        save(fullfile(selpath, 'Results', '3d_layers_info.mat'), 'labelledImage', 'basalLayer', 'apicalLayer', 'apical3dInfo', 'basal3dInfo', 'colours', 'lumenImage', '-v7.3')
+        save(fullfile(selpath, 'Results', '3d_layers_info.mat'), 'labelledImage', 'basalLayer', 'apicalLayer', 'apical3dInfo', 'basal3dInfo', 'colours', 'lumenImage','glandOrientation', '-v7.3')
 
         %% Calculate poligon distribution and Unroll the tube.
         [polygon_distribution_Apical] = calculate_polygon_distribution(cellfun(@length, apical3dInfo.neighbourhood), validCells);
