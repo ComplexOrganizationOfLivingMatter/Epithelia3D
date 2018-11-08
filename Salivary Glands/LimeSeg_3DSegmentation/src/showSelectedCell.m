@@ -14,7 +14,7 @@ imgToShow = imageSequence(:, :, selectedZ);
 
 % imgToShow(perimImg == 1) = 65536;
 cla('reset') 
-imshow(imgToShow);
+imshow(imgToShow');
 hold on;
 [xIndices, yIndices] = find(labelledImage(:, :,  selectedZ) == selectCellId);
 if isempty(xIndices) == 0

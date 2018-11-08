@@ -77,13 +77,13 @@ for numImg = 1:size(imageSequenceFiles, 1)
     actualImg = imread(fullfile(actualFile.folder, actualFile.name));
     %imageSequence(end+1) = {imresize(fliplr(flip(actualImg')), resizeImg, 'nearest')};
     %imageSequence(end+1) = {imresize(actualImg, resizeImg, 'nearest')};
-    imageSequence(:, :, numImg) = imresize(flipActualRot, resizeImg, 'nearest');
+    imageSequence(:, :, numImg) = imresize(actualImg, resizeImg, 'nearest');
 end
 
 imageSequence = addTipsImg3D(tipValue+1, double(imageSequence));
 
 
-flipActualRot = imrotate(imageSequence, -glandOrientation)';
+imageSequence = imrotate(imageSequence, -glandOrientation);
 
 % orientationGland = regionprops3(imageSequence>0, 'Orientation');
 % glandOrientation = -orientationGland.Orientation(1);
