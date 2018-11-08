@@ -47,5 +47,6 @@ function [labelledImage] = processCells(directoryOfCells, resizeImg, imgSize, ti
     %% Get basal layer by dilating the empty space
     labelledImage = addTipsImg3D(tipValue+1, labelledImage);
     labelledImage = double(labelledImage);
+
 end
 

@@ -48,6 +48,13 @@ function [labelledImage, lumenImage, glandOrientation] = processLumen(lumenDir, 
     lumenImage = imerode(lumenImageSmoothed, strel('sphere', 3));
     %figure; paint3D(lumenImageSmoothed);
     
+
     %% Remove pixels of lumen from the cells image
+
+    lumenImageLabel = bwlabeln(lumenImage,26);
+    volume = regionprops3(lumenImageLabel,'Volume');
+    [~,indMax] = max(cat(1,volume.Volume));
+    lumenImage = lumenImageLabel==indMax;
+    
     labelledImage(lumenImage == 1) = 0;
 end
