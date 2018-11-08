@@ -1,5 +1,5 @@
 %% LEWIS - EULER 3D
-
+addpath(genpath('src'))
 %input parameters
 initialDiagram  = 5;
 nRealizations = 20;
@@ -8,7 +8,7 @@ H_init = 4096;
 nSeeds = 200;
 typeProjection = 'expansion';
 surfaceRatios = 1./(1:-0.1:0.1);
-reductionFactor = 4;
+reductionFactor = 1;
 totalCells = 1:nSeeds;
 namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],surfaceRatios,'UniformOutput', false);
 
@@ -22,7 +22,7 @@ volumePerSurface = cell(nRealizations,1);
 rootPath =  ['D:\Pedro\Epithelia3D\InSilicoModels\TubularModel\data\tubularVoronoiModel\' typeProjection '\'];
 folder = [num2str(W_init) 'x' num2str(H_init) '_' num2str(nSeeds) 'seeds\'];
 
-if ~exist([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
+% if ~exist([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
 
     for nImg = 1 : nRealizations
         load([rootPath folder 'Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram)...
@@ -52,7 +52,7 @@ if ~exist([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
             else 
                 neighsAccumSurfaces{idSR}  = cellfun(@(x,y) unique([x;y]),neighsAccumSurfaces{idSR-1},neighsSurface{idSR},'UniformOutput',false);
                 [voronoi3D] = create3DCylinder( seedsApical(:,2:3), H_init, W_init, surfaceRatios(idSR),reductionFactor,[]);
-                voronoi3D = imresize(voronoi3D,reductionFactor,'nearest');
+%                 voronoi3D = imresize(voronoi3D,reductionFactor,'nearest');
                 volumes{idSR} = arrayfun(@(x) sum(voronoi3D(:) == x),totalCells');
             end
         end
@@ -72,10 +72,12 @@ if ~exist([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
         disp(['Completed volume realization - ' num2str(nImg)])
     end
 
-    save([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
+%     save([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
     
-else
-    load([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
-end
+% else
+%     load([rootPath folder 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
+% end
 
-% getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface);
+% path2save = [rootPath folder 'lewisEuler\'];
+% 
+% getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,path2save);
