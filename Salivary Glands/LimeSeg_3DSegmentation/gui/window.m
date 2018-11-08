@@ -75,13 +75,15 @@ glandOrientation = getappdata(0, 'glandOrientation');
 for numImg = 1:size(imageSequenceFiles, 1)
     actualFile = imageSequenceFiles(numImg);
     actualImg = imread(fullfile(actualFile.folder, actualFile.name));
-    flipActualRot = imrotate(actualImg, -glandOrientation)';
     %imageSequence(end+1) = {imresize(fliplr(flip(actualImg')), resizeImg, 'nearest')};
     %imageSequence(end+1) = {imresize(actualImg, resizeImg, 'nearest')};
     imageSequence(:, :, numImg) = imresize(flipActualRot, resizeImg, 'nearest');
 end
 
 imageSequence = addTipsImg3D(tipValue+1, double(imageSequence));
+
+
+flipActualRot = imrotate(imageSequence, -glandOrientation)';
 
 % orientationGland = regionprops3(imageSequence>0, 'Orientation');
 % glandOrientation = -orientationGland.Orientation(1);
