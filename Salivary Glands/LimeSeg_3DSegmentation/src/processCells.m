@@ -44,9 +44,30 @@ function [labelledImage] = processCells(directoryOfCells, resizeImg, imgSize, ti
 %         labelledImage(maskImgFilled>0) = numCell;
 %     end
     
-    %% Get basal layer by dilating the empty space
     labelledImage = addTipsImg3D(tipValue+1, labelledImage);
     labelledImage = double(labelledImage);
+    
+    %% Get invalid region
+    
+    [allX,allY,allZ] = ind2sub(size(labelledImage),find(zeros(size(labelledImage))==0));
+    [x, y, z] = ind2sub(size(labelledImage), find(labelledImage>0));
+    glandObject = alphaShape(x, y, z, 5);
+
+
+    numPartitions = 100;
+    partialPxs = ceil(length(allX)/numPartitions);
+    idIn = false(length(allX),1);
+    for nPart = 1 : numPartitions
+        subIndCoord = (1 + (nPart-1) * partialPxs) : (nPart * partialPxs);
+        if nPart == numPartitions
+            subIndCoord = (1 + (nPart-1) * partialPxs) : length(allX);
+        end
+        idIn(subIndCoord) = glandObject.inShape([allX(subIndCoord),allY(subIndCoord),allZ(subIndCoord)]);
+    end
+    outsideGland = true(size(labelledImage));
+    outsideGland(idIn) = 0;
+    
+    [labelledImage] = fillEmptySpacesByWatershed3D(labelledImage, outsideGland);
 
 end
 
