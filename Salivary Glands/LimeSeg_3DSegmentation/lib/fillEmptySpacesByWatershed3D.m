@@ -19,7 +19,7 @@ function [finalImage] = fillEmptySpacesByWatershed3D(labelMask, invalidRegion)
 
     finalImage=zeros(size(maskWater));
     for nCell = cellsWater'
-        finalImage(maskWater==nCell) = labelMask(centroids(nCell,2),centroids(nCell,1), centroids(nCell,3));
+        finalImage(maskWater==nCell) = labelMask(maskWater==nCell);
     end
 end
 
