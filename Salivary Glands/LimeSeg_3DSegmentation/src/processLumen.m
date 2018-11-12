@@ -24,10 +24,10 @@ function [labelledImage, lumenImage, glandOrientation] = processLumen(lumenDir, 
     lumenImage = double(lumenImage);
     
     %% Put both lumen and labelled image at a 90 degrees
-    orientationGland = regionprops3(lumenImage>0, 'Orientation');
-    glandOrientation = -orientationGland.Orientation(1);
-    lumenImage = imrotate(lumenImage, glandOrientation);
-    labelledImage = imrotate(labelledImage, glandOrientation);
+%     orientationGland = regionprops3(lumenImage>0, 'Orientation');
+%     glandOrientation = -orientationGland.Orientation(1);
+%     lumenImage = imrotate(lumenImage, glandOrientation);
+%     labelledImage = imrotate(labelledImage, glandOrientation);
     
     
     %% Smooth lumen to get a more cylinder-like object
