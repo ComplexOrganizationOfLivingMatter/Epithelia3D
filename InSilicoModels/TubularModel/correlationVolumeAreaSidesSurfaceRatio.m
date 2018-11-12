@@ -23,7 +23,10 @@ volumePerSurface = cell(nRealizations,1);
 rootPath =  ['data\tubularVoronoiModel\' typeProjection '\'];
 folder = [num2str(W_init) 'x' num2str(H_init) '_' num2str(nSeeds) 'seeds\diagram' num2str(initialDiagram) '\'];
 
-if ~exist([rootPath folder 'relationAreaVolumeSidesSurfaceRatio_' cyliderType '.mat'],'file')
+path2save = [rootPath folder cyliderType 'LewisEuler\'];
+
+
+if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
 
     for nImg = 1 : nRealizations
         load([rootPath folder 'Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram)...
@@ -59,17 +62,21 @@ if ~exist([rootPath folder 'relationAreaVolumeSidesSurfaceRatio_' cyliderType '.
 
             else 
                 %get invalid region
-                H_init=round(H_init/reductionFactor);
-                W_init=round(W_init/reductionFactor);
-                R_apical=W_init/(2*pi);
+                H_apical=round(H_init/reductionFactor);
+                W_apical=round(W_init/reductionFactor);
+                R_apical=W_apical/(2*pi);
                 R_apical=round(R_apical);
                 R_basal=surfaceRatios(idSR)*R_apical;
                 R_basal=round(R_basal);
                 R_basalMax=max(surfaceRatios)*R_apical;
                 R_basalMax=round(R_basalMax);
-                [imgInvalidRegion,~,~,~]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_basalMax,R_apical,H_init,[]);
+                [imgInvalidRegion,~,~,~]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_basalMax,R_apical,H_apical,[]);
 
-                neighsAccumSurfaces{idSR}  = cellfun(@(x,y) unique([x;y]),neighsAccumSurfaces{idSR-1},neighsSurface{idSR},'UniformOutput',false);
+                if contains(lower(cyliderType),'voronoi')
+                    neighsAccumSurfaces{idSR}  = cellfun(@(x,y) unique([x;y]),neighsAccumSurfaces{idSR-1},neighsSurface{idSR},'UniformOutput',false);
+                else
+                    neighsAccumSurfaces{idSR} = neighsSurface{idSR};
+                end
                 voronoi3DSR = voronoi3D;
                 voronoi3DSR(imgInvalidRegion>0)=0;
                 voronoi3Dresized = imresize(voronoi3DSR,reductionFactor,'nearest');
@@ -96,12 +103,12 @@ if ~exist([rootPath folder 'relationAreaVolumeSidesSurfaceRatio_' cyliderType '.
         
         
     end
-
-    save([rootPath folder 'relationAreaVolumeSidesSurfaceRatio_' cyliderType '.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
+    mkdir(path2save)
+    save([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
     
 else
-    load([rootPath folder 'relationAreaVolumeSidesSurfaceRatioVoronoi_' cyliderType '.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
+    load([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
 end
 
-path2save = [rootPath folder 'lewisEuler\'];
+
 getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,path2save);
