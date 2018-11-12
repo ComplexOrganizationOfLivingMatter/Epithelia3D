@@ -69,6 +69,14 @@ function [maskCylinder3D]=create3DCylinder( initialSeeds, H_apical, W_apical,sur
         Cylinder3D=watershed(distSegments,26);
         Cylinder3D(imgInvalidRegion>0) = 0;
 
+        if length(unique(maskOfGlobalImage)) < length(unique(Cylinder3D))
+            maskOfGlobalImageResize = imresize3(maskOfGlobalImage,2,'nearest');
+            distSegments=bwdist(maskOfGlobalImageResize);
+            Cylinder3D = watershed(distSegments,26);
+            Cylinder3D = imresize3(Cylinder3D,size(imgInvalidRegion),'nearest');
+            Cylinder3D(imgInvalidRegion>0) = 0;
+        end
+
         %% Relabel 3D cells
         maskCylinder3D = Cylinder3D;
         for numSeed = 1:length(apicalCylinderSeedsPositions.x)
