@@ -16,21 +16,23 @@ function [maskCylinder3D]=create3DCylinder( initialSeeds, H_apical, W_apical,sur
     [imgInvalidRegion,~,~,~]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_basalMax,R_apical,H_apical,[]);
         
     if contains(lower(cyliderType),'frusta')
-        imgBasal = imresize(mask1,[size(imgApical,1),round(size(imgApical,2)*surfaceRatio)],'nearest');
-        
+        imgBasal = imresize(imgApical,[size(imgApical,1),round(size(imgApical,2)*surfaceRatio)],'nearest');
+        uniqCells = unique(imgApical);
+        uniqCells = uniqCells(uniqCells>0);
         maskCylinder3D = zeros(size(imgInvalidRegion),'uint16');
+        [xIn,yIn,zIn]=ind2sub(size(imgInvalidRegion),find(~imgInvalidRegion));
 
-        for nCell = uniqCells'
+        for nCell = 1:max(uniqCells)
             %dilate for getting joined cells in basal
-            [rowCoordApi,colCoordApi] = find(imgApical == nCell);
-            [rowCoordBas,colCoordBas] = find(imgBasal == nCell);
+            [rowCoordApi,colCoordApi] = find(imgApical == uniqCells(nCell));
+            [rowCoordBas,colCoordBas] = find(imgBasal == uniqCells(nCell));
 
             coordApical = [rowCoordApi, colCoordApi];
             coordApical = coordApical / reductionFactor;
             coordBasal = [rowCoordBas, colCoordBas];
             coordBasal = coordBasal / reductionFactor;
 
-            %%Relocate coord from 2d image to cylinder image and extrapolate to basal
+            %% Relocate coord from 2d image to cylinder image and extrapolate to basal
             [~,coordApicalCyl]=seedsRelocationInCylinderCoordinatesFrom2D(R_basal,R_apical,W_apical,coordApical);
             [~,coordBasalCyl]=seedsRelocationInCylinderCoordinatesFrom2D(R_basal,R_basal,round(W_apical*surfaceRatio),coordBasal);
             coord=[[coordBasalCyl.x;coordApicalCyl.x],[coordBasalCyl.y;coordApicalCyl.y],[coordBasalCyl.z;coordApicalCyl.z]];
@@ -41,10 +43,11 @@ function [maskCylinder3D]=create3DCylinder( initialSeeds, H_apical, W_apical,sur
             idBoundBox = idZrange & idYrange & idXrange;
             
             coordZrange = [xIn(idBoundBox),yIn(idBoundBox),zIn(idBoundBox)];
-            shp=alphaShape(coord,5);
+            shp=alphaShape(unique(coord, 'rows'),Inf);
             idIn=shp.inShape(coordZrange);
-            labelInd = sub2ind(size(maskCylinder3D),coordZrange(idIn,:));
-            maskCylinder3D(labelInd) = nCell;
+            labelInd = sub2ind(size(maskCylinder3D),coordZrange(idIn,1), coordZrange(idIn,2), coordZrange(idIn,3));
+            %labelInd = sub2ind(size(maskCylinder3D), coord(:, 1), coord(:, 2), coord(:, 3));
+            maskCylinder3D(labelInd) = uniqCells(nCell);
             
         end
         maskCylinder3D(imgInvalidRegion>0) = 0;
