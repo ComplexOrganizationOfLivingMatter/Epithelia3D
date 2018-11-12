@@ -70,7 +70,7 @@ function [maskCylinder3D]=create3DCylinder( initialSeeds, H_apical, W_apical,sur
         Cylinder3D(imgInvalidRegion>0) = 0;
 
         if length(unique(maskOfGlobalImage)) < length(unique(Cylinder3D))
-            maskOfGlobalImageResize = imresize3(maskOfGlobalImage,2,'nearest');
+            maskOfGlobalImageResize = imresize3(maskOfGlobalImage,3,'nearest');
             distSegments=bwdist(maskOfGlobalImageResize);
             Cylinder3D = watershed(distSegments,26);
             Cylinder3D = imresize3(Cylinder3D,size(imgInvalidRegion),'nearest');
