@@ -43,12 +43,13 @@ function [maskCylinder3D]=create3DCylinder( initialSeeds, H_apical, W_apical,sur
             idBoundBox = idZrange & idYrange & idXrange;
             
             coordZrange = [xIn(idBoundBox),yIn(idBoundBox),zIn(idBoundBox)];
-            shp=alphaShape(unique(coord, 'rows'),Inf);
+            shp=alphaShape(unique(coord, 'rows'), R_basal-R_apical+3);
             idIn=shp.inShape(coordZrange);
             labelInd = sub2ind(size(maskCylinder3D),coordZrange(idIn,1), coordZrange(idIn,2), coordZrange(idIn,3));
             %labelInd = sub2ind(size(maskCylinder3D), coord(:, 1), coord(:, 2), coord(:, 3));
             maskCylinder3D(labelInd) = uniqCells(nCell);
             
+            %figure; paint3D(maskCylinder3D);
         end
         maskCylinder3D(imgInvalidRegion>0) = 0;
 
