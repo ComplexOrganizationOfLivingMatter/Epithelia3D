@@ -6,7 +6,7 @@ addpath(genpath(fullfile('..', '..', 'InSilicoModels', 'TubularModel', 'src')));
 
 close all
 
-[polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_distribution_UnrollTube,selpath] = pipeline();
+[polygon_distribution, neighbours_data,selpath] = pipeline();
 
 save(fullfile(selpath,'Results/polygon_distribution.mat'), 'polygon_distribution', 'neighbours_data', 'neighbours_UnrollTube','polygon_distribution_UnrollTube')
 
