@@ -36,8 +36,8 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
             
             orientationGland = regionprops3(lumenImage>0, 'Orientation');
             glandOrientation = -orientationGland.Orientation(1);
-            labelledImage = imrotate(labelledImage, glandOrientation);
-            lumenImage = imrotate(lumenImage, glandOrientation);
+            %labelledImage = imrotate(labelledImage, glandOrientation);
+            %lumenImage = imrotate(lumenImage, glandOrientation);
 
             %% Get basal layer by dilating the empty space
             [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
@@ -84,6 +84,7 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
             else
                 [answer] = isEverythingCorrect();
             end
+            setappdata(0,'labelledImage',labelledImage);
         end
         %% Save apical and basal 3d information
         save(fullfile(selpath, 'Results', '3d_layers_info.mat'), 'labelledImage', 'basalLayer', 'apicalLayer', 'apical3dInfo', 'basal3dInfo', 'colours', 'lumenImage','glandOrientation', '-v7.3')
@@ -96,9 +97,9 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
         neighbours_data.Properties.VariableNames = {'Apical','Basal'};
         polygon_distribution.Properties.VariableNames = {'Apical','Basal'};
 
-        %[neighs_apical,side_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayer, fullfile(selpath,  'Results', 'apical'), noValidCells, colours);
-        %[neighs_basal,side_cells_basal] = unrollTube(basalLayer, fullfile(selpath, 'Results', 'basal'), noValidCells, colours, apicalAreaValidCells);
-        
+%         [neighs_apical,side_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayer, fullfile(selpath,  'Results', 'apical'), noValidCells, colours);
+%         [neighs_basal,side_cells_basal] = unrollTube(basalLayer, fullfile(selpath, 'Results', 'basal'), noValidCells, colours, apicalAreaValidCells);
+%                 
 %         missingCellsUnroll = find(side_cells_basal<3 | side_cells_apical<3);
 %         if isempty(missingCellsUnroll) == 0
 %             msgbox(strcat('CARE!! Missing (or ill formed) cells at unrolltube: ', strjoin(arrayfun(@num2str, missingCellsUnroll, 'UniformOutput', false), ', ')))

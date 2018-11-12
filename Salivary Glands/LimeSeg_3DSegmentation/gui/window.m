@@ -83,7 +83,7 @@ end
 imageSequence = addTipsImg3D(tipValue+1, double(imageSequence));
 
 
-imageSequence = imrotate(imageSequence, -glandOrientation);
+%imageSequence = imrotate(imageSequence, -glandOrientation);
 
 % orientationGland = regionprops3(imageSequence>0, 'Orientation');
 % glandOrientation = -orientationGland.Orientation(1);
