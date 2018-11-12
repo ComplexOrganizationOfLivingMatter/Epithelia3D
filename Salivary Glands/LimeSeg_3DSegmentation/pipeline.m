@@ -83,6 +83,7 @@ function [polygon_distribution, neighbours_data,neighbours_UnrollTube,polygon_di
             else
                 [answer] = isEverythingCorrect();
             end
+            setappdata(0,'labelledImage',labelledImage);
         end
         %% Save apical and basal 3d information
         save(fullfile(selpath, 'Results', '3d_layers_info.mat'), 'labelledImage', 'basalLayer', 'apicalLayer', 'apical3dInfo', 'basal3dInfo', 'colours', 'lumenImage','glandOrientation', '-v7.3')
