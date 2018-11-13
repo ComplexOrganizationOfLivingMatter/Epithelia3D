@@ -67,6 +67,7 @@ function [labelledImage] = processCells(directoryOfCells, resizeImg, imgSize, ti
     outsideGland = true(size(labelledImage));
     outsideGland(idIn) = 0;
     
+    % HERE WE CHANGE THE LABELS OF LABELLED IMAGE (CARE)
     [labelledImage] = fillEmptySpacesByWatershed3D(labelledImage, outsideGland);
 
 end
