@@ -1,7 +1,7 @@
 %% LEWIS - EULER 3D
 addpath(genpath('src'))
 %input parameters
-initialDiagram  = 1;
+initialDiagram  = 5;
 nRealizations = 20;
 W_init = 512;
 H_init = 4096;
