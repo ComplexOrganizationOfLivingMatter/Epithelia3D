@@ -7,6 +7,7 @@ W_init = 512;
 H_init = 4096;
 nSeeds = 200;
 typeProjection = 'expansion';
+%Always start with SR = 1
 surfaceRatios = 1./(1:-0.1:0.1);
 reductionFactor = 5;
 totalCells = 1:nSeeds;
@@ -47,15 +48,17 @@ if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
         for idSR = 1:length(surfaceRatios)
 
             L_img = listLOriginalProjection.L_originalProjection{listLOriginalProjection.surfaceRatio==surfaceRatios(idSR)};
-            [neighsSurface{idSR},~] = calculateNeighbours(L_img);
 
             noValidCellSR = unique([unique(L_img(1,:)),unique(L_img(end,:))]);
             noValidCells{idSR} = noValidCellSR(noValidCellSR~=0);
-            area = regionprops(L_img,'Area');
-            areaCells{idSR} = cat(1,area.Area);
+            
 
             if idSR == 1
                 L_imgApical = L_img;
+                [neighboursApical,~] = calculateNeighbours(L_imgApical);
+                neighsSurface{idSR} = neighboursApical;
+                area = regionprops(L_img,'Area');
+                areaCells{idSR} = cat(1,area.Area);
                 neighsAccumSurfaces{idSR} = neighsSurface{idSR};
                 volumes{idSR} =  areaCells{idSR};
                 [voronoi3D] = create3DCylinder( seedsApical(:,2:3), H_init, W_init, surfaceRatios, max(surfaceRatios),reductionFactor,L_imgApical,cyliderType);
@@ -64,18 +67,22 @@ if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
                 %get invalid region
                 H_apical=round(H_init/reductionFactor);
                 W_apical=round(W_init/reductionFactor);
-                R_apical=W_apical/(2*pi);
-                R_apical=round(R_apical);
-                R_basal=surfaceRatios(idSR)*R_apical;
-                R_basal=round(R_basal);
-                R_basalMax=max(surfaceRatios)*R_apical;
-                R_basalMax=round(R_basalMax);
+                R_apical=round(W_apical/(2*pi));
+                R_basal=round(surfaceRatios(idSR)*R_apical);
+                R_basalMax=round(max(surfaceRatios)*R_apical);
                 [imgInvalidRegion,~,~,~]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_basalMax,R_apical,H_apical,[]);
 
                 if contains(lower(cyliderType),'voronoi')
+                    area = regionprops(L_img,'Area');
+                    areaCells{idSR} = cat(1,area.Area);
+                    [neighsSurface{idSR},~] = calculateNeighbours(L_img);
                     neighsAccumSurfaces{idSR}  = cellfun(@(x,y) unique([x;y]),neighsAccumSurfaces{idSR-1},neighsSurface{idSR},'UniformOutput',false);
                 else
-                    neighsAccumSurfaces{idSR} = neighsSurface{idSR};
+                    L_imgFrusta2D = imresize(L_imgApical,size(L_imgApical,1),round(size(L_imgApical,2)*surfaceRatios(idSR)),'nearest');
+                    area = regionprops(L_imgFrusta2D,'Area');
+                    areaCells{idSR} = cat(1,area.Area);
+                    neighsSurface{idSR} = neighboursApical;
+                    neighsAccumSurfaces{idSR} = neighboursApical;
                 end
                 voronoi3DSR = voronoi3D;
                 voronoi3DSR(imgInvalidRegion>0)=0;
@@ -88,6 +95,7 @@ if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
             end
             disp(['Completed volume realization - ' num2str(nImg) ' - SR - ' num2str(surfaceRatios(idSR))])
         end
+
         numNeighPerSurfaceRealization = cellfun(@(x) length(x),cat(1,neighsSurface{:})');
         numNeighAccumPerSurfacesRealization = cellfun(@(x) length(x),cat(1,neighsAccumSurfaces{:})');
         areaCellsPerSurfaceRealization = cat(2,areaCells{:});
