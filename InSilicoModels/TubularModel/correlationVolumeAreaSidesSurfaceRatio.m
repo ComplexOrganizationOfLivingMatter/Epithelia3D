@@ -1,7 +1,7 @@
 %% LEWIS - EULER 3D
 addpath(genpath('src'))
 %input parameters
-initialDiagram  = 5;
+initialDiagram  = 1;
 nRealizations = 20;
 W_init = 512;
 H_init = 4096;
@@ -9,10 +9,10 @@ nSeeds = 200;
 typeProjection = 'expansion';
 %Always start with SR = 1
 surfaceRatios = 1./(1:-0.1:0.1);
-reductionFactor = 1;
+reductionFactor = 3;
 totalCells = 1:nSeeds;
 namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],surfaceRatios,'UniformOutput', false);
-cyliderType = 'Frusta';%Voronoi
+cyliderType = 'Voronoi';%Voronoi
 
 
 numNeighPerSurface = cell(nRealizations,1);
@@ -48,7 +48,8 @@ if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
         for idSR = 1:length(surfaceRatios)
 
             L_img = listLOriginalProjection.L_originalProjection{listLOriginalProjection.surfaceRatio==surfaceRatios(idSR)};
-
+            
+            %% Data from apical
             if idSR == 1
                 noValidCellSR = unique([unique(L_imgApical(1,:)),unique(L_imgApical(end,:))]);
                 noValidCells{idSR} = noValidCellSR(noValidCellSR~=0);
@@ -59,17 +60,19 @@ if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
                 areaCells{idSR} = cat(1,area.Area);
                 neighsAccumSurfaces{idSR} = neighsSurface{idSR};
                 volumes{idSR} =  areaCells{idSR};
+                %% Get total 3D cylinder
                 [voronoi3D] = create3DCylinder( seedsApical(:,2:3), H_init, W_init, surfaceRatios, max(surfaceRatios),reductionFactor,L_imgApical,cyliderType);
 
             else 
-                %get invalid region
+                %% get invalid region for each surface ratio
                 H_apical=round(H_init/reductionFactor);
                 W_apical=round(W_init/reductionFactor);
                 R_apical=round(W_apical/(2*pi));
                 R_basal=round(surfaceRatios(idSR)*R_apical);
                 R_basalMax=round(max(surfaceRatios)*R_apical);
                 [imgInvalidRegion,~,~,~]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_basalMax,R_apical,H_apical,[]);
-
+                
+                %% get area, neighbours and no valid cells in Voronoi cases
                 if contains(lower(cyliderType),'voronoi')
                     noValidCellSR = unique([unique(L_img(1,:)),unique(L_img(end,:))]);
                     noValidCells{idSR} = noValidCellSR(noValidCellSR~=0);
@@ -77,6 +80,7 @@ if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
                     areaCells{idSR} = cat(1,area.Area);
                     [neighsSurface{idSR},~] = calculateNeighbours(L_img);
                     neighsAccumSurfaces{idSR}  = cellfun(@(x,y) unique([x;y]),neighsAccumSurfaces{idSR-1},neighsSurface{idSR},'UniformOutput',false);
+                %% get area, neighbours and no valid cells in Frusta cases
                 else
                     noValidCells{idSR} = noValidCellSR(noValidCellSR~=0);
                     L_imgFrusta2D = imresize(L_imgApical,[size(L_imgApical,1),round(size(L_imgApical,2)*surfaceRatios(idSR))],'nearest');
@@ -85,12 +89,14 @@ if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
                     neighsSurface{idSR} = neighboursApical;
                     neighsAccumSurfaces{idSR} = neighboursApical;
                 end
+                
+                %% quantify volume per cell and SR
                 voronoi3DSR = voronoi3D;
                 voronoi3DSR(imgInvalidRegion>0)=0;
                 voronoi3Dresized = imresize(voronoi3DSR,reductionFactor,'nearest');
                 totalLabelsRepeated = voronoi3Dresized(voronoi3Dresized(:)>0);
                 if length(unique(totalLabelsRepeated)) < max(totalCells)
-                    disp('ohhhh shit')
+                    disp('Resolution error. Seeds overlapping')
                 end
                 volumes{idSR} = arrayfun(@(x) sum(totalLabelsRepeated(:) == x),totalCells');
             end
@@ -114,7 +120,6 @@ if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
     end
     mkdir(path2save)
     save([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
-    
 else
     load([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
 end
