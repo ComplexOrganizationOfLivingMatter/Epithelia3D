@@ -9,7 +9,7 @@ nSeeds = 200;
 typeProjection = 'expansion';
 %Always start with SR = 1
 surfaceRatios = 1./(1:-0.1:0.1);
-reductionFactor = 3;
+reductionFactor = 2;
 totalCells = 1:nSeeds;
 namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],surfaceRatios,'UniformOutput', false);
 cyliderType = 'Voronoi';%Voronoi
@@ -24,7 +24,7 @@ volumePerSurface = cell(nRealizations,1);
 rootPath =  ['data\tubularVoronoiModel\' typeProjection '\'];
 folder = [num2str(W_init) 'x' num2str(H_init) '_' num2str(nSeeds) 'seeds\diagram' num2str(initialDiagram) '\'];
 
-path2save = [rootPath folder cyliderType 'LewisEuler\'];
+path2save = [rootPath folder cyliderType 'LewisEuler_redFactor_' num2str(reductionFactor)  '\'];
 
 
 if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
@@ -51,9 +51,9 @@ if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
             
             %% Data from apical
             if idSR == 1
+                L_imgApical = L_img;
                 noValidCellSR = unique([unique(L_imgApical(1,:)),unique(L_imgApical(end,:))]);
                 noValidCells{idSR} = noValidCellSR(noValidCellSR~=0);
-                L_imgApical = L_img;
                 [neighboursApical,~] = calculateNeighbours(L_imgApical);
                 neighsSurface{idSR} = neighboursApical;
                 area = regionprops(L_img,'Area');
