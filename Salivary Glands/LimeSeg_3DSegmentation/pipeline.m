@@ -33,32 +33,6 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
 
             [labelledImage, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
 
-            %% Watershed labelled image
-            % Get invalid region
-            [allX,allY,allZ] = ind2sub(size(labelledImage),find(zeros(size(labelledImage))==0));
-            [x, y, z] = ind2sub(size(labelledImage), find(labelledImage>0));
-            glandObject = alphaShape(x, y, z, 5);
-
-
-            numPartitions = 100;
-            partialPxs = ceil(length(allX)/numPartitions);
-            idIn = false(length(allX),1);
-            for nPart = 1 : numPartitions
-                subIndCoord = (1 + (nPart-1) * partialPxs) : (nPart * partialPxs);
-                if nPart == numPartitions
-                    subIndCoord = (1 + (nPart-1) * partialPxs) : length(allX);
-                end
-                idIn(subIndCoord) = glandObject.inShape([allX(subIndCoord),allY(subIndCoord),allZ(subIndCoord)]);
-            end
-            outsideGland = true(size(labelledImage));
-            outsideGland(idIn) = 0;
-
-            outsideGland(lumenImage) = 0
-            
-            % HERE WE CHANGE THE LABELS OF LABELLED IMAGE (CARE)
-            [labelledImage] = fillEmptySpacesByWatershed3D(labelledImage, outsideGland);
-
-
             %% Put both lumen and labelled image at a 90 degrees
             
             orientationGland = regionprops3(lumenImage>0, 'Orientation');
