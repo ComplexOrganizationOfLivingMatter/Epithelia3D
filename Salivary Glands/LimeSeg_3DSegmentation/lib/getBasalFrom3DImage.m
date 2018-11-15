@@ -15,9 +15,10 @@ function [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue)
     basalLayer = finalObject - finalObjectEroded;
     basalLayer(:, :, end) = finalObject(:, :, end);
     basalLayer(:, :, 1) = finalObject(:, :, 1);
+    basalLayerPerim = bwperim(basalLayer);
 %     [x,y,z] = ind2sub(size(basalLayer),find(basalLayer>0));
 %     figure;
 %     pcshow([x,y,z]);
-    basalLayer = labelledImage .* basalLayer;
+    basalLayer = labelledImage .* basalLayerPerim;
 end
 
