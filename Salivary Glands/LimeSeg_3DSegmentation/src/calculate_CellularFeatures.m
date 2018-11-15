@@ -25,4 +25,5 @@ end
 ID_cells=(1:length(basal3dInfo.neighbourhood)).';
 CellularFeatures=table(ID_cells,number_neighbours.Var1,number_neighbours.Var2,scutoids_cells,apical_area_cells,basal_area_cells,volume_cells);
 CellularFeatures.Properties.VariableNames = {'ID_Cell','Apical_sides','Basal_sides','Scutoids','Apical_area','Basal_area','Volume'};
+CellularFeatures(noValidCells,:)=[];
 writetable(CellularFeatures,fullfile(selpath,'Results', 'cellular_features_LimeSeg3DSegmentation.xls'), 'Range','B2');
