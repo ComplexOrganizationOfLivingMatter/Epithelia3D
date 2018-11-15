@@ -23,18 +23,18 @@ addpath(genpath('src'))
 % %this code work with accuracy)
 % apicalReductions=[];
 
-N_images=10;
+N_images=20;
 N_frames=20;
 H=4096;
-W=2048;
+W=512;
 distanceBetwSeeds=5;%minimum distances between seeds, avoiding overlaping
 thresholdPixelsScutoid=4;
 setOfSeeds=200;
 apicalReductions=1:-0.1:0.1;
-% basalExpansions= 1./apicalReductions;
-basalExpansions=[];
+basalExpansions= 1./apicalReductions;
+apicalReductions=[];
 
-initialVoronoiDiagramNumber = 5;
+initialVoronoiDiagramNumber = 1;
 
 
 %if your RAM memory is quite high (96 gb or more), you could execute this loop with a parfor    
@@ -42,7 +42,7 @@ for i=1:length(setOfSeeds)
         
         n_seeds=setOfSeeds(i);
 
-         try 
+%          try 
             %% 1 - Generation of tubular CVT from random seeds
 %             mainTubularCVTGenerator(N_images,N_frames,H,W,n_seeds,distanceBetwSeeds)
 
@@ -52,15 +52,15 @@ for i=1:length(setOfSeeds)
             mainTubularVoronoiModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W,thresholdPixelsScutoid,initialVoronoiDiagramNumber)
 
             %% 3- Control model (all frusta) and its line-tension energy
-            mainTubularControlModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W)
+%             mainTubularControlModelProjectionSurface(n_seeds,basalExpansions,apicalReductions,N_images,H,W)
             
             
-        catch ME
-            disp(['error in number of seeds: ' num2str(n_seeds)])
-            for j =length(ME.stack):-1:1
-                disp([ME.stack(j).name, ' - ' num2str(ME.stack(j).line)])
-            end
-        end
+%         catch ME
+%             disp(['error in number of seeds: ' num2str(n_seeds)])
+%             for j =length(ME.stack):-1:1
+%                 disp([ME.stack(j).name, ' - ' num2str(ME.stack(j).line)])
+%             end
+%         end
 
 
 end

@@ -18,7 +18,7 @@ imshow(imgToShow);
 hold on;
 [xIndices, yIndices] = find(labelledImage(:, :,  selectedZ) == selectCellId);
 if isempty(xIndices) == 0
-    s2 = scatter(yIndices, xIndices, 'blue','filled','SizeData',10);
+    s2 = scatter(xIndices, yIndices, 'blue','filled','SizeData',10);
     hold off
     alpha(s2,.4)
 end
@@ -27,7 +27,7 @@ end
 [xIndices, yIndices] = find(lumenImage(:, :,  selectedZ) == 1);
 if isempty(xIndices) == 0
     hold on
-    s = scatter(yIndices, xIndices, 'red', 'filled','SizeData',10);
+    s = scatter(xIndices, yIndices, 'red', 'filled','SizeData',10);
     hold off
     alpha(s,.5)
 end
