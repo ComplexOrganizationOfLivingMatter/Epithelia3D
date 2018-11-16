@@ -34,31 +34,31 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         
         nCells = zeros(size(numNeighPerSurface,1),1);
 
-        meanAreaApicalPerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
-        stdAreaApicalPerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
-        meanAreaApicalPerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
-        stdAreaApicalPerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
-        meanAreaApicalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
-        stdAreaApicalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
-        meanAreaBasalPerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
-        stdAreaBasalPerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
-        meanAreaBasalPerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
-        stdAreaBasalPerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
-        meanAreaBasalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
-        stdAreaBasalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
-        meanVolumePerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
-        stdVolumePerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
-        meanVolumePerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
-        stdVolumePerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
-        meanVolumePerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
-        stdVolumePerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
+        meanAreaApicalPerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
+        stdAreaApicalPerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
+        meanAreaApicalPerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
+        stdAreaApicalPerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
+        meanAreaApicalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
+        stdAreaApicalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
+        meanAreaBasalPerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
+        stdAreaBasalPerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
+        meanAreaBasalPerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
+        stdAreaBasalPerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
+        meanAreaBasalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
+        stdAreaBasalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
+        meanVolumePerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
+        stdVolumePerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
+        meanVolumePerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
+        stdVolumePerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
+        meanVolumePerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
+        stdVolumePerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
         
         for nImg = 1:size(numNeighPerSurface,1)
             
             imgNeighBasal = numNeighPerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
             imgNeighBasalAccum = numNeighAccumPerSurfaces{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
-            imgVolumeBasal = totalVolume{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
-            imgAreaBasal = totalArea{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
+            imgVolumeBasal = volumePerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
+            imgAreaBasal = areaCellsPerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
             
             imgNeighApical = numNeighPerSurface{nImg}.('sr1');
             imgAreaApical = areaCellsPerSurface{nImg}.('sr1');
@@ -103,7 +103,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
             
             if nImg == 1
                 nPool = nCells(nImg);
-                
+                                
                 %'1_1 area apical - n apical'
                 meanPoolAreaApicalPerSideApical = meanAreaApicalPerSideApical(nImg,:);
                 stdPoolAreaApicalPerSideApical = stdAreaApicalPerSideApical(nImg,:);
@@ -171,15 +171,13 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
             end
         end
         
-        [s] = pooledMeanStdIterative(nCells,meanVolumePerSideBasalAccum,stdVolumePerSideBasalAccum);
-        
         h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');
         hold on
         %% ROW 1 -Area Apical VS Sides
         %1 area apical vs sides apical
         subplot(3,4,1) 
         errorbar(nUniqueNeighApical,meanPoolAreaApicalPerSideApical,stdPoolAreaApicalPerSideApical,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanPoolAreaApicalPerSideApical;meanPoolAreaApicalPerSideBasal;meanPoolAreaApicalPerSideBasalAccum])+max([stdPoolAreaApicalPerSideApical;stdPoolAreaApicalPerSideBasal;stdPoolAreaApicalPerSideBasalAccum])])
+        ylim([0 max(max([meanPoolAreaApicalPerSideApical;meanPoolAreaApicalPerSideBasal;meanPoolAreaApicalPerSideBasalAccum])+max([stdPoolAreaApicalPerSideApical;stdPoolAreaApicalPerSideBasal;stdPoolAreaApicalPerSideBasalAccum]))])
         title('area apical - n apical')
         ylabel('area apical')
         xlabel('sides apical')
@@ -279,11 +277,16 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         
     end  
 
-
-    h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');
-    averageNeighBasalAccum = mean(cat(1,meanNeighBasalAcum{:}));
-    stdNeighBasalAccum = std(cat(1,meanNeighBasalAcum{:}));
-    errorbar(surfRatios,averageNeighBasalAccum,stdNeighBasalAccum,'-o','MarkerSize',5,...
+    %% Euler 3D
+    h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');   
+    meanPoolNeighBasalAcum = meanNeighBasalAcum{1,:};
+    stdPoolNeighBasalAcum = stdNeighBasalAcum{1,:};
+    nPool = nCells(1);
+    for nImg = 2:length(nCells)
+        [nPool,meanPoolNeighBasalAcum,stdPoolNeighBasalAcum]=pooledmeanstd(nPool,meanPoolNeighBasalAcum,stdPoolNeighBasalAcum,nCells(nImg),meanNeighBasalAcum{nImg,:},stdNeighBasalAcum{nImg,:});
+    end
+    
+    errorbar(surfRatios,meanPoolNeighBasalAcum,stdPoolNeighBasalAcum,'-o','MarkerSize',5,...
     'MarkerEdgeColor','blue','MarkerFaceColor','blue')
     title('euler neighbours 3D')
     xlabel('surface ratio')
@@ -291,15 +294,22 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
     print(h,[path2save 'euler3D'],'-dtiff','-r300')
     close all
 
+    %% Euler 2D
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');
-    averageNeighBasal = mean(cat(1,meanNeighBasal{:}));
-    stdNeighBasal = std(cat(1,meanNeighBasal{:}));
-    errorbar(surfRatios,averageNeighBasal,stdNeighBasal,'-o','MarkerSize',5,...
+        
+    meanPoolNeighBasal = meanNeighBasal{1,:};
+    stdPoolNeighBasal = stdNeighBasal{1,:};
+    nPool = nCells(1);
+    for nImg = 2:length(nCells)
+        [nPool,meanPoolNeighBasal,stdPoolNeighBasal]=pooledmeanstd(nPool,meanPoolNeighBasal,stdPoolNeighBasal,nCells(nImg),meanNeighBasal{nImg,:},stdNeighBasal{nImg,:});
+    end
+    
+    errorbar(surfRatios,meanPoolNeighBasal,stdPoolNeighBasal,'-o','MarkerSize',5,...
     'MarkerEdgeColor','blue','MarkerFaceColor','blue')
     title('euler 2D - per surface')
     xlabel('surface ratio')
     ylabel('sides')
-    ylim([0,7]);
+    ylim([0,10]);
     print(h,[path2save 'euler2D'],'-dtiff','-r300')
     close all
 

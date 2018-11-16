@@ -32,10 +32,10 @@ function [npool,meanpool,stdpool] = pooledmeanstd(n1,mean1,std1,n2,mean2,std2)
 %     disp(['meanpool_real=',num2str(meanpool_real),' meanpool_estimated=',num2str(meanpool_estimated)])
 %     disp(['stdpool_real=',num2str(stdpool_real),' stdpool_estimated=',num2str(stdpool_estimated)])
 
-var1= std1^2;
-var2= std2^2;
+var1= std1.^2;
+var2= std2.^2;
 
 npool = n1+n2;
 meanpool = (n1*mean1 + n2*mean2) / (n1+n2);
 stdpool = sqrt ( ( n1^2*var1 + n2^2*var2 - n1*var1 - n1*var2 - n2*var1 - ...
-    n2*var2 + n1*n2*var1 + n1*n2*var2 + n1*n2*(mean1 - mean2)^2 ) / ( (n1+n2-1)*(n1+n2) ) );
+    n2*var2 + n1*n2*var1 + n1*n2*var2 + n1*n2*(mean1 - mean2).^2 ) / ( (n1+n2-1)*(n1+n2) ) );
