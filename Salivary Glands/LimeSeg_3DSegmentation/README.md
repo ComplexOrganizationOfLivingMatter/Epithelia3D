@@ -41,6 +41,7 @@ If you have to leave and you have not finish the salivary gland, you can always 
 - Save the ROIs often, not just at the end of the pipeline.
 - Prepare yourself using 'shortcuts'.
 - You can show all the ROIs you have created, by pressing 'Show all' in the ROI Manager.
+- Put the ROIs near the basal region of the cells to delimitate correctly the lumen and this way the cells won't be place inside the lumen.
 
 ## Step 2: Basic lumen's pipeline
 
