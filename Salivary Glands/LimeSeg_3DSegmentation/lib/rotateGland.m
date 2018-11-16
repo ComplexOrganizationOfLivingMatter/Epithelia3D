@@ -1,7 +1,7 @@
-function [img3DRotated] = rotateGland(img3d, angleRotation)
+function [img3DRotated] = rotateGland(img3d, angleRotation, predefinedSize)
 %ROTATEGLAND Summary of this function goes here
 %   Detailed explanation goes here
-[Y, X, Z] = ndgrid(1:size(img3d,1), 1:size(img3d,2), 1:size(img3d,3));
+    [Y, X, Z] = ndgrid(1:size(img3d,1), 1:size(img3d,2), 1:size(img3d,3));
     XYZ0 = [X(:), Y(:), Z(:), zeros(numel(X),1)];
     
     M = makehgtform('zrotate', angleRotation); %X axis
@@ -21,7 +21,11 @@ function [img3DRotated] = rotateGland(img3d, angleRotation)
        nX = abs(min(nX(:))) + 1 + nX; 
     end
     
-    img3DRotated = zeros(max(nX(:)), max(nY(:)), max(nZ(:)));
+    if exist('predefinedSize', 'var') == 0
+        img3DRotated = zeros(max(nX(:)), max(nY(:)), max(nZ(:)));
+    else
+        img3DRotated = zeros(predefinedSize);
+    end
     
     labelIndices = sub2ind(size(img3DRotated), nX(img3d(:)>0), nY(img3d(:)>0), nZ(img3d(:)>0));
     
