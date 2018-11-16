@@ -1,5 +1,18 @@
 # LimeSeg tutorial
 
+## Definitions
+
+D_0 : is the equilibrium spacing between the particles used by LimeSeg to delineate the 3D shape, expressed in units of pixels. A low value (~ 1 pixel) will lead to fine details being detected, at the cost of speed. A too high value will lead to important details being missed. 
+
+F_Pressure: This pressure tends to induce the shrinking or the expansion of the surface. A positive value will lead to expansion of the surface by default, while a negative value will lead to shrinking. Its typical range is [-0.03..0.03]
+
+Range in D_0 : is the size over which each particle will look for a local maximum. A value of 2 with a D_0 of 2 means that a local maximum will be looked for within a layer of 2 * 2 = [-4, 4] pixels around the surface.
+
+Extracted from:
+
+1. The article: https://www.biorxiv.org/content/early/2018/02/18/267534
+2. FIJI wiki: https://imagej.net/LimeSeg
+
 ## Step 0: Pre-processing
 
 0. Open the images in FIJI and keep the channel whose cell outlines are better. If the nuclei appear it could be a problem
