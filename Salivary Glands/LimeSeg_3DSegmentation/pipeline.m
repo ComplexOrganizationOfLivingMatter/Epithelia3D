@@ -45,6 +45,7 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
 
             %% Get apical layer by dilating the lumen
             [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
+            exportAsImageSequence(apicalLayer, fullfile(outputDir, 'Apical_Labelled'), colours, tipValue)
             
             %% Export image sequence
             [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
