@@ -10,7 +10,7 @@ function [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue)
 %     figure;
 %     pcshow([x,y,z]);
     
-    se = strel('sphere',5);
+    se = strel('sphere', 1);
     finalObjectEroded = imerode(finalObject, se);
     basalLayer = finalObject - finalObjectEroded;
     basalLayer(:, :, end) = finalObject(:, :, end);
@@ -18,6 +18,6 @@ function [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue)
 %     [x,y,z] = ind2sub(size(basalLayer),find(basalLayer>0));
 %     figure;
 %     pcshow([x,y,z]);
-    basalLayer = labelledImage .* basalLayer;
+basalLayer = labelledImage .* basalLayer;
 end
 

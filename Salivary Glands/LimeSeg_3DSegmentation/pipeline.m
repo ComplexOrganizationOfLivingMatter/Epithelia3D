@@ -10,6 +10,7 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
         mkdir(fullfile(outputDir, 'ImageSequence'));
         mkdir(fullfile(outputDir, 'Lumen'));
         mkdir(fullfile(outputDir, 'Results'));
+        mkdir(fullfile(outputDir, 'Apical_Labelled'));
 
 
         resizeImg = 0.25;
@@ -80,6 +81,7 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
                 %% Calculate neighbours and plot missing cells
                 [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
                 [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
+                exportAsImageSequence(apicalLayer, fullfile(outputDir, 'Apical_Labelled'), colours, tipValue)
                 [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
             else
                 [answer] = isEverythingCorrect();
@@ -113,7 +115,7 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
 %         polygon_distribution_UnrollTube.Properties.VariableNames = {'Apical','Basal'};
 %         
         %% Export to excel cellular features
-        calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,selpath)
+        calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,selpath)
     end
 end
 

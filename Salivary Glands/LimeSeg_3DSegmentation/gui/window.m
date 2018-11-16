@@ -77,7 +77,7 @@ for numImg = 1:size(imageSequenceFiles, 1)
     actualImg = imread(fullfile(actualFile.folder, actualFile.name));
     %imageSequence(end+1) = {imresize(fliplr(flip(actualImg')), resizeImg, 'nearest')};
     %imageSequence(end+1) = {imresize(actualImg, resizeImg, 'nearest')};
-    imageSequence(:, :, numImg) = imresize(actualImg, resizeImg, 'nearest');
+    imageSequence(:, :, numImg) = imresize(actualImg, resizeImg);
 end
 
 imageSequence = addTipsImg3D(tipValue+1, double(imageSequence));
@@ -126,7 +126,7 @@ if roiMask ~= -1
     lumenImage = getappdata(0, 'lumenImage');
 
     if sum(newCellRegion(:)) > 0
-        [x, y] = find(newCellRegion);
+        [y, x] = find(newCellRegion);
 
         newCellRegion = zeros(size(newCellRegion));
         newIndices = sub2ind(size(labelledImage), x, y, ones(length(x), 1)*selectedZ);

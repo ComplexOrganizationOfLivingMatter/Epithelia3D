@@ -32,21 +32,21 @@ function [labelledImage, lumenImage, glandOrientation] = processLumen(lumenDir, 
     
     %% Smooth lumen to get a more cylinder-like object
     
-    % We first remove irregularities. Like a pre-smooth.
-    lumenFirstSmooth = bwmorph3(lumenImage, 'majority');
+    % % We first remove irregularities. Like a pre-smooth.
+    % lumenFirstSmooth = bwmorph3(lumenImage, 'majority');
     
-    [lumenSmoothed] = smoothPerimeterByAxis(permute(lumenFirstSmooth, [2 3 1]));
-    [lumenSmoothed] = smoothPerimeterByAxis(permute(lumenSmoothed, [3 2 1])); % Real: [1 3 2] in the permute
-    lumenImage = permute(lumenSmoothed, [1 3 2]);
-    %figure; paint3D(lumenImage);
+    % [lumenSmoothed] = smoothPerimeterByAxis(permute(lumenFirstSmooth, [2 3 1]));
+    % [lumenSmoothed] = smoothPerimeterByAxis(permute(lumenSmoothed, [3 2 1])); % Real: [1 3 2] in the permute
+    % lumenImage = permute(lumenSmoothed, [1 3 2]);
+    % %figure; paint3D(lumenImage);
     
     [x, y, z] = ind2sub(size(lumenImage), find(lumenImage));
     pixelLocations = [x, y, z];
-    [lumenImageSmoothed] = smoothObject(lumenImage, pixelLocations, 1);
+    [lumenImage] = smoothObject(lumenImage, pixelLocations, 1);
     
-    lumenImageSmoothed = imdilate(lumenImageSmoothed, strel('sphere', 3));
-    lumenImage = imerode(lumenImageSmoothed, strel('sphere', 3));
-    %figure; paint3D(lumenImageSmoothed);
+%     lumenImageSmoothed = imdilate(lumenImageSmoothed, strel('sphere', 5));
+%     lumenImage2 = imerode(lumenImageSmoothed, strel('sphere', 5));
+    % %figure; paint3D(lumenImageSmoothed);
     
 
     %% Remove pixels of lumen from the cells image
