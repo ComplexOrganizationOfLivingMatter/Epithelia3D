@@ -11,6 +11,7 @@ surfaceRatios = 1./(1:-0.1:0.1);
 reductionFactor = 1;
 totalCells = 1:nSeeds;
 namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],surfaceRatios,'UniformOutput', false);
+cyliderType = 'Frusta';%Voronoi
 
 
 numNeighPerSurface = cell(nRealizations,1);
