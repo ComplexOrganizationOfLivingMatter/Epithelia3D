@@ -101,6 +101,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
             meanVolumePerSideBasalAccum(nImg,:) = arrayfun(@(x) mean(imgVolumeBasal(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
             stdVolumePerSideBasalAccum(nImg,:) = arrayfun(@(x) std(imgVolumeBasal(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
             
+            %% Pooled Mean and Std calculation
             if nImg == 1
                 nPool = nCells(nImg);
                                 
@@ -177,7 +178,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         %1 area apical vs sides apical
         subplot(3,4,1) 
         errorbar(nUniqueNeighApical,meanPoolAreaApicalPerSideApical,stdPoolAreaApicalPerSideApical,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max(max([meanPoolAreaApicalPerSideApical;meanPoolAreaApicalPerSideBasal;meanPoolAreaApicalPerSideBasalAccum])+max([stdPoolAreaApicalPerSideApical;stdPoolAreaApicalPerSideBasal;stdPoolAreaApicalPerSideBasalAccum]))])
+        ylim([0 max([meanPoolAreaApicalPerSideApical,meanPoolAreaApicalPerSideBasal,meanPoolAreaApicalPerSideBasalAccum])+max([stdPoolAreaApicalPerSideApical,stdPoolAreaApicalPerSideBasal,stdPoolAreaApicalPerSideBasalAccum])])
         title('area apical - n apical')
         ylabel('area apical')
         xlabel('sides apical')
@@ -185,7 +186,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         %2 area apical vs sides basal
         subplot(3,4,2)
         errorbar(nUniqueNeighBasal,meanPoolAreaApicalPerSideBasal,stdPoolAreaApicalPerSideBasal,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanPoolAreaApicalPerSideApical;meanPoolAreaApicalPerSideBasal;meanPoolAreaApicalPerSideBasalAccum])+max([stdPoolAreaApicalPerSideApical;stdPoolAreaApicalPerSideBasal;stdPoolAreaApicalPerSideBasalAccum])])
+        ylim([0 max([meanPoolAreaApicalPerSideApical,meanPoolAreaApicalPerSideBasal,meanPoolAreaApicalPerSideBasalAccum])+max([stdPoolAreaApicalPerSideApical,stdPoolAreaApicalPerSideBasal,stdPoolAreaApicalPerSideBasalAccum])])
         title('area apical - n basal')
         ylabel('area apical')
         xlabel('sides basal')
@@ -193,7 +194,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         %3 area apical vs sides 3D
         subplot(3,4,3)
         errorbar(nUniqueNeighBasalAccum,meanPoolAreaApicalPerSideBasalAccum,stdPoolAreaApicalPerSideBasalAccum,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanPoolAreaApicalPerSideApical;meanPoolAreaApicalPerSideBasal;meanPoolAreaApicalPerSideBasalAccum])+max([stdPoolAreaApicalPerSideApical;stdPoolAreaApicalPerSideBasal;stdPoolAreaApicalPerSideBasalAccum])])
+        ylim([0 max([meanPoolAreaApicalPerSideApical,meanPoolAreaApicalPerSideBasal,meanPoolAreaApicalPerSideBasalAccum])+max([stdPoolAreaApicalPerSideApical,stdPoolAreaApicalPerSideBasal,stdPoolAreaApicalPerSideBasalAccum])])
         title('area apical - n basal accum')
         ylabel('area apical')
         xlabel('neighbours total')
@@ -209,7 +210,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         %1 area basal vs sides apical
         subplot(3,4,5) 
         errorbar(nUniqueNeighApical,meanPoolAreaBasalPerSideApical,stdPoolAreaBasalPerSideApical,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanPoolAreaBasalPerSideApical;meanPoolAreaBasalPerSideBasal;meanPoolAreaBasalPerSideBasalAccum])+max([stdPoolAreaBasalPerSideApical;stdPoolAreaBasalPerSideBasal;stdPoolAreaBasalPerSideBasalAccum])])
+        ylim([0 max([meanPoolAreaBasalPerSideApical,meanPoolAreaBasalPerSideBasal,meanPoolAreaBasalPerSideBasalAccum])+max([stdPoolAreaBasalPerSideApical,stdPoolAreaBasalPerSideBasal,stdPoolAreaBasalPerSideBasalAccum])])
         title('area basal - n apical')
         ylabel('area basal')
         xlabel('sides apical')
@@ -217,7 +218,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         %2 area basal vs sides basal
         subplot(3,4,6)
         errorbar(nUniqueNeighBasal,meanPoolAreaBasalPerSideBasal,stdPoolAreaBasalPerSideBasal,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanPoolAreaBasalPerSideApical;meanPoolAreaBasalPerSideBasal;meanPoolAreaBasalPerSideBasalAccum])+max([stdPoolAreaBasalPerSideApical;stdPoolAreaBasalPerSideBasal;stdPoolAreaBasalPerSideBasalAccum])])
+        ylim([0 max([meanPoolAreaBasalPerSideApical,meanPoolAreaBasalPerSideBasal,meanPoolAreaBasalPerSideBasalAccum])+max([stdPoolAreaBasalPerSideApical,stdPoolAreaBasalPerSideBasal,stdPoolAreaBasalPerSideBasalAccum])])
         title('area basal - n basal')
         ylabel('area basal')
         xlabel('sides basal')
@@ -225,7 +226,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         %3 area basal vs sides 3D
         subplot(3,4,7)
         errorbar(nUniqueNeighBasalAccum,meanPoolAreaBasalPerSideBasalAccum,stdPoolAreaBasalPerSideBasalAccum,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanPoolAreaBasalPerSideApical;meanPoolAreaBasalPerSideBasal;meanPoolAreaBasalPerSideBasalAccum])+max([stdPoolAreaBasalPerSideApical;stdPoolAreaBasalPerSideBasal;stdPoolAreaBasalPerSideBasalAccum])])
+        ylim([0 max([meanPoolAreaBasalPerSideApical,meanPoolAreaBasalPerSideBasal,meanPoolAreaBasalPerSideBasalAccum])+max([stdPoolAreaBasalPerSideApical,stdPoolAreaBasalPerSideBasal,stdPoolAreaBasalPerSideBasalAccum])])
         title('area basal - n basal accum')
         ylabel('area basal')
         xlabel('neighbours total')
@@ -241,7 +242,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         %1 volume vs sides apical
         subplot(3,4,9) 
         errorbar(nUniqueNeighApical,meanPoolVolumePerSideApical,stdPoolVolumePerSideApical,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanPoolVolumePerSideApical;meanPoolVolumePerSideBasal;meanPoolVolumePerSideBasalAccum])+max([stdPoolVolumePerSideApical;stdPoolVolumePerSideBasal;stdPoolVolumePerSideBasalAccum])])
+        ylim([0 max([meanPoolVolumePerSideApical,meanPoolVolumePerSideBasal,meanPoolVolumePerSideBasalAccum])+max([stdPoolVolumePerSideApical,stdPoolVolumePerSideBasal,stdPoolVolumePerSideBasalAccum])])
         title('volume - n apical')
         xlabel('sides apical')
         ylabel('volume')
@@ -249,7 +250,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         %2 volume vs sides basal
         subplot(3,4,10)
         errorbar(nUniqueNeighBasal,meanPoolVolumePerSideBasal,stdPoolVolumePerSideBasal,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanPoolVolumePerSideApical;meanPoolVolumePerSideBasal;meanPoolVolumePerSideBasalAccum])+max([stdPoolVolumePerSideApical;stdPoolVolumePerSideBasal;stdPoolVolumePerSideBasalAccum])])
+        ylim([0 max([meanPoolVolumePerSideApical,meanPoolVolumePerSideBasal,meanPoolVolumePerSideBasalAccum])+max([stdPoolVolumePerSideApical,stdPoolVolumePerSideBasal,stdPoolVolumePerSideBasalAccum])])
         title('volume - n basal')
         ylabel('volume')
         xlabel('sides basal')
@@ -257,7 +258,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         %3 volume vs sides 3D
         subplot(3,4,11)
         errorbar(nUniqueNeighBasalAccum,meanPoolVolumePerSideBasalAccum,stdPoolVolumePerSideBasalAccum,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanPoolVolumePerSideApical;meanPoolVolumePerSideBasal;meanPoolVolumePerSideBasalAccum])+max([stdPoolVolumePerSideApical;stdPoolVolumePerSideBasal;stdPoolVolumePerSideBasalAccum])])
+        ylim([0 max([meanPoolVolumePerSideApical,meanPoolVolumePerSideBasal,meanPoolVolumePerSideBasalAccum])+max([stdPoolVolumePerSideApical,stdPoolVolumePerSideBasal,stdPoolVolumePerSideBasalAccum])])
         title('volume - n basal accum')
         ylabel('volume')
         xlabel('neighbours total')
