@@ -45,7 +45,7 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
 
             %% Get apical layer by dilating the lumen
             [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
-            exportAsImageSequence(apicalLayer, fullfile(outputDir, 'Apical_Labelled'), colours, tipValue)
+            exportAsImageSequence(apicalLayer, fullfile(outputDir, 'Apical_Labelled'), colours, tipValue);
             
             %% Export image sequence
             [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
@@ -82,7 +82,7 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
                 %% Calculate neighbours and plot missing cells
                 [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
                 [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
-                exportAsImageSequence(apicalLayer, fullfile(outputDir, 'Apical_Labelled'), colours, tipValue)
+                exportAsImageSequence(apicalLayer, fullfile(outputDir, 'Apical_Labelled'), colours, tipValue);
                 [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
             else
                 [answer] = isEverythingCorrect();
