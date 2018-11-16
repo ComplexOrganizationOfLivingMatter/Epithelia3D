@@ -1,10 +1,10 @@
-function [layer1,layer2] = assingCells2maskPerim(sampleName,rangeY,cellsLayer1,cellsLayer2)
+function [layer1,layer2] = assingCells2maskPerim(folder,sampleName,rangeY,cellsLayer1,cellsLayer2)
 
-    load(['data\' sampleName '\image3d_' strrep(sampleName,' ','_') '.mat'],'img3d');
-    nameMaskInner1=['data\' sampleName '\maskLayers\innerMaskLayer1\'];
-    nameMaskInner2=['data\' sampleName '\maskLayers\innerMaskLayer2\'];
-    nameMaskOuter1=['data\' sampleName '\maskLayers\outerMaskLayer1\'];
-    nameMaskOuter2=['data\' sampleName '\maskLayers\outerMaskLayer2\'];
+    load([folder sampleName '\image3d_' strrep(sampleName,' ','_') '.mat'],'img3d');
+    nameMaskInner1=[folder sampleName '\maskLayers\innerMaskLayer1\'];
+    nameMaskInner2=[folder sampleName '\maskLayers\innerMaskLayer2\'];
+    nameMaskOuter1=[folder sampleName '\maskLayers\outerMaskLayer1\'];
+    nameMaskOuter2=[folder sampleName '\maskLayers\outerMaskLayer2\'];
     
     img3d=uint16(img3d);
 %     img3dResized=imresize3(img3d,resizeFactor,'Method','nearest');
