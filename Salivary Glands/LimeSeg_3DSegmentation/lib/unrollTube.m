@@ -39,7 +39,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     img3d = permute(img3DRotated, [1 3 2]);
     imgFinalCoordinates=cell(size(img3d,3),1);
     imgFinalCoordinates3x=cell(size(img3d,3),1);
-    
+    %exportAsImageSequence(img3d, outputDir, colours, -1);
     borderCells=cell(size(img3d,3),1);
 
     for coordZ = 1 : size(img3d,3)
@@ -57,7 +57,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
 
             %zPerimMask=bwperim(imgToPerim);
             imgToPerim = img3d(:, :, coordZ);
-            imgToPerim = imdilate(imgToPerim, strel( 'disk', 5));
+            imgToPerim = imdilate(imgToPerim>0, strel( 'disk', 5));
             imgToPerim = imerode(imgToPerim, strel('disk', 5));
             zPerimMask=bwperim(imgToPerim);
             [xPerim, yPerim]=find(zPerimMask);
