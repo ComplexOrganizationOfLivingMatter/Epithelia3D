@@ -11,78 +11,191 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
     totalVolume = cat(1,volumePerSurface{:});
 
     totalNeighApical = totalNeigh.('sr1');
-    totalAreaApical = totalArea.('sr1');
+    
+    meanNeighBasal=cellfun(@(x) mean(x{:,:}),numNeighPerSurface,'UniformOutput',false);
+    meanNeighBasalAcum=cellfun(@(x) mean(x{:,:}),numNeighAccumPerSurfaces,'UniformOutput',false);
+    stdNeighBasal=cellfun(@(x) std(x{:,:}),numNeighPerSurface,'UniformOutput',false);
+    stdNeighBasalAcum=cellfun(@(x) std(x{:,:}),numNeighAccumPerSurfaces,'UniformOutput',false);
     
     nUniqueNeighApical = unique(totalNeighApical);
     
-    %'1_1 area apical - n apical'
-    meanAreaApicalPerSideApical = arrayfun(@(x) mean(totalAreaApical(ismember(totalNeighApical,x))),nUniqueNeighApical);
-    stdAreaApicalPerSideApical = arrayfun(@(x) std(totalAreaApical(ismember(totalNeighApical,x))),nUniqueNeighApical);
+    
 
     for SR = surfRatios 
+        
         totalNeighBasal = totalNeigh.(['sr' strrep(num2str(SR),'.','_')]);
         totalNeighBasalAccum = totalNeighAccum.(['sr' strrep(num2str(SR),'.','_')]);
         totalVolumeBasal = totalVolume.(['sr' strrep(num2str(SR),'.','_')]);
         totalAreaBasal = totalArea.(['sr' strrep(num2str(SR),'.','_')]);
-
+        totalAreaApical = totalArea.('sr1');
+        
         nUniqueNeighBasal = unique(totalNeighBasal);
-        nUniqueNeighBasalAccum = unique(totalNeighBasalAccum);    
+        nUniqueNeighBasalAccum = unique(totalNeighBasalAccum);  
         
-        %'1_2 area apical - n basal'
-        meanAreaApicalPerSideBasal = arrayfun(@(x) mean(totalAreaApical(ismember(totalNeighBasal,x))),nUniqueNeighBasal);
-        stdAreaApicalPerSideBasal = arrayfun(@(x) mean(totalAreaApical(ismember(totalNeighBasal,x))),nUniqueNeighBasal);
+        nCells = zeros(size(numNeighPerSurface,1),1);
+
+        meanAreaApicalPerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
+        stdAreaApicalPerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
+        meanAreaApicalPerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
+        stdAreaApicalPerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
+        meanAreaApicalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
+        stdAreaApicalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
+        meanAreaBasalPerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
+        stdAreaBasalPerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
+        meanAreaBasalPerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
+        stdAreaBasalPerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
+        meanAreaBasalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
+        stdAreaBasalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
+        meanVolumePerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
+        stdVolumePerSideApical = zeros(size(numNeighPerSurface,1),nUniqueNeighApical);
+        meanVolumePerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
+        stdVolumePerSideBasal = zeros(size(numNeighPerSurface,1),nUniqueNeighBasal);
+        meanVolumePerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
+        stdVolumePerSideBasalAccum = zeros(size(numNeighPerSurface,1),nUniqueNeighBasalAccum);
         
-        %'1_3 area apical - n basal accum'
-        meanAreaApicalPerSideBasalAccum = arrayfun(@(x) mean(totalAreaApical(ismember(totalNeighBasalAccum,x))),nUniqueNeighBasalAccum);
-        stdAreaApicalPerSideBasalAccum = arrayfun(@(x) mean(totalAreaApical(ismember(totalNeighBasalAccum,x))),nUniqueNeighBasalAccum);
+        for nImg = 1:size(numNeighPerSurface,1)
+            
+            imgNeighBasal = numNeighPerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
+            imgNeighBasalAccum = numNeighAccumPerSurfaces{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
+            imgVolumeBasal = totalVolume{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
+            imgAreaBasal = totalArea{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
+            
+            imgNeighApical = numNeighPerSurface{nImg}.('sr1');
+            imgAreaApical = areaCellsPerSurface{nImg}.('sr1');
+
+            nCells(nImg) = size(imgNeighBasal,1);
+ 
+            %'1_1 area apical - n apical'
+            meanAreaApicalPerSideApical(nImg,:) = arrayfun(@(x) mean(imgAreaApical(ismember(imgNeighApical,x))),nUniqueNeighApical);
+            stdAreaApicalPerSideApical(nImg,:) = arrayfun(@(x) std(imgAreaApical(ismember(imgNeighApical,x))),nUniqueNeighApical);
+
+            %'1_2 area apical - n basal'
+            meanAreaApicalPerSideBasal(nImg,:) = arrayfun(@(x) mean(imgAreaApical(ismember(imgNeighBasal,x))),nUniqueNeighBasal);
+            stdAreaApicalPerSideBasal(nImg,:) = arrayfun(@(x) mean(imgAreaApical(ismember(imgNeighBasal,x))),nUniqueNeighBasal);
+
+            %'1_3 area apical - n basal accum'
+            meanAreaApicalPerSideBasalAccum(nImg,:) = arrayfun(@(x) mean(imgAreaApical(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
+            stdAreaApicalPerSideBasalAccum(nImg,:) = arrayfun(@(x) mean(imgAreaApical(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
+
+            %'2_1 area basal - n apical'
+            meanAreaBasalPerSideApical(nImg,:) = arrayfun(@(x) mean(imgAreaBasal(ismember(imgNeighApical,x))),nUniqueNeighApical);
+            stdAreaBasalPerSideApical(nImg,:) = arrayfun(@(x) std(imgAreaBasal(ismember(imgNeighApical,x))),nUniqueNeighApical);
+
+            %'2_2 area basal - n basal'
+            meanAreaBasalPerSideBasal(nImg,:) = arrayfun(@(x) mean(imgAreaBasal(ismember(imgNeighBasal,x))),nUniqueNeighBasal);
+            stdAreaBasalPerSideBasal(nImg,:) = arrayfun(@(x) std(imgAreaBasal(ismember(imgNeighBasal,x))),nUniqueNeighBasal);
+
+            %'2_3 area basal - n basal accum'
+            meanAreaBasalPerSideBasalAccum(nImg,:) = arrayfun(@(x) mean(imgAreaBasal(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
+            stdAreaBasalPerSideBasalAccum(nImg,:) = arrayfun(@(x) std(imgAreaBasal(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
+
+            %'3_1 volume - n apical'
+            meanVolumePerSideApical(nImg,:) = arrayfun(@(x) mean(imgVolumeBasal(ismember(imgNeighApical,x))),nUniqueNeighApical);
+            stdVolumePerSideApical(nImg,:) = arrayfun(@(x) std(imgVolumeBasal(ismember(imgNeighApical,x))),nUniqueNeighApical);
+
+            %'3_2 volume - n basal'
+            meanVolumePerSideBasal(nImg,:) = arrayfun(@(x) mean(imgVolumeBasal(ismember(imgNeighBasal,x))),nUniqueNeighBasal);
+            stdVolumePerSideBasal(nImg,:) = arrayfun(@(x) std(imgVolumeBasal(ismember(imgNeighBasal,x))),nUniqueNeighBasal);
+
+            %'3_3 Volume - n basal accum'
+            meanVolumePerSideBasalAccum(nImg,:) = arrayfun(@(x) mean(imgVolumeBasal(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
+            stdVolumePerSideBasalAccum(nImg,:) = arrayfun(@(x) std(imgVolumeBasal(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
+            
+            if nImg == 1
+                nPool = nCells(nImg);
+                
+                %'1_1 area apical - n apical'
+                meanPoolAreaApicalPerSideApical = meanAreaApicalPerSideApical(nImg,:);
+                stdPoolAreaApicalPerSideApical = stdAreaApicalPerSideApical(nImg,:);
+                
+                %'1_2 area apical - n basal'
+                meanPoolAreaApicalPerSideBasal = meanAreaApicalPerSideBasal(nImg,:);
+                stdPoolAreaApicalPerSideBasal = stdAreaApicalPerSideBasal(nImg,:);
+                
+                %'1_3 area apical - n basal accum'
+                meanPoolAreaApicalPerSideBasalAccum = meanAreaApicalPerSideBasalAccum(nImg,:);
+                stdPoolAreaApicalPerSideBasalAccum = stdAreaApicalPerSideBasalAccum(nImg,:);
+                
+                %'2_1 area basal - n apical'
+                meanPoolAreaBasalPerSideApical = meanAreaBasalPerSideApical(nImg,:);
+                stdPoolAreaBasalPerSideApical = stdAreaBasalPerSideApical(nImg,:);
+                
+                %'2_2 area basal - n basal'
+                meanPoolAreaBasalPerSideBasal = meanAreaBasalPerSideBasal(nImg,:);
+                stdPoolAreaBasalPerSideBasal = stdAreaBasalPerSideBasal(nImg,:);
+                
+                %'2_3 area basal - n basal accum'
+                meanPoolAreaBasalPerSideBasalAccum = meanAreaBasalPerSideBasalAccum(nImg,:);
+                stdPoolAreaBasalPerSideBasalAccum = stdAreaBasalPerSideBasalAccum(nImg,:);
+                
+                %'3_1 volume - n apical'
+                meanPoolVolumePerSideApical = meanVolumePerSideApical(nImg,:);
+                stdPoolVolumePerSideApical = stdVolumePerSideApical(nImg,:);
+                
+                %'3_2 volume - n basal'
+                meanPoolVolumePerSideBasal = meanVolumePerSideBasal(nImg,:);
+                stdPoolVolumePerSideBasal = stdVolumePerSideBasal(nImg,:);
+                
+                %'3_3 Volume - n basal accum'
+                meanPoolVolumePerSideBasalAccum = meanVolumePerSideBasalAccum(nImg,:); 
+                stdPoolVolumePerSideBasalAccum = stdVolumePerSideBasalAccum(nImg,:);
+                
+            else
+                %'1_1 area apical - n apical'
+                [~,meanPoolAreaApicalPerSideApical,stdPoolAreaApicalPerSideApical] = pooledmeanstd(nPool,meanPoolAreaApicalPerSideApical,stdPoolAreaApicalPerSideApical,nCells(nImg),meanAreaApicalPerSideApical(nImg,:),stdAreaApicalPerSideApical(nImg,:));
+
+                %'1_2 area apical - n basal'
+                [~,meanPoolAreaApicalPerSideBasal,stdPoolAreaApicalPerSideBasal] = pooledmeanstd(nPool,meanPoolAreaApicalPerSideBasal,stdPoolAreaApicalPerSideBasal,nCells(nImg),meanAreaApicalPerSideBasal(nImg,:),stdAreaApicalPerSideBasal(nImg,:));
+
+                %'1_3 area apical - n basal accum'
+                [~,meanPoolAreaApicalPerSideBasalAccum,stdPoolAreaApicalPerSideBasalAccum] = pooledmeanstd(nPool,meanPoolAreaApicalPerSideBasalAccum,stdPoolAreaApicalPerSideBasalAccum,nCells(nImg),meanAreaApicalPerSideBasalAccum(nImg,:),stdAreaApicalPerSideBasalAccum(nImg,:));
+                
+                %'2_1 area basal - n apical'
+                [~,meanPoolAreaBasalPerSideApical,stdPoolAreaBasalPerSideApical] = pooledmeanstd(nPool,meanPoolAreaBasalPerSideApical,stdPoolAreaBasalPerSideApical,nCells(nImg),meanAreaBasalPerSideApical(nImg,:),stdAreaBasalPerSideApical(nImg,:));
+
+                %'2_2 area basal - n basal'
+                [~,meanPoolAreaBasalPerSideBasal,stdPoolAreaBasalPerSideBasal] = pooledmeanstd(nPool,meanPoolAreaBasalPerSideBasal,stdPoolAreaBasalPerSideBasal,nCells(nImg),meanAreaBasalPerSideBasal(nImg,:),stdAreaBasalPerSideBasal(nImg,:));
+
+                %'2_3 area basal - n basal accum'
+                [~,meanPoolAreaBasalPerSideBasalAccum,stdPoolAreaBasalPerSideBasalAccum] = pooledmeanstd(nPool,meanPoolAreaBasalPerSideBasalAccum,stdPoolAreaBasalPerSideBasalAccum,nCells(nImg),meanAreaBasalPerSideBasalAccum(nImg,:),stdAreaBasalPerSideBasalAccum(nImg,:));
+                
+                %'3_1 volume - n apical'
+                [~,meanPoolVolumePerSideApical,stdPoolVolumePerSideApical] = pooledmeanstd(nPool,meanPoolVolumePerSideApical,stdPoolVolumePerSideApical,nCells(nImg),meanVolumePerSideApical(nImg,:),stdVolumePerSideApical(nImg,:));
+
+                %'3_2 volume - n basal'
+                [~,meanPoolVolumePerSideBasal,stdPoolVolumePerSideBasal] = pooledmeanstd(nPool,meanPoolVolumePerSideBasal,stdPoolVolumePerSideBasal,nCells(nImg),meanVolumePerSideBasal(nImg,:),stdVolumePerSideBasal(nImg,:));
+
+                %'3_3 Volume - n basal accum'
+                [nPool,meanPoolVolumePerSideBasalAccum,stdPoolVolumePerSideBasalAccum] = pooledmeanstd(nPool,meanPoolVolumePerSideBasalAccum,stdPoolVolumePerSideBasalAccum,nCells(nImg),meanVolumePerSideBasalAccum(nImg,:),stdVolumePerSideBasalAccum(nImg,:));
+               
+            end
+        end
         
-        %'2_1 area basal - n apical'
-        meanAreaBasalPerSideApical = arrayfun(@(x) mean(totalAreaBasal(ismember(totalNeighApical,x))),nUniqueNeighApical);
-        stdAreaBasalPerSideApical = arrayfun(@(x) std(totalAreaBasal(ismember(totalNeighApical,x))),nUniqueNeighApical);
-        
-        %'2_2 area basal - n basal'
-        meanAreaBasalPerSideBasal = arrayfun(@(x) mean(totalAreaBasal(ismember(totalNeighBasal,x))),nUniqueNeighBasal);
-        stdAreaBasalPerSideBasal = arrayfun(@(x) std(totalAreaBasal(ismember(totalNeighBasal,x))),nUniqueNeighBasal);
-        
-        %'2_3 area basal - n basal accum'
-        meanAreaBasalPerSideBasalAccum = arrayfun(@(x) mean(totalAreaBasal(ismember(totalNeighBasalAccum,x))),nUniqueNeighBasalAccum);
-        stdAreaBasalPerSideBasalAccum = arrayfun(@(x) std(totalAreaBasal(ismember(totalNeighBasalAccum,x))),nUniqueNeighBasalAccum);
-        
-        %'3_1 volume - n apical'
-        meanVolumePerSideApical = arrayfun(@(x) mean(totalVolumeBasal(ismember(totalNeighApical,x))),nUniqueNeighApical);
-        stdVolumePerSideApical = arrayfun(@(x) std(totalVolumeBasal(ismember(totalNeighApical,x))),nUniqueNeighApical);
-        
-        %'3_2 volume - n basal'
-        meanVolumePerSideBasal = arrayfun(@(x) mean(totalVolumeBasal(ismember(totalNeighBasal,x))),nUniqueNeighBasal);
-        stdVolumePerSideBasal = arrayfun(@(x) std(totalVolumeBasal(ismember(totalNeighBasal,x))),nUniqueNeighBasal);
-        
-        %'3_3 Volume - n basal accum'
-        meanVolumePerSideBasalAccum = arrayfun(@(x) mean(totalVolumeBasal(ismember(totalNeighBasalAccum,x))),nUniqueNeighBasalAccum);
-        stdVolumePerSideBasalAccum = arrayfun(@(x) std(totalVolumeBasal(ismember(totalNeighBasalAccum,x))),nUniqueNeighBasalAccum);
+        [s] = pooledMeanStdIterative(nCells,meanVolumePerSideBasalAccum,stdVolumePerSideBasalAccum);
         
         h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');
         hold on
         %% ROW 1 -Area Apical VS Sides
         %1 area apical vs sides apical
         subplot(3,4,1) 
-        errorbar(nUniqueNeighApical,meanAreaApicalPerSideApical,stdAreaApicalPerSideApical,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanAreaApicalPerSideApical;meanAreaApicalPerSideBasal;meanAreaApicalPerSideBasalAccum])+max([stdAreaApicalPerSideApical;stdAreaApicalPerSideBasal;stdAreaApicalPerSideBasalAccum])])
+        errorbar(nUniqueNeighApical,meanPoolAreaApicalPerSideApical,stdPoolAreaApicalPerSideApical,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        ylim([0 max([meanPoolAreaApicalPerSideApical;meanPoolAreaApicalPerSideBasal;meanPoolAreaApicalPerSideBasalAccum])+max([stdPoolAreaApicalPerSideApical;stdPoolAreaApicalPerSideBasal;stdPoolAreaApicalPerSideBasalAccum])])
         title('area apical - n apical')
         ylabel('area apical')
         xlabel('sides apical')
 
         %2 area apical vs sides basal
         subplot(3,4,2)
-        errorbar(nUniqueNeighBasal,meanAreaApicalPerSideBasal,stdAreaApicalPerSideBasal,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanAreaApicalPerSideApical;meanAreaApicalPerSideBasal;meanAreaApicalPerSideBasalAccum])+max([stdAreaApicalPerSideApical;stdAreaApicalPerSideBasal;stdAreaApicalPerSideBasalAccum])])
+        errorbar(nUniqueNeighBasal,meanPoolAreaApicalPerSideBasal,stdPoolAreaApicalPerSideBasal,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        ylim([0 max([meanPoolAreaApicalPerSideApical;meanPoolAreaApicalPerSideBasal;meanPoolAreaApicalPerSideBasalAccum])+max([stdPoolAreaApicalPerSideApical;stdPoolAreaApicalPerSideBasal;stdPoolAreaApicalPerSideBasalAccum])])
         title('area apical - n basal')
         ylabel('area apical')
         xlabel('sides basal')
         
         %3 area apical vs sides 3D
         subplot(3,4,3)
-        errorbar(nUniqueNeighBasalAccum,meanAreaApicalPerSideBasalAccum,stdAreaApicalPerSideBasalAccum,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanAreaApicalPerSideApical;meanAreaApicalPerSideBasal;meanAreaApicalPerSideBasalAccum])+max([stdAreaApicalPerSideApical;stdAreaApicalPerSideBasal;stdAreaApicalPerSideBasalAccum])])
+        errorbar(nUniqueNeighBasalAccum,meanPoolAreaApicalPerSideBasalAccum,stdPoolAreaApicalPerSideBasalAccum,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        ylim([0 max([meanPoolAreaApicalPerSideApical;meanPoolAreaApicalPerSideBasal;meanPoolAreaApicalPerSideBasalAccum])+max([stdPoolAreaApicalPerSideApical;stdPoolAreaApicalPerSideBasal;stdPoolAreaApicalPerSideBasalAccum])])
         title('area apical - n basal accum')
         ylabel('area apical')
         xlabel('neighbours total')
@@ -97,24 +210,24 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         %% ROW 2 - Area basal VS sides
         %1 area basal vs sides apical
         subplot(3,4,5) 
-        errorbar(nUniqueNeighApical,meanAreaBasalPerSideApical,stdAreaBasalPerSideApical,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanAreaBasalPerSideApical;meanAreaBasalPerSideBasal;meanAreaBasalPerSideBasalAccum])+max([stdAreaBasalPerSideApical;stdAreaBasalPerSideBasal;stdAreaBasalPerSideBasalAccum])])
+        errorbar(nUniqueNeighApical,meanPoolAreaBasalPerSideApical,stdPoolAreaBasalPerSideApical,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        ylim([0 max([meanPoolAreaBasalPerSideApical;meanPoolAreaBasalPerSideBasal;meanPoolAreaBasalPerSideBasalAccum])+max([stdPoolAreaBasalPerSideApical;stdPoolAreaBasalPerSideBasal;stdPoolAreaBasalPerSideBasalAccum])])
         title('area basal - n apical')
         ylabel('area basal')
         xlabel('sides apical')
         
         %2 area basal vs sides basal
         subplot(3,4,6)
-        errorbar(nUniqueNeighBasal,meanAreaBasalPerSideBasal,stdAreaBasalPerSideBasal,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanAreaBasalPerSideApical;meanAreaBasalPerSideBasal;meanAreaBasalPerSideBasalAccum])+max([stdAreaBasalPerSideApical;stdAreaBasalPerSideBasal;stdAreaBasalPerSideBasalAccum])])
+        errorbar(nUniqueNeighBasal,meanPoolAreaBasalPerSideBasal,stdPoolAreaBasalPerSideBasal,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        ylim([0 max([meanPoolAreaBasalPerSideApical;meanPoolAreaBasalPerSideBasal;meanPoolAreaBasalPerSideBasalAccum])+max([stdPoolAreaBasalPerSideApical;stdPoolAreaBasalPerSideBasal;stdPoolAreaBasalPerSideBasalAccum])])
         title('area basal - n basal')
         ylabel('area basal')
         xlabel('sides basal')
         
         %3 area basal vs sides 3D
         subplot(3,4,7)
-        errorbar(nUniqueNeighBasalAccum,meanAreaBasalPerSideBasalAccum,stdAreaBasalPerSideBasalAccum,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanAreaBasalPerSideApical;meanAreaBasalPerSideBasal;meanAreaBasalPerSideBasalAccum])+max([stdAreaBasalPerSideApical;stdAreaBasalPerSideBasal;stdAreaBasalPerSideBasalAccum])])
+        errorbar(nUniqueNeighBasalAccum,meanPoolAreaBasalPerSideBasalAccum,stdPoolAreaBasalPerSideBasalAccum,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        ylim([0 max([meanPoolAreaBasalPerSideApical;meanPoolAreaBasalPerSideBasal;meanPoolAreaBasalPerSideBasalAccum])+max([stdPoolAreaBasalPerSideApical;stdPoolAreaBasalPerSideBasal;stdPoolAreaBasalPerSideBasalAccum])])
         title('area basal - n basal accum')
         ylabel('area basal')
         xlabel('neighbours total')
@@ -129,24 +242,24 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         %% ROW 3 - Volume VS sides
         %1 volume vs sides apical
         subplot(3,4,9) 
-        errorbar(nUniqueNeighApical,meanVolumePerSideApical,stdVolumePerSideApical,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanVolumePerSideApical;meanVolumePerSideBasal;meanVolumePerSideBasalAccum])+max([stdVolumePerSideApical;stdVolumePerSideBasal;stdVolumePerSideBasalAccum])])
+        errorbar(nUniqueNeighApical,meanPoolVolumePerSideApical,stdPoolVolumePerSideApical,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        ylim([0 max([meanPoolVolumePerSideApical;meanPoolVolumePerSideBasal;meanPoolVolumePerSideBasalAccum])+max([stdPoolVolumePerSideApical;stdPoolVolumePerSideBasal;stdPoolVolumePerSideBasalAccum])])
         title('volume - n apical')
         xlabel('sides apical')
         ylabel('volume')
         
         %2 volume vs sides basal
         subplot(3,4,10)
-        errorbar(nUniqueNeighBasal,meanVolumePerSideBasal,stdVolumePerSideBasal,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanVolumePerSideApical;meanVolumePerSideBasal;meanVolumePerSideBasalAccum])+max([stdVolumePerSideApical;stdVolumePerSideBasal;stdVolumePerSideBasalAccum])])
+        errorbar(nUniqueNeighBasal,meanPoolVolumePerSideBasal,stdPoolVolumePerSideBasal,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        ylim([0 max([meanPoolVolumePerSideApical;meanPoolVolumePerSideBasal;meanPoolVolumePerSideBasalAccum])+max([stdPoolVolumePerSideApical;stdPoolVolumePerSideBasal;stdPoolVolumePerSideBasalAccum])])
         title('volume - n basal')
         ylabel('volume')
         xlabel('sides basal')
 
         %3 volume vs sides 3D
         subplot(3,4,11)
-        errorbar(nUniqueNeighBasalAccum,meanVolumePerSideBasalAccum,stdVolumePerSideBasalAccum,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanVolumePerSideApical;meanVolumePerSideBasal;meanVolumePerSideBasalAccum])+max([stdVolumePerSideApical;stdVolumePerSideBasal;stdVolumePerSideBasalAccum])])
+        errorbar(nUniqueNeighBasalAccum,meanPoolVolumePerSideBasalAccum,stdPoolVolumePerSideBasalAccum,'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        ylim([0 max([meanPoolVolumePerSideApical;meanPoolVolumePerSideBasal;meanPoolVolumePerSideBasalAccum])+max([stdPoolVolumePerSideApical;stdPoolVolumePerSideBasal;stdPoolVolumePerSideBasalAccum])])
         title('volume - n basal accum')
         ylabel('volume')
         xlabel('neighbours total')
@@ -164,11 +277,12 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         hold off
         close all
         
-    end    
-    
+    end  
+
+
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');
-    averageNeighBasalAccum = mean(table2array(totalNeighAccum));
-    stdNeighBasalAccum = std(table2array(totalNeighAccum));
+    averageNeighBasalAccum = mean(cat(1,meanNeighBasalAcum{:}));
+    stdNeighBasalAccum = std(cat(1,meanNeighBasalAcum{:}));
     errorbar(surfRatios,averageNeighBasalAccum,stdNeighBasalAccum,'-o','MarkerSize',5,...
     'MarkerEdgeColor','blue','MarkerFaceColor','blue')
     title('euler neighbours 3D')
@@ -178,13 +292,14 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
     close all
 
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');
-    averageNeighBasal = mean(table2array(totalNeigh));
-    stdNeighBasal = std(table2array(totalNeigh));
+    averageNeighBasal = mean(cat(1,meanNeighBasal{:}));
+    stdNeighBasal = std(cat(1,meanNeighBasal{:}));
     errorbar(surfRatios,averageNeighBasal,stdNeighBasal,'-o','MarkerSize',5,...
     'MarkerEdgeColor','blue','MarkerFaceColor','blue')
     title('euler 2D - per surface')
     xlabel('surface ratio')
     ylabel('sides')
+    ylim([0,7]);
     print(h,[path2save 'euler2D'],'-dtiff','-r300')
     close all
 
