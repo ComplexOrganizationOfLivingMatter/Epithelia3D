@@ -2,7 +2,7 @@ function [layer1,layer2,setOfCells] = getCylindricalSurfaces(folder,sampleName,r
 
     disp(sampleName)
     if ~exist([folder sampleName '\rotatedImage3d_' strrep(sampleName,' ','_') '.mat'],'file')
-        img3d = readImg3d(strrep(sampleName,' ','_'),zScaleFactorHyp);
+        img3d = readImg3d(folder, strrep(sampleName,' ','_'),zScaleFactorHyp);
         %function for rotate 3d image toward the Y axis.
         img3d = rotateImg3(img3d);
         save([folder sampleName '\rotatedImage3d_' strrep(sampleName,' ','_') '.mat'],'-v7.3','img3d');
