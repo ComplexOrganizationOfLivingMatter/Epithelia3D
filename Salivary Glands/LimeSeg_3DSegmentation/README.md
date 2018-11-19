@@ -20,7 +20,31 @@ Extracted from:
 2. Now you have to improve the brightness and contrast, you can do this by clicking in "Image" -> "Adjust" -> "Brightness/Contrast". You can either click on 'Auto' or change manually the parameters until you obtain a good result in which the cell lines are clear, but not too saturated. Then, press on 'Apply' and apply it to all the stack.
 
 
-## Step 1: Basic cell's pipeline
+## Step 1:Basic	lumen's pipeline
+1. Open the images which contain the lumen in Photoshop.
+
+2. Paint the lumen region like	a black region with white borders:
+	
+	1. Create a new layer  (layer->new layer).   
+	
+	1. Now,you have to select the paint brush at the left screen with the black color (Black color:0,0,0
+	and White color:255,255,255).
+	
+	1. With this function you can select	the	lumen	point	to	point by typing shift key+left click.
+	
+	1. After segmenting the lumen, you have to paint the lumen like a black region with the paint bucket tool,ensure that                     the whole lumen is black, you can colour pixels which are not black with the pencil.
+	
+	1. Select the black region with the magic wand by typing left click in the region, and change the color to white(type 	x		if 	you selected in the previous steps) to paint the borders as white in the next steps.
+	
+	1. Select the option "selection->modify->expand", and type 5 pixels.
+	
+
+
+
+
+
+
+## Step 2: Basic cell's pipeline
 
 1. Open the image, whose cell outlines can be better segmented.
 2. Select "ellipse" and put an ellipsoidal ROI near the nucleus, but with a slightly bigger radius. Press 'T'.
