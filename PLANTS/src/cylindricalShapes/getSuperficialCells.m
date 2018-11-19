@@ -1,4 +1,4 @@
-function surfaceCells = getSuperficialCells(img3d)
+function [surfaceCells,surfaceCellsWithoutFilter] = getSuperficialCells(img3d)
 
     img3dResized = imresize3(img3d,0.2,'nearest');
 
@@ -26,7 +26,8 @@ function surfaceCells = getSuperficialCells(img3d)
     regPr = regionprops3(img3dResized(perimMask3dDil>0),'Volume');
     cellVolumeDilate = cat(1,regPr.Volume);
     
+    surfaceCellsWithoutFilter = find(cellVolumeDilate > 0);
     surfaceCells = find(cellVolumeDilate > mean(cellVolumeDilate(cellVolumeDilate > 0))/5);
-    surfaceCells =surfaceCells(surfaceCells>0);
+    surfaceCells = surfaceCells(surfaceCells>0);
 
 end

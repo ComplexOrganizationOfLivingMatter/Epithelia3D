@@ -1,5 +1,18 @@
 # LimeSeg tutorial
 
+## Definitions
+
+D_0 : is the equilibrium spacing between the particles used by LimeSeg to delineate the 3D shape, expressed in units of pixels. A low value (~ 1 pixel) will lead to fine details being detected, at the cost of speed. A too high value will lead to important details being missed. 
+
+F_Pressure: This pressure tends to induce the shrinking or the expansion of the surface. A positive value will lead to expansion of the surface by default, while a negative value will lead to shrinking. Its typical range is [-0.03..0.03]
+
+Range in D_0 : is the size over which each particle will look for a local maximum. A value of 2 with a D_0 of 2 means that a local maximum will be looked for within a layer of 2 * 2 = [-4, 4] pixels around the surface.
+
+Extracted from:
+
+1. The article: https://www.biorxiv.org/content/early/2018/02/18/267534
+2. FIJI wiki: https://imagej.net/LimeSeg
+
 ## Step 0: Pre-processing
 
 0. Open the images in FIJI and keep the channel whose cell outlines are better. If the nuclei appear it could be a problem
@@ -7,7 +20,31 @@
 2. Now you have to improve the brightness and contrast, you can do this by clicking in "Image" -> "Adjust" -> "Brightness/Contrast". You can either click on 'Auto' or change manually the parameters until you obtain a good result in which the cell lines are clear, but not too saturated. Then, press on 'Apply' and apply it to all the stack.
 
 
-## Step 1: Basic cell's pipeline
+## Step 1:Basic	lumen's pipeline
+1. Open the images which contain the lumen in Photoshop.
+
+2. Paint the lumen region like	a black region with white borders:
+	
+	1. Create a new layer  (layer->new layer).   
+	
+	1. Now,you have to select the paint brush at the left screen with the black color (Black color:0,0,0
+	and White color:255,255,255).
+	
+	1. With this function you can select	the	lumen	point	to	point by typing shift key+left click.
+	
+	1. After segmenting the lumen, you have to paint the lumen like a black region with the paint bucket tool,ensure that                     the whole lumen is black, you can colour pixels which are not black with the pencil.
+	
+	1. Select the black region with the magic wand by typing left click in the region, and change the color to white(type 	x		if 	you selected in the previous steps) to paint the borders as white in the next steps.
+	
+	1. Select the option "selection->modify->expand", and type 5 pixels.
+	
+
+
+
+
+
+
+## Step 2: Basic cell's pipeline
 
 1. Open the image, whose cell outlines can be better segmented.
 2. Select "ellipse" and put an ellipsoidal ROI near the nucleus, but with a slightly bigger radius. Press 'T'.
@@ -41,6 +78,7 @@ If you have to leave and you have not finish the salivary gland, you can always 
 - Save the ROIs often, not just at the end of the pipeline.
 - Prepare yourself using 'shortcuts'.
 - You can show all the ROIs you have created, by pressing 'Show all' in the ROI Manager.
+- Put the ROIs near the basal region of the cells to delimitate correctly the lumen and this way the cells won't be place inside the lumen.
 
 ## Step 2: Basic lumen's pipeline
 
