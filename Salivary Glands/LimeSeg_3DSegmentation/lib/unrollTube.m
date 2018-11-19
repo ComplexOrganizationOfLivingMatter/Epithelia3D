@@ -98,7 +98,6 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
         if length(rowOfCoord3x) < ySize
             nEmptyPixels3x = floor((ySize - length(rowOfCoord3x)) / 2);
             nEmptyPixels = floor((ySize - length(rowOfCoord)) / 2);
-
         end
         deployedImg3x(coordZ, 1 + nEmptyPixels3x : length(rowOfCoord3x) + nEmptyPixels3x) = rowOfCoord3x;
         deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
@@ -108,7 +107,8 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
 %     figure;imshow(deployedImgMask,colours)
 
     %% Getting correct border cells, valid cells and no valid cells
-    [wholeImage,~,~] = getFinalImageAndNoValidCells(deployedImg3x,colours, borderCells);
+     [wholeImage] = fillEmptySpacesByWatershed2D(deployedImg3x, deployedImg3x==0, colours);
+    %[wholeImage,~,~] = getFinalImageAndNoValidCells(deployedImg3x,colours, borderCells);
     %[~, ~,noValidCells] = getFinalImageAndNoValidCells(deployedImg3x(:, round(ySize/3):round(ySize*2/3)),colours);
 %     TotalCells = {ValidCells; BordersNoValidCells};
    
