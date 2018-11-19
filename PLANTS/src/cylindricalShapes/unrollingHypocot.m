@@ -1,9 +1,9 @@
-function [totalImages] = unrollingHypocot(name,rangeY,layer1,layer2)
+function [totalImages] = unrollingHypocot(folder,name,rangeY,layer1,layer2)
 
         setOfImages = {layer1.outerSurface,layer1.innerSurface,layer2.outerSurface,layer2.innerSurface};
         totalImages = cell(length(setOfImages),1);
-        c=colorcube(4500);
-        orderRand=randperm(4500);
+        c=colorcube(max([max(layer1.outerSurface(:)),max(layer2.outerSurface(:))]));
+        orderRand=randperm(max([max(layer1.outerSurface(:)),max(layer2.outerSurface(:))]));
         c(orderRand(1),:)=[0 0 0];
 
         uniqueOuter2 = unique(layer2.outerSurface) ;
@@ -19,32 +19,12 @@ function [totalImages] = unrollingHypocot(name,rangeY,layer1,layer2)
             [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength));
 
             img3d=permute(img3d,orderLengAxis);
-%             mask3d=false(size(img3d));
-            
             img3d(ismember(img3d,noValidCells))=0;
 
-%             mask3d=false(size(img3d));
-%             mask3d(img3d>0)=1;
-% 
-% 
-%             [x,y,z]=ind2sub(size(mask3d),find(mask3d==1));
-%             shp=alphaShape(x,y,z,200);
-%             %     plot(shp)
-%             [qx,qy,qz]=ind2sub(size(mask3d),find(mask3d>=0));
-%             tf = inShape(shp,qx,qy,qz);
-% 
-%             mask3d=zeros(size(mask3d));
-%             indFilImg=sub2ind(size(mask3d),qx(tf),qy(tf),qz(tf));
-%             mask3d(indFilImg)=1;
-
-
-            load(['data\' name '\maskLayers\certerAndRadiusPerZ.mat'],'centers')
+            load([folder name '\maskLayers\certerAndRadiusPerZ.mat'],'centers')
 
             imgFinalCoordinates=cell(size(img3d,3),1);
             centroids=centers{nImg};
-
-            %         centroidX=mean(cellfun(@(x) x(3),centroids));
-            %         centroidY=mean(cellfun(@(x) x(1),centroids));
 
             for coordZ = 1 : size(img3d,3)
                 centroidCoordZ = centroids{rangeY(1)-1+coordZ};
@@ -56,7 +36,7 @@ function [totalImages] = unrollingHypocot(name,rangeY,layer1,layer2)
                 mask(img3d(:,:,coordZ)>0)=1;
                 [x,y]=find(mask);
 
-                zPerimMask = imread(['data\' name '\maskLayers\' setLayerNames{nImg} '\' num2str(rangeY(1)-1+coordZ) '.bmp']);
+                zPerimMask = imread([folder name '\maskLayers\' setLayerNames{nImg} '\' num2str(rangeY(1)-1+coordZ) '.bmp']);
                 zPerimMask=bwperim(zPerimMask);
                 [xPerim,yPerim]=find(zPerimMask);
 
@@ -99,7 +79,7 @@ function [totalImages] = unrollingHypocot(name,rangeY,layer1,layer2)
                 deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
             end
 
-            %        figure;imshow(deployedImg,c(orderRand,:))
+                    figure;imshow(deployedImg,c(orderRand,:))
             totalImages{nImg} = deployedImg;
 
         end
