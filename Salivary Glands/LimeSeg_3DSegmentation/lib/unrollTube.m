@@ -46,6 +46,10 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
                 imgToPerim = img3d(:, :, coordZ);
             end
             
+            if sum(imgToPerim(:)) == 0
+                continue
+            end
+            
             imgToPerim = imdilate(imgToPerim>0, strel( 'disk', 5));
             imgToPerim = imerode(imgToPerim, strel('disk', 5));
             zPerimMask = bwperim(imgToPerim);

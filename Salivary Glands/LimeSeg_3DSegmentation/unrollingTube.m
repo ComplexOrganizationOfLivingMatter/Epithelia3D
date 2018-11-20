@@ -1,10 +1,19 @@
 %% Unroll tube
+
+addpath(genpath('src'))
+addpath(genpath('lib'))
+addpath(genpath('gui'))
+addpath(genpath(fullfile('..', '..', 'InSilicoModels', 'TubularModel', 'src')));
+
 %selpath = uigetdir('data');
 load(fullfile(selpath, 'Results', '3d_layers_info.mat'));
 load(fullfile(selpath, 'Results', 'valid_cells.mat'));
-apicalLayerGoodOrientation = imrotate(apicalLayer, glandOrientation);
-basalLayerGoodOrientation = imrotate(basalLayer, glandOrientation);
-lumenImageGoodOrientation = imrotate(lumenImage, glandOrientation);
+resizeImg = 0.25;
+imgSize = round(size(apicalLayer)/resizeImg);
+imgSize(:, 3) = size(apicalLayer, 3);
+apicalLayerGoodOrientation = imrotate(imresize3(apicalLayer, imgSize, 'nearest'), glandOrientation);
+basalLayerGoodOrientation = imrotate(imresize3(basalLayer, imgSize, 'nearest'), glandOrientation);
+lumenImageGoodOrientation = imrotate(imresize3(double(lumenImage), imgSize, 'nearest'), glandOrientation)>0;
 apicalAreaValidCells = 100;
 [neighs_apical,side_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayerGoodOrientation, fullfile(selpath,  'Results', 'apical'), noValidCells, colours, lumenImageGoodOrientation);
 [neighs_basal,side_cells_basal] = unrollTube(basalLayerGoodOrientation, fullfile(selpath, 'Results', 'basal'), noValidCells, colours, [], apicalAreaValidCells);
