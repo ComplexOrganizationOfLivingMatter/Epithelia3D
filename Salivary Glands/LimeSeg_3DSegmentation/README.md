@@ -24,24 +24,23 @@ Extracted from:
 
 1. Open the images (file->save as->Image Sequence in FIJI in our case) which contain the lumen in Photoshop.
 
-2. Paint the lumen region like a black region with white borders:
+2. Paint the lumen region as a black region with white border of 5 pixels:
 	
 	1. Create a new layer (layer->new layer).   
 	
-	1. Now,you have to select the paint brush at the left screen with the black color (color: 0,0,0)
-	and white color (color:255,255,255).
+	1. Now, you have to select the paint brush at the left screen with the black color (color: 0,0,0) and white color (color: 255,255,255).
 	
-	1. With this function you can select	the	lumen	point	to	point by typing shift key+left click.Segment the lumen 		like a black region,you have to use the black color now(you can type the letter X to change from a color to the other color).
+	1. With this function you can select the lumen point to	point by typing shift key+left click.Segment the lumen like a black region, you have to use the black color now(you can type the letter X to change from a color to the other color).
 	
-	1. After segmenting the lumen, you have to paint the lumen like a black region with the paint bucket tool,ensure that                     the whole lumen is black, you can colour pixels which are not black with the pencil.*
+	1. After segmenting the lumen, you have to paint the lumen like a black region with the paint bucket tool, ensure that the whole lumen is black, you can colour pixels which are not black with the pencil*.
 	
-	*note: If the lumen is divided in different pieces, you have to segment each lumen's piece one by one in the same image 		as"islands".
+	*note: If the lumen is splitted in different pieces, you have to segment each lumen's piece one by one in the same image as"islands".
 	
-	1. Select the black region with the magic wand	(this tool allows you to choose specific regions of an image)	by typing left 		click in the region, and change the color to white(type x	if you selected it in the previous steps).
+	1. Select the black region with the magic wand	(this tool allows you to choose specific regions of an image) by typing left  click in the region, and change the color to white(type x if you selected it in the previous steps).
 	
-	1. Select the option "selection->modify->expand", and type 5 pixels.A new white border should have appeared with the thickness 		indicated previosuly.
+	1. Select the option "selection->modify->expand", and type 5 pixels.A new white border should have appeared with the thickness  indicated previosuly.
 	
-	1. Type right click in the layers and select the option merging layers (combine layers) to decrease the final length of the 		image.
+	1. Type right click in the layers and select the option merging layers (combine layers) to decrease the final length of the 	 image.
 	
 	1. Save the changes done.
 	
@@ -56,7 +55,7 @@ Extracted from:
 	
 	1. Open the same image from the image sequence, which contains the lumen like black a region.
 	
-	1. Select the black region (lumen without borders) with the magic wand in the left screen and copy it.Then paste it in the white  	image which corresponds to the same image (z).
+	1. Select the black region (lumen without borders) with the magic wand in the left screen and copy it.Then paste it in the white  image which corresponds to the same image (z).
 	
 	1. Merge the layers and save the changes done.
 	
