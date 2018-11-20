@@ -146,7 +146,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
 %     figure;imshow(deployedImgMask,colours)
 
     %% Getting correct border cells, valid cells and no valid cells
-     [wholeImage] = fillEmptySpacesByWatershed2D(deployedImg3x, imclose(deployedImg3x>0, strel('disk', 5)) == 0 , colours);
+     [wholeImage] = fillEmptySpacesByWatershed2D(deployedImg3x, imclose(deployedImg3x>0, strel('disk', 20)) == 0 , colours);
     %[wholeImage,~,~] = getFinalImageAndNoValidCells(deployedImg3x,colours, borderCells);
     %[~, ~,noValidCells] = getFinalImageAndNoValidCells(deployedImg3x(:, round(ySize/3):round(ySize*2/3)),colours);
 %     TotalCells = {ValidCells; BordersNoValidCells};
