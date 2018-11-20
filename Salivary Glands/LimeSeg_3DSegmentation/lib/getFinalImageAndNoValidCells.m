@@ -39,23 +39,7 @@ function [finalImage,validCells,noValidCells] = getFinalImageAndNoValidCells(lay
 %     figure;imshow(zerosLabelMask)
     labelMaskPerim(perimMask)=0;
     
-    %% Unifying splitted near cells
-    connected4 = [0 1 0; 1 0 1; 0 1 0];
-    edgePixels = find(labelMaskPerim == 0 & zerosLabelMask == 0);
-    dilatedMask = zeros(size(labelMaskPerim));
-%     hold on;
-    for edgePixel = edgePixels'
-        dilatedMask(edgePixel) = 1;
-        values4Connected = labelMaskPerim(imdilate(dilatedMask, connected4)>0);
-        values4ConnectedUnique = unique(values4Connected);
-        values4ConnectedUnique(values4ConnectedUnique==0) = [];
-        if length(values4ConnectedUnique) == 1
-            labelMaskPerim(edgePixel) = values4ConnectedUnique;
-%             [x,y] = ind2sub(size(finalImage), edgePixel);
-%             plot(y, x, '*r')
-        end
-        dilatedMask(edgePixel) = 0;
-    end
+    [labelMaskPerim] = unifyingNearCells(labelMaskPerim, zerosLabelMask);
     
     %% keep 3 areas for each cell, remove the smaller ones
     areasToRemove = zeros(size(labelMaskPerim));

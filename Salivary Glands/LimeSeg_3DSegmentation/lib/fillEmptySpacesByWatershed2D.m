@@ -52,7 +52,8 @@ function [finalImage] = fillEmptySpacesByWatershed2D(labelMask, invalidRegion, c
         dilatedMask(centroids(nCell,2),centroids(nCell,1)) = 0;
     end
     
+    [imgWater_Unified] = unifyingNearCells(maskWater, invalidRegion);
     
-    finalImage = double(maskWater);
+    finalImage = double(imgWater_Unified);
 end
 
