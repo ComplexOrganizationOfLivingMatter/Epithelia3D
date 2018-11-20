@@ -36,23 +36,27 @@ function [finalImage] = fillEmptySpacesByWatershed2D(labelMask, invalidRegion, c
     maskWater(invalidRegion)=0; 
     
     %% relabel cells with original labels
-    centroids = regionprops(maskWater,'Centroid');
-    centroids = round(cat(1,centroids.Centroid));
+%     centroids = regionprops(maskWater,'Centroid');
+%     centroids = round(cat(1,centroids.Centroid));
     cellsWater = unique(maskWater);
     cellsWater=cellsWater(cellsWater~=0);
     
-    finalImage=zeros(size(maskWater));
-    dilatedMask = zeros(size(maskWater));
+    unifiedCellsImage=zeros(size(maskWater));
+%     dilatedMask = zeros(size(maskWater));
     for nCell = cellsWater'
-        dilatedMask(centroids(nCell,2),centroids(nCell,1)) = 1;
-        valuesSurroundingCentroid = labelMask(imdilate(dilatedMask, strel('disk', 3))> 0);
-        mostFrequentValue = mode(valuesSurroundingCentroid);
-        finalImage(maskWater==nCell) = mostFrequentValue;
+%         dilatedMask(centroids(nCell,2),centroids(nCell,1)) = 1;
+%         valuesSurroundingCentroid = labelMask(imdilate(dilatedMask, strel('disk', 3))> 0);
+%         mostFrequentValue = mode(valuesSurroundingCentroid);
+%         finalImage(maskWater==nCell) = mostFrequentValue;
+%         
+%         dilatedMask(centroids(nCell,2),centroids(nCell,1)) = 0;
+
+        values = unique(labelMaskFinal(maskWater == nCell));
         
-        dilatedMask(centroids(nCell,2),centroids(nCell,1)) = 0;
+        unifiedCellsImage(maskWater == nCell) = values(values~=0);
     end
     
-    [imgWater_Unified] = unifyingNearCells(maskWater, invalidRegion);
+    [imgWater_Unified] = unifyingNearCells(unifiedCellsImage, invalidRegion);
     
     finalImage = double(imgWater_Unified);
 end
