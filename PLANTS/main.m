@@ -12,7 +12,7 @@ zScaleFactorHyp = [0.4, 0.7, 0.7, 0.6, 0.4, 0.4,...
 
 addpath(genpath('src'))
 
-rangeYPlant = {[700,1400],[700,1400],[500,1500]};
+rangeYPlant = {[700,1400],[700,1400],[500,1500],[1,703],[1,1500],[1,1500]};
 folder = 'data/Hypocotyl/';
 for nNam=3%length(names)
     resizeFactor=0.3;
