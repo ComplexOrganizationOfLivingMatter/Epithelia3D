@@ -18,7 +18,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     end
     
     %% Unroll
-    pixelSizeThreshold = 1;
+    pixelSizeThreshold = 2;
     
     img3d = permute(img3DRotated, [1 3 2]);
     imgFinalCoordinates=cell(size(img3d,3),1);
@@ -26,63 +26,92 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     %exportAsImageSequence(img3d, outputDir, colours, -1);
     %exportAsImageSequence(perimImage3D, outputDir, colours, -1);
     borderCells=cell(size(img3d,3),1);
-
+    previousRowsSize = 0;
     for coordZ = 1 : size(img3d,3)
+        %% Create perimeter mask
+        if exist('perimImage3D', 'var')
+            imgToPerim = perimImage3D(:, :, coordZ);
+        else
+            imgToPerim = img3d(:, :, coordZ);
+        end
+        
+        imgToPerim = imdilate(imgToPerim>0, strel( 'disk', 5));
+        imgToPerim = imerode(imgToPerim, strel('disk', 5));
+        zPerimMask = bwperim(imgToPerim);
+        finalPerim3D(:, :, coordZ) = zPerimMask;
+               
+        if sum(zPerimMask(:)) < pixelSizeThreshold || sum(sum(img3d(:, :, coordZ))) < pixelSizeThreshold
+            continue
+        end
+        
+        %% Obtaining the center of the cylinder
+        [x, y] = find(zPerimMask > 0);
+        centroidCoordZ = mean([x, y]); % Centroid of each real Y of the cylinder
+        centroidX = centroidCoordZ(1);
+        centroidY = centroidCoordZ(2);
+        
         [x, y] = find(img3d(:, :, coordZ) > 0);
         
-        if length(x) > pixelSizeThreshold
-            centroidCoordZ = mean([x, y]); % Centroid of each real Y of the cylinder
-            centroidX = centroidCoordZ(1);
-            centroidY = centroidCoordZ(2);
-
-            %% Create perimeter mask
-            mask=false(size(img3d(:,:,1)));
-            mask(img3d(:,:,coordZ)>0)=1;
-            [x,y]=find(mask);
-
-            if exist('perimImage3D', 'var')
-                imgToPerim = perimImage3D(:, :, coordZ);
+        [xPerim, yPerim]=find(finalPerim3D(:, :, coordZ));
+        
+        %angles coord perim regarding centroid
+        anglePerimCoord = atan2(yPerim - centroidY, xPerim - centroidX);
+        %find the sorted order
+        [anglePerimCoordSort,~] = sort(anglePerimCoord);
+        
+        %             anglePerimCoordSort = repmat(anglePerimCoordSort, 3, 1);
+        %             x = repmat(x, 3, 1);
+        %             y = repmat(y, 3, 1);
+        
+        %% labelled mask
+        maskLabel=img3d(:,:,coordZ);
+        %angles label coord regarding centroid
+        angleLabelCoord = atan2(y - centroidY, x - centroidX);
+        
+        %% Assing label to pixels of perimeters
+        %If a perimeter coordinate have no label pixels in a range of pi/45 radians, it label is 0
+        orderedLabels = zeros(1,length(anglePerimCoordSort));
+        for nCoord = 1:length(anglePerimCoordSort)
+            distances = abs(angleLabelCoord - anglePerimCoordSort(nCoord));
+            
+            minDistance3D = 0.1;
+            %[distancesOrdered, orderedIndices] = sort(distances, 'Ascend');
+            [ind] = find(distances < minDistance3D);
+            [closerDistances] = distances(distances < minDistance3D);
+            [closerDistancesOrdered, indicesOrdered] = sort(closerDistances, 'Ascend');
+            ind = ind(indicesOrdered);
+            indicesClosest = sub2ind(size(maskLabel), x(ind), y(ind));
+            closestLabels = maskLabel(indicesClosest);
+            
+            closestLabelsUnique = unique(closestLabels);
+%             if length(closestLabelsUnique) > 1
+%                 counting = arrayfun( @(x)sum(closestLabels==x), unique(closestLabels) );% / length(closestLabels);
+%                 [~, modeInd] = max(counting);
+%                 remainingIndices = setdiff(1:length(closestLabelsUnique), modeInd);
+%                 differenceInPercentage = pdist2(counting(modeInd), counting(remainingIndices));
+%                 if any(differenceInPercentage < 4)
+%                     %pixelLabel = {closestLabelsUnique(modeInd), closestLabelsUnique(remainingIndices(differenceInPercentage < 3))};
+%                     pixelLabel = 0;
+%                     % SELECT MEAN OF MIN DISTANCES OF THE SIMILAR
+%                 else
+%                     pixelLabel = closestLabelsUnique(modeInd);
+%                 end
+            if ~isempty(closestLabels)
+                pixelLabel = closestLabels(1);
             else
-                imgToPerim = img3d(:, :, coordZ);
+                pixelLabel = 0;
             end
-            
-            if sum(imgToPerim(:)) == 0
-                continue
-            end
-            
-            imgToPerim = imdilate(imgToPerim>0, strel( 'disk', 5));
-            imgToPerim = imerode(imgToPerim, strel('disk', 5));
-            zPerimMask = bwperim(imgToPerim);
-            finalPerim3D(:, :, coordZ) = zPerimMask;
-            
-            [xPerim, yPerim]=find(finalPerim3D(:, :, coordZ));
-            
-            %angles coord perim regarding centroid
-            anglePerimCoord = atan2(yPerim - centroidY, xPerim - centroidX);
-            %find the sorted order
-            [anglePerimCoordSort,~] = sort(anglePerimCoord);
-            
-%             anglePerimCoordSort = repmat(anglePerimCoordSort, 3, 1);
-%             x = repmat(x, 3, 1);
-%             y = repmat(y, 3, 1);
-
-            %% labelled mask
-            maskLabel=img3d(:,:,coordZ);
-            %angles label coord regarding centroid
-            angleLabelCoord = atan2(y - centroidY, x - centroidX);
-
-            %% Assing label to pixels of perimeters
-            %If a perimeter coordinate have no label pixels in a range of pi/45 radians, it label is 0
-            orderedLabels = zeros(1,length(anglePerimCoordSort));
-            for nCoord = 1:length(anglePerimCoordSort)
-                [M,ind]=min(abs(angleLabelCoord - anglePerimCoordSort(nCoord)));
-                orderedLabels(nCoord)=maskLabel(x(ind(1)),y(ind(1)));
-            end
-
-            imgFinalCoordinates3x{coordZ} = repmat(orderedLabels,1,3);
-            imgFinalCoordinates{coordZ} = orderedLabels;
-            borderCells{coordZ} = orderedLabels(1);
+            orderedLabels(nCoord) = pixelLabel;
         end
+        
+        %% Equalize border of the gland
+        if previousRowsSize ~= 0
+            orderedLabels = imresize(orderedLabels, [1 round(previousRowsSize*0.7 + length(orderedLabels)*0.3)], 'nearest');
+        end
+        previousRowsSize = length(orderedLabels);
+        imgFinalCoordinates3x{coordZ} = repmat(orderedLabels,1,3);
+        imgFinalCoordinates{coordZ} = orderedLabels;
+        borderCells{coordZ} = orderedLabels(1);
     end
     
     %exportAsImageSequence(perimImage3D, outputDir, colours, -1);
@@ -91,9 +120,13 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     borderCells(borderCells == 0) = [];
 
     %% Reconstruct deployed img
+    
     ySize=max(cellfun(@length, imgFinalCoordinates3x));
     deployedImg3x = zeros(size(img3d,3),ySize);
     deployedImg = zeros(size(img3d,3),ySize);
+    
+    nEmptyPixelsPrevious = 0;
+    nEmptyPixels3xPrevious = 0;
     for coordZ = 1 : size(img3d,3)
         rowOfCoord3x = imgFinalCoordinates3x{coordZ};
         rowOfCoord = imgFinalCoordinates{coordZ};
@@ -106,6 +139,8 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
         deployedImg3x(coordZ, 1 + nEmptyPixels3x : length(rowOfCoord3x) + nEmptyPixels3x) = rowOfCoord3x;
         deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
 
+        nEmptyPixelsPrevious = nEmptyPixels;
+        nEmptyPixels3xPrevious = nEmptyPixels3x;
     end
 %     figure;imshow(deployedImg,colours)
 %     figure;imshow(deployedImgMask,colours)
