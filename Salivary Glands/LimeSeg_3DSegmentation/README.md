@@ -20,14 +20,15 @@ Extracted from:
 2. Now you have to improve the brightness and contrast, you can do this by clicking in "Image" -> "Adjust" -> "Brightness/Contrast". You can either click on 'Auto' or change manually the parameters until you obtain a good result in which the cell lines are clear, but not too saturated. Then, press on 'Apply' and apply it to all the stack.
 
 
-## Step 1:Basic	lumen's pipeline
-1. Open the images(file->save as->Image Sequence in FIJI in our case) which contain the lumen in Photoshop.
+## Step 1: Basic lumen's pipeline
 
-2. Paint the lumen region like	a black region with white borders:
+1. Open the images (file->save as->Image Sequence in FIJI in our case) which contain the lumen in Photoshop.
+
+2. Paint the lumen region like a black region with white borders:
 	
-	1. Create a new layer  (layer->new layer).   
+	1. Create a new layer (layer->new layer).   
 	
-	1. Now,you have to select the paint brush at the left screen with the black color (color:0,0,0)
+	1. Now,you have to select the paint brush at the left screen with the black color (color: 0,0,0)
 	and white color (color:255,255,255).
 	
 	1. With this function you can select	the	lumen	point	to	point by typing shift key+left click.Segment the lumen 		like a black region,you have to use the black color now(you can type the letter X to change from a color to the other color).
