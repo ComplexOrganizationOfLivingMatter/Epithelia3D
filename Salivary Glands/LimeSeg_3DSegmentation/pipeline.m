@@ -45,6 +45,7 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
 
             %% Get apical layer by dilating the lumen
             [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
+            exportAsImageSequence(apicalLayer, fullfile(outputDir, 'Apical_Labelled'), colours, tipValue);
             
             %% Export image sequence
             [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
@@ -81,7 +82,7 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
                 %% Calculate neighbours and plot missing cells
                 [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue);
                 [apicalLayer] = getApicalFrom3DImage(lumenImage, labelledImage);
-                exportAsImageSequence(apicalLayer, fullfile(outputDir, 'Apical_Labelled'), colours, tipValue)
+                exportAsImageSequence(apicalLayer, fullfile(outputDir, 'Apical_Labelled'), colours, tipValue);
                 [answer, apical3dInfo, notFoundCellsApical, basal3dInfo, notFoundCellsBasal] = calculateMissingCells(labelledImage, lumenImage, apicalLayer, basalLayer, colours, noValidCells);
             else
                 [answer] = isEverythingCorrect();
@@ -91,29 +92,14 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
         %% Save apical and basal 3d information
         save(fullfile(selpath, 'Results', '3d_layers_info.mat'), 'labelledImage', 'basalLayer', 'apicalLayer', 'apical3dInfo', 'basal3dInfo', 'colours', 'lumenImage','glandOrientation', '-v7.3')
 
-        %% Calculate poligon distribution and Unroll the tube.
+        %% Calculate poligon distribution
         [polygon_distribution_Apical] = calculate_polygon_distribution(cellfun(@length, apical3dInfo.neighbourhood), validCells);
         [polygon_distribution_Basal] = calculate_polygon_distribution(cellfun(@length, basal3dInfo.neighbourhood), validCells);
         neighbours_data = table(apical3dInfo.neighbourhood, basal3dInfo.neighbourhood);
         polygon_distribution = table(polygon_distribution_Apical, polygon_distribution_Basal);
         neighbours_data.Properties.VariableNames = {'Apical','Basal'};
         polygon_distribution.Properties.VariableNames = {'Apical','Basal'};
-
-%         [neighs_apical,side_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayer, fullfile(selpath,  'Results', 'apical'), noValidCells, colours);
-%         [neighs_basal,side_cells_basal] = unrollTube(basalLayer, fullfile(selpath, 'Results', 'basal'), noValidCells, colours, apicalAreaValidCells);
-%                 
-%         missingCellsUnroll = find(side_cells_basal<3 | side_cells_apical<3);
-%         if isempty(missingCellsUnroll) == 0
-%             msgbox(strcat('CARE!! Missing (or ill formed) cells at unrolltube: ', strjoin(arrayfun(@num2str, missingCellsUnroll, 'UniformOutput', false), ', ')))
-%         end
-%         
-%         [polygon_distribution_UnrollTubeApical] = calculate_polygon_distribution(side_cells_apical, validCells);
-%         [polygon_distribution_UnrollTubeBasal] = calculate_polygon_distribution(side_cells_basal, validCells);
-%         neighbours_UnrollTube = table(neighs_apical,neighs_basal);
-%         polygon_distribution_UnrollTube = table(polygon_distribution_UnrollTubeApical,polygon_distribution_UnrollTubeBasal);
-%         neighbours_UnrollTube.Properties.VariableNames = {'Apical','Basal'};
-%         polygon_distribution_UnrollTube.Properties.VariableNames = {'Apical','Basal'};
-%         
+         
         %% Export to excel cellular features
         calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,selpath)
     end

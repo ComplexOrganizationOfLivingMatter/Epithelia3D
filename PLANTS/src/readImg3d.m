@@ -1,6 +1,6 @@
-function img3d = readImg3d(sampleName,zScaleFactorHyp)
+function img3d = readImg3d(folder,sampleName,zScaleFactorHyp)
     
-    folderName = ['data\' sampleName '\splittedImage\'];
+    folderName = [folder sampleName '\splittedImage\'];
     dirImg = dir([folderName '*.tif']);
     totalImg = cell(size(dirImg,1),1);
     for nImg = 1 :size(dirImg,1)
@@ -11,6 +11,6 @@ function img3d = readImg3d(sampleName,zScaleFactorHyp)
     img3d=uint16(img3d);
     img3d=imresize3(img3d,[size(img3d,1),size(img3d,2),size(img3d,3)/zScaleFactorHyp],'nearest');
 
-    save(['data\image3d_' sampleName '.mat'],'img3d','-v7.3');
+    save([folder 'image3d_' sampleName '.mat'],'img3d','-v7.3');
 
 end
