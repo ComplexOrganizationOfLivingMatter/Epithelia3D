@@ -21,33 +21,60 @@ Extracted from:
 
 
 ## Step 1:Basic	lumen's pipeline
-1. Open the images which contain the lumen in Photoshop.
+1. Open the images(file->save as->Image Sequence in FIJI in our case) which contain the lumen in Photoshop.
 
 2. Paint the lumen region like	a black region with white borders:
 	
 	1. Create a new layer  (layer->new layer).   
 	
-	1. Now,you have to select the paint brush at the left screen with the black color (Black color:0,0,0
-	and White color:255,255,255).
+	1. Now,you have to select the paint brush at the left screen with the black color (color:0,0,0)
+	and white color (color:255,255,255).
 	
-	1. With this function you can select	the	lumen	point	to	point by typing shift key+left click.
+	1. With this function you can select	the	lumen	point	to	point by typing shift key+left click.Segment the lumen 		like a black region,you have to use the black color now(you can type the letter X to change from a color to the other color).
 	
-	1. After segmenting the lumen, you have to paint the lumen like a black region with the paint bucket tool,ensure that                     the whole lumen is black, you can colour pixels which are not black with the pencil.
+	1. After segmenting the lumen, you have to paint the lumen like a black region with the paint bucket tool,ensure that                     the whole lumen is black, you can colour pixels which are not black with the pencil.*
 	
-	1. Select the black region with the magic wand by typing left click in the region, and change the color to white(type 	x		if 	you selected in the previous steps) to paint the borders as white in the next steps.
+	*note: If the lumen is divided in different pieces, you have to segment each lumen's piece one by one in the same image 		as"islands".
 	
-	1. Select the option "selection->modify->expand", and type 5 pixels.
+	1. Select the black region with the magic wand	(this tool allows you to choose specific regions of an image)	by typing left 		click in the region, and change the color to white(type x	if you selected it in the previous steps).
+	
+	1. Select the option "selection->modify->expand", and type 5 pixels.A new white border should have appeared with the thickness 		indicated previosuly.
+	
+	1. Type right click in the layers and select the option merging layers (combine layers) to decrease the final length of the 		image.
+	
+	1. Save the changes done.
 	
 
+3. Afterwards, you are going to capture the lumen region and not the gland:
 
-
-
-
+	1. Copy the images which contain the lumen to the lumen's folder.
+	
+	1. Open an image of the lumen's folder.
+	
+	1. Add a new layer and paint it using the white color.
+	
+	1. Open the same image from the image sequence, which contains the lumen like black a region.
+	
+	1. Select the black region (lumen without borders) with the magic wand in the left screen and copy it.Then paste it in the white  	image which corresponds to the same image (z).
+	
+	1. Merge the layers and save the changes done.
+	
+	1. Finally you have to paint the images which don't contain the lumen as white images, you can do this automatically 	                    creating an action in photoshop (actions->new action), from this moment photoshop will capture all the things that                      you do,therefore you have to do these steps:
+	
+	   Add a new layer-> paint it as white.
+	   
+	   Save the image
+	   
+	   Close image
+	
+	  Later, click in file->automate->bundle , select the action that you have created and selected a folder which only contains the 	   images that don't contain the lumen because this action is applied to all the images in the folder.After this copy them to the	lumen's folder
+	
+	Thus, copy the images which don´t contain the lumen in a separated folder and do that action for that folder.After that, copy 		that images to the lumen's folder.
 
 ## Step 2: Basic cell's pipeline
 
 1. Open the image, whose cell outlines can be better segmented.
-2. Select "ellipse" and put an ellipsoidal ROI near the nucleus, but with a slightly bigger radius. Press 'T'.
+2. Select "ellipse" and put an ellipsoidal ROI near to the basal region of the cell*. Press 'T'.
 3. Plugins -> Limeseg -> Sphere Seg (advanced).
 4. Change parameters (D_0 is optional and Z_Scale is mandatory). To calculate Z_Scale you should divide 'Voxel depth'/'Pixel width': in our case 4.06. Also you should select a color. Tick 'ClearOptimizer'.
 5. Press 'Accept' and wait for the 3D objects to be full and smooth.
@@ -59,6 +86,10 @@ Extracted from:
 	2. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Cells/OutputLimeSeg/'
 	3. Press 'SaveStateToXmlPly'. A directory will be created for each cell. Don't care about the ids of the cell.
 	
+	
+	
+ *Note:if the cell's shapes were not	correct, you could try to improve the shape by changing the positions of the seeds and positioning them not only in the basal region, for instance in the middle of the cell.
+ 
 ### Refining the cells
 
 If a cell is not properly formed, try put the seed closer to the region not covered. You should also consider put a bigger ellipsoidal ROI.
@@ -80,44 +111,6 @@ If you have to leave and you have not finish the salivary gland, you can always 
 - You can show all the ROIs you have created, by pressing 'Show all' in the ROI Manager.
 - Put the ROIs near the basal region of the cells to delimitate correctly the lumen and this way the cells won't be place inside the lumen.
 
-## Step 2: Basic lumen's pipeline
-
-1. Segment the lumen of the images, taking a bit more that is strictly at your sight, i.e. you should paint as a lumen a bit of apical cells. If you don’t know how to segment the lumen of each image, you can do it with Photoshop following the next steps:
-
-	1. Load the image which contains the lumen (file->open->select your image).
-	
-	1. Create a new layer (layer->new layer).
-	
-	1. Now,you have to select the paint brush at the left screen.
-	
-	1. With this function you can segment the lumen point to point by typing shift key+left click.(
-		you should always locate the segment point of the ROI slightly far from the lumen).
-	
-	1. After segmenting the lumen, you have to paint the lumen like a black region with the paint bucket tool,ensure that                     the whole lumen is black by clicking in the lumen region twice , because if there is some space between the lumen                       border and the black region,there will be an undesireable lines around the lumen.Moreover you have to paint the rest                     of the image of white colour.
-	
-		*note: If the lumen is divided in different pieces, you have to segment each lumen's piece one by one in the same image 		as"islands".
-
-	1. Finally you have to paint the images which don't contain the lumen as white images, you can do this automatically 	                    creating an action in photoshop (actions->new action), from this moment photoshop will capture all the things that                      you do,therefore you have to do these steps:
-	
-	   Add a new layer-> paint it as white.
-	   
-	   Save the image
-	   
-	   Close image
-	
-	  Later, click in file->automate->bundle , select the action that you have created and selected a folder which only contains the 	   images that don't contain the lumen because this action is applied to all the images in the folder.
-	
-2. Once the lumen is properly segmented, import it to FIJI.
-3. Now you have 2 options:
-	1. As if the lumen was a cell, put an spheric ROI, change the parameters (low F_pressure, high D_0) and get a proper lumen.
-	2. (OPTION WE ARE USING) Follow the steps of [LimeSeg](http://imagej.net/LimeSeg) section 'Starting with a ROI skeleton', where the seeds are selected to build the egg chamber skeleton. Select a ROI polygon for each lumen frame. It is really important wrap the segmented black lumen locating the polygon ROI over the white zone (never mixing white and black zones). If you have 2 or more separated lumens you should only catch one of them (not more than 1 ROI per Z) . Proper experimental parameters are: D_0 = 10 and F_pressure = -0.01
-	
-4. There has to be a full lumen, with no holes.
-5. Save your results:
-	1. First the ROI. 'Roi Manager -> More -> Save...'
-	2. Plugins -> Limeseg -> Show GUI
-	3. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Lumen/OutputLimeSeg/'
-	4. Press 'SaveStateToXmlPly'
 
 ## Step 3: Matlab's refining process
 
