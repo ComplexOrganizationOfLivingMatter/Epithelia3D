@@ -35,8 +35,6 @@ Extracted from:
 	
 	1. After segmenting the lumen, you have to paint the lumen like a black region with the paint bucket tool,ensure that                     the whole lumen is black, you can colour pixels which are not black with the pencil.*
 	
-	*note: If the lumen is divided in different pieces, you have to segment each lumen's piece one by one in the same image 		as"islands".
-	
 	1. Select the black region with the magic wand	(this tool allows you to choose specific regions of an image)	by typing left 		click in the region, and change the color to white(type x	if you selected it in the previous steps).
 	
 	1. Select the option "selection->modify->expand", and type 5 pixels.A new border should have appeared with the thickness 		indicated previosuly, colour it with the white colour.
@@ -45,6 +43,7 @@ Extracted from:
 	
 	1. Save the changes done.
 	
+	*note: If the lumen is divided in different pieces, you have to segment each lumen's piece one by one in the same image 		as"islands".
 
 3. Afterwards, you are going to capture the lumen region and not the gland:
 
