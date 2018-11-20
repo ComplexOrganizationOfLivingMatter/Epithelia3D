@@ -200,6 +200,8 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
     title('euler neighbours 3D')
     xlabel('surface ratio')
     ylabel('neighbours total')
+    ylim([0,15]);
+
     print(h,[path2save 'euler3D'],'-dtiff','-r300')
     close all
 

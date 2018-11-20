@@ -31,10 +31,10 @@ Extracted from:
 	
 	1. Create a new layer (layer->new layer).   
 	
-	1. Now, you have to select the paint brush at the left screen with the black color (color: 0,0,0)
+	1. Select the paint brush at the left screen with the black color (color: 0,0,0)
 	and white color (color: 255,255,255).
 	
-	1. With this function you can select the lumen point to point by typing shift key+left click.Segment the lumen like a black region,you have to use the black color now(you can type the letter X to change from a color to the other color).
+	1. With this function you can select the lumen point to point by typing shift key+left click.Segment the lumen like a black region, you have to use the black color now.
 	
 	1. After segmenting the lumen, you have to paint the lumen like a black region with the paint bucket tool,ensure that the whole lumen is black, you can colour pixels which are not black with the pencil.*
 	
