@@ -280,7 +280,7 @@ function getStatsAndRepresentationsEulerLewis3DAcummMeanStd(numNeighPerSurface,n
 
     %% Euler 3D
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');   
-    surfRatios = log(surfRatios);
+    %surfRatios = log(surfRatios);
     % All samples as points
     for numSample = 1:size(meanNeighBasalAcum, 1)
         for numSR = 1:length(surfRatios)
