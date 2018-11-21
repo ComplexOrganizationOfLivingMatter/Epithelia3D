@@ -280,6 +280,26 @@ function getStatsAndRepresentationsEulerLewis3DAcummMeanStd(numNeighPerSurface,n
 
     %% Euler 3D
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');   
+    surfRatios = log(surfRatios);
+    % All samples as points
+    for numSample = 1:size(meanNeighBasalAcum, 1)
+        for numSR = 1:length(surfRatios)
+            actualNeighsAcum = meanNeighBasalAcum{numSample};
+            plot(surfRatios(numSR), actualNeighsAcum(numSR), 'o', 'MarkerSize',5, 'MarkerEdgeColor','blue')
+            hold on;
+        end
+    end
+
+    %errorbar(repmat(surfRatios, size(meanNeighBasalAcum, 1), 1), vertcat(meanNeighBasalAcum{:}), vertcat(stdNeighBasalAcum{:}), 'o')
+    
+    title('euler neighbours 3D')
+    xlabel('surface ratio')
+    ylabel('neighbours total')
+    print(h,[path2save 'euler3D_allSamples'],'-dtiff','-r300')
+    hold off;
+    
+    h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');
+    % Mean of Samples
     meanPoolNeighBasalAcum = meanNeighBasalAcum{1,:};
     stdPoolNeighBasalAcum = stdNeighBasalAcum{1,:};
     nPool = nCells(1);
