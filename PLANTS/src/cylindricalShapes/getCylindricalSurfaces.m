@@ -5,6 +5,10 @@ function [layer1,layer2,setOfCells] = getCylindricalSurfaces(folder,sampleName,r
         img3d = readImg3d(folder, strrep(sampleName,' ','_'),zScaleFactorHyp);
         %function for rotate 3d image toward the Y axis.
         img3d = rotateImg3(img3d);
+        [x,y,z]=ind2sub(size(img3d),find(img3d>0));
+        cropImg = img3d(min(x):max(x),min(y):max(y),min(z):max(z));
+        img3d = addTipsImg3D(2,cropImg);
+        paint3D((imresize3(img3d,0.1,'nearest')>0))
         save([folder sampleName '\rotatedImage3d_' strrep(sampleName,' ','_') '.mat'],'-v7.3','img3d');
     else
         load([folder sampleName '\rotatedImage3d_' strrep(sampleName,' ','_') '.mat'],'img3d');
@@ -34,8 +38,8 @@ function [layer1,layer2,setOfCells] = getCylindricalSurfaces(folder,sampleName,r
     %% Get center and axes length from hypocotyl
     if ~exist([folder sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'file')
         
-        [centers{1},centers{2}, radiiBasalLayer1, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1,layer2,sampleName,'Layer1');
-        [centers{3},centers{4}, radiiBasalLayer2, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2,layer3,sampleName,'Layer2');
+        [centers{1},centers{2}, radiiBasalLayer1, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1,layer2,folder,sampleName,'Layer1');
+        [centers{3},centers{4}, radiiBasalLayer2, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2,layer3,folder,sampleName,'Layer2');
  
         save([folder sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
         

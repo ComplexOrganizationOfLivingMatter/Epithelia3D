@@ -56,8 +56,14 @@ function surfaceProjection( pathV5data,nameOfFolder,directory2save,path3dVoronoi
 %         %save data for each random
 %         name2save=strrep(pathV5data(i).name,'.mat','');
 %         save([directory2save kindProjection '\' nameOfFolder name2save '\'  name2save '.mat'],'listLOriginalProjection','listSeedsProjected','listDataAnglesTransitionMeasuredInBasal','listDataAnglesTransitionMeasuredInApical','listDataAnglesNoTransitionMeasuredInBasal','listDataAnglesNoTransitionMeasuredInApical','totalEdges','totalAngles','totalCellMotifs')
+        
+        
+        
+        
         name2save=strrep(pathV5data(i).name,'.mat','');
-        save([directory2save kindProjection '\' nameOfFolder name2save '\'  name2save '.mat'],'listLOriginalProjection','listSeedsProjected','-v7.3')
+        nameSplit = strsplit(name2save,'_');
+        diagFolder = [lower(nameSplit{end-1}) nameSplit{end}];
+        save([directory2save kindProjection '\' nameOfFolder diagFolder '\' name2save '\'  name2save '.mat'],'listLOriginalProjection','listSeedsProjected','-v7.3')
 
         disp(['Projections of ' kindProjection ' ' nameOfFolder name2save ' completed'])
 
