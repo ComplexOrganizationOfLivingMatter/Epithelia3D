@@ -9,8 +9,8 @@ function img3d = readImg3d(folder,sampleName,zScaleFactorHyp)
 
     img3d = cat(3,totalImg{:});
     img3d=uint16(img3d);
-    img3d=imresize3(img3d,[size(img3d,1),size(img3d,2),size(img3d,3)/zScaleFactorHyp],'nearest');
+    img3d=imresize3(img3d,[size(img3d,1),size(img3d,2),round(size(img3d,3)*zScaleFactorHyp)],'nearest');
 
-    save([folder 'image3d_' sampleName '.mat'],'img3d','-v7.3');
+    save([folder sampleName '\image3d_' sampleName '.mat'],'img3d','-v7.3');
 
 end
