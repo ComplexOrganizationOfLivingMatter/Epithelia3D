@@ -7,8 +7,9 @@ function [labelledImage] = smoothObject(labelledImage,pixelLocations, numCell)
         tf = inShape(cellShape,qx,qy,qz);
         inCellIndices = sub2ind(size(labelledImage), qx(tf), qy(tf), qz(tf));
         labelledImage(inCellIndices) = numCell;
-        c = imfill(double(labelledImage==numCell),  4, 'holes');
-        labelledImage(c>0) = numCell;
+        filledCell = imfill(double(labelledImage==numCell),  4, 'holes');
+        filledCellOpen = imopen(filledCell, strel('sphere', 1));
+        labelledImage(filledCellOpen>0) = numCell;
         %labelledImage(filledCell) = numCell;
     catch ex
         ex.rethrow();
