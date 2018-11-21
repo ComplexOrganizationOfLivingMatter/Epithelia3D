@@ -5,19 +5,25 @@ function [finalImage] = fillEmptySpacesByWatershed2D(labelMask, invalidRegion, c
     %erodingRegion = strel('disk', 2);
     labelMaskCleaned = bwareaopen(labelMask, 10);
     labelMaskCleaned = labelMask .* labelMaskCleaned;
+    lineStrel = strel('line', 3, 90);
     labelMaskEroded = zeros(size(labelMask));
     for numCell = 1:max(labelMask(:))
-        %labelMaskPerim = bwperim(labelMask == numCell, 4);
-        %labelMaskEroded(labelMaskPerim) = 0;
-        %erodedCell = imerode(labelMask == numCell, erodingRegion);
-        dilatedCell = bwmorph(labelMaskCleaned == numCell, 'shrink', 2);
-        dilatedCell = bwmorph(dilatedCell, 'close', 2);
-        detectedBranches = edge(dilatedCell,'Sobel');
-        detectedBranches = imclose(detectedBranches, strel(ones(3)));
-%         dilatedCell = imdilate(dilatedCell, erodingRegion);
-%         dilatedCell = bwmorph(dilatedCell, 'majority');
-%         erodedCell = imerode(dilatedCell, erodingRegion);
-        labelMaskEroded(dilatedCell & ~detectedBranches) = numCell;
+        % You always need to dilate the cell to unify possible separated
+        % cells
+        dilatedCell = imclose(labelMaskCleaned == numCell, strel('disk', 10));
+        % Option 1: Shrink obtaining branches and remove the branches
+        dilatedCell = bwmorph(dilatedCell, 'shrink', 3);
+        %dilatedCell = bwmorph(dilatedCell, 'close', 2);
+        %detectedBranches = edge(dilatedCell,'Sobel');
+        dilatedCellNoBranches = bwmorph(dilatedCell, 'spur');
+        figure; imshow(dilatedCells);
+        %detectedBranches = imclose(detectedBranches, strel(ones(3)));
+        labelMaskEroded(dilatedCellNoBranches) = numCell;
+%         % Option 2: erode the sides of cells horizontally
+%         %dilatedCell = bwmorph(dilatedCell, 'shrink', 2);
+%         smoothedCell = imerode(dilatedCell, lineStrel);
+%         smoothedCellFilled = imfill(smoothedCell, 'holes');
+%         labelMaskEroded(smoothedCellFilled) = numCell;
     end
     
     closedNeighbours = strel([0 1 0; 1 0 1; 0 1 0]);
