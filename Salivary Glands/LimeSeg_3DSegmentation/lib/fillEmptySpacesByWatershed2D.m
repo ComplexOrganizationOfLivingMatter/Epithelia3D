@@ -12,10 +12,12 @@ function [finalImage] = fillEmptySpacesByWatershed2D(labelMask, invalidRegion, c
         %erodedCell = imerode(labelMask == numCell, erodingRegion);
         dilatedCell = bwmorph(labelMaskCleaned == numCell, 'shrink', 2);
         dilatedCell = bwmorph(dilatedCell, 'close', 2);
+        detectedBranches = edge(dilatedCell,'Sobel');
+        detectedBranches = imclose(detectedBranches, strel(ones(3)));
 %         dilatedCell = imdilate(dilatedCell, erodingRegion);
 %         dilatedCell = bwmorph(dilatedCell, 'majority');
 %         erodedCell = imerode(dilatedCell, erodingRegion);
-        labelMaskEroded(dilatedCell) = numCell;
+        labelMaskEroded(dilatedCell & ~detectedBranches) = numCell;
     end
     
     closedNeighbours = strel([0 1 0; 1 0 1; 0 1 0]);
