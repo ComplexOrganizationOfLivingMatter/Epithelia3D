@@ -2,25 +2,20 @@ function [finalImage] = fillEmptySpacesByWatershed2D(labelMask, invalidRegion, c
 %FILLEMPTYSPACESBYWATERSHED Summary of this function goes here
 %   Detailed explanation goes here
     
-    %erodingRegion = strel('disk', 2);
+    %% Create perim of cells
     labelMaskCleaned = bwareaopen(labelMask, 10);
     labelMaskCleaned = labelMask .* labelMaskCleaned;
     labelMaskEroded = zeros(size(labelMask));
     for numCell = 1:max(labelMask(:))
-        %labelMaskPerim = bwperim(labelMask == numCell, 4);
-        %labelMaskEroded(labelMaskPerim) = 0;
-        %erodedCell = imerode(labelMask == numCell, erodingRegion);
-        dilatedCell = bwmorph(labelMaskCleaned == numCell, 'shrink', 2);
-        dilatedCell = bwmorph(dilatedCell, 'close', 2);
-%         dilatedCell = imdilate(dilatedCell, erodingRegion);
-%         dilatedCell = bwmorph(dilatedCell, 'majority');
-%         erodedCell = imerode(dilatedCell, erodingRegion);
-        labelMaskEroded(dilatedCell) = numCell;
+        % You always need to dilate the cell to unify possible separated
+        % cells
+        dilatedCell = imclose(labelMaskCleaned == numCell, strel('disk', 10));
+        labelMaskEroded (imerode(dilatedCell, strel('disk', 2))) = numCell;
     end
     
     closedNeighbours = strel([0 1 0; 1 0 1; 0 1 0]);
     labelMaskFinal = labelMaskEroded;
-    %Remove neighbouring cells
+    %% Remove neighbouring cells
     for numCell = 1:max(labelMask(:))
         actualVicinity = imdilate(labelMaskEroded == numCell, closedNeighbours);
         neighs = unique(labelMaskEroded(actualVicinity));
@@ -56,6 +51,7 @@ function [finalImage] = fillEmptySpacesByWatershed2D(labelMask, invalidRegion, c
         unifiedCellsImage(maskWater == nCell) = values(values~=0);
     end
     
+    %% Unify splitted cells
     [imgWater_Unified] = unifyingNearCells(unifiedCellsImage, invalidRegion);
     
     finalImage = double(imgWater_Unified);
