@@ -39,6 +39,8 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_Simulations(pathFile, su
         
         [verticesInfo] = removingVeryCloseVertices(verticesInfo, maxDistance);
         
+        [~, verticesInfo] = detectVerticesOfEdges(extendedImage, verticesInfo, validCellsFinal);
+        
         %Grouping cells
         cellWithVertices = groupingVerticesPerCellSurface(L_img, verticesInfo, verticesNoValidCellsInfo, [], 1, []);
         
