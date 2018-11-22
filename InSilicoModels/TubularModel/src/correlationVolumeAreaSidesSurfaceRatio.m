@@ -1,16 +1,7 @@
-function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram)
+function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram,surfaceRatios,reductionFactor,W_init,H_init,typeProjection,nSeeds,nRealizations)
 %CORRELATIONVOLUMEAREASIDESSURFACERATIO Summary of this function goes here
 %   Detailed explanation goes here
 
-    typeProjection = 'expansion';
-    
-    nRealizations = 20;
-    W_init = 512;
-    H_init = 4096;
-    nSeeds = 200;
-    %Always start with SR = 1
-    surfaceRatios = 1./(1:-0.1:0.1);
-    reductionFactor = 2;
     totalCells = 1:nSeeds;
     namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],surfaceRatios,'UniformOutput', false);
     numNeighPerSurface = cell(nRealizations,1);
