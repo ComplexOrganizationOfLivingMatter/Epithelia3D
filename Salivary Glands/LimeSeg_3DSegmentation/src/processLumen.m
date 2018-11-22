@@ -48,7 +48,7 @@ function [labelledImage, lumenImage, glandOrientation] = processLumen(lumenDir, 
     
     [x, y, z] = ind2sub(size(lumenImage), find(lumenImage));
     pixelLocations = [x, y, z];
-    [lumenImage] = smoothObject(lumenImage, pixelLocations, 1);
+    [lumenImage] = smoothObject(lumenImage, pixelLocations, -1);
     
 %     lumenImageSmoothed = imdilate(lumenImageSmoothed, strel('sphere', 5));
 %     lumenImage2 = imerode(lumenImageSmoothed, strel('sphere', 5));
