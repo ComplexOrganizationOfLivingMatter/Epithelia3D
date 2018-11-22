@@ -16,7 +16,7 @@ function [] = createSamiraFormatExcel_NaturalTissues(pathFile, nameOfSimulation)
     
     [verticesInfoOf3Fold] = removingVeryCloseVertices(verticesInfoOf3Fold, maxDistance);
     
-    [allVertices] = detectVerticesOfEdges(midSectionImage, verticesInfoOf3Fold, validCellsFinal);
+    [allVertices] = detectVerticesOfEdges(midSectionImage, verticesInfoOf3Fold, validCellsFinal, maxDistance);
 
 
     %midCells = unique(extendedImage(finalImageWithValidCells>0));

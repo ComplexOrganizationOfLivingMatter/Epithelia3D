@@ -1,8 +1,6 @@
-function [allVertices, verticesInfo] = detectVerticesOfEdges(inputImage, verticesInfoOf3Fold, validCellsFinal)
+function [allVertices, verticesInfo] = detectVerticesOfEdges(inputImage, verticesInfoOf3Fold, validCellsFinal, maxDistance)
 %DETECTVERTICESOFEDGES Summary of this function goes here
 %   Detailed explanation goes here
-
-    maxDistance = 4;
     
     imgToCalculateCorners = inputImage == 0;
     
@@ -21,8 +19,8 @@ function [allVertices, verticesInfo] = detectVerticesOfEdges(inputImage, vertice
     corners = detectHarrisFeatures(imgToCalculateCorners, 'FilterSize', 3, 'MinQuality', 0.01);
     corners = corners.selectUniform(9*length(validCellsFinal), size(imgToCalculateCorners));
     
-%     figure;imshow(midSectionImgToCalculateCorners); hold on;
-%     plot(corners.selectUniform(9*length(validCellsFinal), size(midSectionImgToCalculateCorners)));
+%     figure;imshow(inputImage); hold on;
+%     plot(corners.selectUniform(9*length(validCellsFinal), size(inputImage)));
     
     for numVertexCells = 1:corners.Count
         %hold on; plot(corners.Location(numVertexCells, 1), corners.Location(numVertexCells, 2), 'r+');
