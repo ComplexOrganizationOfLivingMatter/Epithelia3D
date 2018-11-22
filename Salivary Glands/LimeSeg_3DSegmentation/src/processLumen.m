@@ -10,8 +10,14 @@ function [labelledImage, lumenImage, glandOrientation] = processLumen(lumenDir, 
         imgZ = imread(fullfile(lumenStack(numZ).folder, lumenStack(numZ).name));
         
         [y, x] = find(imgZ == 0);
+        ry=round(y*resizeImg);
+        rx=round(x*resizeImg);
+        
+        rx(rx<1)=1;
+        ry(ry<1)=1;
+      
         if isempty(x) == 0
-            lumenIndices = sub2ind(size(lumenImage), round(x*resizeImg), round(y*resizeImg), repmat(numZ, length(x), 1));
+            lumenIndices = sub2ind(size(lumenImage), round(rx), round(ry), repmat(numZ, length(x), 1));
             lumenImage(lumenIndices) = 1;
         end
     end
