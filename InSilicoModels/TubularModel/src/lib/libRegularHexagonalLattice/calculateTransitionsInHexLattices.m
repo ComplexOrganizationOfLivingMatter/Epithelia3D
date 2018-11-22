@@ -1,4 +1,4 @@
-function [neighsTarget,neighsAccum,hexLatticesExpanded] = calculateTransitionsInHexLattices(label2Follow,maskHexRotLat,centSeedsRotated,SR)
+function [neighsTarget,neighsAccum,hexLatticesExpanded] = calculateTransitionsInHexLattices(label2Follow,maskHexRotLat,centSeedsRotated,SR,path2save)
     
     indSeedsInit = sub2ind(size(maskHexRotLat),centSeedsRotated(:,1),centSeedsRotated(:,2));
     hexLatticesExpanded = cell(length(SR),1);
@@ -24,7 +24,7 @@ function [neighsTarget,neighsAccum,hexLatticesExpanded] = calculateTransitionsIn
         end
         
         
-        neighs = calculateNeighbours(hexLatticeExpaMask);
+        neighs = calculateNeighbours(hexLatticeExpaMask,label2Follow);
         neighsTarget{nSR} = neighs{label2Follow};
         
         if SR(nSR)==1
@@ -32,9 +32,10 @@ function [neighsTarget,neighsAccum,hexLatticesExpanded] = calculateTransitionsIn
         else
             neighsAccum{nSR} = length(unique(vertcat(neighsTarget{:})));
         end
-
+       
     end
 %         maxLabel = max([maskHexRotLat(:)]);
 %     figure;imshow(hexLatticeExpaMask,colorcube(maxLabel));
+    save(path2save,'-v7.3','neighsTarget','neighsAccum','hexLatticesExpanded')
 
 end

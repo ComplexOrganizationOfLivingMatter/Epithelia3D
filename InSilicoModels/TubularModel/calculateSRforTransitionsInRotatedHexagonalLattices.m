@@ -1,5 +1,5 @@
 %% Calculate SR in transition, for different rotation in regular hexagonal lattices
-pixelsHexSide = 10;%use 10 factors...10*n
+pixelsHexSide = 30;%use 10 factors...10*n
 nSeedsW = 20;
 nSeedsH = 20;
 setOfDegRotation = 30:-5:0;
@@ -50,7 +50,7 @@ imgSeedCrop(imgSeedCrop>0) = imgSeedCrop(imgSeedCrop>0).*double(hexCrop(imgSeedC
 setImgHexLatticeByAngle=cell(length(setOfDegRotation),1);
 setSeedsHexLatticeByAngle=cell(length(setOfDegRotation),1);
 
-for degRotation = 1 : length(setOfDegRotation)
+parfor degRotation = 1 : length(setOfDegRotation)
 
         
     imgSeedsRotate = imrotate(imgSeedCrop,setOfDegRotation(degRotation),'bilinear')>0;
@@ -82,10 +82,9 @@ for degRotation = 1 : length(setOfDegRotation)
 
     setImgHexLatticeByAngle{degRotation} = maskHexRotLat;
     setSeedsHexLatticeByAngle{degRotation} = centSeedsRotated;
-
-    [neighsTarget,neighsAccum,hexLatticesExpanded] = calculateTransitionsInHexLattices(label2Follow,maskHexRotLat,centSeedsRotated,SR);
+    filePath = [path2save 'rotation' strrep(num2str(setOfDegRotation(degRotation)),'.','_') 'degrees.mat'];
+    [neighsTarget,neighsAccum,hexLatticesExpanded] = calculateTransitionsInHexLattices(label2Follow,maskHexRotLat,centSeedsRotated,SR,filePath);
 %     figure;imshow(double(maskHexRotLat),colorcube(200))
     disp(['hexagon rotation ' num2str(setOfDegRotation(degRotation))])
-    save([path2save 'rotation' strrep(num2str(setOfDegRotation(degRotation)),'.','_') 'degrees.mat'],'-v7.3','neighsTarget','neighsAccum','hexLatticesExpanded')
     
 end

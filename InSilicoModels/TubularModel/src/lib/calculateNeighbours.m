@@ -1,4 +1,4 @@
-function [neighs_real,sides_cells]=calculateNeighbours(L_img)
+function [neighs_real,sides_cells]=calculateNeighbours(L_img,varargin)
 
 %% Generate neighbours
     ratio=4;
@@ -7,6 +7,9 @@ function [neighs_real,sides_cells]=calculateNeighbours(L_img)
     cells=sort(unique(L_img));
     cells=cells(2:end);                  %% Deleting cell 0 from range
 
+    if ~isempty(varargin)
+        cells=cells(ismember(cells,varargin{1}));
+    end
 
     for cel = cells'
         BW = bwperim(L_img==cel);
