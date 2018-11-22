@@ -17,7 +17,7 @@ typeProjection = 'expansion'; %or 'reduction'
 for cylinderTypeNum = 1:length(cylinderTypes)
     for nDiagrams = length(initialDiagrams)
         
-        correlationVolumeAreaSidesSurfaceRatio(cylinderTypes{cylinderTypeNum}, initialDiagrams(nDiagrams),surfaceRatios,reductionFactor,Winit,Hinit,typeProjection,nSeeds,nRealizations)
+        correlationVolumeAreaSidesSurfaceRatio(cylinderTypes{cylinderTypeNum}, initialDiagrams(nDiagrams),surfaceRatios,reductionFactor,W_init,H_init,typeProjection,nSeeds,nRealizations)
         
     end
 end
