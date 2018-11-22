@@ -39,7 +39,10 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_Simulations(pathFile, su
         
         [verticesInfo] = removingVeryCloseVertices(verticesInfo, maxDistance);
         
-        [~, verticesInfo] = detectVerticesOfEdges(extendedImage, verticesInfo, validCellsFinal);
+        noValidCells = unique(extendedImage([1 end], :));
+        validCells = setdiff(1:max(extendedImage(:)), noValidCells);
+        
+        [~, verticesInfo] = detectVerticesOfEdges(extendedImage, verticesInfo, validCells);
         
         %Grouping cells
         cellWithVertices = groupingVerticesPerCellSurface(L_img, verticesInfo, verticesNoValidCellsInfo, [], 1, []);
