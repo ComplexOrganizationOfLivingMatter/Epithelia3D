@@ -2,13 +2,12 @@
 pixelsHexSide = 30;%use 10 factors...10*n
 nSeedsW = 20;
 nSeedsH = 20;
-setOfDegRotation = 30:-5:0;
-setOfDegRotation = 5:5:30;
+setOfDegRotation = 0:1:30;
 
 path2save = 'data\tubularVoronoiModel\expansion\regularHexagons\';
-mkdir(path2save)
 
-SR = 1:0.5:50;
+
+SR = 1:0.5:25;
 
 [hexLattice,seedsImg] = generateRegularHexagonalLattice(pixelsHexSide,nSeedsW,nSeedsH);
 
@@ -82,7 +81,9 @@ parfor degRotation = 1 : length(setOfDegRotation)
 
     setImgHexLatticeByAngle{degRotation} = maskHexRotLat;
     setSeedsHexLatticeByAngle{degRotation} = centSeedsRotated;
-    filePath = [path2save 'rotation' strrep(num2str(setOfDegRotation(degRotation)),'.','_') 'degrees.mat'];
+    path2save2 = [path2save 'rotation' strrep(num2str(setOfDegRotation(degRotation)),'.','_') '\'];
+    mkdir(path2save2)
+    filePath = [path2save2 'rotation' strrep(num2str(setOfDegRotation(degRotation)),'.','_') 'degrees.mat'];
     [neighsTarget,neighsAccum,hexLatticesExpanded] = calculateTransitionsInHexLattices(label2Follow,maskHexRotLat,centSeedsRotated,SR,filePath);
 %     figure;imshow(double(maskHexRotLat),colorcube(200))
     disp(['hexagon rotation ' num2str(setOfDegRotation(degRotation))])
