@@ -24,10 +24,25 @@ for nImg = 1 : nImages
     end
 end
 
-save([path2load 'diagram' num2str(initialDiagram) '\polygonsDistributions\'],'polyDisImg');
+save([path2load 'diagram' num2str(initialDiagram) '\polygonsDistributions\dataPolygonDistribution.mat'],'polyDisImg');
 
-for nImg = 1 : nImages
+for srImg = 1:length(SR)
+     
+    dataPolDist = vertcat(polyDisImg{:,srImg});
+    polyDistMatrix = cell2mat(vertcat(dataPolDist(2:2:end,:)));
+    averagePolDist = mean(polyDistMatrix);
+    stdPolDist = std(polyDistMatrix);
+    namesColums = dataPolDist(1,:);
+    h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');
+    hold on
+    bar(averagePolDist);
+    errorbar(averagePolDist,stdPolDist,'.k')
+    xlim([0.5,8.5])
+    set(gca,'XTickLabel',namesColums);
     
-        vertcat(polyDisImg)
-    
+    title(strrep(num2str(SR(srImg)),'.','_'))
+    print(h,[path2load 'diagram' num2str(initialDiagram) '\polygonsDistributions\polygonDistribution_SR' strrep(num2str(SR(srImg)),'.','_') '.tif'],'-dtiff','-r300')
+     
+    hold off
+    close all
 end
