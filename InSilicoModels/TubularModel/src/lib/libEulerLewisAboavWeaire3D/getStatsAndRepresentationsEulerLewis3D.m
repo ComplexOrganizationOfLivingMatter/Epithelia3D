@@ -1,12 +1,13 @@
-function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,path2save)
+function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,path2save,surfRatios)
 
     if ~exist(path2save,'dir')
         mkdir(path2save)
     end
-    surfRatios = 1./(1:-0.1:0.1);
     
     totalNeigh = cat(1,numNeighPerSurface{:});
     totalNeighAccum = cat(1,numNeighAccumPerSurfaces{:});
+    totalNeighOfNeigh = cat(1,numNeighOfNeighPerSurface{:});
+    totalNeighOfNeighAccum = cat(1,numNeighOfNeighAccumPerSurface{:});
     totalArea = cat(1,areaCellsPerSurface{:});
     totalVolume = cat(1,volumePerSurface{:});
 
@@ -23,6 +24,8 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         
         totalNeighBasal = totalNeigh.(['sr' strrep(num2str(SR),'.','_')]);
         totalNeighBasalAccum = totalNeighAccum.(['sr' strrep(num2str(SR),'.','_')]);
+        totalNeighOfNeighBasal = totalNeighOfNeigh.(['sr' strrep(num2str(SR),'.','_')]);
+        totalNeighOfNeighBasalAccum = totalNeighOfNeighAccum.(['sr' strrep(num2str(SR),'.','_')]);
         totalVolumeBasal = totalVolume.(['sr' strrep(num2str(SR),'.','_')]);
         totalAreaBasal = totalArea.(['sr' strrep(num2str(SR),'.','_')]);
         totalAreaApical = totalArea.('sr1');
@@ -36,6 +39,12 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         stdAreaApicalPerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
         meanAreaApicalPerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
         stdAreaApicalPerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
+        
+        meanNeighOfNeighPerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
+        stdNeighOfNeighPerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
+        meanNeighOfNeighAccumPerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
+        stdNeighOfNeighAccumPerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
+        
         meanAreaApicalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
         stdAreaApicalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
         meanAreaBasalPerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
@@ -55,6 +64,10 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
             
             imgNeighBasal = numNeighPerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
             imgNeighBasalAccum = numNeighAccumPerSurfaces{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
+            
+            imgNeighOfNeighBasal = numNeighOfNeighPerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
+            imgNeighOfNeighBasalAccum = numNeighOfNeighAccumPerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
+            
             imgVolumeBasal = volumePerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
             imgAreaBasal = areaCellsPerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
             
@@ -82,6 +95,11 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
             %'3_3 Volume - n basal accum'
             meanVolumePerSideBasalAccum(nImg,:) = arrayfun(@(x) mean(imgVolumeBasal(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
             
+            %'4_1 Neigh of neigh - n basal'
+            meanNeighOfNeighPerSideBasal(nImg,:) = arrayfun(@(x) mean(imgNeighOfNeighBasal(ismember(imgNeighBasal,x))),nUniqueNeighBasal);
+            %'4_2 Neigh of neigh accum - n basal accum'
+            meanNeighOfNeighAccumPerSideBasalAccum(nImg,:) = arrayfun(@(x) mean(imgNeighOfNeighBasalAccum(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
+
         end
         
         h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');
@@ -188,6 +206,25 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccum
         hold off
         close all
         
+        
+        %% Aboav-weaire 2d + 3d
+        %1 nNeighOfNeighAccum VS n basal accum
+        h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');
+        subplot(1,2,1)
+        errorbar(nUniqueNeighBasal,mean(meanNeighOfNeighPerSideBasal),std(meanNeighOfNeighPerSideBasal),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        title('nNeighOfNeigh - n basal')
+        ylabel('nNeighOfNeigh basal')
+        xlabel('sides basal')
+
+        %2 nNeighOfNeigh VS n basal
+        subplot(1,2,2)
+        errorbar(nUniqueNeighBasalAccum,mean(meanNeighOfNeighAccumPerSideBasalAccum),std(meanNeighOfNeighAccumPerSideBasalAccum),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        title('nNeighOfNeigh accum - n basal accum')
+        ylabel('nNeighOfNeigh accum')
+        xlabel('neighbours total')
+        print(h,[path2save 'Aboav-weaire 2D_3D_SR' strrep(num2str(SR),'.','_')],'-dtiff','-r300')
+
+
     end  
 
     %% Euler 3D

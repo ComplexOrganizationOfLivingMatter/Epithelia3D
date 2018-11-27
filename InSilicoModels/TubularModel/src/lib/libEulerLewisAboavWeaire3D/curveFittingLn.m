@@ -1,9 +1,14 @@
 sr = 1./(1:-0.1:0.1);
 sr = unique([sr,4,6:9,11:15]);
 
-myfittypeLog=fittype('a +b*log(x)',...
+myfittypeLn=fittype('a +b*log(x)',...
 'dependent', {'y'}, 'independent',{'x'},...
 'coefficients', {'a','b'});
+
+myfittypeLog10=fittype('a +b*log10(x)',...
+'dependent', {'y'}, 'independent',{'x'},...
+'coefficients', {'a','b'});
+
 
 myfittypeExp=fittype('a+x^b',...
 'dependent', {'y'}, 'independent',{'x'},...
@@ -21,10 +26,15 @@ meanNeighBasalAcum = mean(cat(1,meanNeighBasalAcum{:,:}));
 meanNeighBasalAcum = meanNeighBasalAcum(1:length(sr));
 stdNeighBasalAcum = stdNeighBasalAcum(1:length(sr));
 
-myfitLog=fit(sr',meanNeighBasalAcum',myfittypeLog,'StartPoint',[1 6]);
-figure;plot(myfitLog)
+myfitLn=fit(sr',meanNeighBasalAcum',myfittypeLn,'StartPoint',[1 6]);
+figure;plot(myfitLn)
 hold on; plot(sr',meanNeighBasalAcum')
-title('Log')
+title('Ln')
+
+myfitLog10=fit(sr',meanNeighBasalAcum',myfittypeLog10,'StartPoint',[1 6]);
+figure;plot(myfitLog10)
+hold on; plot(sr',meanNeighBasalAcum')
+title('Log10')
 
 myfitExp=fit(sr([1,3,5:end])',meanNeighBasalAcum([1,3,5:end])',myfittypeExp,'StartPoint',[1 6]);
 figure;plot(myfitExp)

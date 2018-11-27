@@ -32,9 +32,10 @@ thresholdPixelsScutoid=4;
 setOfSeeds=200;
 apicalReductions=1:-0.1:0.1;
 basalExpansions= 1./apicalReductions;
+basalExpansions = sort([basalExpansions,[4 6 7 8 9 11 12 13 14 15]]);
 apicalReductions=[];
 
-initialVoronoiDiagramNumber = 1;
+initialVoronoiDiagramNumber = 5;
 
 
 %if your RAM memory is quite high (96 gb or more), you could execute this loop with a parfor    
