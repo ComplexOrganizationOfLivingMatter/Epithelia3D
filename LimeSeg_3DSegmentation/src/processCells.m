@@ -1,4 +1,4 @@
-function [labelledImage] = processCells(directoryOfCells, resizeImg, imgSize, tipValue)
+function [labelledImage, outsideGland] = processCells(directoryOfCells, resizeImg, imgSize, tipValue)
 %PROCESSCELLS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -48,8 +48,7 @@ function [labelledImage] = processCells(directoryOfCells, resizeImg, imgSize, ti
     labelledImage = double(labelledImage);
     
     %% Get invalid region
-    
-    
+    [outsideGland] = getOutsideGland(labelledImage);
     
     % HERE WE CHANGE THE LABELS OF LABELLED IMAGE (CARE)
     [labelledImage] = fillEmptySpacesByWatershed3D(labelledImage, outsideGland);

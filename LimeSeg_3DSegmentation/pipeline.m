@@ -29,7 +29,7 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
             load(fullfile(selpath, 'Results', '3d_layers_info.mat'))
         else
             colours = [];
-            [labelledImage] = processCells(fullfile(outputDir, 'Cells', filesep), resizeImg, imgSize, tipValue);
+            [labelledImage, outsideGland] = processCells(fullfile(outputDir, 'Cells', filesep), resizeImg, imgSize, tipValue);
 
             [labelledImage, lumenImage] = processLumen(fullfile(outputDir, 'Lumen', filesep), labelledImage, resizeImg, tipValue);
 
@@ -50,7 +50,8 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
             %% Export image sequence
             [colours] = exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
         end
-        
+        [outsideGland] = getOutsideGland(labelledImage);
+         
         setappdata(0,'outputDir', outputDir);
         setappdata(0,'labelledImage',labelledImage);
         setappdata(0,'lumenImage', lumenImage);
@@ -77,6 +78,7 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
             if isequal(savingResults, 'Yes')
                 labelledImage = getappdata(0, 'labelledImageTemp');
                 close all
+                [labelledImage] = fillEmptySpacesByWatershed3D(labelledImage, outsideGland | lumenImage, 1);
                 exportAsImageSequence(labelledImage, fullfile(outputDir, 'Cells', 'labelledSequence', filesep), colours, tipValue);
 
                 %% Calculate neighbours and plot missing cells
@@ -89,8 +91,6 @@ function [polygon_distribution, neighbours_data,selpath] = pipeline()
             end
             setappdata(0,'labelledImage',labelledImage);
         end
-        
-        [labelledImage] = fillEmptySpacesByWatershed3D(labelledImage, outsideGland, 1);
         
         %% Save apical and basal 3d information
         save(fullfile(selpath, 'Results', '3d_layers_info.mat'), 'labelledImage', 'basalLayer', 'apicalLayer', 'apical3dInfo', 'basal3dInfo', 'colours', 'lumenImage','glandOrientation', '-v7.3')

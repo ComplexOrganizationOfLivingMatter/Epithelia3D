@@ -20,10 +20,12 @@ function [finalImage] = fillEmptySpacesByWatershed3D(labelMask, invalidRegion, p
     if exist('putOriginalIndices', 'var')
         if putOriginalIndices
             originalImageToRename = finalImage;
-
-            for numCell = unique(finalImage(:))
-
-
+            
+            allCells = unique(finalImage(:))';
+            allCells(allCells==0) = [];
+            
+            for numCell = allCells
+                originalImageToRename(finalImage == numCell) = mode(labelMask(finalImage == numCell));
             end
 
             finalImage = originalImageToRename;
