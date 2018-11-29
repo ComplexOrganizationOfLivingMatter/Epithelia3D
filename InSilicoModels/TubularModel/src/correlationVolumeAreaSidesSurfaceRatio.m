@@ -1,11 +1,11 @@
 function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram,surfaceRatios,reductionFactor,W_init,H_init,typeProjection,nSeeds,nRealizations)
-%CORRELATIONVOLUMEAREASIDESSURFACERATIO Summary of this function goes here
-%   Detailed explanation goes here
 
     totalCells = 1:nSeeds;
     namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],surfaceRatios,'UniformOutput', false);
     numNeighPerSurface = cell(nRealizations,1);
     numNeighAccumPerSurfaces = cell(nRealizations,1);
+    numNeighOfNeighPerSurface = cell(nRealizations,1);
+    numNeighOfNeighAccumPerSurface = cell(nRealizations,1);
     areaCellsPerSurface = cell(nRealizations,1);
     volumePerSurface = cell(nRealizations,1);
 
@@ -92,27 +92,43 @@ function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram
                 disp(['Completed volume realization - ' num2str(nImg) ' - SR - ' num2str(surfaceRatios(idSR))])
             end
 
-            numNeighPerSurfaceRealization = cellfun(@(x) length(x),cat(1,neighsSurface{:})');
-            numNeighAccumPerSurfacesRealization = cellfun(@(x) length(x),cat(1,neighsAccumSurfaces{:})');
+            %get neighs per surface, and the average of neighs surrounding
+            %the cells
+            neighsSurface = cat(1,neighsSurface{:})';
+            neighsAccumSurfaces = cat(1,neighsAccumSurfaces{:})';
+            numNeighPerSurfaceRealization = cellfun(@(x) length(x),neighsSurface);
+            numNeighAccumPerSurfacesRealization = cellfun(@(x) length(x),neighsAccumSurfaces);
+            
+            numNeighOfNeighPerSurfacesRealization = zeros(size(neighsSurface));
+            numNeighOfNeighAccumPerSurfacesRealization = zeros(size(neighsSurface));
+            for nSR = 1:size(neighsAccumSurfaces,2)
+                numNeighOfNeighPerSurfacesRealization(:,nSR) = cellfun(@(x) sum(vertcat(numNeighPerSurfaceRealization(x,nSR)))/length(x),neighsSurface(:,nSR));
+                numNeighOfNeighAccumPerSurfacesRealization(:,nSR) = cellfun(@(x) sum(vertcat(numNeighAccumPerSurfacesRealization(x,nSR)))/length(x),neighsAccumSurfaces(:,nSR));
+            end
+            
             areaCellsPerSurfaceRealization = cat(2,areaCells{:});
             volumePerSurfaceRealization = cat(2,volumes{:});
 
+            %get valid and no valid cells
             noValidCellsTotal = unique(cat(2,noValidCells{:}));
             validCellsTotal = setdiff(totalCells,noValidCellsTotal);
 
+            %store information from valid cells
             numNeighPerSurface{nImg} = array2table(numNeighPerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
             numNeighAccumPerSurfaces{nImg} = array2table(numNeighAccumPerSurfacesRealization(validCellsTotal,:),'VariableNames',namesSR);
+            numNeighOfNeighPerSurface{nImg} = array2table(numNeighOfNeighPerSurfacesRealization(validCellsTotal,:),'VariableNames',namesSR);
+            numNeighOfNeighAccumPerSurface{nImg} = array2table(numNeighOfNeighAccumPerSurfacesRealization(validCellsTotal,:),'VariableNames',namesSR);
             areaCellsPerSurface{nImg} = array2table(areaCellsPerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
             volumePerSurface{nImg} = array2table(volumePerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
 
 
         end
         mkdir(path2save)
-        save([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
+        save([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighOfNeighPerSurface','numNeighOfNeighAccumPerSurface','numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
     else
-        load([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
+        load([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighOfNeighPerSurface','numNeighOfNeighAccumPerSurface','numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
     end
 
-    getStatsAndRepresentationsEulerLewis3D(numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,path2save);
+    getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,path2save,surfaceRatios);
 end
 
