@@ -14,6 +14,10 @@ myfittypeExp=fittype('a+x^b',...
 'dependent', {'y'}, 'independent',{'x'},...
 'coefficients', {'a','b'});
 
+myfittypeSqrt=fittype('6+b*sqrt(x)',...
+'dependent', {'y'}, 'independent',{'x'},...
+'coefficients', {'b'});
+
 myfittypePowFit=fittype('a*x^b',...
 'dependent', {'y'}, 'independent',{'x'},...
 'coefficients', {'a','b'});
@@ -25,6 +29,11 @@ meanNeighBasalAcum = mean(cat(1,meanNeighBasalAcum{:,:}));
 
 meanNeighBasalAcum = meanNeighBasalAcum(1:length(sr));
 stdNeighBasalAcum = stdNeighBasalAcum(1:length(sr));
+
+myfitSqrt=fit(sr',meanNeighBasalAcum',myfittypeSqrt,'StartPoint',[1]);
+figure;plot(myfitSqrt)
+hold on; plot(sr',meanNeighBasalAcum')
+title('Sqrt')
 
 myfitLn=fit(sr',meanNeighBasalAcum',myfittypeLn,'StartPoint',[1 6]);
 figure;plot(myfitLn)
