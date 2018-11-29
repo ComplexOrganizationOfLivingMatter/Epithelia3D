@@ -9,7 +9,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
     totalNeighOfNeigh = cat(1,numNeighOfNeighPerSurface{:});
     totalNeighOfNeighAccum = cat(1,numNeighOfNeighAccumPerSurface{:});
     totalArea = cat(1,areaCellsPerSurface{:});
-    totalVolume = cat(1,volumePerSurface{:});
+%     totalVolume = cat(1,volumePerSurface{:});
 
     totalNeighApical = totalNeigh.('sr1');
     
@@ -24,9 +24,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
         
         totalNeighBasal = totalNeigh.(['sr' strrep(num2str(SR),'.','_')]);
         totalNeighBasalAccum = totalNeighAccum.(['sr' strrep(num2str(SR),'.','_')]);
-        totalNeighOfNeighBasal = totalNeighOfNeigh.(['sr' strrep(num2str(SR),'.','_')]);
-        totalNeighOfNeighBasalAccum = totalNeighOfNeighAccum.(['sr' strrep(num2str(SR),'.','_')]);
-        totalVolumeBasal = totalVolume.(['sr' strrep(num2str(SR),'.','_')]);
+%         totalVolumeBasal = totalVolume.(['sr' strrep(num2str(SR),'.','_')]);
         totalAreaBasal = totalArea.(['sr' strrep(num2str(SR),'.','_')]);
         totalAreaApical = totalArea.('sr1');
         
@@ -53,12 +51,12 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
         stdAreaBasalPerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
         meanAreaBasalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
         stdAreaBasalPerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
-        meanVolumePerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
-        stdVolumePerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
-        meanVolumePerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
-        stdVolumePerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
-        meanVolumePerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
-        stdVolumePerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
+%         meanVolumePerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
+%         stdVolumePerSideApical = zeros(size(numNeighPerSurface,1),length(nUniqueNeighApical));
+%         meanVolumePerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
+%         stdVolumePerSideBasal = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasal));
+%         meanVolumePerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
+%         stdVolumePerSideBasalAccum = zeros(size(numNeighPerSurface,1),length(nUniqueNeighBasalAccum));
         
         for nImg = 1:size(numNeighPerSurface,1)
             
@@ -68,7 +66,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
             imgNeighOfNeighBasal = numNeighOfNeighPerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
             imgNeighOfNeighBasalAccum = numNeighOfNeighAccumPerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
             
-            imgVolumeBasal = volumePerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
+%             imgVolumeBasal = volumePerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
             imgAreaBasal = areaCellsPerSurface{nImg}.(['sr' strrep(num2str(SR),'.','_')]);
             
             imgNeighApical = numNeighPerSurface{nImg}.('sr1');
@@ -88,13 +86,13 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
             meanAreaBasalPerSideBasal(nImg,:) = arrayfun(@(x) mean(imgAreaBasal(ismember(imgNeighBasal,x))),nUniqueNeighBasal);
             %'2_3 area basal - n basal accum'
             meanAreaBasalPerSideBasalAccum(nImg,:) = arrayfun(@(x) mean(imgAreaBasal(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
-            %'3_1 volume - n apical'
-            meanVolumePerSideApical(nImg,:) = arrayfun(@(x) mean(imgVolumeBasal(ismember(imgNeighApical,x))),nUniqueNeighApical);
-            %'3_2 volume - n basal'
-            meanVolumePerSideBasal(nImg,:) = arrayfun(@(x) mean(imgVolumeBasal(ismember(imgNeighBasal,x))),nUniqueNeighBasal);
-            %'3_3 Volume - n basal accum'
-            meanVolumePerSideBasalAccum(nImg,:) = arrayfun(@(x) mean(imgVolumeBasal(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
-            
+%             %'3_1 volume - n apical'
+%             meanVolumePerSideApical(nImg,:) = arrayfun(@(x) mean(imgVolumeBasal(ismember(imgNeighApical,x))),nUniqueNeighApical);
+%             %'3_2 volume - n basal'
+%             meanVolumePerSideBasal(nImg,:) = arrayfun(@(x) mean(imgVolumeBasal(ismember(imgNeighBasal,x))),nUniqueNeighBasal);
+%             %'3_3 Volume - n basal accum'
+%             meanVolumePerSideBasalAccum(nImg,:) = arrayfun(@(x) mean(imgVolumeBasal(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
+%             
             %'4_1 Neigh of neigh - n basal'
             meanNeighOfNeighPerSideBasal(nImg,:) = arrayfun(@(x) mean(imgNeighOfNeighBasal(ismember(imgNeighBasal,x))),nUniqueNeighBasal);
             %'4_2 Neigh of neigh accum - n basal accum'
@@ -129,12 +127,12 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
         ylabel('area apical')
         xlabel('neighbours total')
         
-        %4 Area Basal VS Area Apical
-        subplot(3,4,4)
-        plot(totalVolumeBasal,totalAreaApical,'o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        title('volume - area apical')
-        ylabel('area apical')
-        xlabel('volume')
+%         %4 volume VS Area Apical
+%         subplot(3,4,4)
+%         plot(totalVolumeBasal,totalAreaApical,'o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+%         title('volume - area apical')
+%         ylabel('area apical')
+%         xlabel('volume')
              
         %% ROW 2 - Area basal VS sides
         %1 area basal vs sides apical
@@ -161,37 +159,37 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
         ylabel('area basal')
         xlabel('neighbours total')
         
-        %4 Area Basal VS Volume
-        subplot(3,4,8)
-        plot(totalVolumeBasal,totalAreaBasal,'o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        title('volume - area basal')
-        ylabel('area basal')
-        xlabel('volume')
+%         %4 Area Basal VS Volume
+%         subplot(3,4,8)
+%         plot(totalVolumeBasal,totalAreaBasal,'o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+%         title('volume - area basal')
+%         ylabel('area basal')
+%         xlabel('volume')
 
-        %% ROW 3 - Volume VS sides
-        %1 volume vs sides apical
-        subplot(3,4,9) 
-        errorbar(nUniqueNeighApical,mean(meanVolumePerSideApical),std(meanVolumePerSideApical),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanVolumePerSideApical(:);meanVolumePerSideBasal(:);meanVolumePerSideBasalAccum(:)])+max([stdVolumePerSideApical(:);stdVolumePerSideBasal(:);stdVolumePerSideBasalAccum(:)])])
-        title('volume - n apical')
-        xlabel('sides apical')
-        ylabel('volume')
-        
-        %2 volume vs sides basal
-        subplot(3,4,10)
-        errorbar(nUniqueNeighBasal,mean(meanVolumePerSideBasal),std(meanVolumePerSideBasal),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanVolumePerSideApical(:);meanVolumePerSideBasal(:);meanVolumePerSideBasalAccum(:)])+max([stdVolumePerSideApical(:);stdVolumePerSideBasal(:);stdVolumePerSideBasalAccum(:)])])
-        title('volume - n basal')
-        ylabel('volume')
-        xlabel('sides basal')
-
-        %3 volume vs sides 3D
-        subplot(3,4,11)
-        errorbar(nUniqueNeighBasalAccum,mean(meanVolumePerSideBasalAccum),std(meanVolumePerSideBasalAccum),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
-        ylim([0 max([meanVolumePerSideApical(:);meanVolumePerSideBasal(:);meanVolumePerSideBasalAccum(:)])+max([stdVolumePerSideApical(:);stdVolumePerSideBasal(:);stdVolumePerSideBasalAccum(:)])])
-        title('volume - n basal accum')
-        ylabel('volume')
-        xlabel('neighbours total')
+%         %% ROW 3 - Volume VS sides
+%         %1 volume vs sides apical
+%         subplot(3,4,9) 
+%         errorbar(nUniqueNeighApical,mean(meanVolumePerSideApical),std(meanVolumePerSideApical),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+%         ylim([0 max([meanVolumePerSideApical(:);meanVolumePerSideBasal(:);meanVolumePerSideBasalAccum(:)])+max([stdVolumePerSideApical(:);stdVolumePerSideBasal(:);stdVolumePerSideBasalAccum(:)])])
+%         title('volume - n apical')
+%         xlabel('sides apical')
+%         ylabel('volume')
+%         
+%         %2 volume vs sides basal
+%         subplot(3,4,10)
+%         errorbar(nUniqueNeighBasal,mean(meanVolumePerSideBasal),std(meanVolumePerSideBasal),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+%         ylim([0 max([meanVolumePerSideApical(:);meanVolumePerSideBasal(:);meanVolumePerSideBasalAccum(:)])+max([stdVolumePerSideApical(:);stdVolumePerSideBasal(:);stdVolumePerSideBasalAccum(:)])])
+%         title('volume - n basal')
+%         ylabel('volume')
+%         xlabel('sides basal')
+% 
+%         %3 volume vs sides 3D
+%         subplot(3,4,11)
+%         errorbar(nUniqueNeighBasalAccum,mean(meanVolumePerSideBasalAccum),std(meanVolumePerSideBasalAccum),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+%         ylim([0 max([meanVolumePerSideApical(:);meanVolumePerSideBasal(:);meanVolumePerSideBasalAccum(:)])+max([stdVolumePerSideApical(:);stdVolumePerSideBasal(:);stdVolumePerSideBasalAccum(:)])])
+%         title('volume - n basal accum')
+%         ylabel('volume')
+%         xlabel('neighbours total')
         
         
         %4 Area Basal VS Area Apical
@@ -212,6 +210,10 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
         h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');
         subplot(1,2,1)
         errorbar(nUniqueNeighBasal,mean(meanNeighOfNeighPerSideBasal),std(meanNeighOfNeighPerSideBasal),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+%         errorbar(nUniqueNeighBasal,nUniqueNeighBasal'.*mean(meanNeighOfNeighPerSideBasal),nUniqueNeighBasal'.*std(meanNeighOfNeighPerSideBasal),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        hold on
+        plot(nUniqueNeighBasal,5+6./nUniqueNeighBasal,'--','MarkerSize',2)
+        hold off
         title('nNeighOfNeigh - n basal')
         ylabel('nNeighOfNeigh basal')
         xlabel('sides basal')
@@ -219,6 +221,10 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
         %2 nNeighOfNeigh VS n basal
         subplot(1,2,2)
         errorbar(nUniqueNeighBasalAccum,mean(meanNeighOfNeighAccumPerSideBasalAccum),std(meanNeighOfNeighAccumPerSideBasalAccum),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+%         errorbar(nUniqueNeighBasalAccum,nUniqueNeighBasalAccum'.*mean(meanNeighOfNeighAccumPerSideBasalAccum),nUniqueNeighBasalAccum'.*std(meanNeighOfNeighAccumPerSideBasalAccum),'-o','MarkerSize',5,'MarkerEdgeColor','blue','MarkerFaceColor','blue')
+        hold on
+        plot(nUniqueNeighBasalAccum,5+6./nUniqueNeighBasalAccum,'--','MarkerSize',2)
+        hold off
         title('nNeighOfNeigh accum - n basal accum')
         ylabel('nNeighOfNeigh accum')
         xlabel('neighbours total')
