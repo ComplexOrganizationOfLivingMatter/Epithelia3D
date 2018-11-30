@@ -18,6 +18,7 @@ function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram
 
     if ~exist([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'file')
 
+        mkdir(path2save)
         for nImg = 1 : nRealizations
             load([rootPath folder 'Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram)...
                 '\Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) '.mat'],'listLOriginalProjection','listSeedsProjected');
@@ -120,11 +121,10 @@ function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram
             numNeighOfNeighAccumPerSurface{nImg} = array2table(numNeighOfNeighAccumPerSurfacesRealization(validCellsTotal,:),'VariableNames',namesSR);
             areaCellsPerSurface{nImg} = array2table(areaCellsPerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
             volumePerSurface{nImg} = array2table(volumePerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
-
+            save([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighOfNeighPerSurface','numNeighOfNeighAccumPerSurface','numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
 
         end
-        mkdir(path2save)
-        save([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighOfNeighPerSurface','numNeighOfNeighAccumPerSurface','numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
+        
     else
         load([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighOfNeighPerSurface','numNeighOfNeighAccumPerSurface','numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
     end
