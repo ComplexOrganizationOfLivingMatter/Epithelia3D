@@ -1,4 +1,4 @@
-function [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue)
+function [basalLayer] = getBasalFrom3DImage(labelledImage, lumenImage, tipValue)
 %GETBASALFROM3DIMAGE Summary of this function goes here
 %   Detailed explanation goes here
     se = strel('sphere',tipValue);
@@ -18,6 +18,7 @@ function [basalLayer] = getBasalFrom3DImage(labelledImage, tipValue)
 %     [x,y,z] = ind2sub(size(basalLayer),find(basalLayer>0));
 %     figure;
 %     pcshow([x,y,z]);
-basalLayer = labelledImage .* basalLayer;
+    basalLayer(imdilate(lumenImage, strel('sphere', 3))) = 0;
+    basalLayer = labelledImage .* basalLayer;
 end
 
