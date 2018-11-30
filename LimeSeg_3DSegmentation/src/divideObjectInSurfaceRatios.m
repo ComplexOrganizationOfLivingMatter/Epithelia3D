@@ -22,7 +22,7 @@ function [allSurfaceRatioImages] = divideObjectInSurfaceRatios(obj_img, starting
         dilatedActualSurface(outsideObject) = 0;
         numSurface = numSurface + 1;
         actualSurface = dilatedActualSurface;
-        figure; paint3D(actualSurface)
+        figure; paint3D(actualSurface);
     end
 
 end
