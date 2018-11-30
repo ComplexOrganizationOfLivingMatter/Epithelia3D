@@ -1,4 +1,4 @@
-function calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,selpath)
+function [CellularFeatures] = calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,selpath)
 %CALCULATE_CELLULARFEATURES Summary of this function goes here
 %   Detailed explanation goes here
 %%  Calculate number of neighbours of each cell
