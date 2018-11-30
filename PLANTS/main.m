@@ -19,41 +19,34 @@ rangeYPlant = {[700,1400],[700,1400],[500,1500],[500,1300],[600,1300],[400,1100]
     [400, 1000],[200,800], [0,0], [600,1400],...
     [600,1500],[200,900], [200,1100], [500,1000],[500,1100]};
 folder = 'data/Hypocotyl/';
-for nNam=22%[1:15,17:length(names)
+
+for nNam=[4:15,17:length(names)]
     resizeFactor=0.3;
     rangeY=rangeYPlant{nNam};
 
-    %% This complex process is only for detecting the cells belonging to each surface
-    if ~exist([folder names{nNam} '/unrolledHypocotyl.mat'],'file')
-        [layer1,layer2,setOfCells]=getCylindricalSurfaces(folder,names{nNam},rangeY,zScaleFactorHyp(nNam));      
-        [unrolledImages] = unrollingHypocot(folder, names{nNam},rangeY,layer1,layer2);
-        [~,cellsLayer1,cellsLayer2,~,~,~,~]=cleanAndGetMeasurements([folder names{nNam} '/'], unrolledImages);
-        save([folder names{nNam} '/unrolledHypocotyl.mat'],'unrolledImages','cellsLayer1','cellsLayer2')
-    else
-        load([folder names{nNam} '/unrolledHypocotyl.mat'],'unrolledImages','cellsLayer1','cellsLayer2')
-    end
+    %%This complex process is only for detecting the cells belonging to each surface
+    [setOfCells]=getCylindricalSurfaces(folder,names{nNam},rangeY,zScaleFactorHyp(nNam));      
 
-    %% Once we have the layer' cells, it is possible get the unrolled Hypocotyl using normal vector extrapolations
-    if ~exist([folder names{nNam} '/imagesOfLayers/layersClean.mat'],'file')
-%             function that fill the Hyp perimeter using the vector imaginary with the centroid
-        [layer1_3D,layer2_3D]=assingCells2maskPerim(folder, names{nNam},rangeY,cellsLayer1,cellsLayer2);
+    %%Once we have the layer' cells, it is possible get the unrolled Hypocotyl using normal vector extrapolations
+    %function that fill the Hyp perimeter using the vector imaginary with the centroid
+    if exist([folder names{nNam} '/imagesOfLayers/layersClean.mat'],'file')
+        load([folder names{nNam} '/imagesOfLayers/layersClean.mat'])
+        if ~exist('unrolledImagesQuasiClean','var')
+            [unrolledImagesQuasiClean] = unrollingHypocot(folder, names{nNam},rangeY,layer1_3D,layer2_3D);
+            save([folder names{nNam} '/imagesOfLayers/layersClean.mat'],'unrolledImagesQuasiClean','-append')
+        end
+    else
+        [layer1_3D,layer2_3D]=assingCells2maskPerim(folder, names{nNam},rangeY,setOfCells.Layer1,setOfCells.Layer2);
+        mkdir([folder names{nNam} '/imagesOfLayers/'])
+        save([folder names{nNam} '/imagesOfLayers/layersClean.mat'],'layer1_3D','layer2_3D','-v7.3')
         [unrolledImagesQuasiClean] = unrollingHypocot(folder, names{nNam},rangeY,layer1_3D,layer2_3D);
-        save([folder names{nNam} '/imagesOfLayers/layersClean.mat'],'layer1_3D','layer2_3D','unrolledImagesQuasiClean')
-
-        [finalImages,~,~,finalCellsLayer1,finalCellsLayer2,noValidCellsLayer1,noValidCellsLayer2]=cleanUnrolledImages(['data/' names{nNam} '/'], unrolledImagesQuasiClean);
-        save([folder names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2','noValidCellsLayer1','noValidCellsLayer2','-append')
-    else
-        load([folder names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2','noValidCellsLayer1','noValidCellsLayer2','layer1_3D','layer2_3D','unrolledImagesQuasiClean')
+        save([folder names{nNam} '/imagesOfLayers/layersClean.mat'],'unrolledImagesQuasiClean','-append')
     end
+    [finalImages,~,~,finalCellsLayer1,finalCellsLayer2,noValidCellsLayer1,noValidCellsLayer2]=cleanUnrolledImages(['data/' folder names{nNam} '/'], unrolledImagesQuasiClean);
+    save([folder names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2','noValidCellsLayer1','noValidCellsLayer2','-append')
 
-    %% We get the cell properties
+    %%We get the cell properties
     getGeometricalFeaturesFrom2DImages([folder names{nNam} '/resultMeasurements/layer1'],finalImages(1:2),noValidCellsLayer1)      
     getGeometricalFeaturesFrom2DImages([folder names{nNam} '/resultMeasurements/layer2'],finalImages(3:4),noValidCellsLayer2)
 
 end
-
-% names={''};
-% 
-% for nNam=1 : length(names)
-%         [layer1.outerSurface,layer1.innerSurface,layer2.outerSurface,layer2.innerSurface,setOfCells.Layer1,setOfCells.Layer2]=getMeristemPerSurfaces(names{nNam});        
-% end
