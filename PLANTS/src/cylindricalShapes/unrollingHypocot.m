@@ -2,8 +2,9 @@ function [totalImages] = unrollingHypocot(folder,name,rangeY,layer1,layer2)
 
         setOfImages = {layer1.outerSurface,layer1.innerSurface,layer2.outerSurface,layer2.innerSurface};
         totalImages = cell(length(setOfImages),1);
-        c=colorcube(max([max(layer1.outerSurface(:)),max(layer2.outerSurface(:))]));
-        orderRand=randperm(max([max(layer1.outerSurface(:)),max(layer2.outerSurface(:))]));
+        maxCell = double(max([max(layer1.outerSurface(:)),max(layer2.outerSurface(:))]));
+        c=colorcube(maxCell);
+        orderRand=randperm(maxCell);
         c(orderRand(1),:)=[0 0 0];
 
         uniqueOuter2 = unique(layer2.outerSurface) ;
@@ -15,10 +16,10 @@ function [totalImages] = unrollingHypocot(folder,name,rangeY,layer1,layer2)
         for nImg = 1 : length(setOfImages)
             img3d = setOfImages{nImg};
             
-            axesLength = regionprops3(img3d>0,'PrincipalAxisLength');
-            [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength));
-
-            img3d=permute(img3d,orderLengAxis);
+%             axesLength = regionprops3(img3d>0,'PrincipalAxisLength');
+%             [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength));
+% 
+%             img3d=permute(img3d,orderLengAxis);
             img3d(ismember(img3d,noValidCells))=0;
 
             load([folder name '\maskLayers\certerAndRadiusPerZ.mat'],'centers')
