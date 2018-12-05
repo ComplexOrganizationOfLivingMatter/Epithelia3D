@@ -15,7 +15,7 @@ function [colours] = exportAsImageSequence(labelledImage, outputDir, colours, ti
     
     h = figure('Visible', 'off');
     for numZ = 1+tipValue+1:(size(labelledImage, 3)-(tipValue+1))
-        imshow(labelledImage(:, :, numZ)+1, colours);
+        imshow((labelledImage(:, :, numZ)')+1, colours);
         set(h, 'units','normalized','outerposition',[0 0 1 1]);
         centroids = regionprops(labelledImage(:, :, numZ), 'Centroid');
         centroids = vertcat(centroids.Centroid);
@@ -25,9 +25,9 @@ function [colours] = exportAsImageSequence(labelledImage, outputDir, colours, ti
         if tipValue ~= -1
             for numCentroid = 1:size(centroids, 1)
                 if mean(colours(numCentroid+1, :)) < 0.4
-                    text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(numCentroid), 'HorizontalAlignment', 'center', 'Color', 'white');
+                    text(ax, centroids(numCentroid, 2), centroids(numCentroid, 1), num2str(numCentroid), 'HorizontalAlignment', 'center', 'Color', 'white');
                 else
-                    text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(numCentroid), 'HorizontalAlignment', 'center');
+                    text(ax, centroids(numCentroid, 2), centroids(numCentroid, 1), num2str(numCentroid), 'HorizontalAlignment', 'center');
                 end
             end
         end
