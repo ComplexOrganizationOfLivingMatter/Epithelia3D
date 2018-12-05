@@ -42,7 +42,7 @@ for nNam=[4:15,17:length(names)]
         [unrolledImagesQuasiClean] = unrollingHypocot(folder, names{nNam},rangeY,layer1_3D,layer2_3D);
         save([folder names{nNam} '/imagesOfLayers/layersClean.mat'],'unrolledImagesQuasiClean','-append')
     end
-    [finalImages,~,~,finalCellsLayer1,finalCellsLayer2,noValidCellsLayer1,noValidCellsLayer2]=cleanUnrolledImages(['data/' folder names{nNam} '/'], unrolledImagesQuasiClean);
+    [finalImages,~,~,finalCellsLayer1,finalCellsLayer2,noValidCellsLayer1,noValidCellsLayer2]=cleanUnrolledImages([folder names{nNam} '/'], unrolledImagesQuasiClean);
     save([folder names{nNam} '/imagesOfLayers/layersClean.mat'],'finalImages','finalCellsLayer1','finalCellsLayer2','noValidCellsLayer1','noValidCellsLayer2','-append')
 
     %%We get the cell properties
