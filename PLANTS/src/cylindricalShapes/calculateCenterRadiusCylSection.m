@@ -1,6 +1,6 @@
 function [centersOuter, centersInner, radiiOuter, radiiInner] = calculateCenterRadiusCylSection(img3d,auxLayer,folder,name2save,layer2save)
   
-    redFactor = 0.2;
+    redFactor = 0.5;
     %Permute image axes
     img3d = imresize3(img3d,redFactor,'nearest');
     auxLayer = imresize3(auxLayer,redFactor,'nearest');

@@ -12,6 +12,8 @@ function [totalImages] = unrollingHypocot(folder,name,rangeY,layer1,layer2)
         noValidCells=setdiff(uniqueInner2,uniqueOuter2);
 
         setLayerNames = {'outerMaskLayer1','innerMaskLayer1','outerMaskLayer2','innerMaskLayer2'};
+        load([folder name '\maskLayers\certerAndRadiusPerZ.mat'],'centers')
+        centroids=centers{1};
         
         for nImg = 1 : length(setOfImages)
             img3d = setOfImages{nImg};
@@ -21,11 +23,7 @@ function [totalImages] = unrollingHypocot(folder,name,rangeY,layer1,layer2)
 % 
 %             img3d=permute(img3d,orderLengAxis);
             img3d(ismember(img3d,noValidCells))=0;
-
-            load([folder name '\maskLayers\certerAndRadiusPerZ.mat'],'centers')
-
-            imgFinalCoordinates=cell(size(img3d,3),1);
-            centroids=centers{nImg};
+            imgFinalCoordinates=cell(size(img3d,3),1);           
 
             for coordZ = 1 : size(img3d,3)
                 centroidCoordZ = centroids{rangeY(1)-1+coordZ};

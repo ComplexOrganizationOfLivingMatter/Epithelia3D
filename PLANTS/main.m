@@ -20,8 +20,7 @@ rangeYPlant = {[700,1400],[700,1400],[500,1500],[500,1300],[600,1300],[400,1100]
     [600,1500],[200,900], [200,1100], [500,1000],[500,1100]};
 folder = 'data/Hypocotyl/';
 
-for nNam=[4:15,17:length(names)]
-    resizeFactor=0.3;
+for nNam=5%20:length(names) %[4:15,17:length(names)]
     rangeY=rangeYPlant{nNam};
 
     %%This complex process is only for detecting the cells belonging to each surface
