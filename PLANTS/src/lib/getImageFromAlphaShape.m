@@ -4,7 +4,10 @@ function mask3d = getImageFromAlphaShape(img3d)
     
     %Get alpha shape of layer image
     [x,y,z]=ind2sub(size(img3d),find(img3d>0));
-    shp=alphaShape(x,y,z,max(size(img3d))/30);
+    [qx,qy,qz]=ind2sub(size(img3d),find(img3d>=0));
+    shp=alphaShape(x,y,z,1);
+    minAlpha = criticalAlpha(shp,'one-region');
+    shp.Alpha = minAlpha;
 %     plot(shp)
    
 %     [x,y,z]=ind2sub(size(img3d),find(img3d>0));

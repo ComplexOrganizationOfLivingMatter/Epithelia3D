@@ -14,7 +14,7 @@ function [centersOuter, centersInner, radiiOuter, radiiInner] = calculateCenterR
     auxLayer=permute(auxLayer,orderLengAxis);
 
     %perim outer layer
-    maskOuter3d = getImageFromAlphaShape(img3d);
+    maskOuter3d = getImageFromAlphaShape(img3d+auxLayer);
     perimOuterLayer3D = maskOuter3d - imerode(maskOuter3d,strel('sphere',1));
     
     %perim inner layer
