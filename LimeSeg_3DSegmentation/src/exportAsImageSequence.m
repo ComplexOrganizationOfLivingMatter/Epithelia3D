@@ -8,8 +8,10 @@ function [colours] = exportAsImageSequence(labelledImage, outputDir, colours, ti
         colours = colorcube(max(labelledImage(:))+1);
         colours(end, :) = [];
         colours = colours(randperm(max(labelledImage(:))), :);
-        colours = vertcat([1 1 1], colours);
     end
+    
+    
+    colours = vertcat([1 1 1], colours);
     
     h = figure('Visible', 'off');
     for numZ = 1+tipValue+1:(size(labelledImage, 3)-(tipValue+1))
@@ -33,5 +35,7 @@ function [colours] = exportAsImageSequence(labelledImage, outputDir, colours, ti
         saveas(h,fullfile(outputDir, strcat('labelledImage_', num2str(numZ-(tipValue+1)), '.png')))
         %imwrite(labelledImage(:, :, numZ), , );
     end
+    
+    colours = colours(2:end, :);
 end
 
