@@ -2,8 +2,8 @@ function [allSurfaceRatioImages] = divideObjectInSurfaceRatios(obj_img, starting
 %DIVIDEOBJECTINSURFACERATIOS Summary of this function goes here
 %   Detailed explanation goes here
 
-    obj_img = ismember(obj_img, validCells) .* obj_img;
-    startingSurface = ismember(startingSurface, validCells) .* startingSurface;
+    %obj_img_WithoutNoValidCells = ismember(obj_img, validCells) .* obj_img;
+%     startingSurface = ismember(startingSurface, validCells) .* startingSurface;
     [outsideObject] = getOutsideGland(obj_img);
     
     outsideObject(imdilate(endSurface, strel('sphere', 2))>0) = 0;
@@ -13,7 +13,7 @@ function [allSurfaceRatioImages] = divideObjectInSurfaceRatios(obj_img, starting
     numSurface = 1;
     
     apical3dInfo = calculateNeighbours3D(endSurface);
-    while any(any(any(endSurface>0 & actualSurface>0))) == 0
+    while any(any(any(endSurface>0 & (ismember(obj_img, validCells) .*actualSurface)>0))) == 0
         allSurfaceRatioImages{numSurface, 1} = obj_img .* actualSurface;
         allSurfaceRatioImages{numSurface, 2} = calculateNeighbours3D(allSurfaceRatioImages{numSurface, 1});
         
@@ -33,7 +33,7 @@ function [allSurfaceRatioImages] = divideObjectInSurfaceRatios(obj_img, starting
     end
     figure; paint3D( obj_img .* actualSurface, [], colours);
     hold on;
-    [indices] = find(endSurface>0 & actualSurface>0);
+    [indices] = find(endSurface>0 & (ismember(obj_img, validCells) .*actualSurface)>0);
     [x, y, z] = ind2sub(size(endSurface), indices);
     for numIndex = 1:length(x)
        plot3(x(numIndex), y(numIndex), z(numIndex), '*r'); 
