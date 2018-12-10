@@ -1,26 +1,27 @@
-function mask3d = getImageFromAlphaShape(img3d)
+function mask3d = getImageFromAlphaShape(img3d,redFactor)
     
     mask3d=false(size(img3d));
+
+    img3dRed = imresize3(img3d,redFactor,'nearest');
     
     %Get alpha shape of layer image
-    [x,y,z]=ind2sub(size(img3d),find(img3d>0));
-    [qx,qy,qz]=ind2sub(size(img3d),find(img3d>=0));
+    [x,y,z]=ind2sub(size(img3dRed),find(img3dRed>0));
     shp=alphaShape(x,y,z,1);
     minAlpha = criticalAlpha(shp,'one-region');
     shp.Alpha = minAlpha;
-%     plot(shp)
-   
-%     [x,y,z]=ind2sub(size(img3d),find(img3d>0));
-%     [xq,yq,zq]=ind2sub(size(img3d),find(img3d>=0));
-%     
-%     inPoints = inhull([xq,yq,zq],[x,y,z]);
     
-%     tri=convhull(x,y,z);
-%     inPoints = ~isnan(tsearchn([x,y,z],tri,[xq,yq,zq]));
+    %trick to reduce the query points
+    maskDilated = imdilate3(img3dRed>=0,strel('sphere',round(minAlpha)));
+    maskDilatedOriginalSize = imresize3(uint16(maskDilated),size(mask3d),'nearest');
+    [qx,qy,qz]=ind2sub(size(maskDilatedOriginalSize),find(maskDilatedOriginalSize>0));
     
-%     mask3d(inPoints)=1;
+    %alpha shape of with original size
+    [x,y,z]=ind2sub(size(img3d),find(img3d>0));
+    shp=alphaShape(x,y,z,10);
+    minAlpha = criticalAlpha(shp,'one-region');
+    shp.Alpha = minAlpha;
     
-    %%reducing ram memory
+    %%loop to reduce ram memory
     numPartitions = max(size(img3d));
     partialPxs = ceil(length(qx)/numPartitions);
     tf = false(length(qx),1);
