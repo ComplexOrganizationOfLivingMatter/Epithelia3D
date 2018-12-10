@@ -20,7 +20,7 @@ function [allSurfaceRatioImages] = divideObjectInSurfaceRatios(obj_img, starting
         basal3dInfo = calculateNeighbours3D(allSurfaceRatioImages{numSurface, 1});
         neighbours_data = table(apical3dInfo.neighbourhood, basal3dInfo.neighbourhood);
         neighbours_data.Properties.VariableNames = {'Apical','Basal'};
-        allSurfaceRatioImages{numSurface, 3} = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, allSurfaceRatioImages{numSurface, 1}, obj_img, noValidCells, '.');
+        allSurfaceRatioImages{numSurface, 3} = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, allSurfaceRatioImages{numSurface, 1}, obj_img .* (outsideObject == 0), noValidCells, '.');
         
         outsideObject(actualSurface) = 1;
         
