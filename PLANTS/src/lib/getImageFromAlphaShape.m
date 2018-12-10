@@ -11,15 +11,14 @@ function mask3d = getImageFromAlphaShape(img3d,redFactor)
     shp.Alpha = minAlpha;
     
     %trick to reduce the query points
-    maskDilated = imdilate3(img3dRed>=0,strel('sphere',round(minAlpha)));
+    maskDilated = imdilate3(img3dRed>=0,strel('sphere',round(minAlpha/2)));
     maskDilatedOriginalSize = imresize3(uint16(maskDilated),size(mask3d),'nearest');
     [qx,qy,qz]=ind2sub(size(maskDilatedOriginalSize),find(maskDilatedOriginalSize>0));
     
     %alpha shape of with original size
     [x,y,z]=ind2sub(size(img3d),find(img3d>0));
-    shp=alphaShape(x,y,z,10);
-    minAlpha = criticalAlpha(shp,'one-region');
-    shp.Alpha = minAlpha;
+    shp=alphaShape(x,y,z,minAlpha/redFactor);
+
     
     %%loop to reduce ram memory
     numPartitions = max(size(img3d));
