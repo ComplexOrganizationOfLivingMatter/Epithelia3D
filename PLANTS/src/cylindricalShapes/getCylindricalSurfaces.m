@@ -43,7 +43,7 @@ function [setOfCells] = getCylindricalSurfaces(folder,sampleName,rangeMajorAxis,
         disp('2 - layers captured')
        
         [centers{1},centers{2}, radiiBasalLayer1, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1Limited,layer2Limited,rangeMajorAxis,folder,sampleName,'Layer1');
-        [centers{3},centers{4}, radiiBasalLayer2, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2Limited,zeros(size(layer2Limited)),rangeMajorAxis,folder,sampleName,'Layer2');
+        [centers{3},centers{4}, radiiBasalLayer2, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2Limited,layer3(rangeMajorAxis(1):rangeMajorAxis(2),:,:),rangeMajorAxis,folder,sampleName,'Layer2');
  
         save([folder sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
         disp('3 - get centroids and infered cylinder axes')
