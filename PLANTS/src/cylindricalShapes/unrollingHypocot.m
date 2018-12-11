@@ -13,11 +13,11 @@ function [totalImages] = unrollingHypocot(folder,name,rangeY,layer1,layer2)
 
         setLayerNames = {'outerMaskLayer1','innerMaskLayer1','outerMaskLayer2','innerMaskLayer2'};
         load([folder name '\maskLayers\certerAndRadiusPerZ.mat'],'centers')
-        centroids=centers{1};
+        
         
         for nImg = 1 : length(setOfImages)
             img3d = setOfImages{nImg};
-            
+            centroids=centers{nImg};
 %             axesLength = regionprops3(img3d>0,'PrincipalAxisLength');
 %             [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength));
 % 
