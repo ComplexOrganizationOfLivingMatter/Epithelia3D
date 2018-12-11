@@ -3,7 +3,7 @@ function [polygon_distribution, neighbours_data] = pipeline(outputDir)
 %   Detailed explanation goes here
     mkdir(fullfile(outputDir, 'Cells', 'OutputLimeSeg'));
     mkdir(fullfile(outputDir, 'ImageSequence'));
-    mkdir(fullfile(outputDir, 'Lumen'));
+    mkdir(fullfile(outputDir, 'Lumen', 'SegmentedLumen'));
     mkdir(fullfile(outputDir, 'Results'));
     mkdir(fullfile(outputDir, 'Apical_Labelled'));
 
