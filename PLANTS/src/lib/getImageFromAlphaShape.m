@@ -16,7 +16,7 @@ function mask3d = getImageFromAlphaShape(img3d,redFactor)
     [qx,qy,qz]=ind2sub(size(maskDilatedOriginalSize),find(maskDilatedOriginalSize>0));
     
     %alpha shape of with original size
-    [x,y,z]=ind2sub(size(img3d),find(img3d>0));
+    [x,y,z]=ind2sub(size(img3d),find(bwperim(img3d>0)));
     shp=alphaShape(x,y,z,minAlpha/redFactor);
 
     
