@@ -1,4 +1,4 @@
-function [CellularFeatures] = calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,polygon_distribution,outputDir)
+function [CellularFeatures, meanSurfaceRatio] = calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,polygon_distribution,outputDir)
 %CALCULATE_CELLULARFEATURES Summary of this function goes here
 %   Detailed explanation goes here
 %%  Calculate number of neighbours of each cell
@@ -11,6 +11,10 @@ apicobasal_neighboursRecount=cellfun(@(x) length(x),apicobasal_neighbours,'Unifo
 %%  Calculate area cells
 apical_area_cells=cell2mat(struct2cell(regionprops(apicalLayer,'Area'))).';
 basal_area_cells=cell2mat(struct2cell(regionprops(basalLayer,'Area'))).';
+surfaceRatio = basal_area_cells ./ apical_area_cells;
+surfaceRatioValidCells = surfaceRatio;
+surfaceRatio(noValidCells) = [];
+meanSurfaceRatio = mean(surfaceRatioValidCells);
 
 %%  Calculate volume cells
 volume_cells=table2array(regionprops3(labelledImage,'Volume'));
@@ -41,8 +45,8 @@ ID_cells=(1:length(basal3dInfo.neighbourhood)).';
         warning(msg);
  end
 
-CellularFeatures=table(ID_cells,number_neighbours.Var1,number_neighbours.Var2,total_neighbours3DRecount,apicobasal_neighboursRecount,scutoids_cells,apical_area_cells,basal_area_cells,volume_cells);
-CellularFeatures.Properties.VariableNames = {'ID_Cell','Apical_sides','Basal_sides','Total_neighbours','Apicobasal_neighbours','Scutoids','Apical_area','Basal_area','Volume'};
+CellularFeatures=table(ID_cells,number_neighbours.Var1,number_neighbours.Var2,total_neighbours3DRecount,apicobasal_neighboursRecount,scutoids_cells,apical_area_cells,basal_area_cells, surfaceRatio, volume_cells);
+CellularFeatures.Properties.VariableNames = {'ID_Cell','Apical_sides','Basal_sides','Total_neighbours','Apicobasal_neighbours','Scutoids','Apical_area','Basal_area', 'Surface_Ratio','Volume'};
 CellularFeatures(noValidCells,:)=[];
 
 if isempty(outputDir) == 0
