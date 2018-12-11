@@ -42,17 +42,19 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
         partitions = surfaceRatioDistance * (1:(totalPartitions-1))/totalPartitions;
 
         for numPartition = 1:(totalPartitions-1)
-            upperBoundStarting = ((ceil(partitions(totalPartitions - numPartition)*roundingFactor)/roundingFactor)+(1/roundingFactor)) >= distanceStartingAllPixels;
-            lowerBoundStarting = ((floor(partitions(totalPartitions - numPartition)*roundingFactor)/roundingFactor)-(1/roundingFactor)) <= distanceStartingAllPixels;
-
-            upperBoundEnd = ((ceil(partitions(numPartition)*roundingFactor)/roundingFactor)+(1/roundingFactor)) >= distanceEndingAllPixels;
-            lowerBoundEnd = ((floor(partitions(numPartition)*roundingFactor)/roundingFactor)-(1/roundingFactor)) <= distanceEndingAllPixels;
-
-            %pdist2(partitions(numPartition), distanceStartingAllPixels(:), 'Smalles', 1);
-            pixelsOfCurrentPartitionSurfaceRatioFromStarting = any(upperBoundStarting & lowerBoundStarting, 2);
-            pixelsOfCurrentPartitionSurfaceRatioFromEnd = any(upperBoundEnd & lowerBoundEnd, 2);
-            pixelsOfSR = allPixels(pixelsOfCurrentPartitionSurfaceRatioFromStarting & pixelsOfCurrentPartitionSurfaceRatioFromEnd, :);
+%             upperBoundStarting = ((ceil(partitions(totalPartitions - numPartition)*roundingFactor)/roundingFactor)+(1/roundingFactor)) >= distanceStartingAllPixels;
+%             lowerBoundStarting = ((floor(partitions(totalPartitions - numPartition)*roundingFactor)/roundingFactor)-(1/roundingFactor)) <= distanceStartingAllPixels;
+% 
+%             upperBoundEnd = ((ceil(partitions(numPartition)*roundingFactor)/roundingFactor)+(1/roundingFactor)) >= distanceEndingAllPixels;
+%             lowerBoundEnd = ((floor(partitions(numPartition)*roundingFactor)/roundingFactor)-(1/roundingFactor)) <= distanceEndingAllPixels;
+% 
+%             pixelsOfCurrentPartitionSurfaceRatioFromStarting = any(upperBoundStarting & lowerBoundStarting, 2);
+%             pixelsOfCurrentPartitionSurfaceRatioFromEnd = any(upperBoundEnd & lowerBoundEnd, 2);
+%             pixelsOfSR = allPixels(pixelsOfCurrentPartitionSurfaceRatioFromStarting & pixelsOfCurrentPartitionSurfaceRatioFromEnd, :);
             
+            pixelsCloserToEndSurface = partitions(numPartition) >= distanceEndingAllPixels;
+            pixelsOfSR = allPixels(any(pixelsCloserToEndSurface, 2), :);
+
             if isempty(pixelsOfSR) == 0
                 x = pixelsOfSR(:, 1);
                 y = pixelsOfSR(:, 2);
@@ -75,6 +77,10 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
             end
         end
     end
+    for numPartition = 1:totalPartitions-1
+        figure; paint3D( imageOfSurfaceRatios{numPartition}, [], colours);
+    end
+
     imageOfSurfaceRatios(:, 2) = num2cell(realSurfaceRatio);
     
     for numPartition = 1:(totalPartitions - 1)
@@ -82,9 +88,6 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
         imageOfSurfaceRatios{numPartition, 3} = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, allSurfaceRatioImages{numSurface, 1}, obj_img .* (outsideObject == 0), noValidCells, '.');
     end
     
-%     for numPartition = 1:totalPartitions-1
-%         figure; paint3D( imageOfSurfaceRatios{numPartition}, [], colours);
-%     end
 
     
 %% eroding starting surface until it overlaps with any pixel of the end surface
