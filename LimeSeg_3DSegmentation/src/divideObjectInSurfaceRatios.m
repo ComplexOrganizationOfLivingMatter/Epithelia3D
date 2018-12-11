@@ -1,4 +1,4 @@
-function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingSurface, endSurface, validCells, noValidCells, colours)
+function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingSurface, endSurface, validCells, noValidCells, colours, lumenImage)
 %DIVIDEOBJECTINSURFACERATIOS Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -16,8 +16,8 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
 
     apicoBasal_SurfaceRatio = sum(startingSurface_WithoutNoValidCells(:)>0) / sum(endSurface_WithoutNoValidCells(:) > 0);
     
-    roundingFactor = 15;
-    totalPartitions = 5;
+    %roundingFactor = 15;
+    totalPartitions = 10;
     
     initialPartitions = (1:(totalPartitions-1))/totalPartitions;
     realSurfaceRatio = initialPartitions * (apicoBasal_SurfaceRatio - 1) + 1;
@@ -77,15 +77,16 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
             end
         end
     end
-    for numPartition = 1:totalPartitions-1
-        figure; paint3D( imageOfSurfaceRatios{numPartition}, [], colours);
-    end
+%     for numPartition = 1:totalPartitions-1
+%         figure; paint3D( imageOfSurfaceRatios{numPartition}, [], colours);
+%     end
 
     imageOfSurfaceRatios(:, 2) = num2cell(realSurfaceRatio);
     
     for numPartition = 1:(totalPartitions - 1)
-        basal3dInfo = calculateNeighbours3D(imageOfSurfaceRatios{numPartition, 2});
-        imageOfSurfaceRatios{numPartition, 3} = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, allSurfaceRatioImages{numSurface, 1}, obj_img .* (outsideObject == 0), noValidCells, '.');
+        [imageOfSurfaceRatios{numPartition, 3}] = getBasalFrom3DImage(imageOfSurfaceRatios{numPartition, 1}, [], 4);
+        basal3dInfo = calculateNeighbours3D(imageOfSurfaceRatios{numPartition, 3});
+        imageOfSurfaceRatios{numPartition, 4} = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, imageOfSurfaceRatios{numPartition, 3}, imageOfSurfaceRatios{numPartition, 1}, noValidCells, '.');
     end
     
 

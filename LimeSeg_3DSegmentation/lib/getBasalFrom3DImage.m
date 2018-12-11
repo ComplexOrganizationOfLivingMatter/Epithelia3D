@@ -18,7 +18,9 @@ function [basalLayer] = getBasalFrom3DImage(labelledImage, lumenImage, tipValue)
 %     [x,y,z] = ind2sub(size(basalLayer),find(basalLayer>0));
 %     figure;
 %     pcshow([x,y,z]);
-    basalLayer(imdilate(lumenImage, strel('sphere', 3))) = 0;
+    if isempty(lumenImage) == 0
+        basalLayer(imdilate(lumenImage, strel('sphere', 3))) = 0;
+    end
     basalLayer = labelledImage .* basalLayer;
 end
 
