@@ -2,8 +2,8 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
 %DIVIDEOBJECTINSURFACERATIOS Summary of this function goes here
 %   Detailed explanation goes here
 
-    %obj_img_WithoutNoValidCells = ismember(obj_img, validCells) .* obj_img;
-%     startingSurface = ismember(startingSurface, validCells) .* startingSurface;
+    endSurface_WithoutNoValidCells = ismember(endSurface, validCells) .* endSurface;
+    startingSurface_WithoutNoValidCells = ismember(startingSurface, validCells) .* startingSurface;
     [outsideObject] = getOutsideGland(obj_img);
     
     outsideObject(imdilate(endSurface, strel('sphere', 2))>0) = 0;
@@ -14,9 +14,13 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
     
     apical3dInfo = calculateNeighbours3D(endSurface);
 
+    apicoBasal_SurfaceRatio = sum(startingSurface_WithoutNoValidCells(:)>0) / sum(endSurface_WithoutNoValidCells(:) > 0);
     
-    roundingFactor = 10;
-    totalPartitions = 10;
+    roundingFactor = 15;
+    totalPartitions = 5;
+    
+    initialPartitions = (1:(totalPartitions-1))/totalPartitions;
+    realSurfaceRatio = initialPartitions * (apicoBasal_SurfaceRatio - 1) + 1;
     
     imageOfSurfaceRatios = cell(totalPartitions-1, 1);
     imageOfSurfaceRatios(:) = {zeros(size(obj_img))};
@@ -38,11 +42,11 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
         partitions = surfaceRatioDistance * (1:(totalPartitions-1))/totalPartitions;
 
         for numPartition = 1:(totalPartitions-1)
-            upperBoundStarting = ((ceil(partitions(numPartition)*roundingFactor)/roundingFactor)+(1/roundingFactor)) >= distanceStartingAllPixels;
-            lowerBoundStarting = ((floor(partitions(numPartition)*roundingFactor)/roundingFactor)-(1/roundingFactor)) <= distanceStartingAllPixels;
+            upperBoundStarting = ((ceil(partitions(totalPartitions - numPartition)*roundingFactor)/roundingFactor)+(1/roundingFactor)) >= distanceStartingAllPixels;
+            lowerBoundStarting = ((floor(partitions(totalPartitions - numPartition)*roundingFactor)/roundingFactor)-(1/roundingFactor)) <= distanceStartingAllPixels;
 
-            upperBoundEnd = ((ceil(partitions(totalPartitions - numPartition)*roundingFactor)/roundingFactor)+(1/roundingFactor)) >= distanceEndingAllPixels;
-            lowerBoundEnd = ((floor(partitions(totalPartitions - numPartition)*roundingFactor)/roundingFactor)-(1/roundingFactor)) <= distanceEndingAllPixels;
+            upperBoundEnd = ((ceil(partitions(numPartition)*roundingFactor)/roundingFactor)+(1/roundingFactor)) >= distanceEndingAllPixels;
+            lowerBoundEnd = ((floor(partitions(numPartition)*roundingFactor)/roundingFactor)-(1/roundingFactor)) <= distanceEndingAllPixels;
 
             %pdist2(partitions(numPartition), distanceStartingAllPixels(:), 'Smalles', 1);
             pixelsOfCurrentPartitionSurfaceRatioFromStarting = any(upperBoundStarting & lowerBoundStarting, 2);
@@ -71,10 +75,17 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
             end
         end
     end
-    figure; paint3D( imageOfSurfaceRatios{5}, [], colours);
-%     [~, index] = min(pdist2(partitions(numPartition), distanceStartingAllPixels(:)));
-%     
-%     distanceStartingAllPixels(index)
+    imageOfSurfaceRatios(:, 2) = num2cell(realSurfaceRatio);
+    
+    for numPartition = 1:(totalPartitions - 1)
+        basal3dInfo = calculateNeighbours3D(imageOfSurfaceRatios{numPartition, 2});
+        imageOfSurfaceRatios{numPartition, 3} = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, allSurfaceRatioImages{numSurface, 1}, obj_img .* (outsideObject == 0), noValidCells, '.');
+    end
+    
+%     for numPartition = 1:totalPartitions-1
+%         figure; paint3D( imageOfSurfaceRatios{numPartition}, [], colours);
+%     end
+
     
 %% eroding starting surface until it overlaps with any pixel of the end surface
 %     while any(any(any(endSurface>0 & (ismember(obj_img, validCells) .*actualSurface)>0))) == 0
