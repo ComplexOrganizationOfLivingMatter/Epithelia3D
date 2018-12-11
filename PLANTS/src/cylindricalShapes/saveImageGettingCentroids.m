@@ -1,9 +1,9 @@
-function [centers, radii] = saveImageGettingCentroids(mask3d,name2save)
+function [centers, radii] = saveImageGettingCentroids(mask3d,rangeMajorAxis,name2save)
     
     mkdir(name2save)
 
-    centers=cell(size(mask3d,3),1);
-    radii=cell(size(mask3d,3),1);
+    centers=cell(size(mask3d,3)+rangeMajorAxis(1),1);
+    radii=cell(size(mask3d,3)+rangeMajorAxis(1),1);
 
     for i=1:size(mask3d,3)
         mask=false(size(mask3d(:,:,i)));
@@ -18,7 +18,7 @@ function [centers, radii] = saveImageGettingCentroids(mask3d,name2save)
             mask(in)=1;
             mask(on)=1;
 
-            imwrite(mask,[name2save num2str(i),'.bmp'])
+            imwrite(mask,[name2save num2str(i+rangeMajorAxis(1)-1),'.bmp'])
 
             propsMask=regionprops(mask,'Centroid','MajorAxisLength','MinorAxisLength','Area');
             area=cat(1,propsMask.Area);
@@ -26,8 +26,8 @@ function [centers, radii] = saveImageGettingCentroids(mask3d,name2save)
             centroid=cat(1,propsMask.Centroid);
             majAxis=cat(1,propsMask.MajorAxisLength);
             minAxis=cat(1,propsMask.MinorAxisLength);
-            centers{i}=[centroid(indMax,1),i,centroid(indMax,2)];
-            radii{i}=mean([majAxis(indMax,:),minAxis(indMax,:)])/2;
+            centers{i+rangeMajorAxis(1)-1}=[centroid(indMax,1),i,centroid(indMax,2)];
+            radii{i+rangeMajorAxis(1)-1}=mean([majAxis(indMax,:),minAxis(indMax,:)])/2;
         end
     end
 

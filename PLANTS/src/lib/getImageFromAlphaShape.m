@@ -11,7 +11,7 @@ function mask3d = getImageFromAlphaShape(img3d,redFactor)
     shp.Alpha = minAlpha;
     
     %trick to reduce the query points
-    maskDilated = imdilate(img3dRed>=0,strel('sphere',round(minAlpha/2)));
+    maskDilated = imdilate(bwperim(img3dRed>0),strel('sphere',ceil(minAlpha/2)));
     maskDilatedOriginalSize = imresize3(uint16(maskDilated),size(mask3d),'nearest');
     [qx,qy,qz]=ind2sub(size(maskDilatedOriginalSize),find(maskDilatedOriginalSize>0));
     
