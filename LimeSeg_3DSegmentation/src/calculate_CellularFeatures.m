@@ -13,7 +13,7 @@ apical_area_cells=cell2mat(struct2cell(regionprops(apicalLayer,'Area'))).';
 basal_area_cells=cell2mat(struct2cell(regionprops(basalLayer,'Area'))).';
 surfaceRatio = basal_area_cells ./ apical_area_cells;
 surfaceRatioValidCells = surfaceRatio;
-surfaceRatio(noValidCells) = [];
+surfaceRatioValidCells(noValidCells) = [];
 meanSurfaceRatio = mean(surfaceRatioValidCells);
 
 %%  Calculate volume cells

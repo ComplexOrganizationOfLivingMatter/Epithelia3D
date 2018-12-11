@@ -34,7 +34,7 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
         startingPixels = [xStarting, yStarting, zStarting];
         endPixels = [xEnd, yEnd, zEnd];
         [distanceEndingStarting] = pdist2(endPixels, startingPixels);
-        [distanceStartingAllPixels] = pdist2(allPixels, startingPixels);
+        %[distanceStartingAllPixels] = pdist2(allPixels, startingPixels);
         [distanceEndingAllPixels] = pdist2(allPixels, endPixels);
 
         surfaceRatioDistance = mean(distanceEndingStarting(:));
@@ -85,9 +85,12 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
 %         figure; paint3D( imageOfSurfaceRatios{numPartition, 3}, [], colours);
 %     end
 
-    imageOfSurfaceRatios(:, 2) = num2cell(realSurfaceRatio);
     
-    for numPartition = 1:(totalPartitions - 1)
+    imageOfSurfaceRatios(:, 2) = num2cell(realSurfaceRatio);
+    imageOfSurfaceRatios{totalPartitions, 1} = startingSurface;
+    imageOfSurfaceRatios{totalPartitions, 2} = apicoBasal_SurfaceRatio;
+    
+    for numPartition = 1:totalPartitions
         [imageOfSurfaceRatios{numPartition, 3}] = getBasalFrom3DImage(imageOfSurfaceRatios{numPartition, 1}, [], 4);
         basal3dInfo = calculateNeighbours3D(imageOfSurfaceRatios{numPartition, 3});
         neighbours_data = table(apical3dInfo.neighbourhood, basal3dInfo.neighbourhood);
