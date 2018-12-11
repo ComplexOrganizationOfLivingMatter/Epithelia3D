@@ -24,8 +24,39 @@ for NumCells=1:length(basal3dInfo.neighbourhood)
     end
 end
 
+   
+
+
+
 %%  Export to a excel file
 ID_cells=(1:length(basal3dInfo.neighbourhood)).';
+
+ if isequal(total_neighbours3D,apicobasal_neighbours)==0
+        
+        total_neighbours3D2=calculateNeighbours3D(labelledImage);
+        apicobasal_neighbours2=cellfun(@(x,y)(unique(vertcat(x,y))), apical3dInfo.neighbourhood, basal3dInfo.neighbourhood, 'UniformOutput',false);
+        pos=cellfun(@isequal, total_neighbours3D2.neighbourhood,apicobasal_neighbours2);
+        
+        pos(noValidCells)=[];
+        
+        ids=ID_cells(pos==0);
+        
+        
+        
+        IDsStrings=string(num2str(ids));
+        IDsStrings=strjoin(IDsStrings,', ');
+        
+        msg1="Cells with IDs ";
+        msg2=strcat(msg1,IDsStrings);
+     
+        msg3="  could be wrong due to Total_neighbours is different from Apicobasal_neighours";
+        msg=strcat(msg2,msg3);
+    
+        warning(msg);
+       
+    
+  end
+
 CellularFeatures=table(ID_cells,number_neighbours.Var1,number_neighbours.Var2,total_neighbours3D,apicobasal_neighbours,scutoids_cells,apical_area_cells,basal_area_cells,volume_cells);
 CellularFeatures.Properties.VariableNames = {'ID_Cell','Apical_sides','Basal_sides','Total_neighbours','Apicobasal_neighbours','Scutoids','Apical_area','Basal_area','Volume'};
 CellularFeatures(noValidCells,:)=[];
