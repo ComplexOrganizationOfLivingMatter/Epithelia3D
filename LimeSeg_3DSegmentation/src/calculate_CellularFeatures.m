@@ -1,4 +1,4 @@
-function [CellularFeatures] = calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,selpath)
+function [CellularFeatures] = calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,polygon_distribution,selpath)
 %CALCULATE_CELLULARFEATURES Summary of this function goes here
 %   Detailed explanation goes here
 %%  Calculate number of neighbours of each cell
@@ -15,18 +15,7 @@ basal_area_cells=cell2mat(struct2cell(regionprops(basalLayer,'Area'))).';
 volume_cells=table2array(regionprops3(labelledImage,'Volume'));
 
 %%  Determine if a cell is a scutoid or not
-scutoids_cells={};
-for NumCells=1:length(basal3dInfo.neighbourhood)
-    if isequal(cell2mat(neighbours_data.Apical(NumCells,1)),cell2mat(neighbours_data.Basal(NumCells,1)))
-        scutoids_cells{NumCells,1}=0;
-    else
-        scutoids_cells{NumCells,1}=1;
-    end
-end
-
-   
-
-
+scutoids_cells=cellfun(@(x,y) double(~isequal(x,y)), neighbours_data.Apical,neighbours_data.Basal);
 
 %%  Export to a excel file
 ID_cells=(1:length(basal3dInfo.neighbourhood)).';
@@ -55,9 +44,13 @@ ID_cells=(1:length(basal3dInfo.neighbourhood)).';
         warning(msg);
        
     
-  end
-
+ end
+  
 CellularFeatures=table(ID_cells,number_neighbours.Var1,number_neighbours.Var2,total_neighbours3D,apicobasal_neighbours,scutoids_cells,apical_area_cells,basal_area_cells,volume_cells);
 CellularFeatures.Properties.VariableNames = {'ID_Cell','Apical_sides','Basal_sides','Total_neighbours','Apicobasal_neighbours','Scutoids','Apical_area','Basal_area','Volume'};
 CellularFeatures(noValidCells,:)=[];
 writetable(CellularFeatures,fullfile(selpath,'Results', 'cellular_features_LimeSeg3DSegmentation.xls'), 'Range','B2');
+
+%% Poligon distribution 
+writetable(table(polygon_distribution.Apical),fullfile(selpath,'Results', 'cellular_features_LimeSeg3DSegmentation.xls'), 'Sheet', 2, 'Range', 'B2');
+writetable(table(polygon_distribution.Basal),fullfile(selpath,'Results', 'cellular_features_LimeSeg3DSegmentation.xls'), 'Sheet', 2, 'Range', 'B6');
