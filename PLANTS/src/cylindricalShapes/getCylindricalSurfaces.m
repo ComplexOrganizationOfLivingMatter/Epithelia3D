@@ -1,4 +1,4 @@
-function [setOfCells] = getCylindricalSurfaces(folder,sampleName,rangeY,zScaleFactorHyp)
+function [setOfCells] = getCylindricalSurfaces(folder,sampleName,rangeMajorAxis,zScaleFactorHyp)
 
 
     disp(sampleName)
@@ -32,8 +32,9 @@ function [setOfCells] = getCylindricalSurfaces(folder,sampleName,rangeY,zScaleFa
             else
                 [layer1,layer2,layer3,setOfCells.Layer1,setOfCells.Layer2,setOfCells.Layer3] = getSplittedCylinderPerSurfaces(img3d,[]);
             end
-            layer1Limited = layer1(rangeY(1):rangeY(2),:,:);
-            layer2Limited = layer2(rangeY(1):rangeY(2),:,:);
+            layer1Limited = layer1(rangeMajorAxis(1):rangeMajorAxis(2),:,:);
+            layer2Limited = layer2(rangeMajorAxis(1):rangeMajorAxis(2),:,:);
+            
 
             save([folder sampleName '\cellsAndSurfacesPerLayer.mat'],'-v7.3','layer1','layer2','layer3','layer1Limited','layer2Limited','setOfCells')
 
@@ -41,8 +42,8 @@ function [setOfCells] = getCylindricalSurfaces(folder,sampleName,rangeY,zScaleFa
         
         disp('2 - layers captured')
        
-        [centers{1},centers{2}, radiiBasalLayer1, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1,layer2,folder,sampleName,'Layer1');
-        [centers{3},centers{4}, radiiBasalLayer2, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2,layer3,folder,sampleName,'Layer2');
+        [centers{1},centers{2}, radiiBasalLayer1, radiiApicalLayer1] = calculateCenterRadiusCylSection(layer1Limited,layer2Limited,rangeMajorAxis,folder,sampleName,'Layer1');
+        [centers{3},centers{4}, radiiBasalLayer2, radiiApicalLayer2] = calculateCenterRadiusCylSection(layer2Limited,zeros(size(layer2Limited)),rangeMajorAxis,folder,sampleName,'Layer2');
  
         save([folder sampleName '\maskLayers\certerAndRadiusPerZ.mat'],'centers','radiiBasalLayer1','radiiApicalLayer1','radiiBasalLayer2','radiiApicalLayer2');               
         disp('3 - get centroids and infered cylinder axes')
