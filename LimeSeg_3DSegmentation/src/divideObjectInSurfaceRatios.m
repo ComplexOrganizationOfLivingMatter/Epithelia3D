@@ -86,6 +86,8 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
     for numPartition = 1:(totalPartitions - 1)
         [imageOfSurfaceRatios{numPartition, 3}] = getBasalFrom3DImage(imageOfSurfaceRatios{numPartition, 1}, [], 4);
         basal3dInfo = calculateNeighbours3D(imageOfSurfaceRatios{numPartition, 3});
+        neighbours_data = table(apical3dInfo.neighbourhood, basal3dInfo.neighbourhood);
+        neighbours_data.Properties.VariableNames = {'Apical','Basal'};
         imageOfSurfaceRatios{numPartition, 4} = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, imageOfSurfaceRatios{numPartition, 3}, imageOfSurfaceRatios{numPartition, 1}, noValidCells, '.');
     end
     
