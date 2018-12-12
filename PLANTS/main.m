@@ -49,3 +49,7 @@ for nNam=5 %[4:15,17:length(names)]
     getGeometricalFeaturesFrom2DImages([folder names{nNam} '/resultMeasurements/layer2'],finalImages(3:4),noValidCellsLayer2)
 
 end
+
+% system('rm -r data/Hypocotyl/*/resultMeasurements/')
+% system('rm -r data/Hypocotyl/*/imagesOfLayers/')
+% system('rm -r data/Hypocotyl/*/maskLayers/')
