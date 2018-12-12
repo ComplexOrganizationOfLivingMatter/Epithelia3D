@@ -28,10 +28,10 @@ ID_cells=(1:length(basal3dInfo.neighbourhood)).';
  if isequal(total_neighbours3D.neighbourhood,apicobasal_neighbours)==0
         
         pos=cellfun(@isequal, total_neighbours3D.neighbourhood,apicobasal_neighbours);
-        
-        pos(noValidCells)=[];
-        
+       
         ids=ID_cells(pos==0);
+        ids(ismember(ids,noValidCells))=[];
+        
         
         IDsStrings=string(num2str(ids));
         IDsStrings=strjoin(IDsStrings,', ');
