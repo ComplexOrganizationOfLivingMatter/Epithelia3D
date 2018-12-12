@@ -17,7 +17,7 @@ function mask3d = getImageFromAlphaShape(img3d,redFactor)
     
     %alpha shape of with original size
     [x,y,z]=ind2sub(size(img3d),find(bwperim(img3d>0)));
-    shp=alphaShape(x,y,z,minAlpha/redFactor);
+    shp=alphaShape(x,y,z,5*minAlpha/redFactor);
 
     
     %%loop to reduce ram memory
