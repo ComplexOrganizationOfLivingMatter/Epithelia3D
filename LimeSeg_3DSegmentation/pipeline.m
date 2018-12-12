@@ -8,7 +8,7 @@ function [polygon_distribution, neighbours_data] = pipeline(outputDir)
     mkdir(fullfile(outputDir, 'Apical_Labelled'));
 
 
-    resizeImg = 0.25;
+    resizeImg = 0.25; %This is equal aprox to 1/4.06
 
     tipValue = 4;
 
@@ -99,6 +99,8 @@ function [polygon_distribution, neighbours_data] = pipeline(outputDir)
     polygon_distribution.Properties.VariableNames = {'Apical','Basal'};
 
     %% Export to excel cellular features
-    calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,polygon_distribution,outputDir);
+    cellularFeatures = calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,polygon_distribution,outputDir);
+    
+    save(fullfile(outputDir, 'Results', 'cellularFeaturesExcel.mat'), cellularFeatures); 
 end
 
