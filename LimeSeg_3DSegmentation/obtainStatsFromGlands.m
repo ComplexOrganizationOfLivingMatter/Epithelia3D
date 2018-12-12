@@ -45,6 +45,13 @@ for numFile = 1:length(files)
         numNeighOfNeighAccumPerSurfacesRealization(:,nSR) = cellfun(@(x) sum(vertcat(numNeighAccumPerSurfacesRealization(x,nSR)))/length(x),neighsAccumSurfaces(:,nSR));
     end
 
+    meanNumNeighPerSurfaceRealization = mean(numNeighAccumPerSurfacesRealization(validCells, :), 1);
+    stdNumNeighPerSurfaceRealization = std(numNeighAccumPerSurfacesRealization(validCells, :), 1);
+    totalAreaPerSR = sum(areaCellsPerSurfaceRealization(validCells, :));
+    surfaceRatioOfGland = totalAreaPerSR ./ totalAreaPerSR(1);
+    
+    infoEuler3D{numFile, 1} = vertcat(meanNumNeighPerSurfaceRealization, stdNumNeighPerSurfaceRealization, surfaceRatioOfGland)';
+    
     numNeighPerSurface{numFile, 1} = array2table(numNeighPerSurfaceRealization(validCells, :),'VariableNames',namesSR);
     numNeighAccumPerSurfaces{numFile, 1} = array2table(numNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
     numNeighOfNeighPerSurface{numFile, 1} = array2table(numNeighOfNeighPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
@@ -52,4 +59,19 @@ for numFile = 1:length(files)
     areaCellsPerSurface{numFile, 1} = array2table(areaCellsPerSurfaceRealization(validCells,:),'VariableNames',namesSR);
     volumePerSurface{numFile, 1} = array2table(volumePerSurfaceRealization(validCells,:),'VariableNames',namesSR);
 end
+
+infoEuler3DCat = cat(1, infoEuler3D{:});
+
+figure;
+for numPoint = 1:size(infoEuler3DCat, 1)
+    hold on;
+    infoEuler3DCat(numPoint, 3)
+    plot(infoEuler3DCat(numPoint, 3), infoEuler3DCat(numPoint, 1), '*k')
+end
+title('euler neighbours 3D')
+xlabel('surface ratio')
+ylabel('neighbours total')
+xlim([1, 15]);
+ylim([0,15]);
+
 getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,'Results/SalivaryGlands/',[1 2]);
