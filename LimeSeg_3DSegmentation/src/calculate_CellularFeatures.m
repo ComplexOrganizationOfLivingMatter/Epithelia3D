@@ -53,7 +53,7 @@ if isempty(outputDir) == 0
     writetable(CellularFeatures,fullfile(outputDir,'Results', 'cellular_features_LimeSeg3DSegmentation.xls'), 'Range','B2');
 
     %% Poligon distribution 
-    polygon_distribution_3D=calculate_polygon_distribution(cellfun(@length, total_neighbours3D), validCells);
+    polygon_distribution_3D=calculate_polygon_distribution(cellfun(@length, total_neighbours3D.neighbourhood), validCells);
     writetable(table('','VariableNames',{'Apical'}),fullfile(outputDir,'Results', 'cellular_features_LimeSeg3DSegmentation.xls'), 'Sheet', 2, 'Range', 'B2')
     writetable(table(polygon_distribution.Apical),fullfile(outputDir,'Results', 'cellular_features_LimeSeg3DSegmentation.xls'), 'Sheet', 2, 'Range', 'B3', 'WriteVariableNames',false);
     writetable(table('','VariableNames',{'Basal'}),fullfile(outputDir,'Results', 'cellular_features_LimeSeg3DSegmentation.xls'), 'Sheet', 2, 'Range', 'B6')
