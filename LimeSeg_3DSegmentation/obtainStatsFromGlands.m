@@ -1,12 +1,17 @@
 
 clear all
-files = dir('**/Salivary gland/**/3d_layers_info.mat');
+files = dir('**/Salivary gland/**/Results/3d_layers_info.mat');
 
 numberOfSurfaceRatios = 2;
-
+namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],1:numberOfSurfaceRatios,'UniformOutput', false);
 for numFile = 1:length(files)
     load(fullfile(files(numFile).folder, files(numFile).name));
     load(fullfile(files(numFile).folder, 'valid_cells.mat'));
+    
+    neighsSurface = cell(numberOfSurfaceRatios,1);
+    neighsAccumSurfaces = cell(numberOfSurfaceRatios,1);
+    areaCells = cell(numberOfSurfaceRatios,1);
+    volumes = cell(numberOfSurfaceRatios,1);
     
     neighsSurface{1} = apical3dInfo.neighbourhood';
     neighsAccumSurfaces{1} = apical3dInfo.neighbourhood';
@@ -40,11 +45,11 @@ for numFile = 1:length(files)
         numNeighOfNeighAccumPerSurfacesRealization(:,nSR) = cellfun(@(x) sum(vertcat(numNeighAccumPerSurfacesRealization(x,nSR)))/length(x),neighsAccumSurfaces(:,nSR));
     end
 
-    numNeighPerSurface{numFile} = array2table(numNeighPerSurfaceRealization(validCells, :),'VariableNames',namesSR);
-    numNeighAccumPerSurfaces{numFile} = array2table(numNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
-    numNeighOfNeighPerSurface{numFile} = array2table(numNeighOfNeighPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
-    numNeighOfNeighAccumPerSurface{numFile} = array2table(numNeighOfNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
-    areaCellsPerSurface{numFile} = array2table(areaCellsPerSurfaceRealization(validCells,:),'VariableNames',namesSR);
-    volumePerSurface{numFile} = array2table(volumePerSurfaceRealization(validCells,:),'VariableNames',namesSR);
+    numNeighPerSurface{numFile, 1} = array2table(numNeighPerSurfaceRealization(validCells, :),'VariableNames',namesSR);
+    numNeighAccumPerSurfaces{numFile, 1} = array2table(numNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
+    numNeighOfNeighPerSurface{numFile, 1} = array2table(numNeighOfNeighPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
+    numNeighOfNeighAccumPerSurface{numFile, 1} = array2table(numNeighOfNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
+    areaCellsPerSurface{numFile, 1} = array2table(areaCellsPerSurfaceRealization(validCells,:),'VariableNames',namesSR);
+    volumePerSurface{numFile, 1} = array2table(volumePerSurfaceRealization(validCells,:),'VariableNames',namesSR);
 end
-getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,path2save,surfaceRatios);
+getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,'Results/SalivaryGlands/',[1 2]);
