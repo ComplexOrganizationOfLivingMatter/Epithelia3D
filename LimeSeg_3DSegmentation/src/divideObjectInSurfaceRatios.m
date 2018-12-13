@@ -78,17 +78,9 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
             end
         end
     end
-%     for numPartition = 1:totalPartitions-1
-%         figure; paint3D( imageOfSurfaceRatios{numPartition, 1}, [], colours);
-%     end
-%     
-%     for numPartition = 1:totalPartitions-1
-%         figure; paint3D( imageOfSurfaceRatios{numPartition, 3}, [], colours);
-%     end
-
     
     imageOfSurfaceRatios(:, 2) = num2cell(realSurfaceRatio);
-    imageOfSurfaceRatios{totalPartitions, 1} = startingSurface;
+    imageOfSurfaceRatios{totalPartitions, 1} = obj_img;
     imageOfSurfaceRatios{totalPartitions, 2} = apicoBasal_SurfaceRatio;
     
     for numPartition = 1:totalPartitions
@@ -99,6 +91,13 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
         [imageOfSurfaceRatios{numPartition, 4}, meanSurfaceRatio(numPartition)] = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, imageOfSurfaceRatios{numPartition, 3}, imageOfSurfaceRatios{numPartition, 1}, noValidCells, validCells, [], []);
     end
     
+%     for numPartition = 1:totalPartitions-1
+%         figure; paint3D( imageOfSurfaceRatios{numPartition, 1}, [], colours);
+%     end
+%
+%     for numPartition = 1:totalPartitions-1
+%         figure; paint3D( imageOfSurfaceRatios{numPartition, 3}, [], colours);
+%     end
 
     
 %% eroding starting surface until it overlaps with any pixel of the end surface
