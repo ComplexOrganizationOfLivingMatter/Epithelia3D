@@ -1,28 +1,14 @@
-function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingSurface, endSurface, validCells, noValidCells, colours, lumenImage)
+function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingSurface, endSurface, validCells, noValidCells, colours, selpath)
 %DIVIDEOBJECTINSURFACERATIOS Summary of this function goes here
 %   Detailed explanation goes here
-
-    endSurface_WithoutNoValidCells = ismember(endSurface, validCells) .* endSurface;
-    startingSurface_WithoutNoValidCells = ismember(startingSurface, validCells) .* startingSurface;
-    [outsideObject] = getOutsideGland(obj_img);
-    
-    outsideObject(imdilate(endSurface, strel('sphere', 2))>0) = 0;
-    stepDilation = strel('sphere', 1);
-    %We start at the outer surface
-    actualSurface = imclose(startingSurface>0, strel('sphere', 1));
-    numSurface = 1;
     
     apical3dInfo = calculateNeighbours3D(endSurface);
 
-    %apicoBasal_SurfaceRatio = sum(startingSurface_WithoutNoValidCells(:)>0) / sum(endSurface_WithoutNoValidCells(:) > 0);
-    %apicoBasal_SurfaceRatio2 = mean(struct2array(regionprops(startingSurface_WithoutNoValidCells,'Area'))) / mean(struct2array(regionprops(endSurface_WithoutNoValidCells,'Area')));
     basal3dInfo = calculateNeighbours3D(startingSurface);
     neighbours_data = table(apical3dInfo.neighbourhood, basal3dInfo.neighbourhood);
     neighbours_data.Properties.VariableNames = {'Apical','Basal'};
     [~, apicoBasal_SurfaceRatio] = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, startingSurface, obj_img, noValidCells, validCells, [], []);
     
-    
-    %roundingFactor = 15;
     totalPartitions = 10;
     
     initialPartitions = (1:(totalPartitions-1))/totalPartitions;
@@ -47,6 +33,9 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
         
         partitions = surfaceRatioDistance * (1:(totalPartitions-1))/totalPartitions;
 
+        
+        imageOfSurfaceRatios{1, 1} = endSurface;
+        imageOfSurfaceRatios{1, 2} = 1;
         for numPartition = 1:(totalPartitions-1)
 %             upperBoundStarting = ((ceil(partitions(totalPartitions - numPartition)*roundingFactor)/roundingFactor)+(1/roundingFactor)) >= distanceStartingAllPixels;
 %             lowerBoundStarting = ((floor(partitions(totalPartitions - numPartition)*roundingFactor)/roundingFactor)-(1/roundingFactor)) <= distanceStartingAllPixels;
@@ -68,11 +57,11 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
 
                 indicesCell = sub2ind(size(obj_img), x, y, z);
 
-                actualPartition = imageOfSurfaceRatios{numPartition};
+                actualPartition = imageOfSurfaceRatios{numPartition+1};
 
                 actualPartition(indicesCell) = numCell;
 
-                imageOfSurfaceRatios{numPartition} = actualPartition;
+                imageOfSurfaceRatios{numPartition+1} = actualPartition;
 
 %                 figure; paint3D(actualSurface, [], colours(2:end, :));
 %                 hold on; paint3D(startingSurface == 1, [], colours);
@@ -85,10 +74,10 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
     end
     
     imageOfSurfaceRatios(:, 2) = num2cell(realSurfaceRatio);
-    imageOfSurfaceRatios{totalPartitions, 1} = obj_img;
-    imageOfSurfaceRatios{totalPartitions, 2} = apicoBasal_SurfaceRatio;
+    imageOfSurfaceRatios{totalPartitions+1, 1} = obj_img;
+    imageOfSurfaceRatios{totalPartitions+1, 2} = apicoBasal_SurfaceRatio;
     
-    for numPartition = 1:totalPartitions
+    for numPartition = 1:(totalPartitions+1)
         [imageOfSurfaceRatios{numPartition, 3}] = getBasalFrom3DImage(imageOfSurfaceRatios{numPartition, 1}, [], 4);
         basal3dInfo = calculateNeighbours3D(imageOfSurfaceRatios{numPartition, 3});
         neighbours_data = table(apical3dInfo.neighbourhood, basal3dInfo.neighbourhood);
@@ -100,9 +89,10 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
 %         figure; paint3D( imageOfSurfaceRatios{numPartition, 1}, [], colours);
 %     end
 %
-%     for numPartition = 1:totalPartitions-1
-%         figure; paint3D( imageOfSurfaceRatios{numPartition, 3}, [], colours);
-%     end
+    for numPartition = 1:totalPartitions+1
+        h = figure; paint3D( imageOfSurfaceRatios{numPartition, 3}, [], colours);
+        print(h, fullfile(selpath, 'Results', ['gland_SR' num2str(meanSurfaceRatio(numPartition))]),'-dtiff','-r300')
+    end
 
     
 %% eroding starting surface until it overlaps with any pixel of the end surface
