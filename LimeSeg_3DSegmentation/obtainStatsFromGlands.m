@@ -74,4 +74,11 @@ ylabel('neighbours total')
 xlim([1, 15]);
 ylim([0,15]);
 
+myfittypeLog10=fittype('6 +b*log10(x)',...
+'dependent', {'y'}, 'independent',{'x'},...
+'coefficients', {'b'});
+
+myfitLog10=fit(infoEuler3DCat(:, 3),infoEuler3DCat(:, 1),myfittypeLog10,'StartPoint',1);
+hold on; plot(myfitLog10);
+
 getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,'Results/SalivaryGlands/',[1 2]);
