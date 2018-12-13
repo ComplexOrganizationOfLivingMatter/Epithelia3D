@@ -15,6 +15,7 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
     apical3dInfo = calculateNeighbours3D(endSurface);
 
     apicoBasal_SurfaceRatio = sum(startingSurface_WithoutNoValidCells(:)>0) / sum(endSurface_WithoutNoValidCells(:) > 0);
+    %apicoBasal_SurfaceRatio2 = mean(struct2array(regionprops(startingSurface_WithoutNoValidCells,'Area'))) / mean(struct2array(regionprops(endSurface_WithoutNoValidCells,'Area')));
     
     %roundingFactor = 15;
     totalPartitions = 10;
@@ -52,7 +53,7 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
 %             pixelsOfCurrentPartitionSurfaceRatioFromEnd = any(upperBoundEnd & lowerBoundEnd, 2);
 %             pixelsOfSR = allPixels(pixelsOfCurrentPartitionSurfaceRatioFromStarting & pixelsOfCurrentPartitionSurfaceRatioFromEnd, :);
             
-            pixelsCloserToEndSurface = partitions(numPartition) >= distanceEndingAllPixels;
+            pixelsCloserToEndSurface = partitions(numPartition) > distanceEndingAllPixels;
             pixelsOfSR = allPixels(any(pixelsCloserToEndSurface, 2), :);
 
             if isempty(pixelsOfSR) == 0
@@ -95,7 +96,7 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
         basal3dInfo = calculateNeighbours3D(imageOfSurfaceRatios{numPartition, 3});
         neighbours_data = table(apical3dInfo.neighbourhood, basal3dInfo.neighbourhood);
         neighbours_data.Properties.VariableNames = {'Apical','Basal'};
-        [imageOfSurfaceRatios{numPartition, 4}, meanSurfaceRatio(numPartition)] = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, imageOfSurfaceRatios{numPartition, 3}, imageOfSurfaceRatios{numPartition, 1}, noValidCells, [], []);
+        [imageOfSurfaceRatios{numPartition, 4}, meanSurfaceRatio(numPartition)] = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, imageOfSurfaceRatios{numPartition, 3}, imageOfSurfaceRatios{numPartition, 1}, noValidCells, validCells, [], []);
     end
     
 
