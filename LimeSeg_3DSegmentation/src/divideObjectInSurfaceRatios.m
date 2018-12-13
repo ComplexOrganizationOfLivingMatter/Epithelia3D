@@ -14,8 +14,13 @@ function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingS
     
     apical3dInfo = calculateNeighbours3D(endSurface);
 
-    apicoBasal_SurfaceRatio = sum(startingSurface_WithoutNoValidCells(:)>0) / sum(endSurface_WithoutNoValidCells(:) > 0);
+    %apicoBasal_SurfaceRatio = sum(startingSurface_WithoutNoValidCells(:)>0) / sum(endSurface_WithoutNoValidCells(:) > 0);
     %apicoBasal_SurfaceRatio2 = mean(struct2array(regionprops(startingSurface_WithoutNoValidCells,'Area'))) / mean(struct2array(regionprops(endSurface_WithoutNoValidCells,'Area')));
+    basal3dInfo = calculateNeighbours3D(startingSurface);
+    neighbours_data = table(apical3dInfo.neighbourhood, basal3dInfo.neighbourhood);
+    neighbours_data.Properties.VariableNames = {'Apical','Basal'};
+    [~, apicoBasal_SurfaceRatio] = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, startingSurface, obj_img, noValidCells, validCells, [], []);
+    
     
     %roundingFactor = 15;
     totalPartitions = 10;
