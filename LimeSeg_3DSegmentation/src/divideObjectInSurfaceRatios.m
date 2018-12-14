@@ -90,7 +90,7 @@ function [imageOfSurfaceRatios, neighbours] = divideObjectInSurfaceRatios(obj_im
         neighbours{numPartition} = basal3dInfo.neighbourhood;
         %figure; paint3D( imageOfSurfaceRatios{numPartition, 1}, [], colours);
         h = figure('Visible', 'off'); paint3D( ismember(imageOfSurfaceRatios{numPartition, 3}, validCells) .* imageOfSurfaceRatios{numPartition, 3}, [], colours);
-        print(h, fullfile(selpath, 'Results', ['gland_SR' num2str(meanSurfaceRatio(numPartition)), '.tif']),'-dtiff','-r300')
+        print(h, fullfile(selpath, ['gland_SR' num2str(meanSurfaceRatio(numPartition)), '.tif']),'-dtiff','-r300')
     end
     close all
 

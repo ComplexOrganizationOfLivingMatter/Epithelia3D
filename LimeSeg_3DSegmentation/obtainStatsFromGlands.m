@@ -1,12 +1,16 @@
 
 clear all
-files = dir('**/Salivary gland/**/Results/glandDividedInSurfaceRatios.mat');
+files = dir('**/Salivary gland/**/Results/3d_layers_info.mat');
 
 numberOfSurfaceRatios = 11;
-namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],1:numberOfSurfaceRatios,'UniformOutput', false);
+%namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],1:numberOfSurfaceRatios,'UniformOutput', false);
 for numFile = 1:length(files)
+    
     load(fullfile(files(numFile).folder, files(numFile).name));
     load(fullfile(files(numFile).folder, 'valid_cells.mat'));
+    [infoPerSurfaceRatio, neighbours] = divideObjectInSurfaceRatios(labelledImage, basalLayer, apicalLayer, validCells, noValidCells, colours, files(numFile).folder);
+
+    save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'infoPerSurfaceRatio', 'neighbours');
     
     neighsSurface = cell(numberOfSurfaceRatios,1);
     neighsAccumSurfaces = cell(numberOfSurfaceRatios,1);
@@ -54,12 +58,12 @@ for numFile = 1:length(files)
     
     infoEuler3D{numFile, 1} = vertcat(meanNumNeighPerSurfaceRealization, stdNumNeighPerSurfaceRealization, surfaceRatioOfGland)';
     
-    numNeighPerSurface{numFile, 1} = array2table(numNeighPerSurfaceRealization(validCells, :),'VariableNames',namesSR);
-    numNeighAccumPerSurfaces{numFile, 1} = array2table(numNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
-    numNeighOfNeighPerSurface{numFile, 1} = array2table(numNeighOfNeighPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
-    numNeighOfNeighAccumPerSurface{numFile, 1} = array2table(numNeighOfNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
-    areaCellsPerSurface{numFile, 1} = array2table(areaCellsPerSurfaceRealization(validCells,:),'VariableNames',namesSR);
-    volumePerSurface{numFile, 1} = array2table(volumePerSurfaceRealization(validCells,:),'VariableNames',namesSR);
+%     numNeighPerSurface{numFile, 1} = array2table(numNeighPerSurfaceRealization(validCells, :),'VariableNames',namesSR);
+%     numNeighAccumPerSurfaces{numFile, 1} = array2table(numNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
+%     numNeighOfNeighPerSurface{numFile, 1} = array2table(numNeighOfNeighPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
+%     numNeighOfNeighAccumPerSurface{numFile, 1} = array2table(numNeighOfNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
+%     areaCellsPerSurface{numFile, 1} = array2table(areaCellsPerSurfaceRealization(validCells,:),'VariableNames',namesSR);
+%     volumePerSurface{numFile, 1} = array2table(volumePerSurfaceRealization(validCells,:),'VariableNames',namesSR);
 end
 
 infoEuler3DCat = cat(1, infoEuler3D{:});
@@ -67,7 +71,6 @@ infoEuler3DCat = cat(1, infoEuler3D{:});
 figure;
 for numPoint = 1:size(infoEuler3DCat, 1)
     hold on;
-    infoEuler3DCat(numPoint, 3)
     plot(infoEuler3DCat(numPoint, 3), infoEuler3DCat(numPoint, 1), '*k')
 end
 title('euler neighbours 3D')
@@ -83,4 +86,4 @@ myfittypeLog10=fittype('6 +b*log10(x)',...
 myfitLog10=fit(infoEuler3DCat(:, 3),infoEuler3DCat(:, 1),myfittypeLog10,'StartPoint',1);
 hold on; plot(myfitLog10);
 
-getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,'Results/SalivaryGlands/',[1 2]);
+%getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,'Results/SalivaryGlands/',[1 2]);
