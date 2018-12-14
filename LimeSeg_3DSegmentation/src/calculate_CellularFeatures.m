@@ -1,4 +1,4 @@
-function [CellularFeatures, meanSurfaceRatio] = calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,validCells,polygon_distribution,outputDir)
+function [CellularFeaturesWithNoValidCells, meanSurfaceRatio] = calculate_CellularFeatures(neighbours_data,apical3dInfo,basal3dInfo,apicalLayer,basalLayer,labelledImage,noValidCells,validCells,polygon_distribution,outputDir)
 %CALCULATE_CELLULARFEATURES Summary of this function goes here
 %   Detailed explanation goes here
 %%  Calculate number of neighbours of each cell
@@ -47,7 +47,9 @@ ID_cells=(1:length(basal3dInfo.neighbourhood)).';
 
 CellularFeatures=table(ID_cells,number_neighbours.Var1,number_neighbours.Var2,total_neighbours3DRecount,apicobasal_neighboursRecount,scutoids_cells,apical_area_cells,basal_area_cells, surfaceRatio, volume_cells);
 CellularFeatures.Properties.VariableNames = {'ID_Cell','Apical_sides','Basal_sides','Total_neighbours','Apicobasal_neighbours','Scutoids','Apical_area','Basal_area', 'Surface_Ratio','Volume'};
+CellularFeaturesWithNoValidCells = CellularFeatures;
 CellularFeatures(noValidCells,:)=[];
+
 
 if isempty(outputDir) == 0
     writetable(CellularFeatures,fullfile(outputDir,'Results', 'cellular_features_LimeSeg3DSegmentation.xls'), 'Range','B2');

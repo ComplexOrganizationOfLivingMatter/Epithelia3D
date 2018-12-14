@@ -1,8 +1,8 @@
 
 clear all
-files = dir('**/Salivary gland/**/Results/3d_layers_info.mat');
+files = dir('**/Salivary gland/**/Results/glandDividedInSurfaceRatios.mat');
 
-numberOfSurfaceRatios = 2;
+numberOfSurfaceRatios = 11;
 namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],1:numberOfSurfaceRatios,'UniformOutput', false);
 for numFile = 1:length(files)
     load(fullfile(files(numFile).folder, files(numFile).name));
@@ -13,21 +13,21 @@ for numFile = 1:length(files)
     areaCells = cell(numberOfSurfaceRatios,1);
     volumes = cell(numberOfSurfaceRatios,1);
     
-    neighsSurface{1} = apical3dInfo.neighbourhood';
-    neighsAccumSurfaces{1} = apical3dInfo.neighbourhood';
-    area = regionprops(apicalLayer,'Area');
-    areaCells{1} = cat(1,area.Area);
-    volume = regionprops3(labelledImage,'Volume');
-    volumes{1} = cat(1,volume.Volume);
+    neighsSurface{1} = neighbours{1}';
+    neighsAccumSurfaces{1} = neighbours{1}';
+    
+    infoOfCells = infoPerSurfaceRatio{1, 4};
+    
+    areaCells(1) = {infoOfCells.Basal_area};
+    volumes(1) = {infoOfCells.Volume};
     
     for idSR = 2:numberOfSurfaceRatios
-        neighsSurface{idSR} = basal3dInfo.neighbourhood';
-        neighsAccumSurfaces{idSR}  = cellfun(@(x,y) unique([x;y]),neighsAccumSurfaces{idSR-1},neighsSurface{idSR},'UniformOutput',false);
+        neighsSurface{idSR} = neighbours{idSR}';
+        neighsAccumSurfaces{idSR} = cellfun(@(x,y) unique([x;y]),neighsAccumSurfaces{idSR-1},neighsSurface{idSR},'UniformOutput',false);
         
-        area = regionprops(basalLayer,'Area');
-        areaCells{idSR} = cat(1,area.Area);
-        volume = regionprops3(labelledImage,'Volume');
-        volumes{idSR} = cat(1,volume.Volume);
+        infoOfCells = infoPerSurfaceRatio{idSR, 4};
+        areaCells(idSR) = {infoOfCells.Basal_area};
+        volumes(idSR) = {infoOfCells.Volume};
     end
     
     areaCellsPerSurfaceRealization = cat(2,areaCells{:});
@@ -45,10 +45,12 @@ for numFile = 1:length(files)
         numNeighOfNeighAccumPerSurfacesRealization(:,nSR) = cellfun(@(x) sum(vertcat(numNeighAccumPerSurfacesRealization(x,nSR)))/length(x),neighsAccumSurfaces(:,nSR));
     end
 
+    %%
     meanNumNeighPerSurfaceRealization = mean(numNeighAccumPerSurfacesRealization(validCells, :), 1);
     stdNumNeighPerSurfaceRealization = std(numNeighAccumPerSurfacesRealization(validCells, :), 1);
     totalAreaPerSR = sum(areaCellsPerSurfaceRealization(validCells, :));
-    surfaceRatioOfGland = totalAreaPerSR ./ totalAreaPerSR(1);
+    
+    surfaceRatioOfGland = vertcat(infoPerSurfaceRatio{:, 2})';
     
     infoEuler3D{numFile, 1} = vertcat(meanNumNeighPerSurfaceRealization, stdNumNeighPerSurfaceRealization, surfaceRatioOfGland)';
     
