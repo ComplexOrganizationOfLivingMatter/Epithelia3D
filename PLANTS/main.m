@@ -20,7 +20,7 @@ rangeMajorAxisPlant = {[700,1400],[700,1400],[500,1500],[500,1300],[600,1300],[4
     [600,1500],[200,900], [200,1100], [500,1000],[500,1100],[500,1100]};
 folder = 'data/Hypocotyl/';
 
-for nNam=length(names) %[4:15,17:length(names)]
+for nNam=[1:15,17:length(names)]
     rangeMajorAxis=rangeMajorAxisPlant{nNam};
 
     %%This complex process is only for detecting the cells belonging to each surface
@@ -48,6 +48,9 @@ for nNam=length(names) %[4:15,17:length(names)]
     getGeometricalFeaturesFrom2DImages([folder names{nNam} '/resultMeasurements/layer1'],finalImages(1:2),noValidCellsLayer1)      
     getGeometricalFeaturesFrom2DImages([folder names{nNam} '/resultMeasurements/layer2'],finalImages(3:4),noValidCellsLayer2)
 
+    disp(names{nNam})
+    checkRealScutoidsPresence([folder names{nNam}])
+    
 end
 
 % system('rm -r data/Hypocotyl/*/resultMeasurements/')
