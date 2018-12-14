@@ -1,4 +1,4 @@
-function [imageOfSurfaceRatios] = divideObjectInSurfaceRatios(obj_img, startingSurface, endSurface, validCells, noValidCells, colours, selpath)
+function [imageOfSurfaceRatios, neighbours] = divideObjectInSurfaceRatios(obj_img, startingSurface, endSurface, validCells, noValidCells, colours, selpath)
 %DIVIDEOBJECTINSURFACERATIOS Summary of this function goes here
 %   Detailed explanation goes here
     
