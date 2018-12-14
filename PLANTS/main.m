@@ -9,7 +9,7 @@ pixelWidth = 0.2767553;
 voxelDepth= [0.4, 0.7, 0.7, 0.6, 0.4, 0.4,...
     0.7, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,...
     0.7, 0.7, 0.7, 0.6,...
-    0.6, 0.4, 0.4, 0.5, 0.5];
+    0.6, 0.4, 0.4, 0.5, 0.5, 0.5];
 zScaleFactorHyp = voxelDepth./pixelWidth;
 
 addpath(genpath('src'))
@@ -17,10 +17,10 @@ addpath(genpath('src'))
 rangeMajorAxisPlant = {[700,1400],[700,1400],[500,1500],[500,1300],[600,1300],[400,1100],...
     [600,1350],[500,1400],[600,1600],[600,1600],[600,1300],[500,1200],[500,1200],...
     [400, 1000],[200,800], [0,0], [600,1400],...
-    [600,1500],[200,900], [200,1100], [500,1000],[500,1100]};
+    [600,1500],[200,900], [200,1100], [500,1000],[500,1100],[500,1100]};
 folder = 'data/Hypocotyl/';
 
-for nNam=5 %[4:15,17:length(names)]
+for nNam=length(names) %[4:15,17:length(names)]
     rangeMajorAxis=rangeMajorAxisPlant{nNam};
 
     %%This complex process is only for detecting the cells belonging to each surface
