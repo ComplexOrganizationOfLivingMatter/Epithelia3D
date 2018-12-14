@@ -12,9 +12,8 @@ apicobasal_neighboursRecount=cellfun(@(x) length(x),apicobasal_neighbours,'Unifo
 apical_area_cells=cell2mat(struct2cell(regionprops(apicalLayer,'Area'))).';
 basal_area_cells=cell2mat(struct2cell(regionprops(basalLayer,'Area'))).';
 surfaceRatio = basal_area_cells ./ apical_area_cells;
-surfaceRatioValidCells = surfaceRatio;
-surfaceRatioValidCells(noValidCells) = [];
-meanSurfaceRatio = mean(surfaceRatioValidCells);
+%meanSurfaceRatio = mean(surfaceRatioValidCells);
+meanSurfaceRatio = sum(basal_area_cells(validCells)) / sum(apical_area_cells(validCells));
 
 %%  Calculate volume cells
 volume_cells=table2array(regionprops3(labelledImage,'Volume'));
