@@ -29,6 +29,7 @@ function [imageOfSurfaceRatios, neighbours] = divideObjectInSurfaceRatios(obj_im
         %[distanceStartingAllPixels] = pdist2(allPixels, startingPixels);
         [distanceEndingAllPixels] = pdist2(allPixels, endPixels);
 
+        %surfaceRatioDistance = mean(min(distanceEndingStarting, [], 2));
         surfaceRatioDistance = mean(distanceEndingStarting(:));
         
         partitions = surfaceRatioDistance * (1:(totalPartitions-1))/totalPartitions;
@@ -47,6 +48,7 @@ function [imageOfSurfaceRatios, neighbours] = divideObjectInSurfaceRatios(obj_im
 %             pixelsOfCurrentPartitionSurfaceRatioFromEnd = any(upperBoundEnd & lowerBoundEnd, 2);
 %             pixelsOfSR = allPixels(pixelsOfCurrentPartitionSurfaceRatioFromStarting & pixelsOfCurrentPartitionSurfaceRatioFromEnd, :);
             
+            %pixelsCloserToEndSurface = partitions(numPartition) >= min(distanceEndingAllPixels, [], 2);
             pixelsCloserToEndSurface = partitions(numPartition) > distanceEndingAllPixels;
             pixelsOfSR = allPixels(any(pixelsCloserToEndSurface, 2), :);
 
