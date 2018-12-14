@@ -13,18 +13,18 @@ function [polygon_distribution]=calculate_polygon_distribution( sides_cells, val
     octogons=sum(sides_valid_cells==8)/length(sides_valid_cells);
     nonagons=sum(sides_valid_cells==9)/length(sides_valid_cells);
     decagons=sum(sides_valid_cells==10)/length(sides_valid_cells);
-    
+    hendecagons=sum(sides_valid_cells==11)/length(sides_valid_cells);
     
     % Clasify in a variable type cell
     polygon_distribution={};
     
     polygon_distribution{1,1}='triangles';polygon_distribution{1,2}='squares';polygon_distribution{1,3}='pentagons';
     polygon_distribution{1,4}='hexagons';polygon_distribution{1,5}='heptagons';polygon_distribution{1,6}='octogons';
-    polygon_distribution{1,7}='nonagons';polygon_distribution{1,8}='decagons';
+    polygon_distribution{1,7}='nonagons';polygon_distribution{1,8}='decagons';polygon_distribution{1,9}='hendecagons';
 
     polygon_distribution{2,1}=triangles;polygon_distribution{2,2}=squares;polygon_distribution{2,3}=pentagons;
     polygon_distribution{2,4}=hexagons;polygon_distribution{2,5}=heptagons;polygon_distribution{2,6}=octogons;
-    polygon_distribution{2,7}=nonagons;polygon_distribution{2,8}=decagons;
+    polygon_distribution{2,7}=nonagons;polygon_distribution{2,8}=decagons;polygon_distribution{2,9}=hendecagons;
     
        
 end
