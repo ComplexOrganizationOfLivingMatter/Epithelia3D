@@ -51,12 +51,13 @@ for numFile = 1:length(files)
 
     %%
     meanNumNeighPerSurfaceRealization = mean(numNeighAccumPerSurfacesRealization(validCells, :), 1);
+    numCells = repmat(length(validCells), 1, size(meanNumNeighPerSurfaceRealization, 2));
     stdNumNeighPerSurfaceRealization = std(numNeighAccumPerSurfacesRealization(validCells, :), 1);
     totalAreaPerSR = sum(areaCellsPerSurfaceRealization(validCells, :));
     
     surfaceRatioOfGland = vertcat(infoPerSurfaceRatio{:, 2})';
     
-    infoEuler3D{numFile, 1} = vertcat(meanNumNeighPerSurfaceRealization, stdNumNeighPerSurfaceRealization, surfaceRatioOfGland)';
+    infoEuler3D{numFile, 1} = vertcat(meanNumNeighPerSurfaceRealization, stdNumNeighPerSurfaceRealization, surfaceRatioOfGland, numCells)';
     
 %     numNeighPerSurface{numFile, 1} = array2table(numNeighPerSurfaceRealization(validCells, :),'VariableNames',namesSR);
 %     numNeighAccumPerSurfaces{numFile, 1} = array2table(numNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
@@ -68,7 +69,33 @@ end
 
 infoEuler3DCat = cat(1, infoEuler3D{:});
 
+%figure;
+myfittypeLog10=fittype('6 +b*log10(x)',...
+'dependent', {'y'}, 'independent',{'x'},...
+'coefficients', {'b'});
+goodness = cell(size(infoEuler3D, 1), 1);
+output = cell(size(infoEuler3D, 1), 1);
+for numPoint = 1:size(infoEuler3D, 1)
+    infoEulerActual = infoEuler3D{numPoint};
+    figure;
+    errorbar(infoEulerActual(:, 3),infoEulerActual(:, 1),infoEulerActual(:, 2)./sqrt(infoEulerActual(:, 4)),'-o','MarkerSize',5,...
+        'MarkerEdgeColor','black','MarkerFaceColor','blue');
+    
+    [myfitLog10, goodness{numPoint}, output{numPoint}] = fit(infoEulerActual(:, 3),infoEulerActual(:, 1),myfittypeLog10,'StartPoint',1);
+    
+    hold on; plot(myfitLog10);
+    title('euler neighbours 3D')
+    xlabel('surface ratio')
+    ylabel('neighbours total')
+    xlim([1, 8]);
+    ylim([0,15]);
+    hold off;
+end
+
+
 figure;
+
+
 for numPoint = 1:size(infoEuler3DCat, 1)
     hold on;
     plot(infoEuler3DCat(numPoint, 3), infoEuler3DCat(numPoint, 1), '*k')
