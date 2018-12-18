@@ -33,7 +33,7 @@ function [polygon_distribution]=calculate_polygon_distribution( sides_cells, val
     polygon_distribution{1,1}='three';polygon_distribution{1,2}='four';polygon_distribution{1,3}='five';
     polygon_distribution{1,4}='six';polygon_distribution{1,5}='seven';polygon_distribution{1,6}='eight';
     polygon_distribution{1,7}='nine';polygon_distribution{1,8}='ten';polygon_distribution{1,9}='eleven';
-    polygon_distribution{1,10}='twelve';polygon_distribution{1,11}='thirdteen';polygon_distribution{1,12}='fourteen';
+    polygon_distribution{1,10}='twelve';polygon_distribution{1,11}='thirteen';polygon_distribution{1,12}='fourteen';
     polygon_distribution{1,13}='fifteen';polygon_distribution{1,14}='sixteen';polygon_distribution{1,15}='seventeen';
     polygon_distribution{1,16}='eighteen';polygon_distribution{1,17}='nineteen';polygon_distribution{1,18}='twenty';
     polygon_distribution{1,19}='twenty-one';polygon_distribution{1,20}='twenty-two';polygon_distribution{1,21}='twenty-three';
