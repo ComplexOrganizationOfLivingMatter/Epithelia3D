@@ -8,10 +8,25 @@ for numFile = 1:length(files)
     
     load(fullfile(files(numFile).folder, files(numFile).name));
     load(fullfile(files(numFile).folder, 'valid_cells.mat'));
+    if exist(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'file')
+        load(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'))
+        GeometricalMeasurementsPerSurfaceRatio={infoPerSurfaceRatio{:,4}};
+        meanNeighsScutoidsPerSF_ValidCells={numberOfSurfaceRatios,3};
+        for GlandsSF=1:numberOfSurfaceRatios
+            ActualGland=GeometricalMeasurementsPerSurfaceRatio{1,GlandsSF};
+            ActualGland(noValidCells,:)=[];
+            NeighsScutoidsPerSF=[mean(cell2mat(ActualGland.Total_neighbours)),mean(ActualGland.Scutoids),mean(ActualGland.Surface_Ratio)];
+            meanNeighsScutoidsPerSF_ValidCells{GlandsSF,1}=NeighsScutoidsPerSF(1);
+            meanNeighsScutoidsPerSF_ValidCells{GlandsSF,2}=NeighsScutoidsPerSF(2);
+            meanNeighsScutoidsPerSF_ValidCells{GlandsSF,3}=NeighsScutoidsPerSF(3);    
+        end
+       meanNeighsScutoidsPerSF_ValidCells=cell2table(meanNeighsScutoidsPerSF_ValidCells);
+       meanNeighsScutoidsPerSF_ValidCells.Properties.VariableNames = {'Total_neighbours3D','Scutoids','Surface_Ratio'}; 
+       save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'meanNeighsScutoidsPerSF_ValidCells', '-append');
+    else
     [infoPerSurfaceRatio, neighbours] = divideObjectInSurfaceRatios(labelledImage, basalLayer, apicalLayer, validCells, noValidCells, colours, files(numFile).folder);
-
     save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'infoPerSurfaceRatio', 'neighbours');
-    
+    end
     neighsSurface = cell(numberOfSurfaceRatios,1);
     neighsAccumSurfaces = cell(numberOfSurfaceRatios,1);
     areaCells = cell(numberOfSurfaceRatios,1);
@@ -112,5 +127,4 @@ myfittypeLog10=fittype('6 +b*log10(x)',...
 
 myfitLog10=fit(infoEuler3DCat(:, 3),infoEuler3DCat(:, 1),myfittypeLog10,'StartPoint',1);
 hold on; plot(myfitLog10);
-
 %getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,'Results/SalivaryGlands/',[1 2]);
