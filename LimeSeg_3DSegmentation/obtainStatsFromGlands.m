@@ -10,6 +10,11 @@ for numFile = 1:length(files)
     load(fullfile(files(numFile).folder, 'valid_cells.mat'));
     if exist(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'file')
         load(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'))
+    else
+        [infoPerSurfaceRatio, neighbours] = divideObjectInSurfaceRatios(labelledImage, basalLayer, apicalLayer, validCells, noValidCells, colours, files(numFile).folder);
+    end
+
+    if ~exist(meanNeighsScutoidsPerSF_ValidCells, 'var')
         GeometricalMeasurementsPerSurfaceRatio={infoPerSurfaceRatio{:,4}};
         meanNeighsScutoidsPerSF_ValidCells={numberOfSurfaceRatios,3};
         for GlandsSF=1:numberOfSurfaceRatios
@@ -20,43 +25,40 @@ for numFile = 1:length(files)
             meanNeighsScutoidsPerSF_ValidCells{GlandsSF,2}=NeighsScutoidsPerSF(2);
             meanNeighsScutoidsPerSF_ValidCells{GlandsSF,3}=NeighsScutoidsPerSF(3);    
         end
-       meanNeighsScutoidsPerSF_ValidCells=cell2table(meanNeighsScutoidsPerSF_ValidCells);
-       meanNeighsScutoidsPerSF_ValidCells.Properties.VariableNames = {'Total_neighbours3D','Scutoids','Surface_Ratio'}; 
-       save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'meanNeighsScutoidsPerSF_ValidCells', '-append');
-    else
-    [infoPerSurfaceRatio, neighbours] = divideObjectInSurfaceRatios(labelledImage, basalLayer, apicalLayer, validCells, noValidCells, colours, files(numFile).folder);
-    save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'infoPerSurfaceRatio', 'neighbours');
+        meanNeighsScutoidsPerSF_ValidCells=cell2table(meanNeighsScutoidsPerSF_ValidCells);
+        meanNeighsScutoidsPerSF_ValidCells.Properties.VariableNames = {'Total_neighbours3D','Scutoids','Surface_Ratio'}; 
+        save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'infoPerSurfaceRatio', 'neighbours','meanNeighsScutoidsPerSF_ValidCells');
     end
     neighsSurface = cell(numberOfSurfaceRatios,1);
     neighsAccumSurfaces = cell(numberOfSurfaceRatios,1);
     areaCells = cell(numberOfSurfaceRatios,1);
     volumes = cell(numberOfSurfaceRatios,1);
-    
+
     neighsSurface{1} = neighbours{1}';
     neighsAccumSurfaces{1} = neighbours{1}';
-    
+
     infoOfCells = infoPerSurfaceRatio{1, 4};
-    
+
     areaCells(1) = {infoOfCells.Basal_area};
     volumes(1) = {infoOfCells.Volume};
-    
+
     for idSR = 2:numberOfSurfaceRatios
         neighsSurface{idSR} = neighbours{idSR}';
         neighsAccumSurfaces{idSR} = cellfun(@(x,y) unique([x;y]),neighsAccumSurfaces{idSR-1},neighsSurface{idSR},'UniformOutput',false);
-        
+
         infoOfCells = infoPerSurfaceRatio{idSR, 4};
         areaCells(idSR) = {infoOfCells.Basal_area};
         volumes(idSR) = {infoOfCells.Volume};
     end
-    
+
     areaCellsPerSurfaceRealization = cat(2,areaCells{:});
     volumePerSurfaceRealization = cat(2,volumes{:});
     neighsSurface = cat(1,neighsSurface{:})';
     neighsAccumSurfaces = cat(1,neighsAccumSurfaces{:})';
-    
+
     numNeighPerSurfaceRealization = cellfun(@(x) length(x),neighsSurface);
     numNeighAccumPerSurfacesRealization = cellfun(@(x) length(x),neighsAccumSurfaces);
-    
+
     numNeighOfNeighPerSurfacesRealization = zeros(size(neighsSurface));
     numNeighOfNeighAccumPerSurfacesRealization = zeros(size(neighsSurface));
     for nSR = 1:numberOfSurfaceRatios
@@ -69,9 +71,9 @@ for numFile = 1:length(files)
     numCells = repmat(length(validCells), 1, size(meanNumNeighPerSurfaceRealization, 2));
     stdNumNeighPerSurfaceRealization = std(numNeighAccumPerSurfacesRealization(validCells, :), 1);
     totalAreaPerSR = sum(areaCellsPerSurfaceRealization(validCells, :));
-    
+
     surfaceRatioOfGland = vertcat(infoPerSurfaceRatio{:, 2})';
-    
+
     infoEuler3D{numFile, 1} = vertcat(meanNumNeighPerSurfaceRealization, stdNumNeighPerSurfaceRealization, surfaceRatioOfGland, numCells)';
     
 %     numNeighPerSurface{numFile, 1} = array2table(numNeighPerSurfaceRealization(validCells, :),'VariableNames',namesSR);
