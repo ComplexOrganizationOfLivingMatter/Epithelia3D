@@ -1,5 +1,6 @@
 
 clear all
+close all
 files = dir('**/Salivary gland/**/Results/3d_layers_info.mat');
 
 numberOfSurfaceRatios = 11;
@@ -14,19 +15,15 @@ for numFile = 1:length(files)
         [infoPerSurfaceRatio, neighbours] = divideObjectInSurfaceRatios(labelledImage, basalLayer, apicalLayer, validCells, noValidCells, colours, files(numFile).folder);
     end
 
-    if ~exist(meanNeighsScutoidsPerSF_ValidCells, 'var')
+    if ~exist('meanNeighsScutoidsPerSF_ValidCells', 'var')
         GeometricalMeasurementsPerSurfaceRatio={infoPerSurfaceRatio{:,4}};
-        meanNeighsScutoidsPerSF_ValidCells={numberOfSurfaceRatios,3};
+        NeighsScutoidsPerSF=zeros(numberOfSurfaceRatios,5);
         for GlandsSF=1:numberOfSurfaceRatios
             ActualGland=GeometricalMeasurementsPerSurfaceRatio{1,GlandsSF};
             ActualGland(noValidCells,:)=[];
-            NeighsScutoidsPerSF=[mean(cell2mat(ActualGland.Total_neighbours)),mean(ActualGland.Scutoids),mean(ActualGland.Surface_Ratio)];
-            meanNeighsScutoidsPerSF_ValidCells{GlandsSF,1}=NeighsScutoidsPerSF(1);
-            meanNeighsScutoidsPerSF_ValidCells{GlandsSF,2}=NeighsScutoidsPerSF(2);
-            meanNeighsScutoidsPerSF_ValidCells{GlandsSF,3}=NeighsScutoidsPerSF(3);    
+            NeighsScutoidsPerSF(GlandsSF,:)=[mean(cell2mat(ActualGland.Total_neighbours)),std(cell2mat(ActualGland.Total_neighbours)),mean(ActualGland.Scutoids),std(ActualGland.Scutoids),mean(ActualGland.Surface_Ratio)];
         end
-        meanNeighsScutoidsPerSF_ValidCells=cell2table(meanNeighsScutoidsPerSF_ValidCells);
-        meanNeighsScutoidsPerSF_ValidCells.Properties.VariableNames = {'Total_neighbours3D','Scutoids','Surface_Ratio'}; 
+        meanNeighsScutoidsPerSF_ValidCells=array2table(NeighsScutoidsPerSF,'VariableNames',{'mean_neigh3D','std_neigh3D','mean_PercScutoids','std_PercScutoids','Surface_Ratio'});
         save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'infoPerSurfaceRatio', 'neighbours','meanNeighsScutoidsPerSF_ValidCells');
     end
     neighsSurface = cell(numberOfSurfaceRatios,1);
@@ -75,7 +72,7 @@ for numFile = 1:length(files)
     surfaceRatioOfGland = vertcat(infoPerSurfaceRatio{:, 2})';
 
     infoEuler3D{numFile, 1} = vertcat(meanNumNeighPerSurfaceRealization, stdNumNeighPerSurfaceRealization, surfaceRatioOfGland, numCells)';
-    
+    infoEuler3D{numFile, 2} = meanNeighsScutoidsPerSF_ValidCells;
 %     numNeighPerSurface{numFile, 1} = array2table(numNeighPerSurfaceRealization(validCells, :),'VariableNames',namesSR);
 %     numNeighAccumPerSurfaces{numFile, 1} = array2table(numNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
 %     numNeighOfNeighPerSurface{numFile, 1} = array2table(numNeighOfNeighPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
@@ -84,21 +81,37 @@ for numFile = 1:length(files)
 %     volumePerSurface{numFile, 1} = array2table(volumePerSurfaceRealization(validCells,:),'VariableNames',namesSR);
 end
 
-infoEuler3DCat = cat(1, infoEuler3D{:});
+infoEuler3DCat = cat(1, infoEuler3D{:,1});
 
 %figure;
-myfittypeLog10=fittype('6 +b*log10(x)',...
+myfittypeLog10=fittype('a +b*log10(x)',...
 'dependent', {'y'}, 'independent',{'x'},...
-'coefficients', {'b'});
-goodness = cell(size(infoEuler3D, 1), 1);
-output = cell(size(infoEuler3D, 1), 1);
+'coefficients', {'a','b'});
+myfittypePoly=fittype('a +b*x',...
+'dependent', {'y'}, 'independent',{'x'},...
+'coefficients', {'a','b'});
+goodnesslog = cell(size(infoEuler3D, 1), 1);
+outputlog = cell(size(infoEuler3D, 1), 1);
+rSquareslog = zeros(size(infoEuler3D, 1),1);
+coefAlog = zeros(size(infoEuler3D, 1),1);
+coefBlog = zeros(size(infoEuler3D, 1),1);
+goodnessPol = cell(size(infoEuler3D, 1), 1);
+outputPol = cell(size(infoEuler3D, 1), 1);
+rSquaresPol = zeros(size(infoEuler3D, 1),1);
+coefAPol = zeros(size(infoEuler3D, 1),1);
+coefBPol = zeros(size(infoEuler3D, 1),1);
+
 for numPoint = 1:size(infoEuler3D, 1)
-    infoEulerActual = infoEuler3D{numPoint};
+    infoEulerActual = infoEuler3D{numPoint,2};
     figure;
-    errorbar(infoEulerActual(:, 3),infoEulerActual(:, 1),infoEulerActual(:, 2)./sqrt(infoEulerActual(:, 4)),'-o','MarkerSize',5,...
+    errorbar(infoEulerActual.Surface_Ratio,infoEulerActual.mean_neigh3D,infoEulerActual.std_neigh3D,'-o','MarkerSize',5,...
         'MarkerEdgeColor','black','MarkerFaceColor','blue');
     
-    [myfitLog10, goodness{numPoint}, output{numPoint}] = fit(infoEulerActual(:, 3),infoEulerActual(:, 1),myfittypeLog10,'StartPoint',1);
+    [myfitLog10, goodnesslog{numPoint}, outputlog{numPoint}] = fit(infoEulerActual.Surface_Ratio,infoEulerActual.mean_neigh3D,myfittypeLog10,'StartPoint',[6,1]);
+    
+    rSquareslog(numPoint) = goodnesslog{numPoint}.rsquare;
+    coefAlog(numPoint) = myfitLog10.a;
+    coefBlog(numPoint) = myfitLog10.b;
     
     hold on; plot(myfitLog10);
     title('euler neighbours 3D')
@@ -107,8 +120,32 @@ for numPoint = 1:size(infoEuler3D, 1)
     xlim([1, 8]);
     ylim([0,15]);
     hold off;
+    [myfitPol, goodnessPol{numPoint}, outputPol{numPoint}] = fit(infoEulerActual.Surface_Ratio,infoEulerActual.mean_neigh3D,myfittypePoly,'StartPoint',[6,1]);
+    
+    rSquaresPol(numPoint) = goodnessPol{numPoint}.rsquare;
+    coefAPol(numPoint) = myfitPol.a;
+    coefBPol(numPoint) = myfitPol.b;
+    
+    figure(100)
+    hold on
+    plot(infoEulerActual.mean_PercScutoids,infoEulerActual.mean_neigh3D,'o','MarkerSize',5,...
+        'MarkerEdgeColor','black','MarkerFaceColor','blue');
+    hold off
 end
 
+meanRsquareLog = mean(rSquareslog);
+stdRsquareLog = std(rSquareslog);
+meanCoefALog = mean(coefAlog);
+stdCoefALog = std(coefAlog);
+meanCoefBLog = mean(coefBlog);
+stdCoefBLog = std(coefBlog);
+
+meanRsquarePol = mean(rSquaresPol);
+stdRsquarePol = std(rSquaresPol);
+meanCoefAPol = mean(coefAPol);
+stdCoefAPol = std(coefAPol);
+meanCoefBPol = mean(coefBPol);
+stdCoefBPol = std(coefBPol);
 
 figure;
 
