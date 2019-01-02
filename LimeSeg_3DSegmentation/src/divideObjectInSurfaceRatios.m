@@ -3,9 +3,6 @@ function [imageOfSurfaceRatios, neighbours] = divideObjectInSurfaceRatios(obj_im
 %   Detailed explanation goes here
     
     apical3dInfo = calculateNeighbours3D(endSurface);
-
-   
-    
     basal3dInfo = calculateNeighbours3D(startingSurface);
     neighbours_data = table(apical3dInfo.neighbourhood, basal3dInfo.neighbourhood);
     neighbours_data.Properties.VariableNames = {'Apical','Basal'};
@@ -18,7 +15,7 @@ function [imageOfSurfaceRatios, neighbours] = divideObjectInSurfaceRatios(obj_im
     %initialPartitions = (1:(totalPartitions-1))/totalPartitions;
     
     %% Split with given surface ratios
-    definedSurfaceRatio = 1./(0.9:-0.1:0.2);
+    definedSurfaceRatio = 1./(0.9:-0.1:0.3);
     totalPartitions = length(definedSurfaceRatio)+1;
     initialPartitions = (definedSurfaceRatio - 1) / (apicoBasal_SurfaceRatio - 1);
     
