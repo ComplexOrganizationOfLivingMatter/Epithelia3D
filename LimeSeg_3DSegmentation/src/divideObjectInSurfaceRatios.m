@@ -4,14 +4,24 @@ function [imageOfSurfaceRatios, neighbours] = divideObjectInSurfaceRatios(obj_im
     
     apical3dInfo = calculateNeighbours3D(endSurface);
 
+   
+    
     basal3dInfo = calculateNeighbours3D(startingSurface);
     neighbours_data = table(apical3dInfo.neighbourhood, basal3dInfo.neighbourhood);
     neighbours_data.Properties.VariableNames = {'Apical','Basal'};
     [~, apicoBasal_SurfaceRatio] = calculate_CellularFeatures(neighbours_data, apical3dInfo, basal3dInfo, endSurface, startingSurface, obj_img, noValidCells, validCells, [], []);
     
-    totalPartitions = 10;
     
-    initialPartitions = (1:(totalPartitions-1))/totalPartitions;
+    
+    %% Split in 10 pieces
+    %totalPartitions = 10;
+    %initialPartitions = (1:(totalPartitions-1))/totalPartitions;
+    
+    %% Split with given surface ratios
+    definedSurfaceRatio = 1./(0.9:-0.1:0.2);
+    totalPartitions = length(definedSurfaceRatio)+1;
+    initialPartitions = (definedSurfaceRatio - 1) / (apicoBasal_SurfaceRatio - 1);
+    
     realSurfaceRatio = initialPartitions * (apicoBasal_SurfaceRatio - 1) + 1;
     
     imageOfSurfaceRatios = cell(totalPartitions, 1);
@@ -32,7 +42,7 @@ function [imageOfSurfaceRatios, neighbours] = divideObjectInSurfaceRatios(obj_im
         %surfaceRatioDistance = mean(min(distanceEndingStarting, [], 2));
         surfaceRatioDistance = mean(distanceEndingStarting(:));
         
-        partitions = surfaceRatioDistance * (1:(totalPartitions-1))/totalPartitions;
+        partitions = surfaceRatioDistance * initialPartitions;
 
         
         imageOfSurfaceRatios{1, 1} = endSurface;
