@@ -3,7 +3,7 @@ clear all
 close all
 files = dir('**/Salivary gland/**/Results/3d_layers_info.mat');
 
-numberOfSurfaceRatios = 11;
+
 %namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],1:numberOfSurfaceRatios,'UniformOutput', false);
 for numFile = 1:length(files)
     
@@ -14,7 +14,8 @@ for numFile = 1:length(files)
     else
         [infoPerSurfaceRatio, neighbours] = divideObjectInSurfaceRatios(labelledImage, basalLayer, apicalLayer, validCells, noValidCells, colours, files(numFile).folder);
     end
-
+    numberOfSurfaceRatios = size(infoPerSurfaceRatio, 1);
+    
     if ~exist('meanNeighsScutoidsPerSF_ValidCells', 'var')
         GeometricalMeasurementsPerSurfaceRatio={infoPerSurfaceRatio{:,4}};
         NeighsScutoidsPerSF=zeros(numberOfSurfaceRatios,5);
@@ -79,7 +80,22 @@ for numFile = 1:length(files)
 %     numNeighOfNeighAccumPerSurface{numFile, 1} = array2table(numNeighOfNeighAccumPerSurfacesRealization(validCells, :),'VariableNames',namesSR);
 %     areaCellsPerSurface{numFile, 1} = array2table(areaCellsPerSurfaceRealization(validCells,:),'VariableNames',namesSR);
 %     volumePerSurface{numFile, 1} = array2table(volumePerSurfaceRealization(validCells,:),'VariableNames',namesSR);
+
+
+    %Scutoids per number of sides
+    numberOfSides = 3:10;
+    [~, sidesCorrespondance] = ismember(numNeighAccumPerSurfacesRealization(:, 1), numberOfSides);
+    winningNeighbours = numNeighAccumPerSurfacesRealization - numNeighAccumPerSurfacesRealization(:, 1);
+   
+    for numNumberOfSide = 1:length(numberOfSides)
+        meanWinningPerSide(numNumberOfSide, :) = mean(winningNeighbours(sidesCorrespondance == numNumberOfSide, :), 1);
+    end
+    meanWinningPerSidePerFile{numFile, 1} = meanWinningPerSide;
 end
+
+dim = ndims(meanWinningPerSidePerFile{1});          %# Get the number of dimensions for your arrays
+M = cat(dim+1,meanWinningPerSidePerFile{:});        %# Convert to a (dim+1)-dimensional matrix
+meanWinningPerSide_Total = mean(M,dim+1, 'omitnan');  %# Get the mean across arrays
 
 infoEuler3DCat = cat(1, infoEuler3D{:,1});
 
