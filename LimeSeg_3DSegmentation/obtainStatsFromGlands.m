@@ -82,15 +82,9 @@ for numFile = 1:length(files)
 %     volumePerSurface{numFile, 1} = array2table(volumePerSurfaceRealization(validCells,:),'VariableNames',namesSR);
 
 
-    %Scutoids per number of sides
-    numberOfSides = 3:10;
-    [~, sidesCorrespondance] = ismember(numNeighAccumPerSurfacesRealization(:, 1), numberOfSides);
-    winningNeighbours = numNeighAccumPerSurfacesRealization - numNeighAccumPerSurfacesRealization(:, 1);
-   
-    for numNumberOfSide = 1:length(numberOfSides)
-        meanWinningPerSide(numNumberOfSide, :) = mean(winningNeighbours(sidesCorrespondance == numNumberOfSide, :), 1);
-    end
-    meanWinningPerSidePerFile{numFile, 1} = meanWinningPerSide;
+    %Scutoids per number of sides    
+    meanWinningPerSidePerFile{numFile, 1} = calculateMeanWinning3DNeighbours(numNeighAccumPerSurfacesRealization, validCells);
+    clearvars 'meanNeighsScutoidsPerSF_ValidCells'
 end
 
 dim = ndims(meanWinningPerSidePerFile{1});          %# Get the number of dimensions for your arrays
