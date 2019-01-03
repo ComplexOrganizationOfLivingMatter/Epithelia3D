@@ -3,16 +3,16 @@ clear all
 close all
 files = dir('**/Salivary gland/**/Results/3d_layers_info.mat');
 
+resultsFileName = 'glandDividedInSurfaceRatios.mat';
+%resultsFileName = 'glandDividedInSurfaceRatios_PredefinedSR.mat';
 
 %namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],1:numberOfSurfaceRatios,'UniformOutput', false);
 for numFile = 1:length(files)
     
     load(fullfile(files(numFile).folder, files(numFile).name));
     load(fullfile(files(numFile).folder, 'valid_cells.mat'));
-    % if exist(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios_PredefinedSR.mat'), 'file')
-    %    load(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios_PredefinedSR.mat'))
-    if exist(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'file')
-       load(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'))
+    if exist(fullfile(files(numFile).folder, resultsFileName), 'file')
+       load(fullfile(files(numFile).folder, resultsFileName))
     else
         [infoPerSurfaceRatio, neighbours] = divideObjectInSurfaceRatios(labelledImage, basalLayer, apicalLayer, validCells, noValidCells, colours, files(numFile).folder);
     end
@@ -27,8 +27,7 @@ for numFile = 1:length(files)
             NeighsScutoidsPerSF(GlandsSF,:)=[mean(cell2mat(ActualGland.Total_neighbours)),std(cell2mat(ActualGland.Total_neighbours)),mean(ActualGland.Scutoids),std(ActualGland.Scutoids),mean(ActualGland.Surface_Ratio)];
         end
         meanNeighsScutoidsPerSF_ValidCells=array2table(NeighsScutoidsPerSF,'VariableNames',{'mean_neigh3D','std_neigh3D','mean_PercScutoids','std_PercScutoids','Surface_Ratio'});
-        %save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios_PredefinedSR.mat'), 'infoPerSurfaceRatio', 'neighbours','meanNeighsScutoidsPerSF_ValidCells');
-        save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'infoPerSurfaceRatio', 'neighbours','meanNeighsScutoidsPerSF_ValidCells');
+        save(fullfile(files(numFile).folder, resultsFileName), 'infoPerSurfaceRatio', 'neighbours','meanNeighsScutoidsPerSF_ValidCells');
     end
     neighsSurface = cell(numberOfSurfaceRatios,1);
     neighsAccumSurfaces = cell(numberOfSurfaceRatios,1);
