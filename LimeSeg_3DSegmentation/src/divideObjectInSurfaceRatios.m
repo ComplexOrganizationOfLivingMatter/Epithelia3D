@@ -11,13 +11,13 @@ function [imageOfSurfaceRatios, neighbours] = divideObjectInSurfaceRatios(obj_im
     
     
     %% Split in 10 pieces
-    %totalPartitions = 10;
-    %initialPartitions = (1:(totalPartitions-1))/totalPartitions;
+    totalPartitions = 10;
+    initialPartitions = (1:(totalPartitions-1))/totalPartitions;
     
     %% Split with given surface ratios
-    definedSurfaceRatio = 1./(0.9:-0.1:0.3);
-    totalPartitions = length(definedSurfaceRatio)+1;
-    initialPartitions = (definedSurfaceRatio - 1) / (apicoBasal_SurfaceRatio - 1);
+%     definedSurfaceRatio = 1./(0.9:-0.1:0.3);
+%     totalPartitions = length(definedSurfaceRatio)+1;
+%     initialPartitions = (definedSurfaceRatio - 1) / (apicoBasal_SurfaceRatio - 1);
     
     realSurfaceRatio = initialPartitions * (apicoBasal_SurfaceRatio - 1) + 1;
     

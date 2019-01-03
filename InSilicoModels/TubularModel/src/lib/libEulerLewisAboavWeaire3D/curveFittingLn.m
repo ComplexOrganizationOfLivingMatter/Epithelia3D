@@ -64,9 +64,11 @@ hold on; plot(sr',meanNeighBasalAcum')
 title('Log10')
 
 figure;
-errorbar(meanPercScutoids(1:8),meanNeighBasalAcum(1:8),stdNeighBasalAcum(1:8))
-xlabel('percentage scutoids')
-ylabel('neighs 3d')
+e = errorbar(meanPercScutoids(1:8),meanNeighBasalAcum(1:8),stdNeighBasalAcum(1:8));
+e.Color = 'Red';
+e.Color = [255 132 0];
+xlabel('Percentage scutoids')
+ylabel('Total neighbours 3D')
 title(['Voronoi ' num2str(voronoiDiagram)])
 
 xx = meanPercScutoids(1:8);

@@ -9,8 +9,10 @@ for numFile = 1:length(files)
     
     load(fullfile(files(numFile).folder, files(numFile).name));
     load(fullfile(files(numFile).folder, 'valid_cells.mat'));
-    if exist(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios_PredefinedSR.mat'), 'file')
-       load(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios_PredefinedSR.mat'))
+    % if exist(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios_PredefinedSR.mat'), 'file')
+    %    load(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios_PredefinedSR.mat'))
+    if exist(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'file')
+       load(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'))
     else
         [infoPerSurfaceRatio, neighbours] = divideObjectInSurfaceRatios(labelledImage, basalLayer, apicalLayer, validCells, noValidCells, colours, files(numFile).folder);
     end
@@ -25,7 +27,8 @@ for numFile = 1:length(files)
             NeighsScutoidsPerSF(GlandsSF,:)=[mean(cell2mat(ActualGland.Total_neighbours)),std(cell2mat(ActualGland.Total_neighbours)),mean(ActualGland.Scutoids),std(ActualGland.Scutoids),mean(ActualGland.Surface_Ratio)];
         end
         meanNeighsScutoidsPerSF_ValidCells=array2table(NeighsScutoidsPerSF,'VariableNames',{'mean_neigh3D','std_neigh3D','mean_PercScutoids','std_PercScutoids','Surface_Ratio'});
-        save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios_PredefinedSR.mat'), 'infoPerSurfaceRatio', 'neighbours','meanNeighsScutoidsPerSF_ValidCells');
+        %save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios_PredefinedSR.mat'), 'infoPerSurfaceRatio', 'neighbours','meanNeighsScutoidsPerSF_ValidCells');
+        save(fullfile(files(numFile).folder, 'glandDividedInSurfaceRatios.mat'), 'infoPerSurfaceRatio', 'neighbours','meanNeighsScutoidsPerSF_ValidCells');
     end
     neighsSurface = cell(numberOfSurfaceRatios,1);
     neighsAccumSurfaces = cell(numberOfSurfaceRatios,1);
@@ -82,15 +85,10 @@ for numFile = 1:length(files)
 %     volumePerSurface{numFile, 1} = array2table(volumePerSurfaceRealization(validCells,:),'VariableNames',namesSR);
 
 
-    %Scutoids per number of sides
-    numberOfSides = 3:10;
-    [~, sidesCorrespondance] = ismember(numNeighAccumPerSurfacesRealization(:, 1), numberOfSides);
-    winningNeighbours = numNeighAccumPerSurfacesRealization - numNeighAccumPerSurfacesRealization(:, 1);
-   
-    for numNumberOfSide = 1:length(numberOfSides)
-        meanWinningPerSide(numNumberOfSide, :) = mean(winningNeighbours(sidesCorrespondance == numNumberOfSide, :), 1);
-    end
-    meanWinningPerSidePerFile{numFile, 1} = meanWinningPerSide;
+
+    %Scutoids per number of sides    
+    meanWinningPerSidePerFile{numFile, 1} = calculateMeanWinning3DNeighbours(numNeighAccumPerSurfacesRealization, validCells);
+    clearvars 'meanNeighsScutoidsPerSF_ValidCells'
 end
 
 dim = ndims(meanWinningPerSidePerFile{1});          %# Get the number of dimensions for your arrays
