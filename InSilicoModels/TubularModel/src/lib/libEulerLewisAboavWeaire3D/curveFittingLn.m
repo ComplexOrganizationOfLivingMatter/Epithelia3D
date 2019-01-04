@@ -30,18 +30,20 @@ myfittypeLog10=fittype('a +b*log10(x)',...
 % 'dependent', {'y'}, 'independent',{'x'},...
 % 'coefficients', {'b'});
 % 
-% myfittypePowFit=fittype('a*x^b',...
-% 'dependent', {'y'}, 'independent',{'x'},...
-% 'coefficients', {'a','b'});
+myfittypePowFit=fittype('a*x^b+c',...
+'dependent', {'y'}, 'independent',{'x'},...
+'coefficients', {'a','b', 'c'});
 
 neighBasalAcum=cellfun(@(x) mean(x{:,:}),numNeighAccumPerSurfaces,'UniformOutput',false);
 
 stdNeighBasalAcum = std(cat(1,neighBasalAcum{:,:}));
+allNeighBasal3D = cat(1,neighBasalAcum{:,:});
 meanNeighBasalAcum = mean(cat(1,neighBasalAcum{:,:}));
 
 meanNeighBasalAcum = meanNeighBasalAcum(1:length(sr));
 stdNeighBasalAcum = stdNeighBasalAcum(1:length(sr));
 
+allPercentageScutoids = cell2mat(percentageScutoids);
 meanPercScutoids = mean(cell2mat(percentageScutoids));
 stdPercScutoids = std(cell2mat(percentageScutoids));
 meanPercScutoids = meanPercScutoids(1:length(sr));
@@ -64,12 +66,19 @@ hold on; plot(sr',meanNeighBasalAcum')
 title('Log10')
 
 figure;
-e = errorbar(meanPercScutoids(1:8),meanNeighBasalAcum(1:8),stdNeighBasalAcum(1:8));
-e.Color = 'Red';
-e.Color = [255 132 0];
-xlabel('Percentage scutoids')
-ylabel('Total neighbours 3D')
+e = errorbar(meanNeighBasalAcum(1:8),meanPercScutoids(1:8),stdNeighBasalAcum(1:8), 'horizontal');
+%e.Color = 'Red';
+%e.Color = [255 132 0];
+ylabel('Percentage scutoids')
+xlabel('Total neighbours 3D')
 title(['Voronoi ' num2str(voronoiDiagram)])
+xlim([6 9.5])
+ylim([0  1.05])
+hold on;
+%powerFit=fit(allNeighBasal3D(:), allPercentageScutoids(:),  myfittypePowFit, 'StartPoint',[-100 12 1]);
+plot(fittedmodel)
+
+powerFit=fit(allNeighBasal3D(:), allPercentageScutoids(:), 'power2');
 
 xx = meanPercScutoids(1:8);
 yy = meanNeighBasalAcum(1:8);

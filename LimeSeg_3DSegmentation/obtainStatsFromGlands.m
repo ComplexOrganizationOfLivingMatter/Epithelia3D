@@ -3,19 +3,24 @@ clear all
 close all
 files = dir('**/Salivary gland/**/Results/3d_layers_info.mat');
 
-resultsFileName = 'glandDividedInSurfaceRatios.mat';
-%resultsFileName = 'glandDividedInSurfaceRatios_PredefinedSR.mat';
+%resultsFileName = 'glandDividedInSurfaceRatios.mat';
+resultsFileName = 'glandDividedInSurfaceRatios_PredefinedSR.mat';
 
 %namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],1:numberOfSurfaceRatios,'UniformOutput', false);
 for numFile = 1:length(files)
     
     load(fullfile(files(numFile).folder, files(numFile).name));
     load(fullfile(files(numFile).folder, 'valid_cells.mat'));
-    if exist(fullfile(files(numFile).folder, resultsFileName), 'file')
-       load(fullfile(files(numFile).folder, resultsFileName))
-    else
+%     if exist(fullfile(files(numFile).folder, resultsFileName), 'file')
+%        load(fullfile(files(numFile).folder, resultsFileName))
+%     else
+        resizeImg = 0.25;
+        imgSize = round(size(apicalLayer)/resizeImg);
+        apicalLayer = imresize3(apicalLayer, imgSize, 'nearest');
+        basalLayer = imresize3(basalLayer, imgSize, 'nearest');
+        labelledImage = imresize3(labelledImage, imgSize, 'nearest');
         [infoPerSurfaceRatio, neighbours] = divideObjectInSurfaceRatios(labelledImage, basalLayer, apicalLayer, validCells, noValidCells, colours, files(numFile).folder);
-    end
+%     end
     numberOfSurfaceRatios = size(infoPerSurfaceRatio, 1);
     
     if ~exist('meanNeighsScutoidsPerSF_ValidCells', 'var')
