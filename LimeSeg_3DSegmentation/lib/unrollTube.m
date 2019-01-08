@@ -1,7 +1,7 @@
 function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours, perimImage3D, apicalArea)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
-    
+    colours = vertcat([1 1 1], colours);
 
     %% Rotate the gland
     imgProperties = regionprops3(img3d>0, {'Orientation', 'PrincipalAxisLength'});
@@ -186,7 +186,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     for numCentroid = 1:size(centroids, 1)
         labelSeed = midSectionImage(midSectionNewLabels == numCentroid);
         labelSeed = labelSeed(1);
-        if mean(colours(labelSeed+1, :)) < 0.4
+        if mean(colours(labelSeed, :)) < 0.4
             text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center', 'Color', 'white', 'FontSize', 6);
         else
             text(ax, centroids(numCentroid, 1), centroids(numCentroid, 2), num2str(labelSeed), 'HorizontalAlignment', 'center', 'FontSize', 6);
