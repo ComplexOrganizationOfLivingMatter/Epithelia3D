@@ -20,13 +20,13 @@ if isempty(selpath) == 0
     end
 end
 
-load(fullfile(selpath, 'Results', '3d_layers_info.mat'));
-load(fullfile(selpath, 'Results', 'valid_cells.mat'));
-% allCellsInit = union(validCells, noValidCells);
-% allCells = allCellsInit;
-% allCells([58, 39, 30]) = [];
-% validCells = intersect(validCells, allCells);
-% noValidCells = setdiff(allCellsInit, validCells);
-[infoPerSurfaceRatio, neighbours] = divideObjectInSurfaceRatios(labelledImage, basalLayer, apicalLayer, validCells, noValidCells, colours, selpath);
+% load(fullfile(selpath, 'Results', '3d_layers_info.mat'));
+% load(fullfile(selpath, 'Results', 'valid_cells.mat'));
+% % allCellsInit = union(validCells, noValidCells);
+% % allCells = allCellsInit;
+% % allCells([58, 39, 30]) = [];
+% % validCells = intersect(validCells, allCells);
+% % noValidCells = setdiff(allCellsInit, validCells);
+% [infoPerSurfaceRatio, neighbours] = divideObjectInSurfaceRatios(labelledImage, basalLayer, apicalLayer, validCells, noValidCells, colours, selpath);
 
-save(fullfile(selpath, 'Results', 'glandDividedInSurfaceRatios.mat'), 'infoPerSurfaceRatio', 'neighbours');
+% save(fullfile(selpath, 'Results', 'glandDividedInSurfaceRatios.mat'), 'infoPerSurfaceRatio', 'neighbours');
