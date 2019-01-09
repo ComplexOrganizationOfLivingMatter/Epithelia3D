@@ -3,13 +3,15 @@
 addpath(genpath('src'))
 addpath(genpath('lib'))
 addpath(genpath('gui'))
-addpath(genpath(fullfile('..', '..', 'InSilicoModels', 'TubularModel', 'src')));
+addpath(genpath(fullfile('..', 'InSilicoModels', 'TubularModel', 'src')));
 
 files = dir('**/Salivary gland/**/Results/3d_layers_info.mat');
 
 for numFile = 1:length(files)
     selpath = files(numFile).folder;
 
+    files(numFile).folder
+    
     load(fullfile(selpath, '3d_layers_info.mat'));
     load(fullfile(selpath, 'valid_cells.mat'));
     resizeImg = 0.25;
@@ -18,7 +20,10 @@ for numFile = 1:length(files)
     basalLayerGoodOrientation = imrotate(imresize3(basalLayer, imgSize, 'nearest'), glandOrientation);
     lumenImageGoodOrientation = imrotate(imresize3(double(lumenImage), imgSize, 'nearest'), glandOrientation)>0;
     apicalAreaValidCells = 100;
+    disp('Apical');
     [neighs_apical,side_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayerGoodOrientation, fullfile(selpath, 'apical'), noValidCells, colours, lumenImageGoodOrientation);
+    
+    disp('Basal');
     [neighs_basal,side_cells_basal] = unrollTube(basalLayerGoodOrientation, fullfile(selpath, 'basal'), noValidCells, colours, [], apicalAreaValidCells);
 
     missingCellsUnroll = find(side_cells_basal<3 | side_cells_apical<3);
@@ -34,4 +39,7 @@ for numFile = 1:length(files)
     polygon_distribution_UnrollTube.Properties.VariableNames = {'Apical','Basal'};
     
     infoUnroll{numFile} = {neighbours_UnrollTube, polygon_distribution_UnrollTube, polygon_distribution_UnrollTubeApical, polygon_distribution_UnrollTubeBasal};
+    directorySplitted = strsplit(selpath, '\');
+    %createSamiraFormatExcel_NaturalTissues(fullfile(selpath, 'apical_img.mat'), strjoin(directorySplitted(end-3:end-1), '_'));
+    %createSamiraFormatExcel_NaturalTissues(fullfile(selpath, 'basal_img.mat'), strjoin(directorySplitted(end-3:end-1), '_'));
 end
