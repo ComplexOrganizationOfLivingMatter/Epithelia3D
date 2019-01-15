@@ -109,8 +109,8 @@ for initialDiagram = initialDiagrams
         tablePolDistAccum = [tablePolDistAccum;[SR(srImg) averagePolDistAccum;SR(srImg) stdPolDistAccum]];
         tablePolDist = [tablePolDist;[SR(srImg) averagePolDist;SR(srImg) stdPolDist]];
     end
-    tablePolDistAccum = array2table(tablePolDistAccum,'variableNames',strrep(namesColumsAccum,'-',''));
-    tablePolDist = array2table(tablePolDist,'variableNames',strrep(namesColums,'-',''));
+    tablePolDistAccum = array2table(tablePolDistAccum,'variableNames',[{'surfaceRatio'}, strrep(namesColumsAccum,'-','')]);
+    tablePolDist = array2table(tablePolDist,'variableNames',[{'surfaceRatio'},strrep(namesColums,'-','')]);
     writetable(tablePolDist,[path2save1 'polygonDistribution_' date '.xls'])
     writetable(tablePolDistAccum,[path2save2 'polygonDistributionAccum_' date '.xls'])
 end
