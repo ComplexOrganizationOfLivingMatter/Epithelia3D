@@ -1,7 +1,11 @@
 SR = unique([1./(1:-0.1:0.1),4:15]);
-initialDiagrams = [1 5];
+SR = 1./SR;
+initialDiagrams = 11;%[1 5];
 nImages = 20;
-path2load = 'data\tubularVoronoiModel\expansion\512x4096_200seeds\';
+typeProjection = 'reduction';
+% path2load = 'data\tubularVoronoiModel\expansion\512x4096_200seeds\';
+path2load = ['data\tubularVoronoiModel\' typeProjection '\7680x4096_200seeds\'];
+
 addpath(genpath('src'))
 
 for initialDiagram = initialDiagrams
@@ -16,7 +20,11 @@ for initialDiagram = initialDiagrams
 
         load([path2load 'diagram' num2str(initialDiagram) '\Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) '\Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) '.mat']);
 
-        idImg = [listLOriginalProjection{:,1}]==SR(end);
+        if strcmp(typeProjection,'expansion')
+            idImg = [listLOriginalProjection{:,1}]==SR(end);
+        else
+            idImg = [listLOriginalProjection{:,1}]==SR(1);
+        end
         img = listLOriginalProjection{idImg,2};
         noValidCells = unique([img(1,:),img(end,:)]);
         validCells = setdiff(unique(img),noValidCells);
@@ -49,6 +57,8 @@ for initialDiagram = initialDiagrams
     mkdir([path2load 'diagram' num2str(initialDiagram) '\polygonsDistributions\'])
     save([path2load 'diagram' num2str(initialDiagram) '\polygonsDistributions\dataPolygonDistributionAndPercentageScutoids.mat'],'polyDisImg','polyDisImgAccum','percentageScutoids','numberWonNeighs','numberLostNeighs','validCellsPerImg','neighsPerSRPerImg','SR');
 
+    tablePolDistAccum = [];
+    tablePolDist = [];
     for srImg = 1:length(SR)
 
         dataPolDist = vertcat(polyDisImg{:,srImg});
@@ -66,9 +76,9 @@ for initialDiagram = initialDiagrams
         set(gca,'XTickLabel',namesColums);
 
         title(strrep(num2str(SR(srImg)),'.','_'))
-        path2save = [path2load 'diagram' num2str(initialDiagram) '\polygonsDistributions\polygonDistributionImg\'];
-        mkdir(path2save)
-        print(h,[path2save 'polygonDistribution_SR' strrep(num2str(SR(srImg)),'.','_') '.tif'],'-dtiff','-r300')
+        path2save1 = [path2load 'diagram' num2str(initialDiagram) '\polygonsDistributions\polygonDistributionImg\'];
+        mkdir(path2save1)
+        print(h,[path2save1 'polygonDistribution_SR' strrep(num2str(SR(srImg)),'.','_') '.tif'],'-dtiff','-r300')
 
         hold off
         close all
@@ -88,12 +98,19 @@ for initialDiagram = initialDiagrams
         ylim([0,0.5])
 
         title(num2str(SR(srImg)))
-        path2save = [path2load 'diagram' num2str(initialDiagram) '\polygonsDistributions\polygonDistributionAccum\'];
-        mkdir(path2save)
-        print(h,[path2save 'polygonDistributionAccum_SR' strrep(num2str(SR(srImg)),'.','_') '.tif'],'-dtiff','-r300')
+        path2save2 = [path2load 'diagram' num2str(initialDiagram) '\polygonsDistributions\polygonDistributionAccum\'];
+        mkdir(path2save2)
+        print(h,[path2save2 'polygonDistributionAccum_SR' strrep(num2str(SR(srImg)),'.','_') '.tif'],'-dtiff','-r300')
 
         hold off
         close all
+        
+                
+        tablePolDistAccum = [tablePolDistAccum;[SR(srImg) averagePolDistAccum;SR(srImg) stdPolDistAccum]];
+        tablePolDist = [tablePolDist;[SR(srImg) averagePolDist;SR(srImg) stdPolDist]];
     end
-
+    tablePolDistAccum = array2table(tablePolDistAccum,'variableNames',strrep(namesColumsAccum,'-',''));
+    tablePolDist = array2table(tablePolDist,'variableNames',strrep(namesColums,'-',''));
+    writetable(tablePolDist,[path2save1 'polygonDistribution_' date '.xls'])
+    writetable(tablePolDistAccum,[path2save2 'polygonDistributionAccum_' date '.xls'])
 end
