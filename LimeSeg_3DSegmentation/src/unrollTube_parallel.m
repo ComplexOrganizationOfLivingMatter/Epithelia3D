@@ -2,16 +2,18 @@ function [neighbours_UnrollTube, polygon_distribution_UnrollTube, polygon_distri
 %UNROLLTUBE_PARALLEL Summary of this function goes here
 %   Detailed explanation goes here
     
-    load(fullfile(selpath, '3d_layers_info.mat'), 'apicalLayer', 'basalLayer', 'colours', 'glandOrientation', 'lumenImage');
+    load(fullfile(selpath, '3d_layers_info.mat'), 'labelledImage', 'apicalLayer', 'basalLayer', 'colours', 'glandOrientation', 'lumenImage');
     load(fullfile(selpath, 'valid_cells.mat'), 'validCells', 'noValidCells');
     resizeImg = 0.25;
     imgSize = round(size(apicalLayer)/resizeImg);
-    apicalLayerGoodOrientation = imrotate(imresize3(apicalLayer, imgSize, 'nearest'), glandOrientation);
+    [~, originalRotation] = rotateImg3(labelledImage, 1);
+    apicalLayerGoodOrientation = rotateImg3(imresize3(apicalLayer, imgSize, 'nearest'), 1, originalRotation);
     clearvars apicalLayer
-    basalLayerGoodOrientation = imrotate(imresize3(basalLayer, imgSize, 'nearest'), glandOrientation);
+    basalLayerGoodOrientation = rotateImg3(imresize3(basalLayer, imgSize, 'nearest'), 1, originalRotation);
     clearvars basalLayer
-    lumenImageGoodOrientation = imrotate(imresize3(double(lumenImage), imgSize, 'nearest'), glandOrientation)>0;
+    lumenImageGoodOrientation = rotateImg3(imresize3(double(lumenImage), imgSize, 'nearest'), 1, originalRotation);
     clearvars lumenImage
+    
     apicalAreaValidCells = 100;
     disp('Apical');
     [neighs_apical,side_cells_apical, apicalAreaValidCells] = unrollTube(apicalLayerGoodOrientation, fullfile(selpath, 'apical'), noValidCells, colours, lumenImageGoodOrientation);
