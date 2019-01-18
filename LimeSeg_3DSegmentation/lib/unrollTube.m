@@ -1,26 +1,31 @@
-function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours, perimImage3D, apicalArea)
+function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours, perimImage3D, glandOrientation, apicalArea)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
     colours = vertcat([1 1 1], colours);
 
     %% Rotate the gland
-    imgProperties = regionprops3(img3d>0, {'Orientation', 'PrincipalAxisLength'});
-    angleRotation = deg2rad(-cat(2,imgProperties.Orientation));
+    %angleRotation = deg2rad(-glandOrientation);
 
-    [img3DRotated] = rotateGland(img3d, angleRotation(1));
+    %[img3DRotated] = rotateGland(img3d, angleRotation(1));
     if exist('perimImage3D', 'var')
         if isempty(perimImage3D)
             clearvars perimImage3D
         else
-            [perimImage3DRotated] = rotateGland(perimImage3D, angleRotation(1), size(img3DRotated));
-            perimImage3D = permute(perimImage3DRotated, [1 3 2]);
+            %[perimImage3DRotated] = rotateGland(perimImage3D, angleRotation(1), size(img3DRotated));
+            perimImage3D = permute(perimImage3D, [1 3 2]);
         end
     end
     
     %% Unroll
     pixelSizeThreshold = 2;
     
-    img3d = permute(img3DRotated, [1 3 2]);
+    img3d = permute(img3d, [1 3 2]);
+%     axesLength = regionprops3(img3d>0,'PrincipalAxisLength');
+%     [~,maxLeng] = max(cat(1,axesLength.PrincipalAxisLength));
+%     [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength(maxLeng(1),:)));
+%     img3d=permute(img3d,orderLengAxis);
+
+
     imgFinalCoordinates=cell(size(img3d,3),1);
     imgFinalCoordinates3x=cell(size(img3d,3),1);
     %exportAsImageSequence(img3d, outputDir, colours, -1);
