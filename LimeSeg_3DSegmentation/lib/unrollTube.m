@@ -111,7 +111,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
         
         %% Equalize border of the gland
         if previousRowsSize ~= 0
-            orderedLabels = imresize(orderedLabels, [1 round(previousRowsSize*0.7 + length(orderedLabels)*0.3)], 'nearest');
+            orderedLabels = imresize(orderedLabels, [1 round(previousRowsSize*0 + length(orderedLabels)*1)], 'nearest');
         end
         previousRowsSize = length(orderedLabels);
         imgFinalCoordinates3x{coordZ} = repmat(orderedLabels,1,3);
@@ -152,6 +152,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
 
     %% Getting correct border cells, valid cells and no valid cells
      [wholeImage] = fillEmptySpacesByWatershed2D(deployedImg3x, imclose(deployedImg3x>0, strel('disk', 20)) == 0 , colours);
+     cylindre2DImage = fillEmptySpacesByWatershed2D(deployedImg, imclose(deployedImg>0, strel('disk', 20)) == 0 , colours);
     %[wholeImage,~,~] = getFinalImageAndNoValidCells(deployedImg3x,colours, borderCells);
     %[~, ~,noValidCells] = getFinalImageAndNoValidCells(deployedImg3x(:, round(ySize/3):round(ySize*2/3)),colours);
 %     TotalCells = {ValidCells; BordersNoValidCells};
@@ -218,6 +219,6 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     else
         surfaceRatio = areaOfValidCells / apicalArea;
     end
-    save(strcat(outputDir, '_', 'img.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal', 'surfaceRatio');
+    save(strcat(outputDir, '_', 'img.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal', 'surfaceRatio', 'cylindre2DImage');
 end
 
