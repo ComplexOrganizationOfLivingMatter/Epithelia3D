@@ -25,6 +25,6 @@ function [ quartetsOfNeighs ] = buildQuartetsOfNeighs2D(neighbours)
         end
     end
     
-    quartetsOfNeighs=unique(cell2mat(quartetsOfNeighs),'rows');
+%     quartetsOfNeighs=unique(cell2mat(quartetsOfNeighs),'rows');
                 
 end
