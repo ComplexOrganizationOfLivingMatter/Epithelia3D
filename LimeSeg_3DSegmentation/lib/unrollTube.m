@@ -25,13 +25,18 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
 %     [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength(maxLeng(1),:)));
 %     img3d=permute(img3d,orderLengAxis);
 
-
+    [neighbours] = calculateNeighbours3D(img3d);
+    [verticesInfo] = getVertices3D(img3d, neighbours.neighbourhood);
+    vertices3D = vertcat(verticesInfo.verticesPerCell{:});
     imgFinalCoordinates=cell(size(img3d,3),1);
     imgFinalCoordinates3x=cell(size(img3d,3),1);
     %exportAsImageSequence(img3d, outputDir, colours, -1);
     %exportAsImageSequence(perimImage3D, outputDir, colours, -1);
     borderCells=cell(size(img3d,3),1);
+    imgFinalVerticesCoordinates = cell(size(img3d,3),1);
     previousRowsSize = 0;
+    outsideGland = getOutsideGland(img3d);
+    img3d(outsideGland) = -1;
     for coordZ = 1 : size(img3d,3)
         %% Create perimeter mask
         if exist('perimImage3D', 'var')
@@ -45,7 +50,7 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         zPerimMask = bwperim(imgToPerim);
         finalPerim3D(:, :, coordZ) = zPerimMask;
                
-        if sum(zPerimMask(:)) < pixelSizeThreshold || sum(sum(img3d(:, :, coordZ))) < pixelSizeThreshold
+        if sum(zPerimMask(:)) < pixelSizeThreshold || sum(sum(img3d(:, :, coordZ)+1)) < pixelSizeThreshold
             continue
         end
         
@@ -55,7 +60,9 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         centroidX = centroidCoordZ(1);
         centroidY = centroidCoordZ(2);
         
-        [x, y] = find(img3d(:, :, coordZ) > 0);
+        
+        
+        [x, y] = find(img3d(:, :, coordZ) >= 0);
         
         [xPerim, yPerim]=find(finalPerim3D(:, :, coordZ));
         
@@ -70,8 +77,13 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         
         %% labelled mask
         maskLabel=img3d(:,:,coordZ);
+        actualVertices = vertices3D(vertices3D(:, 3) == coordZ, 1:2);
         %angles label coord regarding centroid
         angleLabelCoord = atan2(y - centroidY, x - centroidX);
+        if isempty(actualVertices) == 0
+            indicesOfVertices = ismember([x, y], actualVertices(:, 1:2), 'row');
+            imgFinalVerticesCoordinates{coordZ} = find(indicesOfVertices);
+        end
         
         %% Assing label to pixels of perimeters
         %If a perimeter coordinate have no label pixels in a range of pi/45 radians, it label is 0
@@ -111,7 +123,7 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         
         %% Equalize border of the gland
         if previousRowsSize ~= 0
-            orderedLabels = imresize(orderedLabels, [1 round(previousRowsSize*0.7 + length(orderedLabels)*0.3)], 'nearest');
+            %orderedLabels = imresize(orderedLabels, [1 round(previousRowsSize*0.7 + length(orderedLabels)*0.3)], 'nearest');
         end
         previousRowsSize = length(orderedLabels);
         imgFinalCoordinates3x{coordZ} = repmat(orderedLabels,1,3);
@@ -132,6 +144,7 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
     
     nEmptyPixelsPrevious = 0;
     nEmptyPixels3xPrevious = 0;
+    figure; imshow(deployedImg+1, colours)
     for coordZ = 1 : size(img3d,3)
         rowOfCoord3x = imgFinalCoordinates3x{coordZ};
         rowOfCoord = imgFinalCoordinates{coordZ};
@@ -143,13 +156,19 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         end
         deployedImg3x(coordZ, 1 + nEmptyPixels3x : length(rowOfCoord3x) + nEmptyPixels3x) = rowOfCoord3x;
         deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
-
+        if isempty(imgFinalVerticesCoordinates{coordZ}) == 0
+            imgFinalVerticesCoordinates{coordZ} = imgFinalVerticesCoordinates{coordZ} + 1 + nEmptyPixels;
+            hold on;
+            verticesPoints = imgFinalVerticesCoordinates{coordZ};
+            for numPoint = 1:length(verticesPoints)
+                plot(coordZ, verticesPoints(numPoint), 'rx')
+            end
+        end
         nEmptyPixelsPrevious = nEmptyPixels;
         nEmptyPixels3xPrevious = nEmptyPixels3x;
     end
 %     figure;imshow(deployedImg,colours)
 %     figure;imshow(deployedImgMask,colours)
-
 
     %% Getting correct border cells, valid cells and no valid cells
      cylindre2DImage = fillEmptySpacesByWatershed2D(deployedImg, imclose(deployedImg>0, strel('disk', 20)) == 0 , colours);
