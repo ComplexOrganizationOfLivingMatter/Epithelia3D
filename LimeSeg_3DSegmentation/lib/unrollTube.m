@@ -1,4 +1,4 @@
-function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours, perimImage3D, glandOrientation, apicalArea)
+function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours, perimImage3D, glandOrientation, apicalArea)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
     colours = vertcat([1 1 1], colours);
@@ -111,7 +111,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
         
         %% Equalize border of the gland
         if previousRowsSize ~= 0
-            orderedLabels = imresize(orderedLabels, [1 round(previousRowsSize*0 + length(orderedLabels)*1)], 'nearest');
+            orderedLabels = imresize(orderedLabels, [1 round(previousRowsSize*0.7 + length(orderedLabels)*0.3)], 'nearest');
         end
         previousRowsSize = length(orderedLabels);
         imgFinalCoordinates3x{coordZ} = repmat(orderedLabels,1,3);
@@ -150,9 +150,10 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
 %     figure;imshow(deployedImg,colours)
 %     figure;imshow(deployedImgMask,colours)
 
+
     %% Getting correct border cells, valid cells and no valid cells
-     [wholeImage] = fillEmptySpacesByWatershed2D(deployedImg3x, imclose(deployedImg3x>0, strel('disk', 20)) == 0 , colours);
      cylindre2DImage = fillEmptySpacesByWatershed2D(deployedImg, imclose(deployedImg>0, strel('disk', 20)) == 0 , colours);
+     [wholeImage] = fillEmptySpacesByWatershed2D(deployedImg3x, imclose(deployedImg3x>0, strel('disk', 20)) == 0 , colours);
     %[wholeImage,~,~] = getFinalImageAndNoValidCells(deployedImg3x,colours, borderCells);
     %[~, ~,noValidCells] = getFinalImageAndNoValidCells(deployedImg3x(:, round(ySize/3):round(ySize*2/3)),colours);
 %     TotalCells = {ValidCells; BordersNoValidCells};
@@ -173,13 +174,6 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     validCellsFinal  = setdiff(1:max(midSectionImage(:)), noValidCells);
     finalImageWithValidCells = ismember(midSectionImage, validCellsFinal).*midSectionImage;
 %     figure;imshow(finalImageWithValidCells,colours)
-    [neighs_real,sides_cells]=calculateNeighbours(midSectionImage);
-    
-    if length(sides_cells) ~= max(img3d(:))
-        sides_cells(end+1:end+(max(img3d(:)) - length(sides_cells))) = 0;
-        neighs_real(end+1:end+(max(img3d(:)) - length(sides_cells))) = [];
-    end
-    
     
     h = figure ('units','normalized','outerposition',[0 0 1 1], 'visible', 'off');
     imshow(midSectionImage+1, colours);
@@ -219,6 +213,6 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     else
         surfaceRatio = areaOfValidCells / apicalArea;
     end
-    save(strcat(outputDir, '_', 'img.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal', 'surfaceRatio', 'cylindre2DImage');
+    save(strcat(outputDir, '_', 'img.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal', 'surfaceRatio', 'cylindre2DImage', 'deployedImg', 'deployedImg3x');
 end
 
