@@ -69,7 +69,7 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         %angles coord perim regarding centroid
         anglePerimCoord = atan2(yPerim - centroidY, xPerim - centroidX);
         %find the sorted order
-        [anglePerimCoordSort,~] = sort(anglePerimCoord);
+        %[anglePerimCoordSort,~] = sort(anglePerimCoord);
         
         %             anglePerimCoordSort = repmat(anglePerimCoordSort, 3, 1);
         %             x = repmat(x, 3, 1);
@@ -80,6 +80,7 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         actualVertices = vertices3D(vertices3D(:, 3) == coordZ, 1:2);
         %angles label coord regarding centroid
         angleLabelCoord = atan2(y - centroidY, x - centroidX);
+        [angleLabelCoordSort, orderedIndices] = sort(angleLabelCoord);
         if isempty(actualVertices) == 0
             indicesOfVertices = ismember([x, y], actualVertices(:, 1:2), 'row');
             imgFinalVerticesCoordinates{coordZ} = find(indicesOfVertices);
@@ -87,17 +88,18 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         
         %% Assing label to pixels of perimeters
         %If a perimeter coordinate have no label pixels in a range of pi/45 radians, it label is 0
-        orderedLabels = zeros(1,length(anglePerimCoordSort));
-        for nCoord = 1:length(anglePerimCoordSort)
-            distances = abs(angleLabelCoord - anglePerimCoordSort(nCoord));
+        orderedLabels = zeros(1,length(angleLabelCoordSort));
+        for nCoord = 1:length(angleLabelCoordSort)
+           %distances = abs(angleLabelCoordSort(nCoord) - anglePerimCoord);
             
-            minDistance3D = 0.1;
+            %minDistance3D = 0.1;
             %[distancesOrdered, orderedIndices] = sort(distances, 'Ascend');
-            [ind] = find(distances < minDistance3D);
-            [closerDistances] = distances(distances < minDistance3D);
-            [closerDistancesOrdered, indicesOrdered] = sort(closerDistances, 'Ascend');
-            ind = ind(indicesOrdered);
-            indicesClosest = sub2ind(size(maskLabel), x(ind), y(ind));
+            %[ind] = find(distances < minDistance3D);
+            %[closerDistances] = distances(distances < minDistance3D);
+            %[closerDistancesOrdered, indicesOrdered] = sort(closerDistances, 'Ascend');
+            %ind = ind(indicesOrdered);
+            
+            indicesClosest = sub2ind(size(maskLabel), x(orderedIndices(nCoord)), y(orderedIndices(nCoord)));
             closestLabels = maskLabel(indicesClosest);
             
             closestLabelsUnique = unique(closestLabels);
@@ -144,7 +146,6 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
     
     nEmptyPixelsPrevious = 0;
     nEmptyPixels3xPrevious = 0;
-    figure; imshow(deployedImg+1, colours)
     for coordZ = 1 : size(img3d,3)
         rowOfCoord3x = imgFinalCoordinates3x{coordZ};
         rowOfCoord = imgFinalCoordinates{coordZ};
@@ -158,14 +159,18 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
         if isempty(imgFinalVerticesCoordinates{coordZ}) == 0
             imgFinalVerticesCoordinates{coordZ} = imgFinalVerticesCoordinates{coordZ} + 1 + nEmptyPixels;
-            hold on;
-            verticesPoints = imgFinalVerticesCoordinates{coordZ};
-            for numPoint = 1:length(verticesPoints)
-                plot(coordZ, verticesPoints(numPoint), 'rx')
-            end
         end
         nEmptyPixelsPrevious = nEmptyPixels;
         nEmptyPixels3xPrevious = nEmptyPixels3x;
+    end
+    
+    figure; imshow(deployedImg+1, colours)
+    hold on;
+    for coordZ = 1 : size(img3d,3)
+        verticesPoints = imgFinalVerticesCoordinates{coordZ};
+        for numPoint = 1:length(verticesPoints)
+            plot(verticesPoints(numPoint), coordZ, 'rx')
+        end
     end
 %     figure;imshow(deployedImg,colours)
 %     figure;imshow(deployedImgMask,colours)
