@@ -1,4 +1,4 @@
-function [finalImages,setOfCellsLayer1,setOfCellsLayer2,colors]=getMeristemPerSurfaces(folder,sampleName,zScaleFactorHyp,orderVault)
+function [finalImages,setOfCellsLayer1,setOfCellsLayer2]=getMeristemPerSurfaces(folder,sampleName,zScaleFactorHyp,orderVault)
     
     disp(sampleName)
     if ~exist([folder sampleName '\image3d_' sampleName '.mat'],'file')

@@ -201,10 +201,60 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
         ylabel('area basal')
         xlabel('area apical')
         
+        
+        
         print(h,[path2save 'lewis3D_SR' strrep(num2str(surfRatios(SR)),'.','_')],'-dtiff','-r300')
-
         hold off
-%         close(gcf)
+        
+        
+        if surfRatios(SR)==5
+
+            h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');
+            %1.1 area apical vs sides apical
+            subplot(1,2,1) 
+            meanArea = mean(meanAreaApicalPerSideApical);
+            valInd=~isnan(meanArea);
+            p = polyfit(nUniqueNeighApical(valInd), meanArea(valInd)',1);
+            f = polyval(p,[min(nUniqueNeighApical(valInd))-0.5; nUniqueNeighApical(valInd); max(nUniqueNeighApical(valInd))+0.5]); 
+            hold on
+
+            plot([min(nUniqueNeighApical(valInd))-0.5; nUniqueNeighApical(valInd); max(nUniqueNeighApical(valInd))+0.5],f,'Color','blue','LineWidth',1)
+            errorbar(nUniqueNeighApical,mean(meanAreaApicalPerSideApical),std(meanAreaApicalPerSideApical),'o','MarkerSize',5,...
+                'Color',[0.5 0.5 0.5],'MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[0 0 0],'LineWidth',0.5)
+
+            ylim([0 max(mean(meanAreaApicalPerSideApical))+min(mean(meanAreaApicalPerSideApical))])
+            title('apical')
+            ylabel('area apical')
+            xlabel('sides apical')
+            xticks(nUniqueNeighApical)
+            xlim([min(nUniqueNeighApical) max(nUniqueNeighApical)])
+            set(gca,'FontSize', 24,'FontName','Helvetica');
+
+            %1.2 volume vs sides total
+            subplot(1,2,2) 
+            meanVol=mean(meanVolumePerSideBasalAccum);
+            valInd=~isnan(meanVol);
+            p = polyfit(nUniqueNeighBasalAccum(valInd), meanVol(valInd)',1);
+            f = polyval(p,[min(nUniqueNeighBasalAccum(valInd))-0.5; nUniqueNeighBasalAccum(valInd); max(nUniqueNeighBasalAccum(valInd))+0.5]); 
+
+            hold on
+            plot([min(nUniqueNeighBasalAccum(valInd))-0.5; nUniqueNeighBasalAccum(valInd); max(nUniqueNeighBasalAccum(valInd))+0.5],f,'Color','blue','LineWidth',1)
+            errorbar(nUniqueNeighBasalAccum,mean(meanVolumePerSideBasalAccum),std(meanVolumePerSideBasalAccum),'o','MarkerSize',5,...
+                'Color',[0.5 0.5 0.5],'MarkerEdgeColor',[0,0,0],'MarkerFaceColor',[0,0,0],'LineWidth',0.5)
+            
+            ylim([0 max(mean(meanVolumePerSideBasalAccum))+min(mean(meanVolumePerSideBasalAccum))])
+            title(['3D - SR ' num2str(surfRatios(SR))])
+            ylabel('volume')
+            xlabel('neighbours total')
+            xticks([min(nUniqueNeighBasalAccum):2:max(nUniqueNeighBasalAccum)])
+            xlim([min(nUniqueNeighBasalAccum) max(nUniqueNeighBasalAccum)])
+            set(gca,'FontSize', 24,'FontName','Helvetica');
+
+            hold off
+            savefig(h,[path2save 'Lewis3DVoronoi_apical_SR5.fig'])
+            print(h,[path2save 'Lewis3DVoronoi_apical_SR5'],'-dtiff','-r300')
+
+        end
         
         
         %% Aboav-weaire 2d + 3d
@@ -231,89 +281,101 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
         print(h,[path2save 'Aboav-weaire 2D_3D_SR' strrep(num2str(surfRatios(SR)),'.','_')],'-dtiff','-r300')
         close(h)
         
-        %% Paper figures 
-        %%Lewis 3D - volume vs sides 3D
-        figure(90);
-        hold on
-        meanVolAc = mean(meanVolumePerSideBasalAccum);
-        nanNames = isnan(meanVolAc);
-        if exist('xNoNaN','var')
-           xNoNaNpreviousVol = xNoNaNVol'; 
-           yNoNaNpreviousVol = yNoNaNVol;
-           xNoNaNVol = nUniqueNeighBasalAccum(~nanNames);
-           yNoNaNVol = meanVolAc(~nanNames);
-           rowx = [xNoNaNpreviousVol(1) xNoNaNVol(1) xNoNaNVol' xNoNaNVol(end) fliplr(xNoNaNpreviousVol)];
-           rowy = [yNoNaNpreviousVol(1) yNoNaNVol(1) yNoNaNVol yNoNaNVol(end) fliplr(yNoNaNpreviousVol)];
-           fill(rowx,rowy,colorSR(SR,:),'FaceAlpha',0.5,'EdgeColor','none','DisplayName',['Sr ' num2str(surfRatios(SR))],'HandleVisibility','off')
-           plot(xNoNaNpreviousVol,yNoNaNpreviousVol,'--o','MarkerFaceColor',colorSR(SR,:),'Color',[0 0 0],'MarkerEdgeColor',[0 0 0],'DisplayName',['Sr ' num2str(surfRatios(SR))],'HandleVisibility','off')
-        end
-        xNoNaNVol = nUniqueNeighBasalAccum(~nanNames);
-        yNoNaNVol = meanVolAc(~nanNames);
-        plot(xNoNaNVol',yNoNaNVol,'--o','MarkerFaceColor',colorSR(SR,:),'Color',[0 0 0],'MarkerEdgeColor',[0 0 0],'DisplayName',['Sr ' num2str(surfRatios(SR))])
-
-        hold off
-%         errorbar(nUniqueNeighBasalAccum,mean(meanVolumePerSideBasalAccum),std(meanVolumePerSideBasalAccum),'-o','MarkerSize',5,'MarkerEdgeColor','black','MarkerFaceColor',colorSR(SR,:),'DisplayName',['surface ratio: ' num2str(surfRatios(SR))])
-%         
-        %%aboav-weire 3D
-        figure(100);
-        hold on
-        meanNeigNeigh = mean(meanNeighOfNeighAccumPerSideBasalAccum);
-        nanNames = isnan(meanNeigNeigh);
-        if exist('xNoNaN','var')
-           xNoNaNprevious = xNoNaN'; 
-           yNoNaNprevious = yNoNaN;
-           xNoNaN = nUniqueNeighBasalAccum(~nanNames);
-           yNoNaN = meanNeigNeigh(~nanNames);
-           rowx = [xNoNaNprevious(1) xNoNaN(1) xNoNaN' xNoNaN(end) fliplr(xNoNaNprevious)];
-           rowy = [yNoNaNprevious(1) yNoNaN(1) yNoNaN yNoNaN(end) fliplr(yNoNaNprevious)];
-           fill(rowx,rowy,colorSR(SR,:),'FaceAlpha',0.5,'EdgeColor','none','DisplayName',['Sr ' num2str(surfRatios(SR))],'HandleVisibility','off')
-           plot(xNoNaNprevious,yNoNaNprevious,'--o','MarkerFaceColor',colorSR(SR,:),'Color',[0 0 0],'MarkerEdgeColor',[0 0 0],'DisplayName',['Sr ' num2str(surfRatios(SR))],'HandleVisibility','off')
-        end
-        xNoNaN = nUniqueNeighBasalAccum(~nanNames);
-        yNoNaN = meanNeigNeigh(~nanNames);
-        plot(xNoNaN',yNoNaN,'--o','MarkerFaceColor',colorSR(SR,:),'Color',[0 0 0],'MarkerEdgeColor',[0 0 0],'DisplayName',['Sr ' num2str(surfRatios(SR))])
-
-%         errorbar(nUniqueNeighBasalAccum,mean(meanNeighOfNeighAccumPerSideBasalAccum),std(meanNeighOfNeighAccumPerSideBasalAccum),'-o','MarkerSize',5,'MarkerEdgeColor',colorSR(SR,:),'MarkerFaceColor',colorSR(SR,:),'DisplayName',['Sr ' num2str(surfRatios(SR))])
-        hold off
+%         %% Paper figures 
+%         %%Lewis 3D - volume vs sides 3D
+%         figure(90);
+%         hold on
+%         meanVolAc = mean(meanVolumePerSideBasalAccum);
+%         nanNames = isnan(meanVolAc);
+%         if exist('xNoNaN','var')
+%            xNoNaNpreviousVol = xNoNaNVol'; 
+%            yNoNaNpreviousVol = yNoNaNVol;
+%            xNoNaNVol = nUniqueNeighBasalAccum(~nanNames);
+%            yNoNaNVol = meanVolAc(~nanNames);
+%            rowx = [xNoNaNpreviousVol(1) xNoNaNVol(1) xNoNaNVol' xNoNaNVol(end) fliplr(xNoNaNpreviousVol)];
+%            rowy = [yNoNaNpreviousVol(1) yNoNaNVol(1) yNoNaNVol yNoNaNVol(end) fliplr(yNoNaNpreviousVol)];
+%            fill(rowx,rowy,colorSR(SR,:),'FaceAlpha',0.5,'EdgeColor','none','DisplayName',['Sr ' num2str(surfRatios(SR))],'HandleVisibility','off')
+%            plot(xNoNaNpreviousVol,yNoNaNpreviousVol,'--o','MarkerFaceColor',colorSR(SR,:),'Color',[0 0 0],'MarkerEdgeColor',[0 0 0],'DisplayName',['Sr ' num2str(surfRatios(SR))],'HandleVisibility','off')
+%         end
+%         xNoNaNVol = nUniqueNeighBasalAccum(~nanNames);
+%         yNoNaNVol = meanVolAc(~nanNames);
+%         plot(xNoNaNVol',yNoNaNVol,'--o','MarkerFaceColor',colorSR(SR,:),'Color',[0 0 0],'MarkerEdgeColor',[0 0 0],'DisplayName',['Sr ' num2str(surfRatios(SR))])
+% 
+%         hold off
+% %         errorbar(nUniqueNeighBasalAccum,mean(meanVolumePerSideBasalAccum),std(meanVolumePerSideBasalAccum),'-o','MarkerSize',5,'MarkerEdgeColor','black','MarkerFaceColor',colorSR(SR,:),'DisplayName',['surface ratio: ' num2str(surfRatios(SR))])
+% %         
+%         %%aboav-weire 3D
+%         figure(100);
+%         hold on
+%         meanNeigNeigh = mean(meanNeighOfNeighAccumPerSideBasalAccum);
+%         nanNames = isnan(meanNeigNeigh);
+%         if exist('xNoNaN','var')
+%            xNoNaNprevious = xNoNaN'; 
+%            yNoNaNprevious = yNoNaN;
+%            xNoNaN = nUniqueNeighBasalAccum(~nanNames);
+%            yNoNaN = meanNeigNeigh(~nanNames);
+%            rowx = [xNoNaNprevious(1) xNoNaN(1) xNoNaN' xNoNaN(end) fliplr(xNoNaNprevious)];
+%            rowy = [yNoNaNprevious(1) yNoNaN(1) yNoNaN yNoNaN(end) fliplr(yNoNaNprevious)];
+%            fill(rowx,rowy,colorSR(SR,:),'FaceAlpha',0.5,'EdgeColor','none','DisplayName',['Sr ' num2str(surfRatios(SR))],'HandleVisibility','off')
+%            plot(xNoNaNprevious,yNoNaNprevious,'--o','MarkerFaceColor',colorSR(SR,:),'Color',[0 0 0],'MarkerEdgeColor',[0 0 0],'DisplayName',['Sr ' num2str(surfRatios(SR))],'HandleVisibility','off')
+%         end
+%         xNoNaN = nUniqueNeighBasalAccum(~nanNames);
+%         yNoNaN = meanNeigNeigh(~nanNames);
+%         plot(xNoNaN',yNoNaN,'--o','MarkerFaceColor',colorSR(SR,:),'Color',[0 0 0],'MarkerEdgeColor',[0 0 0],'DisplayName',['Sr ' num2str(surfRatios(SR))])
+% 
+% %         errorbar(nUniqueNeighBasalAccum,mean(meanNeighOfNeighAccumPerSideBasalAccum),std(meanNeighOfNeighAccumPerSideBasalAccum),'-o','MarkerSize',5,'MarkerEdgeColor',colorSR(SR,:),'MarkerFaceColor',colorSR(SR,:),'DisplayName',['Sr ' num2str(surfRatios(SR))])
+%         hold off
         
     end  
     
 
-    figure(90);
-    set(gcf, 'Position', get(0, 'Screensize'));
-    title('volume - n basal accum')
-    ylabel('volume')
-    xlabel('neighbours total')
-    legend('Location','best')
-    print(gcf,[path2save 'Lewis_3D'],'-dtiff','-r300')
-    close(gcf)
-    
-    figure(100);
-    set(gcf, 'Position', get(0, 'Screensize'));
-    title('nNeighOfNeigh accum - n basal accum')
-    ylabel('nNeighOfNeigh accum')
-    xlabel('neighbours total')
-    legend('Location','best')
-    hold on;
-    xl = xlim;
-    plot([xl(1):xl(end)],5+6./[xl(1):xl(end)],'--','MarkerSize',2,'MarkerEdgeColor',colorSR(SR,:),'DisplayName','Theoretical')
-    ylim([4.5,inf])
-    print(gcf,[path2save 'Aboav-weaire_3D'],'-dtiff','-r300')
-    close(gcf)
+%     figure(90);
+%     set(gcf, 'Position', get(0, 'Screensize'));
+%     title('volume - n basal accum')
+%     ylabel('volume')
+%     xlabel('neighbours total')
+%     legend('Location','best')
+%     print(gcf,[path2save 'Lewis_3D'],'-dtiff','-r300')
+%     close(gcf)
+%     
+%     figure(100);
+%     set(gcf, 'Position', get(0, 'Screensize'));
+%     title('nNeighOfNeigh accum - n basal accum')
+%     ylabel('nNeighOfNeigh accum')
+%     xlabel('neighbours total')
+%     legend('Location','best')
+%     hold on;
+%     xl = xlim;
+%     plot([xl(1):xl(end)],5+6./[xl(1):xl(end)],'--','MarkerSize',2,'MarkerEdgeColor',colorSR(SR,:),'DisplayName','Theoretical')
+%     ylim([4.5,inf])
+%     print(gcf,[path2save 'Aboav-weaire_3D'],'-dtiff','-r300')
+%     close(gcf)
     
     %% Euler 3D
-    h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','off');   
+    h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');   
     stdNeighBasalAcum = std(cat(1,meanNeighBasalAcum{:,:}));
     meanNeighBasalAcum = mean(cat(1,meanNeighBasalAcum{:,:}));
    
-    errorbar(surfRatios,meanNeighBasalAcum,stdNeighBasalAcum,'-o','MarkerSize',5,...
-    'MarkerEdgeColor','black','MarkerFaceColor','blue')
+    myfittypeLog10=fittype('a +b*log10(x)',...
+'dependent', {'y'}, 'independent',{'x'},...
+'coefficients', {'a','b'});
+    myfitLog10=fit(surfRatios',meanNeighBasalAcum',myfittypeLog10,'StartPoint',[1 6]);
+    plot(myfitLog10, [1 16], [6 7],'blue')
+    hold on
+    errorbar(surfRatios,meanNeighBasalAcum,stdNeighBasalAcum,'o','MarkerSize',5,...
+            'Color',[0.5 0.5 0.5],'MarkerEdgeColor',[0,0,0],'MarkerFaceColor',[0,0,0],'LineWidth',0.5)
     title('euler neighbours 3D')
     xlabel('surface ratio')
     ylabel('neighbours total')
+    x = [0 16];
+    y = [6 6];
+    line(x,y,'Color','red','LineStyle','--')
+    hold off
     ylim([0,15]);
-
-    print(h,[path2save 'euler3D'],'-dtiff','-r300')
+    yticks([0:2:15])
+    set(gca,'FontSize', 24,'FontName','Helvetica');
+    
+%     print(h,[path2save 'euler3D'],'-dtiff','-r300')
     close all
 
     %% Euler 2D
