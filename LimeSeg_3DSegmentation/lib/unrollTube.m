@@ -1,4 +1,4 @@
-function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours, perimImage3D, glandOrientation, apicalArea)
+function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours, perimImage3D, glandOrientation, apicalArea)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
     colours = vertcat([1 1 1], colours);
@@ -25,13 +25,18 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
 %     [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength(maxLeng(1),:)));
 %     img3d=permute(img3d,orderLengAxis);
 
-
+    [neighbours] = calculateNeighbours3D(img3d);
+    [verticesInfo] = getVertices3D(img3d, neighbours.neighbourhood);
+    vertices3D = vertcat(verticesInfo.verticesPerCell{:});
     imgFinalCoordinates=cell(size(img3d,3),1);
     imgFinalCoordinates3x=cell(size(img3d,3),1);
     %exportAsImageSequence(img3d, outputDir, colours, -1);
     %exportAsImageSequence(perimImage3D, outputDir, colours, -1);
     borderCells=cell(size(img3d,3),1);
+    imgFinalVerticesCoordinates = cell(size(img3d,3),1);
     previousRowsSize = 0;
+    outsideGland = getOutsideGland(img3d);
+    img3d(outsideGland) = -1;
     for coordZ = 1 : size(img3d,3)
         %% Create perimeter mask
         if exist('perimImage3D', 'var')
@@ -45,7 +50,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
         zPerimMask = bwperim(imgToPerim);
         finalPerim3D(:, :, coordZ) = zPerimMask;
                
-        if sum(zPerimMask(:)) < pixelSizeThreshold || sum(sum(img3d(:, :, coordZ))) < pixelSizeThreshold
+        if sum(zPerimMask(:)) < pixelSizeThreshold || sum(sum(img3d(:, :, coordZ)+1)) < pixelSizeThreshold
             continue
         end
         
@@ -55,14 +60,16 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
         centroidX = centroidCoordZ(1);
         centroidY = centroidCoordZ(2);
         
-        [x, y] = find(img3d(:, :, coordZ) > 0);
+        
+        
+        [x, y] = find(img3d(:, :, coordZ) >= 0);
         
         [xPerim, yPerim]=find(finalPerim3D(:, :, coordZ));
         
         %angles coord perim regarding centroid
         anglePerimCoord = atan2(yPerim - centroidY, xPerim - centroidX);
         %find the sorted order
-        [anglePerimCoordSort,~] = sort(anglePerimCoord);
+        %[anglePerimCoordSort,~] = sort(anglePerimCoord);
         
         %             anglePerimCoordSort = repmat(anglePerimCoordSort, 3, 1);
         %             x = repmat(x, 3, 1);
@@ -70,22 +77,29 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
         
         %% labelled mask
         maskLabel=img3d(:,:,coordZ);
+        actualVertices = vertices3D(vertices3D(:, 3) == coordZ, 1:2);
         %angles label coord regarding centroid
         angleLabelCoord = atan2(y - centroidY, x - centroidX);
+        [angleLabelCoordSort, orderedIndices] = sort(angleLabelCoord);
+        if isempty(actualVertices) == 0
+            indicesOfVertices = ismember([x, y], actualVertices(:, 1:2), 'row');
+            imgFinalVerticesCoordinates{coordZ} = find(indicesOfVertices);
+        end
         
         %% Assing label to pixels of perimeters
         %If a perimeter coordinate have no label pixels in a range of pi/45 radians, it label is 0
-        orderedLabels = zeros(1,length(anglePerimCoordSort));
-        for nCoord = 1:length(anglePerimCoordSort)
-            distances = abs(angleLabelCoord - anglePerimCoordSort(nCoord));
+        orderedLabels = zeros(1,length(angleLabelCoordSort));
+        for nCoord = 1:length(angleLabelCoordSort)
+           %distances = abs(angleLabelCoordSort(nCoord) - anglePerimCoord);
             
-            minDistance3D = 0.1;
+            %minDistance3D = 0.1;
             %[distancesOrdered, orderedIndices] = sort(distances, 'Ascend');
-            [ind] = find(distances < minDistance3D);
-            [closerDistances] = distances(distances < minDistance3D);
-            [closerDistancesOrdered, indicesOrdered] = sort(closerDistances, 'Ascend');
-            ind = ind(indicesOrdered);
-            indicesClosest = sub2ind(size(maskLabel), x(ind), y(ind));
+            %[ind] = find(distances < minDistance3D);
+            %[closerDistances] = distances(distances < minDistance3D);
+            %[closerDistancesOrdered, indicesOrdered] = sort(closerDistances, 'Ascend');
+            %ind = ind(indicesOrdered);
+            
+            indicesClosest = sub2ind(size(maskLabel), x(orderedIndices(nCoord)), y(orderedIndices(nCoord)));
             closestLabels = maskLabel(indicesClosest);
             
             closestLabelsUnique = unique(closestLabels);
@@ -111,7 +125,7 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
         
         %% Equalize border of the gland
         if previousRowsSize ~= 0
-            orderedLabels = imresize(orderedLabels, [1 round(previousRowsSize*0 + length(orderedLabels)*1)], 'nearest');
+            %orderedLabels = imresize(orderedLabels, [1 round(previousRowsSize*0.7 + length(orderedLabels)*0.3)], 'nearest');
         end
         previousRowsSize = length(orderedLabels);
         imgFinalCoordinates3x{coordZ} = repmat(orderedLabels,1,3);
@@ -143,16 +157,27 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
         end
         deployedImg3x(coordZ, 1 + nEmptyPixels3x : length(rowOfCoord3x) + nEmptyPixels3x) = rowOfCoord3x;
         deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
-
+        if isempty(imgFinalVerticesCoordinates{coordZ}) == 0
+            imgFinalVerticesCoordinates{coordZ} = imgFinalVerticesCoordinates{coordZ} + 1 + nEmptyPixels;
+        end
         nEmptyPixelsPrevious = nEmptyPixels;
         nEmptyPixels3xPrevious = nEmptyPixels3x;
+    end
+    
+    figure; imshow(deployedImg+1, colours)
+    hold on;
+    for coordZ = 1 : size(img3d,3)
+        verticesPoints = imgFinalVerticesCoordinates{coordZ};
+        for numPoint = 1:length(verticesPoints)
+            plot(verticesPoints(numPoint), coordZ, 'rx')
+        end
     end
 %     figure;imshow(deployedImg,colours)
 %     figure;imshow(deployedImgMask,colours)
 
     %% Getting correct border cells, valid cells and no valid cells
-     [wholeImage] = fillEmptySpacesByWatershed2D(deployedImg3x, imclose(deployedImg3x>0, strel('disk', 20)) == 0 , colours);
      cylindre2DImage = fillEmptySpacesByWatershed2D(deployedImg, imclose(deployedImg>0, strel('disk', 20)) == 0 , colours);
+     [wholeImage] = fillEmptySpacesByWatershed2D(deployedImg3x, imclose(deployedImg3x>0, strel('disk', 20)) == 0 , colours);
     %[wholeImage,~,~] = getFinalImageAndNoValidCells(deployedImg3x,colours, borderCells);
     %[~, ~,noValidCells] = getFinalImageAndNoValidCells(deployedImg3x(:, round(ySize/3):round(ySize*2/3)),colours);
 %     TotalCells = {ValidCells; BordersNoValidCells};
@@ -173,13 +198,6 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     validCellsFinal  = setdiff(1:max(midSectionImage(:)), noValidCells);
     finalImageWithValidCells = ismember(midSectionImage, validCellsFinal).*midSectionImage;
 %     figure;imshow(finalImageWithValidCells,colours)
-    [neighs_real,sides_cells]=calculateNeighbours(midSectionImage);
-    
-    if length(sides_cells) ~= max(img3d(:))
-        sides_cells(end+1:end+(max(img3d(:)) - length(sides_cells))) = 0;
-        neighs_real(end+1:end+(max(img3d(:)) - length(sides_cells))) = [];
-    end
-    
     
     h = figure ('units','normalized','outerposition',[0 0 1 1], 'visible', 'off');
     imshow(midSectionImage+1, colours);
@@ -219,6 +237,6 @@ function [neighs_real,sides_cells, areaOfValidCells] = unrollTube(img3d, outputD
     else
         surfaceRatio = areaOfValidCells / apicalArea;
     end
-    save(strcat(outputDir, '_', 'img.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal', 'surfaceRatio', 'cylindre2DImage');
+    save(strcat(outputDir, '_', 'img.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal', 'surfaceRatio', 'cylindre2DImage', 'deployedImg', 'deployedImg3x');
 end
 
