@@ -1,6 +1,11 @@
 
 clear all
 close all
+
+addpath(genpath('src'))
+addpath(genpath('lib'))
+addpath(genpath(fullfile('..','InSilicoModels', 'TubularModel', 'src')));
+
 files = dir('**/Salivary gland/**/Results/3d_layers_info.mat');
 
 nonDiscardedFiles = cellfun(@(x) contains(lower(x), 'discarded') == 0, {files.folder});
@@ -173,6 +178,29 @@ stdCoefAPol = std(coefAPol);
 meanCoefBPol = mean(coefBPol);
 stdCoefBPol = std(coefBPol);
 
+
+myfittypeLog10=fittype('a +b*log10(x)',...
+'dependent', {'y'}, 'independent',{'x'},...
+'coefficients', {'a', 'b'});
+
+a = mean(coefAlog);
+b = mean(coefBlog);
+actualFit = cfit(myfittypeLog10, a, b);
+
+figure; 
+allPoints = vertcat(infoEuler3D{:, 2});
+for numPoint = 1:size(allPoints, 1)
+    hold on;
+    plot(allPoints.Surface_Ratio(numPoint) , allPoints.mean_neigh3D(numPoint), 'o', 'Color', [151 238 152]/255, 'LineWidth', 2, 'MarkerSize', 5);
+end
+plot(actualFit, [1 16], [6 7]);%, 'Color', [0 0.5 0], 'LineWidth', 2);
+ylim([0 15])
+xlim([0 15])
+x = [0 16];
+y = [6 6];
+line(x, y, 'Color', 'red', 'LineStyle', '--')
+title(num2str(mean(rSquaresPol)))
+ 
 figure;
 
 
@@ -186,10 +214,8 @@ ylabel('neighbours total')
 xlim([1, 15]);
 ylim([0,15]);
 
-myfittypeLog10=fittype('6 +b*log10(x)',...
-'dependent', {'y'}, 'independent',{'x'},...
-'coefficients', {'b'});
 
-myfitLog10=fit(infoEuler3DCat(:, 3),infoEuler3DCat(:, 1),myfittypeLog10,'StartPoint',1);
-hold on; plot(myfitLog10);
+
+%myfitLog10=fit(infoEuler3DCat(:, 3),infoEuler3DCat(:, 1),myfittypeLog10,'StartPoint',1);
+%hold on; plot(myfitLog10);
 getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,'Results/SalivaryGlands/',[1 2]);
