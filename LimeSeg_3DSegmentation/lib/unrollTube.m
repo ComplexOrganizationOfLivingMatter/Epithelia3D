@@ -35,8 +35,8 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
     borderCells=cell(size(img3d,3),1);
     imgFinalVerticesCoordinates = cell(size(img3d,3),1);
     previousRowsSize = 0;
-    outsideGland = getOutsideGland(img3d);
-    img3d(outsideGland) = -1;
+    insideGland = imdilate(img3d>0, strel('sphere', 1));
+    img3d(insideGland == 0) = -1;
     for coordZ = 1 : size(img3d,3)
         %% Create perimeter mask
         if exist('perimImage3D', 'var')
@@ -53,6 +53,18 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         if sum(zPerimMask(:)) < pixelSizeThreshold || sum(sum(img3d(:, :, coordZ)+1)) < pixelSizeThreshold
             continue
         end
+        figure; imshow(img3d(:, :, coordZ)+2, colorcube)
+        %% Remove pixels surrounding the boundary
+        
+        perimImage = bwperim(img3d(:, :, coordZ)>=0, 4);
+        finalPerimImage = imclose(perimImage, strel('disk', 1)) - perimImage;
+        [x, y] = find(finalPerimImage==0);
+        outsidePerim = sub2ind(size(img3d), x, y, repmat(coordZ, size(x)));
+        img3d(outsidePerim) = -1;
+        [x, y] = find(finalPerimImage & img3d(:, :, coordZ)<0);
+        insidePerim = sub2ind(size(img3d), x, y, repmat(coordZ, size(x)));
+        img3d(insidePerim) = 0;
+        figure; imshow(img3d(:, :, coordZ)+2, colorcube)
         
         %% Obtaining the center of the cylinder
         [x, y] = find(zPerimMask > 0);
@@ -64,10 +76,10 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         
         [x, y] = find(img3d(:, :, coordZ) >= 0);
         
-        [xPerim, yPerim]=find(finalPerim3D(:, :, coordZ));
+        %[xPerim, yPerim]=find(finalPerim3D(:, :, coordZ));
         
         %angles coord perim regarding centroid
-        anglePerimCoord = atan2(yPerim - centroidY, xPerim - centroidX);
+        %anglePerimCoord = atan2(yPerim - centroidY, xPerim - centroidX);
         %find the sorted order
         %[anglePerimCoordSort,~] = sort(anglePerimCoord);
         
@@ -83,7 +95,9 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         [angleLabelCoordSort, orderedIndices] = sort(angleLabelCoord);
         if isempty(actualVertices) == 0
             indicesOfVertices = ismember([x, y], actualVertices(:, 1:2), 'row');
-            imgFinalVerticesCoordinates{coordZ} = find(indicesOfVertices);
+            [distancePixelsVertices, closestPixel] = pdist2([x,y], actualVertices(:, 1:2), 'euclidean', 'Smallest', 1);
+
+            imgFinalVerticesCoordinates{coordZ} = [closestPixel];
         end
         
         %% Assing label to pixels of perimeters
@@ -102,7 +116,7 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
             indicesClosest = sub2ind(size(maskLabel), x(orderedIndices(nCoord)), y(orderedIndices(nCoord)));
             closestLabels = maskLabel(indicesClosest);
             
-            closestLabelsUnique = unique(closestLabels);
+            %closestLabelsUnique = unique(closestLabels);
 %             if length(closestLabelsUnique) > 1
 %                 counting = arrayfun( @(x)sum(closestLabels==x), unique(closestLabels) );% / length(closestLabels);
 %                 [~, modeInd] = max(counting);
@@ -158,7 +172,7 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         deployedImg3x(coordZ, 1 + nEmptyPixels3x : length(rowOfCoord3x) + nEmptyPixels3x) = rowOfCoord3x;
         deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
         if isempty(imgFinalVerticesCoordinates{coordZ}) == 0
-            imgFinalVerticesCoordinates{coordZ} = imgFinalVerticesCoordinates{coordZ} + 1 + nEmptyPixels;
+            imgFinalVerticesCoordinates{coordZ} = imgFinalVerticesCoordinates{coordZ} + nEmptyPixels;
         end
         nEmptyPixelsPrevious = nEmptyPixels;
         nEmptyPixels3xPrevious = nEmptyPixels3x;
