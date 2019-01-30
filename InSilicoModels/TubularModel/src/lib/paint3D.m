@@ -47,7 +47,7 @@ function [] = paint3D(varargin)
             shp = alphaShape(x,y,z, 1);
             pc = criticalAlpha(shp,'one-region');
             shp.Alpha = pc+3;
-            plot(shp, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 0.7);
+            plot(shp, 'FaceColor', colours(numSeed, :), 'EdgeColor', 'none', 'AmbientStrength', 0.3, 'FaceAlpha', 1);
         else
             pcshow([x,y,z], colours(numSeed, :));
         end
