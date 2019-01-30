@@ -19,9 +19,9 @@ function [neighbours_UnrollTube, polygon_distribution_UnrollTube, polygon_distri
     
     apicalAreaValidCells = 100;
     disp('Apical');
-    unrollTube(apicalLayerGoodOrientation, fullfile(selpath, 'apical'), noValidCells, colours, lumenImageGoodOrientation, originalRotation(1));
+    unrollTube(apicalLayerGoodOrientation, fullfile(selpath, 'apical'), noValidCells, colours, originalRotation(1));
     
     disp('Basal');
-    unrollTube(basalLayerGoodOrientation, fullfile(selpath, 'basal'), noValidCells, colours, [], originalRotation(1), apicalAreaValidCells);
+    unrollTube(basalLayerGoodOrientation, fullfile(selpath, 'basal'), noValidCells, colours, originalRotation(1), apicalAreaValidCells);
 end
 

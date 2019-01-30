@@ -1,20 +1,7 @@
-function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours, perimImage3D, glandOrientation, apicalArea)
+function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours, glandOrientation, apicalArea)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
     colours = vertcat([1 1 1], colours);
-
-    %% Rotate the gland
-    %angleRotation = deg2rad(-glandOrientation);
-
-    %[img3DRotated] = rotateGland(img3d, angleRotation(1));
-    if exist('perimImage3D', 'var')
-        if isempty(perimImage3D)
-            clearvars perimImage3D
-        else
-            %[perimImage3DRotated] = rotateGland(perimImage3D, angleRotation(1), size(img3DRotated));
-            perimImage3D = permute(perimImage3D, [1 3 2]);
-        end
-    end
     
     %% Unroll
     pixelSizeThreshold = 2;
@@ -40,18 +27,6 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
     insideGland = imdilate(img3d>0, strel('sphere', 1));
     img3d(insideGland == 0) = -1;
     for coordZ = 1 : size(img3d,3)
-        %% Create perimeter mask
-        if exist('perimImage3D', 'var')
-            imgToPerim = perimImage3D(:, :, coordZ);
-        else
-            imgToPerim = img3d(:, :, coordZ);
-        end
-        
-        imgToPerim = imdilate(imgToPerim>0, strel( 'disk', 5));
-        imgToPerim = imerode(imgToPerim, strel('disk', 5));
-        zPerimMask = bwperim(imgToPerim);
-        finalPerim3D(:, :, coordZ) = zPerimMask;
-               
         if sum(sum(img3d(:, :, coordZ) >= 0)) < pixelSizeThreshold || sum(sum(img3d(:, :, coordZ)+1)) < pixelSizeThreshold
             continue
         end
