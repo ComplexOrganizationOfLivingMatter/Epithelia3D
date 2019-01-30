@@ -50,29 +50,33 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         zPerimMask = bwperim(imgToPerim);
         finalPerim3D(:, :, coordZ) = zPerimMask;
                
-        if sum(zPerimMask(:)) < pixelSizeThreshold || sum(sum(img3d(:, :, coordZ)+1)) < pixelSizeThreshold
+        if sum(sum(img3d(:, :, coordZ) >= 0)) < pixelSizeThreshold || sum(sum(img3d(:, :, coordZ)+1)) < pixelSizeThreshold
             continue
         end
-        figure; imshow(img3d(:, :, coordZ)+2, colorcube)
+        %figure; imshow(img3d(:, :, coordZ)+2, colorcube)
+        
         %% Remove pixels surrounding the boundary
         
-        perimImage = bwperim(img3d(:, :, coordZ)>=0, 4);
-        finalPerimImage = imclose(perimImage, strel('disk', 1)) - perimImage;
+        %perimImage = bwperim(img3d(:, :, coordZ)>=0, 4);
+        %finalPerimImage = imclose(perimImage, strel('disk', 1)) - perimImage;
+        finalPerimImage = bwmorph(img3d(:, :, coordZ)>=0,'thin', Inf);
+        finalPerimImage = imclose(finalPerimImage, strel('disk', 2));
+        finalPerimImage = bwmorph(finalPerimImage>0,'thin', Inf);
         [x, y] = find(finalPerimImage==0);
         outsidePerim = sub2ind(size(img3d), x, y, repmat(coordZ, size(x)));
         img3d(outsidePerim) = -1;
         [x, y] = find(finalPerimImage & img3d(:, :, coordZ)<0);
         insidePerim = sub2ind(size(img3d), x, y, repmat(coordZ, size(x)));
         img3d(insidePerim) = 0;
-        figure; imshow(img3d(:, :, coordZ)+2, colorcube)
+        
+        %figure; imshow(zPerimMask)
+%         figure; imshow(img3d(:, :, coordZ)+2, colorcube)
         
         %% Obtaining the center of the cylinder
-        [x, y] = find(zPerimMask > 0);
-        centroidCoordZ = mean([x, y]); % Centroid of each real Y of the cylinder
+        [x, y] = find(img3d(:, :, coordZ) >= 0);
+        centroidCoordZ = mean([x, y], 1); % Centroid of each real Y of the cylinder
         centroidX = centroidCoordZ(1);
         centroidY = centroidCoordZ(2);
-        
-        
         
         [x, y] = find(img3d(:, :, coordZ) >= 0);
         
@@ -104,6 +108,7 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         %If a perimeter coordinate have no label pixels in a range of pi/45 radians, it label is 0
         orderedLabels = zeros(1,length(angleLabelCoordSort));
         for nCoord = 1:length(angleLabelCoordSort)
+            %hold on; plot(y(orderedIndices(nCoord)), x(orderedIndices(nCoord)), 'x');
            %distances = abs(angleLabelCoordSort(nCoord) - anglePerimCoord);
             
             %minDistance3D = 0.1;
@@ -136,6 +141,7 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
             end
             orderedLabels(nCoord) = pixelLabel;
         end
+        hold off;
         
         %% Equalize border of the gland
         if previousRowsSize ~= 0
