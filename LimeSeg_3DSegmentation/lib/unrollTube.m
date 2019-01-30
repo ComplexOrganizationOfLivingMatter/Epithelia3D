@@ -28,12 +28,14 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
     [neighbours] = calculateNeighbours3D(img3d);
     [verticesInfo] = getVertices3D(img3d, neighbours.neighbourhood);
     vertices3D = vertcat(verticesInfo.verticesPerCell{:});
+    vertices3D_Neighbours = verticesInfo.verticesConnectCells;
     imgFinalCoordinates=cell(size(img3d,3),1);
     imgFinalCoordinates3x=cell(size(img3d,3),1);
     %exportAsImageSequence(img3d, outputDir, colours, -1);
     %exportAsImageSequence(perimImage3D, outputDir, colours, -1);
     borderCells=cell(size(img3d,3),1);
     imgFinalVerticesCoordinates = cell(size(img3d,3),1);
+    imgFinalVerticesCoordinates_Neighbours = cell(size(img3d,3),1);
     previousRowsSize = 0;
     insideGland = imdilate(img3d>0, strel('sphere', 1));
     img3d(insideGland == 0) = -1;
@@ -61,7 +63,7 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         %finalPerimImage = imclose(perimImage, strel('disk', 1)) - perimImage;
         finalPerimImage = bwmorph(img3d(:, :, coordZ)>=0,'thin', Inf);
         finalPerimImage = imclose(finalPerimImage, strel('disk', 2));
-        finalPerimImage = bwmorph(finalPerimImage>0,'thin', Inf);
+        finalPerimImage = bwmorph(finalPerimImage>0, 'thin', Inf);
         [x, y] = find(finalPerimImage==0);
         outsidePerim = sub2ind(size(img3d), x, y, repmat(coordZ, size(x)));
         img3d(outsidePerim) = -1;
@@ -98,10 +100,11 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         angleLabelCoord = atan2(y - centroidY, x - centroidX);
         [angleLabelCoordSort, orderedIndices] = sort(angleLabelCoord);
         if isempty(actualVertices) == 0
-            indicesOfVertices = ismember([x, y], actualVertices(:, 1:2), 'row');
-            [distancePixelsVertices, closestPixel] = pdist2([x,y], actualVertices(:, 1:2), 'euclidean', 'Smallest', 1);
-
-            imgFinalVerticesCoordinates{coordZ} = [closestPixel];
+            %indicesOfVertices = ismember([x, y], actualVertices(:, 1:2), 'row');
+            %imgFinalVerticesCoordinates{coordZ} = find(indicesOfVertices);
+            [~, closestPixel] = pdist2([x,y], actualVertices(:, 1:2), 'euclidean', 'Smallest', 1);
+            imgFinalVerticesCoordinates{coordZ} = find(ismember(orderedIndices, closestPixel));
+            imgFinalVerticesCoordinates_Neighbours{coordZ} = vertices3D_Neighbours(vertices3D(:, 3) == coordZ, :);
         end
         
         %% Assing label to pixels of perimeters
@@ -148,7 +151,7 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
             %orderedLabels = imresize(orderedLabels, [1 round(previousRowsSize*0.7 + length(orderedLabels)*0.3)], 'nearest');
         end
         previousRowsSize = length(orderedLabels);
-        imgFinalCoordinates3x{coordZ} = repmat(orderedLabels,1,3);
+        imgFinalCoordinates3x{coordZ} = repmat(orderedLabels, 1, 3);
         imgFinalCoordinates{coordZ} = orderedLabels;
         borderCells{coordZ} = orderedLabels(1);
     end
@@ -177,21 +180,28 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
         end
         deployedImg3x(coordZ, 1 + nEmptyPixels3x : length(rowOfCoord3x) + nEmptyPixels3x) = rowOfCoord3x;
         deployedImg(coordZ, 1 + nEmptyPixels : length(rowOfCoord) + nEmptyPixels) = rowOfCoord;
+        
         if isempty(imgFinalVerticesCoordinates{coordZ}) == 0
+            %figure; imshow(deployedImg+1, colours)
+            verticesPoints = imgFinalVerticesCoordinates{coordZ};
+            for numPoint = 1:length(verticesPoints)
+                %hold on; plot(verticesPoints(numPoint) + nEmptyPixels, coordZ, 'rx');
+            end
             imgFinalVerticesCoordinates{coordZ} = imgFinalVerticesCoordinates{coordZ} + nEmptyPixels;
         end
         nEmptyPixelsPrevious = nEmptyPixels;
         nEmptyPixels3xPrevious = nEmptyPixels3x;
     end
     
-    figure; imshow(deployedImg+1, colours)
-    hold on;
-    for coordZ = 1 : size(img3d,3)
-        verticesPoints = imgFinalVerticesCoordinates{coordZ};
-        for numPoint = 1:length(verticesPoints)
-            plot(verticesPoints(numPoint), coordZ, 'rx')
-        end
-    end
+%     figure; imshow(deployedImg+1, colours)
+%     hold on;
+%     for coordZ = 1 : size(img3d,3)
+%         verticesPoints = imgFinalVerticesCoordinates{coordZ};
+%         for numPoint = 1:length(verticesPoints)
+%             plot(verticesPoints(numPoint), coordZ, 'rx')
+%         end
+%         imgFinalVerticesCoordinates_Neighbours{coordZ}
+%     end
 %     figure;imshow(deployedImg,colours)
 %     figure;imshow(deployedImgMask,colours)
 
