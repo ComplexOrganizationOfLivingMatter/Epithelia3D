@@ -1,4 +1,4 @@
-function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours, glandOrientation, apicalArea)
+function [areaOfValidCells] = unrollTube(img3d_original, outputDir, noValidCells, colours, apicalArea)
 %UNROLLTUBE Summary of this function goes here
 %   Detailed explanation goes here
     colours = vertcat([1 1 1], colours);
@@ -6,16 +6,22 @@ function [areaOfValidCells] = unrollTube(img3d, outputDir, noValidCells, colours
     %% Unroll
     pixelSizeThreshold = 2;
     
-    img3d = permute(img3d, [1 3 2]);
+    img3d_original = permute(img3d_original, [1 3 2]);
 %     axesLength = regionprops3(img3d>0,'PrincipalAxisLength');
 %     [~,maxLeng] = max(cat(1,axesLength.PrincipalAxisLength));
 %     [~,orderLengAxis] = sort(cat(1,axesLength.PrincipalAxisLength(maxLeng(1),:)));
 %     img3d=permute(img3d,orderLengAxis);
 
-    [neighbours] = calculateNeighbours3D(img3d);
-    [verticesInfo] = getVertices3D(img3d, neighbours.neighbourhood);
+    [neighbours] = calculateNeighbours3D(img3d_original);
+    [verticesInfo] = getVertices3D(img3d_original, neighbours.neighbourhood);
     vertices3D = vertcat(verticesInfo.verticesPerCell{:});
     vertices3D_Neighbours = verticesInfo.verticesConnectCells;
+    
+    resizeImg = 0.25;
+    imgSize = round(size(img3d_original)/resizeImg);
+    img3d = imresize3(img3d_original, imgSize, 'nearest');
+    vertices3D = round(vertices3D / resizeImg);
+    
     imgFinalCoordinates=cell(size(img3d,3),1);
     imgFinalCoordinates3x=cell(size(img3d,3),1);
     %exportAsImageSequence(img3d, outputDir, colours, -1);
