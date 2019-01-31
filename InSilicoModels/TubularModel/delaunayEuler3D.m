@@ -14,7 +14,7 @@ numRand = 20;
 
 srInit = 10 * 1./(1:10);
 surfaceRatios = unique([srInit,3:2000]);
-numNeighsAcumm = zeros(numRand,length(surfaceRatios));
+numNeighsAccum = zeros(numRand,length(surfaceRatios));
 
 
 parfor nRand = 1:numRand
@@ -87,15 +87,15 @@ parfor nRand = 1:numRand
         nNeighPerSR(SR) = mean(cellfun(@(x) length(x),neighsAccum{SR}));
 
     end
-    numNeighsAcumm(nRand,:) = nNeighPerSR;
+    numNeighsAccum(nRand,:) = nNeighPerSR;
 
 end
 
 tableSR = array2table([surfaceRatios],'RowNames',{'surfaceRatio'});
-tableNeighsAccum = array2table(numNeighsAcumm,'VariableNames',tableSR.Properties.VariableNames);
+tableNeighsAccum = array2table(numNeighsAccum,'VariableNames',tableSR.Properties.VariableNames);
 tableEuler3D = [tableSR;tableNeighsAccum];
-meanEuler3D = mean(numNeighsAcumm);
-stdEuler3D = std(numNeighsAcumm);
+meanEuler3D = mean(numNeighsAccum);
+stdEuler3D = std(numNeighsAccum);
 tableMeanNeighsAccum = [tableSR;array2table([meanEuler3D;stdEuler3D],'VariableNames',tableSR.Properties.VariableNames,'RowNames',{'meanNeighbours','stdNeighbours'})];
 
-save(['data\delaunayEuler3D_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'],'tableMeanNeighsAccum','tableEuler3D','neighsAccum')
+save(['data\delaunayEuler3D_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'],'tableMeanNeighsAccum','tableEuler3D')
