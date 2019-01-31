@@ -147,7 +147,7 @@ If you have to leave and you have not finish the salivary gland, you can always 
 8. Seek for a missing cell and see where it should be touching the lumen or basal layer. This would be the Z plane where the cell is ought to be changed. Select either the whole cell or the new region it should be covering. All the pixels that are in this region, now belong to the selected cell. In addition, Z planes near the actual Z ([-3, +3]), may be changed due to this operation, on the behalf of the smoothness of the 3D cell shape.
 9. Close the window.
 10. If you don't want the new changes, you can discard by clicking in 'No, don't save the changes'. Otherwise, press 'Yes'.
-11. After saving the changes an excel should have appeared with characteristics of the cells and a message could have appeared which states the IDs of the cells whose TotalNeighbours and Apicobasal neigbhours differ, in this case you have to revise the neighbours of the cells in the labelled images and you have to see which one is true and not.
+11. After saving the changes an excel should have appeared with characteristics of the cells and a message could have appeared which states the IDs of the cells whose TotalNeighbours and Apicobasal neighbhours differ, in this case you have to revise the neighbours of the cells whose IDs were displayed in the message and you have to see which parameter (TotalNeighbours or Apicobasal) is true or not in the labelled images.
 
 The gland will be correctly segmented,if it doesn't appear any message or missing cell in Matlab and the characteristics of cells are normal in the excel
 
