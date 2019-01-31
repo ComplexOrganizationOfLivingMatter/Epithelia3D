@@ -18,7 +18,7 @@ function [areaOfValidCells] = unrollTube(img3d_original, outputDir, noValidCells
     vertices3D_Neighbours = verticesInfo.verticesConnectCells;
     vertices3D_Neighbours(cellfun(@isempty, verticesInfo.verticesPerCell), :) = [];
     
-    resizeImg = 0.25;
+    resizeImg = 1;
     imgSize = round(size(img3d_original)/resizeImg);
     img3d = imresize3(img3d_original, imgSize, 'nearest');
     vertices3D = round(vertices3D / resizeImg);
@@ -258,12 +258,16 @@ function [areaOfValidCells] = unrollTube(img3d_original, outputDir, noValidCells
     
     
     %% Connect vertices to obtain an image from the vertices
-    figure, imshow(deployedImg, colours);
+    figure, imshow(deployedImg+1, colours);
     for numCell = validCellsFinal
         actualVertices = any(ismember(neighbours2D, numCell), 2);
         if ismember(numCell, borderCells)
             continue
         end
+        %%Remove border vertices
+        %actualVertices(ismember(neighbours2D, borderCells)) = 0;
+        
+        sum(actualVertices)
         [newVertOrder] = boundaryOfCell(vertices2D(actualVertices, :), centroids(numCell, :));
         [newOrderX, newOrderY] = poly2cw(newVertOrder((1:end-1), 1), newVertOrder((1:end-1), 2));
         verticesRadius = [];
