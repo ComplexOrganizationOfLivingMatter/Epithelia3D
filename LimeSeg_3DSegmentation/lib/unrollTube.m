@@ -16,6 +16,7 @@ function [areaOfValidCells] = unrollTube(img3d_original, outputDir, noValidCells
     [verticesInfo] = getVertices3D(img3d_original, neighbours.neighbourhood);
     vertices3D = vertcat(verticesInfo.verticesPerCell{:});
     vertices3D_Neighbours = verticesInfo.verticesConnectCells;
+    vertices3D_Neighbours(cellfun(@isempty, verticesInfo.verticesPerCell), :) = [];
     
     resizeImg = 0.25;
     imgSize = round(size(img3d_original)/resizeImg);
@@ -85,9 +86,6 @@ function [areaOfValidCells] = unrollTube(img3d_original, outputDir, noValidCells
             %imgFinalVerticesCoordinates{coordZ} = find(indicesOfVertices);
             [~, closestPixel] = pdist2([x,y], actualVertices(:, 1:2), 'euclidean', 'Smallest', 1);
             [~, indices] = ismember(closestPixel, orderedIndices);
-            if length(indices) ~= size(actualVertices, 1)
-               disp('EEEnnngg'); 
-            end
             imgFinalVerticesCoordinates{coordZ} = indices;
             imgFinalVerticesCoordinates_Neighbours{coordZ} = vertices3D_Neighbours(vertices3D(:, 3) == coordZ, :);
         end
