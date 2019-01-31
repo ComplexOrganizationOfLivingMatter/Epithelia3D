@@ -79,4 +79,7 @@ end
 tableSR = array2table([surfaceRatios],'RowNames',{'surfaceRatio'});
 tableNeighsAccum = array2table(numNeighsAcumm,'VariableNames',tableSR.Properties.VariableNames);
 tableEuler3D = [tableSR;tableNeighsAccum];
-
+meanEuler3D = mean(numNeighsAcumm);
+stdEuler3D = std(numNeighsAcumm);
+tableMeanNeighsAccum = [tableSR;array2table([meanEuler3D;stdEuler3D],'VariableNames',tableSR.Properties.VariableNames,'RowNames',{'meanNeighbours','stdNeighbours'})];
+save(['data\delaunayEuler3D_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'],'tableMeanNeighsAccum')
