@@ -15,87 +15,47 @@ Extracted from:
 
 ## Step 0: Pre-processing
 
-0. Open the images in FIJI and keep the channel whose cell outlines are better. If the nuclei appear, it could be a problem.
+0. Open the images in FIJI and keep the channel whose cell outlines are better and whose quality is the best (usually it is the red channel because it doesn't contain the nuclei of the cells). If the nuclei appear, it could be a problem.
 
 1. The images suffer from photobleaching and, also, due to depth, the intensity of the fluorescence, decay with time. To solve this, you can use "Image" -> "Adjust" -> "Bleach correction". Select "Exponential fit". 'OK'.
 
 2. Now you have to improve the brightness and contrast, you can do this by clicking in "Image" -> "Adjust" -> "Brightness/Contrast". You can either click on 'Auto' or change manually the parameters until you obtain a good result in which the cell lines are clear, but not too saturated. Then, press on 'Apply' and apply it to all the stack.
 
-3. Save the final images as an image sequence (file->save as-> image sequence). And as a tiff.
+3. Once you have adjusted the image brightness, you have to save the image with a different channel colour: white or green with the background as black.You can do this by: "Image"->"Color"-> "Channel tool"-> "More"->"Green" or "White" (Whether it is white or green, it is up to you, select the best to you).
 
-## Step 1: Basic lumen's pipeline
+4. Save the final images as an image sequence (file->save as-> image sequence). And as a tiff.
 
-1. Open the images of the image sequence which contain the lumen in Photoshop.
 
-2. Paint the lumen region as a black region with white borders:
-	
-	1. Create a new layer (layer->new layer).   
-	
-	1. Select the paint brush at the left screen with the black color (color: 0,0,0)
-	and white color (color: 255,255,255).
-	
-	1. With this function you can select the lumen point to point by typing shift key+left click.Segment the lumen like a black region, you have to use the black color now.
-	
-	1. After segmenting the lumen, you have to paint the lumen like a black region with the paint bucket tool,ensure that the whole lumen is black, you can colour pixels which are not black with the pencil.*
-	
-	1. Select the black region with the magic wand (this tool allows you to choose specific regions of an image) by typing left 		click in the region, and change the color to white(type x if you selected it in the previous steps).
-	
-	1. Select the option "selection->modify->expand", and type 5 pixels.A new border should have appeared with the thickness 		indicated previosuly, colour it with the white colour.
-	
-	1. Type right click in the layers and select the option merging layers (combine layers) to decrease the final length of the image.
-	
-	1. Save the changes done.
-	
-	*note: If the lumen is divided in different pieces, you have to segment each lumen's piece one by one in the same image 		as"islands".
+## Step 1: Basic cell's pipeline
 
-3. Afterwards, you are going to capture the lumen region and not the gland:
+0. At the same time that you do the first step you can do the second step, therefore read first the first step and start it, and later      start doing the second step at the same time.
 
-	1. Copy the images which contain the lumen to the lumen's folder.
-	
-	1. Open an image of the lumen's folder.
-	
-	1. Add a new layer and paint it using the white color.
-	
-	1. Open the same image from the image sequence, which contains the lumen like black a region.
-	
-	1. Select the black region (lumen without borders) with the magic wand in the left screen and copy it.Then paste it in the white image which corresponds to the same image (z).
-	
-	1. Merge the layers and save the changes done.
-	
-	1. Finally you have to paint the images which don't contain the lumen as white images, you can do this automatically 	                    creating an action in photoshop (actions->new action), from this moment photoshop will capture all the things that                      you do,therefore you have to do these steps:
-	
-	   Add a new layer-> paint it as white.
-	   
-	   Save the image
-	   
-	   Close image
-	
-	  Later, click in file->automate->bundle , select the action that you have created and selected a folder which only contains the 	   images that don't contain the lumen because this action is applied to all the images in the folder.After this copy them to the	lumen's folder
-	
-	Thus, copy the images which don´t contain the lumen in a separated folder and do that action for that folder.After that, copy 		that images to the lumen's folder.
+1. Open the image, whose cell outlines are the best to segment the cells.
 
-## Step 2: Basic cell's pipeline
-
-1. Open the image, whose cell outlines can be better segmented.
 2. Select "ellipse" and put an ellipsoidal ROI near to the basal region of the cell*. Press 'T'.
+
 3. Plugins -> Limeseg -> Sphere Seg (advanced).
-4. Change parameters (D_0 is optional and Z_Scale is mandatory). To calculate Z_Scale you should divide 'Voxel depth'/'Pixel width': in our case 4.06. Also you should select a color. Tick 'ClearOptimizer'.
+
+4. Change parameters (D_0 is optional and Z_Scale is mandatory). To calculate Z_Scale you should divide 'Voxel depth'/'Pixel width': in    our case 4.06. Also you should select a color. Tick 'ClearOptimizer'.
+
 5. Press 'Accept' and wait for the 3D objects to be full and smooth.
+
 6. **Remember** to clear the 3D viewer each time you run LimeSeg. 'Plugins -> Limeseg -> Clear all'.
-7. Repeat 2-6 until all the cells have an assigned ROI.
-8. Save the ROIs as a zip. 'Roi Manager -> More -> Save...'
-9. Save the cells.
+
+7. Repeat 2-6  by groups (until all the cells have an assigned ROI), adding each time more cells and save the ROIs as a zip:               'Roi Manager -> More -> Save...'
+
+8. When all the cells have a ROI,you have to save their data:
 	1. Plugins -> Limeseg -> Show GUI
 	2. Click on 'WriteTo:' and select where you want to export the results. Tipically on: 'YOURPATH/Cells/OutputLimeSeg/'
 	3. Press 'SaveStateToXmlPly'. A directory will be created for each cell. Don't care about the ids of the cell.
 	
 	
-	
- *Note:if the cell's shapes were not	correct, you could try to improve the shape by changing the positions of the seeds and positioning them not only in the basal region, for instance in the middle of the cell.
+ *Note:if the cell's shapes were not correct, you could try to improve the shape by changing the positions of the seeds and positioning them not only in the basal region, for instance in the middle of the cell.
  
 ### Refining the cells
 
-If a cell is not properly formed, try put the seed closer to the region not covered. You should also consider put a bigger ellipsoidal ROI.
+If a cell is not properly formed, try put the seed closer to the region not covered. You should also consider put a bigger ellipsoidal ROI or put the ellipsoidal in a layer later than the previous.Another options are to move the position of the cell to a position more basal or change the parameters of D_0 or/and F_pressure (but don't use this option to correct only one cell, if you use this option, it is to correct a lot of cells).
+
 For this purpose, you can change the ROI characteristics and click 'Update' on the ROI Manager.
 Another option is to create a new ROI and remove the older one.
 
@@ -115,6 +75,64 @@ If you have to leave and you have not finish the salivary gland, you can always 
 - Put the ROIs near the basal region of the cells to delimitate correctly the lumen and this way the cells won't be place inside the lumen.
 
 
+
+## Step 2: Basic lumen's pipeline
+
+0. Identify the images which contain the lumen (where does the lumen begin? and where does the lumen end?).Copy these images to 'Lumen-> SegmentedLumen folder'.
+
+1. Open the images of the image sequence which contain the lumen in Photoshop.
+
+2. Paint the lumen region as a black region with white borders:
+	
+	1. Create a new layer (layer->new layer).   
+	
+	1. Select the pencil at the left screen with the black color (color: 0,0,0) and white color (color: 255,255,255).
+	
+	1. With this function you can select the lumen point to point by typing shift key+left click.Segment the lumen like a black                region, you have to use the black color now.
+	
+	1. After segmenting the lumen, you have to paint the lumen like a black region.To make it easy select the area contained by the            black borders with the magic wand in the left screen.Now increase the scale of the pencil and paint the area selected with              the  magic wand, ensure that the whole lumen is black, you can colour pixels which are not black with the pencil.*
+	
+	1. Copy the lumen's layer (right click in the lumen's layer and copy) and select the copy select with the magic wand (this tool            allows you to choose specific regions of an image) by typing left click in the region, and change the color to white(type x              if you selected it in the previous steps).
+	
+	1. Select the option "selection->modify->expand", and type 5 pixels.A new border should have appeared with the thickness                    indicated previosuly, colour the whole layer with the white colour.
+	
+	1. Move the black layer above the background layer and the white layer.
+
+	*note: If the lumen is divided in different pieces, you ´will have to segment each lumen's piece one by one in the same image 		as"islands".
+	
+
+3. Afterwards, you are going to segment the correspondig image in the images of SegmentedLumen's folder:
+
+	1. Open the image that contains the lumen in SegmentedLumen, which is the correspondig to the one that you have processed                  previously.
+	
+	1. Copy the black lumen region of the ImageSequence image in the lumen image of SegmentedLumen.You can do this by clicking in              the layer:"duplicate" and select the other image.
+	
+	1. Add a new layer in the image of SegmentedLumen, and painted as white.
+	
+	1. Move the layer of the lumen above the white layer of the image of SegmentedLumen.
+	
+	1. Type right click in the layers of both images and select the option merging layers (combine layers) to decrease the final                length of the images.
+	
+	1. Save the changes done in both images.
+	
+	1. Keep doing this process with the remaining  lumen images.
+	
+	
+	
+4. Finally you have to paint the images which don't contain the lumen as white images, you can do this automatically 	                    creating an action in photoshop (actions->new action), from this moment photoshop will capture all the things that                      you do,therefore you have to do these steps:
+	
+	   Add a new layer-> paint it as white.
+	   
+	   Save the image
+	   
+	   Close image
+	
+	  Later, click in file->automate->bundle , select the action that you have created and selected a folder which only contains the 	   images that don't contain the lumen because this action is applied to all the images in the folder.After this copy them to the	   lumen's folder
+	
+	  Thus, copy the images which don´t contain the lumen in a separated folder and do that action for that folder.After that, copy 	  that images to the lumen's folder.
+
+
+
 ## Step 3: Matlab's refining process
 
 1. Execute 'Epithelia3D/Salivary Glands/LimeSeg_3DSegmentation/main.m' in Matlab. It is prepared for R2018a.
@@ -129,7 +147,9 @@ If you have to leave and you have not finish the salivary gland, you can always 
 8. Seek for a missing cell and see where it should be touching the lumen or basal layer. This would be the Z plane where the cell is ought to be changed. Select either the whole cell or the new region it should be covering. All the pixels that are in this region, now belong to the selected cell. In addition, Z planes near the actual Z ([-3, +3]), may be changed due to this operation, on the behalf of the smoothness of the 3D cell shape.
 9. Close the window.
 10. If you don't want the new changes, you can discard by clicking in 'No, don't save the changes'. Otherwise, press 'Yes'.
-11. Save the polygon distribution of apical and basal in a excel file where all the info is collected.
+11. After saving the changes an excel should have appeared with characteristics of the cells and a message could have appeared which states the IDs of the cells whose TotalNeighbours and Apicobasal neigbhours differ, in this case you have to revise the neighbours of the cells in the labelled images and you have to see which one is true and not.
+
+The gland will be correctly segmented,if it doesn't appear any message or missing cell in Matlab and the characteristics of cells are normal in the excel
 
 From step to step, it could take some time.
 
