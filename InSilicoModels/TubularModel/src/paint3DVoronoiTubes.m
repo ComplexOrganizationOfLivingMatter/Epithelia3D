@@ -1,4 +1,4 @@
-function paint3DVoronoiTubes(path2save,nCells,colors)
+function h = paint3DVoronoiTubes(path2save,nCells,colors)
 
   nameMat= dir([path2save '*.mat']);
   
@@ -11,7 +11,7 @@ function paint3DVoronoiTubes(path2save,nCells,colors)
         cellX = y.(['cell_' num2str(nCel)]);
         mask3D(cellX.region > 0 ) = nCel;
   end
-  figure
+  h=figure;
   paint3D(mask3D,1:nCells,colors,1)
   
 end
