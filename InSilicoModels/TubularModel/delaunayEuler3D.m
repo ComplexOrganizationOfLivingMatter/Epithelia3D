@@ -16,7 +16,8 @@ srInit = 10 * 1./(1:10);
 surfaceRatios = unique([srInit,3:2000]);
 numNeighsAcumm = zeros(numRand,length(surfaceRatios));
 
-for nRand = 1:numRand
+
+parfor nRand = 1:numRand
     % select random position for seeds
     uniqueSeeds=0;
     initLim = 0;
@@ -25,8 +26,7 @@ for nRand = 1:numRand
         seedsY = (yImg-initLim).*rand(numSeeds,1) + initLim;
         uniqueSeeds = size(unique([seedsX,seedsY],'rows'));
     end
-
-    %define repeated matrix of seeds
+    %define repeated matrix of seeds to reduce the border effect (deleted border effect in central seeds)
     seedsXleft = seedsX + xImg;
     seedsXright = seedsX - xImg;
     seedsYup = seedsY + yImg;
@@ -38,6 +38,7 @@ for nRand = 1:numRand
 
     %init neighsAccum
     neighsAccum = cell(1,length(surfaceRatios));
+    nNeighPerSR = zeros(1,length(surfaceRatios));
 
     for SR = 1:length(surfaceRatios)
 
@@ -45,34 +46,48 @@ for nRand = 1:numRand
         %label of interest
         labelOfInterest = 4*numSeeds+1:5*numSeeds;
 
+        %generate the complete delaunay triangulation for each surface
+        %ratio
         TRI = delaunay(matrixSeeds(:,1).*surfaceRatios(SR),matrixSeeds(:,2));
         TRIsort = sort(TRI,2);
         TRIunique = unique(TRIsort,'rows');
 
-        %calculateNeighboursPerTriangledSeed
+        %calculateNeighboursPerTriangledSeed only for label of interest
         neighs = arrayfun(@(x) setdiff(unique(TRIunique(sum(ismember(TRIunique,x),2)>0,:)),x),labelOfInterest,'UniformOutput',false);
 
-
-        neighsUp = cellfun(@(x) rem(x(x<=3*numSeeds),numSeeds)+1*numSeeds,neighs,'UniformOutput',false);
-        neighsUpZero = cellfun(@(x) x(x==numSeeds)+numSeeds,neighsUp,'UniformOutput',false);
-
+        %due to we have labels from 1 to 9000, ([1 : 1/3seeds] up,
+        %[1/3seeds + 1: 2/3seeds] central and [2/3seeds + 1 : seeds]
+        %down) we need to relabel them: 
+        
+        %central from [1 : 1/9 seeds];
         neighsCentral = cellfun(@(x) rem(x(x>3*numSeeds & x<=6*numSeeds),numSeeds),neighs,'UniformOutput',false);
         neighsCentralZero = cellfun(@(x) x(x==0)+numSeeds,neighsCentral,'UniformOutput',false);
-
-        neighsDown = cellfun(@(x) x(x>6*numSeeds & x<=9*numSeeds)+2*numSeeds,neighs,'UniformOutput',false);
+        
+        %up from [1/9 seeds + 1 : 2/9 seeds] ; 
+        
+        neighsUp = cellfun(@(x) rem(x(x<=3*numSeeds),numSeeds)+1*numSeeds,neighs,'UniformOutput',false);
+        neighsUpZero = cellfun(@(x) x(x==numSeeds)+numSeeds,neighsUp,'UniformOutput',false);        
+        
+        %down from [2/9 seeds + 1 : 3/9 seeds]
+        neighsDown = cellfun(@(x) rem(x(x>6*numSeeds & x<=9*numSeeds),numSeeds)+2*numSeeds,neighs,'UniformOutput',false);
         neighsDownZero = cellfun(@(x) x(x==2*numSeeds)+numSeeds,neighsDown,'UniformOutput',false);
 
-        uniqueNeighsReformated = cellfun(@(x,y,xx,yy,xxx,yyy) unique([x;y;xx;yy;xxx;yyy])...
+        %join all the relabels
+        uniqueNeighsReformatedPrev = cellfun(@(x,y,xx,yy,xxx,yyy) unique([x;y;xx;yy;xxx;yyy])...
             ,neighsUp,neighsUpZero,neighsCentral,neighsCentralZero,neighsDown,neighsDownZero,'UniformOutput',false);
 
+        %delete 0's labels....
+        uniqueNeighsReformated = cellfun(@(x) x(x>0),uniqueNeighsReformatedPrev,'UniformOutput',false);
+        
         if SR==1
             neighsAccum{SR} = uniqueNeighsReformated;
         else
             neighsAccum{SR} = cellfun(@(x,y) unique([x;y]),uniqueNeighsReformated,neighsAccum{SR-1},'UniformOutput',false);
         end
-        numNeighsAcumm(nRand,SR) = mean(cellfun(@(x) length(x),neighsAccum{SR}));
+        nNeighPerSR(SR) = mean(cellfun(@(x) length(x),neighsAccum{SR}));
 
     end
+    numNeighsAcumm(nRand,:) = nNeighPerSR;
 
 end
 
@@ -82,4 +97,5 @@ tableEuler3D = [tableSR;tableNeighsAccum];
 meanEuler3D = mean(numNeighsAcumm);
 stdEuler3D = std(numNeighsAcumm);
 tableMeanNeighsAccum = [tableSR;array2table([meanEuler3D;stdEuler3D],'VariableNames',tableSR.Properties.VariableNames,'RowNames',{'meanNeighbours','stdNeighbours'})];
-save(['data\delaunayEuler3D_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'],'tableMeanNeighsAccum')
+
+save(['data\delaunayEuler3D_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'],'tableMeanNeighsAccum','tableEuler3D','neighsAccum')
