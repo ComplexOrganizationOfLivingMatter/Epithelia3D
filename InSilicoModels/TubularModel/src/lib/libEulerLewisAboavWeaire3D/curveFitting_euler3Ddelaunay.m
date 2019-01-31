@@ -5,6 +5,7 @@ surfaceRatio = 2000;
 name = ['delaunayEuler3D_' num2str(numSeeds) 'seeds_sr' num2str(surfaceRatio) '_31-Jan-2019.mat'];
 load([folderPath name])
 
+myfittypeLn=fittype('a +b*log(x)',...
 'dependent', {'y'}, 'independent',{'x'},...
 'coefficients', {'a','b'});
 
