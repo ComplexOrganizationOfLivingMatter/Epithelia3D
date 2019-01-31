@@ -84,7 +84,11 @@ function [areaOfValidCells] = unrollTube(img3d_original, outputDir, noValidCells
             %indicesOfVertices = ismember([x, y], actualVertices(:, 1:2), 'row');
             %imgFinalVerticesCoordinates{coordZ} = find(indicesOfVertices);
             [~, closestPixel] = pdist2([x,y], actualVertices(:, 1:2), 'euclidean', 'Smallest', 1);
-            imgFinalVerticesCoordinates{coordZ} = find(ismember(orderedIndices, closestPixel));
+            [~, indices] = ismember(closestPixel, orderedIndices);
+            if length(indices) ~= size(actualVertices, 1)
+               disp('EEEnnngg'); 
+            end
+            imgFinalVerticesCoordinates{coordZ} = indices;
             imgFinalVerticesCoordinates_Neighbours{coordZ} = vertices3D_Neighbours(vertices3D(:, 3) == coordZ, :);
         end
         
@@ -150,6 +154,7 @@ function [areaOfValidCells] = unrollTube(img3d_original, outputDir, noValidCells
     
     nEmptyPixelsPrevious = 0;
     nEmptyPixels3xPrevious = 0;
+    vertices2D = [];
     for coordZ = 1 : size(img3d,3)
         rowOfCoord3x = imgFinalCoordinates3x{coordZ};
         rowOfCoord = imgFinalCoordinates{coordZ};
@@ -167,12 +172,15 @@ function [areaOfValidCells] = unrollTube(img3d_original, outputDir, noValidCells
             verticesPoints = imgFinalVerticesCoordinates{coordZ};
             for numPoint = 1:length(verticesPoints)
                 %hold on; plot(verticesPoints(numPoint) + nEmptyPixels, coordZ, 'rx');
+                vertices2D(end+1, 1:2) = [verticesPoints(numPoint) + nEmptyPixels, coordZ];
             end
             imgFinalVerticesCoordinates{coordZ} = imgFinalVerticesCoordinates{coordZ} + nEmptyPixels;
+            
         end
         nEmptyPixelsPrevious = nEmptyPixels;
         nEmptyPixels3xPrevious = nEmptyPixels3x;
     end
+    neighbours2D = vertcat(imgFinalVerticesCoordinates_Neighbours{:});
     
 %     figure; imshow(deployedImg+1, colours)
 %     hold on;
@@ -249,5 +257,24 @@ function [areaOfValidCells] = unrollTube(img3d_original, outputDir, noValidCells
         surfaceRatio = areaOfValidCells / apicalArea;
     end
     save(strcat(outputDir, '_', 'img.mat'), 'finalImageWithValidCells', 'midSectionImage', 'wholeImage', 'validCellsFinal', 'surfaceRatio', 'cylindre2DImage', 'deployedImg', 'deployedImg3x', 'imgFinalVerticesCoordinates', 'imgFinalVerticesCoordinates_Neighbours');
+    
+    
+    %% Connect vertices to obtain an image from the vertices
+    figure, imshow(deployedImg, colours);
+    for numCell = validCellsFinal
+        actualVertices = any(ismember(neighbours2D, numCell), 2);
+        if ismember(numCell, borderCells)
+            continue
+        end
+        [newVertOrder] = boundaryOfCell(vertices2D(actualVertices, :), centroids(numCell, :));
+        [newOrderX, newOrderY] = poly2cw(newVertOrder((1:end-1), 1), newVertOrder((1:end-1), 2));
+        verticesRadius = [];
+        
+             
+        hold on
+        plot(newVertOrder(:, 1), newVertOrder(:, 2))
+        plot(vertices2D(actualVertices, 1), vertices2D(actualVertices, 2), 'r+');
+    end
+    
 end
 
