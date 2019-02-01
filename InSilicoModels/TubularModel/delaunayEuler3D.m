@@ -15,9 +15,10 @@ numRand = 20;
 srInit = 10 * 1./(1:10);
 surfaceRatios = unique([srInit,3:2000]);
 numNeighsAccum = zeros(numRand,length(surfaceRatios));
+neighsAccum = cell(numRand,length(surfaceRatios));
 
 
-parfor nRand = 1:numRand
+for nRand = 1:numRand
     % select random position for seeds
     uniqueSeeds=0;
     initLim = 0;
@@ -37,7 +38,6 @@ parfor nRand = 1:numRand
         seedsXleft,seedsYdown;seedsX,seedsYdown;seedsXright,seedsYdown];        %row down
 
     %init neighsAccum
-    neighsAccum = cell(1,length(surfaceRatios));
     nNeighPerSR = zeros(1,length(surfaceRatios));
 
     for SR = 1:length(surfaceRatios)
@@ -80,11 +80,11 @@ parfor nRand = 1:numRand
         uniqueNeighsReformated = cellfun(@(x) x(x>0),uniqueNeighsReformatedPrev,'UniformOutput',false);
         
         if SR==1
-            neighsAccum{SR} = uniqueNeighsReformated;
+            neighsAccum{nRand,SR} = uniqueNeighsReformated;
         else
-            neighsAccum{SR} = cellfun(@(x,y) unique([x;y]),uniqueNeighsReformated,neighsAccum{SR-1},'UniformOutput',false);
+            neighsAccum{nRand,SR} = cellfun(@(x,y) unique([x;y]),uniqueNeighsReformated,neighsAccum{nRand,SR-1},'UniformOutput',false);
         end
-        nNeighPerSR(SR) = mean(cellfun(@(x) length(x),neighsAccum{SR}));
+        nNeighPerSR(SR) = mean(cellfun(@(x) length(x),neighsAccum{nRand,SR}));
 
     end
     numNeighsAccum(nRand,:) = nNeighPerSR;
@@ -98,4 +98,4 @@ meanEuler3D = mean(numNeighsAccum);
 stdEuler3D = std(numNeighsAccum);
 tableMeanNeighsAccum = [tableSR;array2table([meanEuler3D;stdEuler3D],'VariableNames',tableSR.Properties.VariableNames,'RowNames',{'meanNeighbours','stdNeighbours'})];
 
-save(['data\delaunayEuler3D_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'],'tableMeanNeighsAccum','tableEuler3D')
+save(['..\..\3D_laws\delaunayEuler3D_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'],'tableMeanNeighsAccum','tableEuler3D','neighsAccum')
