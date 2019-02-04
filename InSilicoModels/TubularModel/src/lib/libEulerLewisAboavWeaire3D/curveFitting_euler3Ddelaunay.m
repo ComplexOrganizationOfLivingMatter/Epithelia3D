@@ -21,7 +21,7 @@ myfitLn=fit(srRep(:),neighsSamples(:),myfittypeLn,'StartPoint',[1 6]);
 
 myfitLog10=fit(srRep(:),neighsSamples(:),myfittypeLog10,'StartPoint',[1 6]);
 figure;
-plot(srRep,neighsSamples,'o')
+plot(log10(srRep),neighsSamples,'o')
 hold on
 plot(myfitLog10)
 title('Log10')
@@ -30,25 +30,48 @@ figure;
 surfaceRatios = horzcat(table2array(tableEuler3D(1,:)));
 meanNeig = mean(neighsSamples');
 stdNeigh = std(neighsSamples');
-indices2plot = [1:3:15,18:5:33,38:10:68,78:20:surfaceRatio];
+indices2plot = [1:surfaceRatio];
 
-plot(myfitLog10)
+    myLinearFit=fit(log10(srRep(:)),neighsSamples(:),'poly1');
+    plot(myLinearFit)
     hold on
 
-errorbar(surfaceRatios(indices2plot),meanNeig(indices2plot),stdNeigh(indices2plot),'o','CapSize',4,'MarkerSize',4,...
+    errorbar(log10(surfaceRatios(indices2plot)),meanNeig(indices2plot),stdNeigh(indices2plot),'o','CapSize',4,'MarkerSize',4,...
             'Color',[0.5 0.5 0.5],'MarkerEdgeColor',[0,0,0],'MarkerFaceColor',[0,0,0],'LineWidth',0.5)
     title('euler neighbours 3D')
-    xlabel('surface ratio')
+    xlabel('surface ratio (log10)')
     ylabel('neighbours total')
-    x = [0 surfaceRatio+2];
+    x = [0 log10(surfaceRatio+2)];
     y = [6 6];   
 
     line(x,y,'Color','red','LineStyle','--')
         
     
     hold off
-    xticks([0:surfaceRatio/10:surfaceRatio])
+%     xticks([0:surfaceRatio/10:surfaceRatio])
     yticks([0:2:24])
-    xlim([0 surfaceRatio+20])
+    xlim([0 log10(surfaceRatio+20)])
     set(gca,'FontSize', 24,'FontName','Helvetica');
+    
+%     indices2plot = [1:3:15,18:5:33,38:10:68,78:20:surfaceRatio];
 
+% errorbar(surfaceRatios(indices2plot),meanNeig(indices2plot),stdNeigh(indices2plot),'o','CapSize',4,'MarkerSize',4,...
+%             'Color',[0.5 0.5 0.5],'MarkerEdgeColor',[0,0,0],'MarkerFaceColor',[0,0,0],'LineWidth',0.5)
+%     title('euler neighbours 3D')
+%     xlabel('surface ratio')
+%     ylabel('neighbours total')
+%     x = [0 surfaceRatio+2];
+%     y = [6 6];   
+% 
+%     line(x,y,'Color','red','LineStyle','--')
+%         
+%     
+%     hold off
+%     xticks([0:surfaceRatio/10:surfaceRatio])
+%     yticks([0:2:24])
+%     xlim([0 surfaceRatio+20])
+%     set(gca,'FontSize', 24,'FontName','Helvetica');
+
+    
+    
+    
