@@ -97,5 +97,7 @@ tableEuler3D = [tableSR;tableNeighsAccum];
 meanEuler3D = mean(numNeighsAccum);
 stdEuler3D = std(numNeighsAccum);
 tableMeanNeighsAccum = [tableSR;array2table([meanEuler3D;stdEuler3D],'VariableNames',tableSR.Properties.VariableNames,'RowNames',{'meanNeighbours','stdNeighbours'})];
+neighsAccumFinalSR = neighsAccum(:,end);
 
-save(['..\..\3D_laws\delaunayEuler3D_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'],'tableMeanNeighsAccum','tableEuler3D','neighsAccum','-v7.3')
+
+save(['..\..\3D_laws\delaunayEuler3D_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'],'tableMeanNeighsAccum','tableEuler3D','neighsAccum','neighsAccumFinalSR','-v7.3')
