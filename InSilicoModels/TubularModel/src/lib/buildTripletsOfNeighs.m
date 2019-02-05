@@ -7,16 +7,23 @@ function [ tripletsOfNeighs ] = buildTripletsOfNeighs( neighbours )
         neigh_cell=neighbours{i};
         for j=1:length(neigh_cell)
             if neigh_cell(j) > i
-                neigh_J=neighbours{neigh_cell(j)};
-                for k=1:length(neigh_J)
-                    if (neigh_J(k)>neigh_cell(j))
-                        common_cell=intersect(i,intersect(neigh_J,neighbours{neigh_J(k)}));
-                        if(isempty(common_cell)==0)
-                            triangleSeed=sort([i,neigh_cell(j),neigh_J(k)]);
-                            tripletsOfNeighs=[tripletsOfNeighs;triangleSeed];
+               try
+                    neigh_J=neighbours{neigh_cell(j)};
+                    for k=1:length(neigh_J)
+                        if (neigh_J(k)>neigh_cell(j))
+                            try
+                                common_cell=intersect(i,intersect(neigh_J,neighbours{neigh_J(k)}));
+                            catch
+                                common_cell = [];
+                            end
+                            if(~isempty(common_cell))
+                                triangleSeed=sort([i,neigh_cell(j),neigh_J(k)]);
+                                tripletsOfNeighs=[tripletsOfNeighs;triangleSeed];
+                            end
                         end
                     end
-                end
+               catch
+               end
             end
         end
         
