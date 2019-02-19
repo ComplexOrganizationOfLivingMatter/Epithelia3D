@@ -24,18 +24,18 @@ addpath(genpath('src'))
 % apicalReductions=[];
 
 N_images=20;
-N_frames=20;
-H=4096;
-W=512;
+H=10240;
+W=2048;
 distanceBetwSeeds=5;%minimum distances between seeds, avoiding overlaping
 thresholdPixelsScutoid=4;
-setOfSeeds=200;
-apicalReductions=1:-0.1:0.1;
-basalExpansions= 1./apicalReductions;
-basalExpansions = sort([basalExpansions,[4 6 7 8 9 11 12 13 14 15]]);
+setOfSeeds=1000;
+% apicalReductions=1:-0.1:0.1;
+% basalExpansions= 1./apicalReductions;
+% basalExpansions = sort([basalExpansions,[4 6 7 8 9 11 12 13 14 15]]);
 apicalReductions=[];
-
+basalExpansions = 1:0.25:5;
 initialVoronoiDiagramNumber = 5;
+N_CVT_frames=initialVoronoiDiagramNumber + 1;
 
 
 %if your RAM memory is quite high (96 gb or more), you could execute this loop with a parfor    
@@ -45,7 +45,7 @@ for i=1:length(setOfSeeds)
 
 %          try 
             %% 1 - Generation of tubular CVT from random seeds
-%             mainTubularCVTGenerator(N_images,N_frames,H,W,n_seeds,distanceBetwSeeds)
+%             mainTubularCVTGenerator(N_images,N_CVT_frames,H,W,n_seeds,distanceBetwSeeds)
 
             %% 2 - Projection of Voronoi seeds to another cylindrical surface and generation of Voronoi cells
             %the next main, also carry out the measurements of edge length, edge angles and scutoids
