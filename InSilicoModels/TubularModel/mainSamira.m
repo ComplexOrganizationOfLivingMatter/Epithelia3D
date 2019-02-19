@@ -1,4 +1,12 @@
 addpath(genpath('src'))
-for numImage = 8 
-    createSamiraFormatExcel_Simulations(strcat('data\tubularVoronoiModel\expansion\2048x12288_600seeds\Image_', num2str(numImage),'_Diagram_5\'), [1.1111,1.25,1.4286,1.6667,2,2.5,3.3333,5]);
+surfRatios = 1:0.25:5;
+numSeeds = 1000;
+wImg = 2048;
+hImg = 10240;
+path2load = ['data\tubularVoronoiModel\expansion\' num2str(wImg) 'x' num2str(hImg) '_' num2str(numSeeds) 'seeds\diagram' num2str(initialDiagram) '\'];
+numRealizations = 20;
+initialDiagram = 5;
+
+for numImage = 1 : numRealizations
+    createSamiraFormatExcel_Simulations([path2load 'Image_' num2str(numImage) '_Diagram_' num2str(initialDiagram) '\'], surfRatios);
 end

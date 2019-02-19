@@ -18,7 +18,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_Simulations(pathFile, su
     if ~exist(dir2save,'dir')
         mkdir(dir2save)
     end
-    for nSurfR = [1 surfaceRatios]
+    for nSurfR = surfaceRatios
         
         L_img = listLOriginalProjection{round([listLOriginalProjection{:,1}],3)==round(nSurfR,3),2};
         
