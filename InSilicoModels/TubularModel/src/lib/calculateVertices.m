@@ -22,17 +22,20 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
         BW=zeros(size(L_img));
         BW(L_img==i)=1;
         BW_dilated=imdilate(bwperim(BW),se);
-        dilatedCells{i}=BW_dilated;
+        dilatedCells{i}=find(BW_dilated);
     end
     
     %the overlapping between dilated cells will be the vertex
     borderImg=zeros(size(L_img));
     borderImg(L_img==0)=1;
+    BW1_dilate = logical(zeros(size(L_img)));
+    BW2_dilate = logical(zeros(size(L_img)));
+    BW3_dilate = logical(zeros(size(L_img)));
     for numTriplet = 1 : size(neighboursVertices,1)
               
-        BW1_dilate=dilatedCells{neighboursVertices(numTriplet, 1),1};
-        BW2_dilate=dilatedCells{neighboursVertices(numTriplet, 2),1};
-        BW3_dilate=dilatedCells{neighboursVertices(numTriplet, 3),1};
+        BW1_dilate(dilatedCells{neighboursVertices(numTriplet, 1),1}) = 1;
+        BW2_dilate(dilatedCells{neighboursVertices(numTriplet, 2),1}) = 1;
+        BW3_dilate(dilatedCells{neighboursVertices(numTriplet, 3),1}) = 1;
          
 
         %It is better use '&' than '.*' in this function
@@ -57,6 +60,10 @@ function [ verticesInfo ] = calculateVertices( L_img, neighbours)
         else
             vertices{numTriplet} = [row,col];
         end
+        
+        BW1_dilate(dilatedCells{neighboursVertices(numTriplet, 1),1}) = 0;
+        BW2_dilate(dilatedCells{neighboursVertices(numTriplet, 2),1}) = 0;
+        BW3_dilate(dilatedCells{neighboursVertices(numTriplet, 3),1}) = 0;
         
     end
 
