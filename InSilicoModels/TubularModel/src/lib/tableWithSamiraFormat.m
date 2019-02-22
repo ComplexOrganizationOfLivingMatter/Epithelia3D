@@ -24,11 +24,25 @@ function [samiraTableVoronoi, cellsVoronoi] = tableWithSamiraFormat(cellWithVert
 
         verticesOfCell = double(unique(verticesOfCell, 'rows'));
 
-        [newVertOrder] = boundaryOfCell(verticesOfCell, cellCentroids(cellWithVertices{numCell,3}, :));
-
+        try        
+            k = convhull(verticesOfCell(:,1),verticesOfCell(:,2));
+                      
+        catch
+            'cell with low vertices'
+        end
+        
+        if length(k) > size(verticesOfCell,1)
+            newVertOrder = verticesOfCell(k,:);
+            newVertOrder = [newVertOrder;newVertOrder(1,:)];
+        else
+            newVertOrder = boundaryOfCell(verticesOfCell, cellCentroids(cellWithVertices{numCell,3}, :));
+        end
+       
+        
         % Should be connected clockwise
         % I.e. from bigger numbers to smaller ones
         % Or the second vertex should in the left hand of the first
+
         [newOrderX, newOrderY] = poly2cw(newVertOrder((1:end-1), 1), newVertOrder((1:end-1), 2));
         verticesRadius = [];
         

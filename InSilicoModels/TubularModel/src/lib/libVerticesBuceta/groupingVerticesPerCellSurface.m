@@ -1,13 +1,11 @@
-function cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,verticesNoValidCellsInfo,cellWithVertices,nRand, borderCells)
-    
-
-    [~,W]=size(L_img);
+function cellWithVertices = groupingVerticesPerCellSurface(verticesInfo,verticesNoValidCellsInfo,cellWithVertices,nRand, borderCells,nSeeds,W)
+  
     radius=W/(2*pi);
     %%Cells are formed by a set of vertices
-    for nCell=1:max(max(L_img))
+    for nCell=1:nSeeds
         if isstruct(verticesInfo)
             [nRowValid,~,~]=find(verticesInfo.verticesConnectCells==nCell);
-            [~,nRowNoValid,~]=find(horzcat(verticesNoValidCellsInfo.verticesConnectCells{:})==nCell);
+            [nRowNoValid,~,~]=find(vertcat(verticesNoValidCellsInfo.verticesConnectCells{:})==nCell);
         else
             nRowValid = verticesInfo{nCell};
             nRowNoValid = verticesNoValidCellsInfo{nCell};
@@ -61,5 +59,4 @@ function cellWithVertices = groupingVerticesPerCellSurface(L_img,verticesInfo,ve
         cellWithVertices = [cellWithVertices;row];
     end
     
-    disp('2 - Group of vertices per cell')
 end
