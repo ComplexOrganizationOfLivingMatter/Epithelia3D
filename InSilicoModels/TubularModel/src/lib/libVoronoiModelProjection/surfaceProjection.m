@@ -34,36 +34,32 @@ function surfaceProjection( pathV5data,nameOfFolder,directory2save,path3dVoronoi
         numCells=size(seeds_values_before,1);
         
         %% We apply surface ratio to get in an iterative way new layers in apical or basal surfaces
-        [listSeedsProjected,listLOriginalProjection]...
+        [listSeedsProjected,listLOriginalProjection,totalAngles,totalEdges,totalCellMotifs,acumListDataAngles,...
+    listDataAnglesTransitionMeasuredInBasal,listDataAnglesTransitionMeasuredInApical,...
+    listDataAnglesNoTransitionMeasuredInBasal,listDataAnglesNoTransitionMeasuredInApical]...
             = expansionOrReductionIterative(listOfSurfaceRatios,seedsOriginal,L_original,...
             numCells,pathV5data(i).name,directory2save,kindProjection,nameOfFolder);
         
-%         totalAnglesTransitionMeasuredInBasal(:,i)=totalAngles.TransitionInBasal;
-%         totalAnglesNoTransitionMeasuredInBasal(:,i)=totalAngles.NoTransitionInBasal;
-%         totalAnglesTransitionMeasuredInApical(:,i)=totalAngles.TransitionInApical;
-%         totalAnglesNoTransitionMeasuredInApical(:,i)=totalAngles.NoTransitionInApical;
-% 
-%         totalEdgesTransitionMeasuredInBasal(:,i)=totalEdges.TransitionInBasal;
-%         totalEdgesNoTransitionMeasuredInBasal(:,i)=totalEdges.NoTransitionInBasal;
-%         totalEdgesTransitionMeasuredInApical(:,i)=totalEdges.TransitionInApical;
-%         totalEdgesNoTransitionMeasuredInApical(:,i)=totalEdges.NoTransitionInApical;
-% 
-%         acumListDataAnglesTransitionInBasal{i}=acumListDataAngles.TransitionInBasal;
-%         acumListDataAnglesNoTransitionInBasal{i}=acumListDataAngles.NoTransitionInBasal;
-%         acumListDataAnglesTransitionInApical{i}=acumListDataAngles.TransitionInApical;
-%         acumListDataAnglesNoTransitionInApical{i}=acumListDataAngles.NoTransitionInApical;
-%                    
-%         %save data for each random
-%         name2save=strrep(pathV5data(i).name,'.mat','');
-%         save([directory2save kindProjection '\' nameOfFolder name2save '\'  name2save '.mat'],'listLOriginalProjection','listSeedsProjected','listDataAnglesTransitionMeasuredInBasal','listDataAnglesTransitionMeasuredInApical','listDataAnglesNoTransitionMeasuredInBasal','listDataAnglesNoTransitionMeasuredInApical','totalEdges','totalAngles','totalCellMotifs')
-        
-        
-        
-        
+            totalAnglesTransitionMeasuredInBasal(:,i)=totalAngles.TransitionInBasal;
+            totalAnglesNoTransitionMeasuredInBasal(:,i)=totalAngles.NoTransitionInBasal;
+            totalAnglesTransitionMeasuredInApical(:,i)=totalAngles.TransitionInApical;
+            totalAnglesNoTransitionMeasuredInApical(:,i)=totalAngles.NoTransitionInApical;
+
+            totalEdgesTransitionMeasuredInBasal(:,i)=totalEdges.TransitionInBasal;
+            totalEdgesNoTransitionMeasuredInBasal(:,i)=totalEdges.NoTransitionInBasal;
+            totalEdgesTransitionMeasuredInApical(:,i)=totalEdges.TransitionInApical;
+            totalEdgesNoTransitionMeasuredInApical(:,i)=totalEdges.NoTransitionInApical;
+
+            acumListDataAnglesTransitionInBasal{i}=acumListDataAngles.TransitionInBasal;
+            acumListDataAnglesNoTransitionInBasal{i}=acumListDataAngles.NoTransitionInBasal;
+            acumListDataAnglesTransitionInApical{i}=acumListDataAngles.TransitionInApical;
+            acumListDataAnglesNoTransitionInApical{i}=acumListDataAngles.NoTransitionInApical;
+                    
+        %save data for each random
         name2save=strrep(pathV5data(i).name,'.mat','');
         nameSplit = strsplit(name2save,'_');
         diagFolder = [lower(nameSplit{end-1}) nameSplit{end}];
-        save([directory2save kindProjection '\' nameOfFolder diagFolder '\' name2save '\'  name2save '.mat'],'listLOriginalProjection','listSeedsProjected','-v7.3')
+        save([directory2save kindProjection '\' nameOfFolder diagFolder '\' name2save '\'  name2save '.mat'],'listLOriginalProjection','listSeedsProjected','listDataAnglesTransitionMeasuredInBasal','listDataAnglesTransitionMeasuredInApical','listDataAnglesNoTransitionMeasuredInBasal','listDataAnglesNoTransitionMeasuredInApical','totalEdges','totalAngles','totalCellMotifs','-v7.3')
 
         disp(['Projections of ' kindProjection ' ' nameOfFolder name2save ' completed'])
 
