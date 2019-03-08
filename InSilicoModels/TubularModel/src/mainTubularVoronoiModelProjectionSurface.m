@@ -19,7 +19,7 @@ function mainTubularVoronoiModelProjectionSurface(numSeeds,basalExpansions,apica
         nameOfFolder=[num2str(Winitial) 'x' num2str(Hinitial) '_' num2str(numSeeds) 'seeds\'];
         path3dVoronoi=['data\tubularCVT\Data\' nameOfFolder];
 
-        pathV5data=dir([path3dVoronoi '*m_' num2str(diagramNumber) '.*']);
+        pathV5data=dir([path3dVoronoi '*Diagram_' num2str(diagramNumber) '.*']);
 
         switch kindProjection{typeP}
             case {'expansion'}
