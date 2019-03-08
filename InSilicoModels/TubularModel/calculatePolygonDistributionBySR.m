@@ -1,10 +1,9 @@
-SR = unique([1./(1:-0.1:0.1),4:15]);
-SR = 1./SR;
-initialDiagrams = 11;%[1 5];
+SR = unique([1./(1:-0.1:0.1),2:9]);
+initialDiagrams = 9;%[1 5];
 nImages = 20;
-typeProjection = 'reduction';
+typeProjection = 'expansion';
 % path2load = 'data\tubularVoronoiModel\expansion\512x4096_200seeds\';
-path2load = ['data\tubularVoronoiModel\' typeProjection '\7680x4096_200seeds\'];
+path2load = ['data\tubularVoronoiModel\' typeProjection '\512x4096_200seeds\'];
 
 addpath(genpath('src'))
 
@@ -26,6 +25,9 @@ for initialDiagram = initialDiagrams
             idImg = [listLOriginalProjection{:,1}]==SR(1);
         end
         img = listLOriginalProjection{idImg,2};
+        if iscell(img)
+           img = img{1}; 
+        end
         noValidCells = unique([img(1,:),img(end,:)]);
         validCells = setdiff(unique(img),noValidCells);
         validCellsPerImg{nImg} = validCells;
@@ -34,7 +36,9 @@ for initialDiagram = initialDiagrams
 
             idImg = [listLOriginalProjection{:,1}]==SR(srImg);
             img = listLOriginalProjection{idImg,2};
-
+            if iscell(img)
+               img = img{1}; 
+            end
             neighs = calculateNeighbours(img);
             neighsPerSRPerImg{nImg,srImg} = neighs;
             if srImg==1
