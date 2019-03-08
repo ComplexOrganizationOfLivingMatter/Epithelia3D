@@ -24,18 +24,18 @@ addpath(genpath('src'))
 % apicalReductions=[];
 
 N_images=20;
-H=10240;
-W=2048;
+H=4096;
+W=512;
 distanceBetwSeeds=5;%minimum distances between seeds, avoiding overlaping
 thresholdPixelsScutoid=4;
-setOfSeeds=1000;
-% apicalReductions=1:-0.1:0.1;
-% basalExpansions= 1./apicalReductions;
-% basalExpansions = sort([basalExpansions,[4 6 7 8 9 11 12 13 14 15]]);
+setOfSeeds=200;
+apicalReductions=1:-0.1:0.1;
+basalExpansions= 1./apicalReductions;
+basalExpansions = unique([basalExpansions,[2 3 4 6 7 8 9]]);
 apicalReductions=[];
-basalExpansions = 1:0.25:5;
-initialVoronoiDiagramNumber = 5;
-N_CVT_frames=initialVoronoiDiagramNumber + 1;
+% basalExpansions = 1:0.25:5;
+initialVoronoiDiagramNumber = 9;
+N_CVT_frames= 12;
 
 
 %if your RAM memory is quite high (96 gb or more), you could execute this loop with a parfor    
