@@ -2,7 +2,7 @@ function calculatePercentajeScutoidsByThreshold(pathTube,numSeeds,H,W,totalRando
 %CALCULATEPERCENTAJESCUTOIDSBYTHRESHOLD calculate the presence of scutoids
 %that pass the edge length threshold in both layers (apical and basal)
 numberOfRows=11;
-path2load=[pathTube projection '\' num2str(W) 'x' num2str(H) '_' num2str(numSeeds) 'seeds\'];
+path2load=[pathTube projection '\' num2str(W) 'x' num2str(H) '_' num2str(numSeeds) 'seeds\diagram' num2str(diagramNumber) '\'];
 load([path2load 'Image_1_Diagram_' num2str(diagramNumber) '\Image_1_Diagram_' num2str(diagramNumber) '.mat'],'listLOriginalProjection')
 listSurfaceRatios=listLOriginalProjection.surfaceRatio;
     
