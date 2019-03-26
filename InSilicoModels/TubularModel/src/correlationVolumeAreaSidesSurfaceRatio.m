@@ -52,7 +52,7 @@ function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram
                     volumes{idSR} =  areaCells{idSR};
                     %% Get total 3D cylinder
                     [voronoi3D] = create3DCylinder( seedsApical(:,2:3), H_init, W_init, surfaceRatios, max(surfaceRatios),reductionFactor,L_imgApical,cyliderType);
-
+                    disp(['created 3D cylinder ' num2str(nImg) ' - starting measurements'])
                 else 
                     %% get invalid region for each surface ratio
                     H_apical=round(H_init/reductionFactor);
@@ -129,6 +129,6 @@ function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram
         load([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighOfNeighPerSurface','numNeighOfNeighAccumPerSurface','numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
     end
 
-    getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,path2save,surfaceRatios);
+    getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,path2save,surfaceRatios,initialDiagram);
 end
 

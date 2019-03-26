@@ -1,11 +1,16 @@
 %% LEWIS - EULER 3D
+clear all
+close all
+
 addpath(genpath('src'))
 %input parameters
-initialDiagrams = 9%[1 5];
+initialDiagrams = 1;%[1 5];
 
-cylinderTypes = {'Voronoi', 'Frusta'};
+cylinderTypes = {'Voronoi'};%, 'Frusta'};
 basalExpansions= 1./([1:-0.1:0.1]);
-surfaceRatios = unique([basalExpansions,[3 4 6 7 8 9 10]]);
+surfaceRatios = unique([basalExpansions,[1.8 2:10]]);
+% surfaceRatios = unique([basalExpansions,[4:10]]);
+
 reductionFactor = 2;
 nRealizations = 20;
 W_init = 512;
