@@ -13,30 +13,36 @@ numSeeds = 1000;
 numRand = 20;
 
 srInit = 10 * 1./(1:10);
-surfaceRatios = unique([srInit,3:2000]);
+surfaceRatios = unique([srInit,1.8,3:1000]);
 numNeighsAccum = zeros(numRand,length(surfaceRatios));
 neighsAccum = cell(numRand,length(surfaceRatios));
 
 
 for nRand = 1:numRand
     % select random position for seeds
-    uniqueSeeds=0;
-    initLim = 0;
-    while uniqueSeeds~=numSeeds
-        seedsX = (xImg-initLim).*rand(numSeeds,1) + initLim;
-        seedsY = (yImg-initLim).*rand(numSeeds,1) + initLim;
-        uniqueSeeds = size(unique([seedsX,seedsY],'rows'));
+    seedsX = cell(3,1);
+    seedsY = cell(3,1);
+    for nRep = 1:3
+        uniqueSeeds=0;
+        initLim = 0;
+        while uniqueSeeds~=numSeeds 
+            seedsX{nRep} = (xImg-initLim).*rand(numSeeds,1) + initLim;
+            seedsY{nRep} = (yImg-initLim).*rand(numSeeds,1) + initLim + (2-nRep)*yImg;
+            uniqueSeeds = size(unique([seedsX{nRep},seedsY{nRep}],'rows'));
+        end
     end
+    
+    seedsXcentral = vertcat(seedsX{:});
+    seedsY = vertcat(seedsY{:});
+    
     %define repeated matrix of seeds to reduce the border effect (deleted border effect in central seeds)
-    seedsXleft = seedsX + xImg;
-    seedsXright = seedsX - xImg;
-    seedsYup = seedsY + yImg;
-    seedsYdown = seedsY - yImg;
-
-    matrixSeeds = [seedsXleft,seedsYup;seedsX,seedsYup;seedsXright,seedsYup;... %row up
-        seedsXleft,seedsY;seedsX,seedsY;seedsXright,seedsY;...                  %row center
-        seedsXleft,seedsYdown;seedsX,seedsYdown;seedsXright,seedsYdown];        %row down
-
+    seedsXright = seedsXcentral + xImg;
+    seedsXleft = seedsXcentral - xImg;
+    %matrix defined:[upLeft;upCentral;upRight;midLeft;midCentral;midRight;downLeft;downCentral;downRight];
+    matrixSeeds = [seedsXleft(1:numSeeds),seedsY(1:numSeeds); seedsXleft(numSeeds+1:2*numSeeds),seedsY(numSeeds+1:2*numSeeds);seedsXleft(2*numSeeds+1:3*numSeeds),seedsY(2*numSeeds+1:3*numSeeds);...
+    seedsXcentral(1:numSeeds),seedsY(1:numSeeds); seedsXcentral(numSeeds+1:2*numSeeds),seedsY(numSeeds+1:2*numSeeds);seedsXcentral(2*numSeeds+1:3*numSeeds),seedsY(2*numSeeds+1:3*numSeeds);...
+    seedsXright(1:numSeeds),seedsY(1:numSeeds); seedsXright(numSeeds+1:2*numSeeds),seedsY(numSeeds+1:2*numSeeds);seedsXright(2*numSeeds+1:3*numSeeds),seedsY(2*numSeeds+1:3*numSeeds)];
+    
     %init neighsAccum
     nNeighPerSR = zeros(1,length(surfaceRatios));
 
