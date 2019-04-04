@@ -46,32 +46,35 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     voronoi3D(idOutlCells) = voronoi3D(seedsId(posMin));
     voronoi3D(imgInvalidRegion==1)=0;
 
-    nCells = unique(voronoi3D);
-    nCells = nCells(nCells~=0);
-
-    mask1 = zeros(size(voronoi3D));
-    for nC = nCells'
-        mask2 = zeros(size(voronoi3D));
-        mask2(voronoi3D==nC)=1;
-        imgErode = imerode(mask2,strel('sphere',2));
-        imgDilate = imdilate(imgErode,strel('sphere',2));
-        mask1(imgDilate>0) = nC;
-    end
-
-    idZerosIsolated = find(mask1 == 0 & imgInvalidRegion == 0);
-
-    for nZPix = idZerosIsolated'
-        maskPx = false(size(voronoi3D));
-        maskPx(nZPix)=1;
-        pxDil = imdilate(maskPx,strel('sphere',3));
-        pxOverl = mask1(pxDil);
-        try
-            [a,b] = hist(pxOverl(pxOverl>0),unique(pxOverl(pxOverl>0)));
-            [~,posMax]=max(a);
-            mask1(nZPix) = b(posMax);
-        catch
-        end
-    end
+%     nCells = unique(voronoi3D);
+%     nCells = nCells(nCells~=0);
+% 
+%     mask1 = zeros(size(voronoi3D));
+%     for nC = nCells'
+%         mask2 = zeros(size(voronoi3D));
+%         mask2(voronoi3D==nC)=1;
+%         imgErode = imerode(mask2,strel('sphere',2));
+%         imgDilate = imdilate(imgErode,strel('sphere',2));
+%         mask1(imgDilate>0) = nC;
+%     end
+% 
+%     %fill only superficial 0 pixels
+%     perimCyl = bwperim(1- imgInvalidRegion,26);
+%     idZerosIsolated = find(mask1 == 0 & perimCyl == 1);
+% 
+%     mask3 = mask1;
+%     parfor nZPix = idZerosIsolated'
+%         maskPx = false(size(voronoi3D));
+%         maskPx(nZPix)=1;
+%         pxDil = imdilate(maskPx,strel('sphere',3));
+%         pxOverl = mask1(pxDil);
+%         try
+%             [a,b] = hist(pxOverl(pxOverl>0),unique(pxOverl(pxOverl>0)));
+%             [~,posMax]=max(a);
+%             mask3(nZPix) = b(posMax);
+%         catch
+%         end
+%     end
 
 	voronoi3D(imgInvalidRegion==1)=0;
     colours = colorcube(size(initialSeeds, 1));
@@ -80,23 +83,23 @@ function [info3DCell,img3Dfinal,img3DApicalSurface,img3DBasalSurface,img3DInterm
     mkdir(path2save)
 
     numTotalSeeds = size(initialSeeds, 1);
-    info3DCell = {};
+    info3DCell = cell(1,numTotalSeeds);
     numImage = 1;
     for numSeed = 1:numTotalSeeds
-        infoCell = struct();
-        info3DCell{1}=storingDataPer3DCell(numSeed,maskOfGlobalImage,colours,voronoi3D);
-        nStruct = ['cell_' num2str(numSeed)];
-        infoCell.(nStruct) = info3DCell{1};
-        
-        [x,y,z]=findND(info3DCell{1}.region);
-        coord=[x,y,z];
-        shp=alphaShape(coord,5);
-        [F,V]=shp.boundaryFacets;
-        stlwrite([path2save 'Image_' num2str(numImage) 'sltCell' num2str(numSeed) '_redFactor_' num2str(reductionFactor) '.stl'],F,V)
+%         infoCell = struct();
+        info3DCell=storingDataPer3DCell(numSeed,maskOfGlobalImage,colours,voronoi3D);
+        namCell = ['cell_' num2str(numSeed)];        
+%         [x,y,z]=findND(info3DCell.region);
+%         coord=[x,y,z];
+%         shp=alphaShape(coord,5);
+%         [F,V]=shp.boundaryFacets;
+%         stlwrite([path2save 'Image_' num2str(numImage) 'sltCell' num2str(numSeed) '_redFactor_' num2str(reductionFactor) '.stl'],F,V)
         try
-            save([path2save name2save '_surfaceRatio_' num2str(surfaceRatio) '_reductionFactorPixelsSize_' num2str(reductionFactor) '.mat'],'-struct','infoCell','-append');
+            save([path2save 'Image_' num2str(numImage) '_redFactor_' num2str(reductionFactor) '_' namCell '.mat'],'info3DCell');
+%             save([path2save 'Image_' num2str(numImage) '_redFactor_' num2str(reductionFactor) '.mat'],'-struct','infoCell');
+            disp([namCell ' saved'])
         catch
-            disp(['info_' nStruct ' not saved'])
+            disp([namCell ' not saved'])
         end
     end
 

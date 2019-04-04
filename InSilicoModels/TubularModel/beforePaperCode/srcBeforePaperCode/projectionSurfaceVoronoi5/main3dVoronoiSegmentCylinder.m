@@ -11,12 +11,12 @@ function main3dVoronoiSegmentCylinder (H_apical,W_apical,numSeeds,numTotalImages
         numImage
         %load seeds in apical and the voronoi image in apical
         path2load = ['data\tubularVoronoiModel\' typeProjection '\' num2str(H_apical) 'x' num2str(W_apical) '_' ...
-        num2str(numSeeds) 'seeds\Image_' num2str(numImage) '_Diagram_' num2str(initialDiagram) ...
+        num2str(numSeeds) 'seeds\diagram' num2str(initialDiagram) '\Image_' num2str(numImage) '_Diagram_' num2str(initialDiagram) ...
         '\Image_' num2str(numImage) '_Diagram_' num2str(initialDiagram) '.mat'];
     
         load(path2load,'listSeedsProjected','listLOriginalProjection')
 
-        initialSeeds=listSeedsProjected{[listSeedsProjected{:,1}]==1,2};
+        initialSeeds=listSeedsProjected.seedsApical{listSeedsProjected.surfaceRatio==1};
         initialSeeds=initialSeeds(:,2:end);
         
         name2save= ['Image_' num2str(numImage) '_' num2str(numSeeds) 'seeds'];

@@ -1,15 +1,15 @@
-function  [imgInvalidRegion,equalBasalRadius,equalApicalRadius,equalIntermediateRadius]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_basalMax,R_apical,H,intermediateSurfaceRatio)
+function  [imgInvalidRegion,equalBasalRadius,equalApicalRadius,equalIntermediateRadius]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_apical,H,intermediateSurfaceRatio)
 
 %this function provides the invalid region in which we don't want operate
 %and  the cylindrical surfaces from a given radius =
 %(givenSurfaceRatio/apicalRadius).
     
     %empty Region (lumen or out of cylinder)
-    a_pointCentral=R_basalMax+1;
-    b_pointCentral=R_basalMax+1;
+    a_pointCentral=R_basal+1;
+    b_pointCentral=R_basal+1;
     
-    allXs=repmat(1:(2*R_basalMax+1),(2*R_basalMax+1),1)';
-    allYs=repmat(1:(2*R_basalMax+1),(2*R_basalMax+1),1);
+    allXs=repmat(1:(2*R_basal+1),(2*R_basal+1),1)';
+    allYs=repmat(1:(2*R_basal+1),(2*R_basal+1),1);
     
     %basal limit
     majorThanBasalRadius=cell2mat(arrayfun(@(x,y) (x-a_pointCentral)^2+(y-b_pointCentral)^2 > R_basal^2 ,allXs,allYs,'UniformOutput',false));   
