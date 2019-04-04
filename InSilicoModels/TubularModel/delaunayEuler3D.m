@@ -85,6 +85,9 @@ for nRand = 1:numRand
         %delete 0's labels....
         uniqueNeighsReformated = cellfun(@(x) x(x>0),uniqueNeighsReformatedPrev,'UniformOutput',false);
         
+%         sidesCells = cellfun(@length,uniqueNeighsReformated);
+%         [polyDisImg] = calculate_polygon_distribution( sidesCells, 1:1000 );
+
         if SR==1
             neighsAccum{nRand,SR} = uniqueNeighsReformated;
         else
