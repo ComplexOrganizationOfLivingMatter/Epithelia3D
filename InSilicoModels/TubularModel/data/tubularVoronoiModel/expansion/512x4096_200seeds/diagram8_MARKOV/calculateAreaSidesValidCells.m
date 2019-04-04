@@ -3,7 +3,7 @@
 addpath(genpath('..\..\..\..\..\src'))
 nDiagram = 8;
 nRealizations = 20;
-surfRatios = unique([10./(1:10),1.8,1:10]);
+surfRatios = 1:0.25:5;
 
 cellTotal = cell(1,nRealizations);
 cellTotalSidesArea = cell(1,length(nRealizations));
