@@ -3,7 +3,15 @@
 addpath(genpath('..\..\..\..\..\src'))
 nDiagram = 8;
 nRealizations = 20;
-sr = 4;
+sr = 1.8;
+
+load('VoronoiLewisEuler_redFactor_2\relationAreaVolumeSidesSurfaceRatio.mat','volumePerSurface','numNeighAccumPerSurfaces')
+
+totalNeighAccum = cat(1,numNeighAccumPerSurfaces{:});
+totalVolume = cat(1,volumePerSurface{:});
+totalVolumeBasal = totalVolume.(['sr' strrep(num2str(sr),'.','_')]);
+totalNeighBasalAccum = totalNeighAccum.(['sr' strrep(num2str(sr),'.','_')]);
+nUniqueNeighBasalAccum = unique(totalNeighBasalAccum); 
 
 polygonDis = cell(1,nRealizations);
 logNormArea = cell(1,nRealizations);
@@ -11,7 +19,16 @@ basalSidesCells = cell(1,nRealizations);
 apicalSidesCells = cell(1,nRealizations);
 normArea = cell(1,nRealizations);
 totalSidesCells = cell(1,nRealizations);
+
+meanVolumePerSideBasalAccum = zeros(nRealizations,length(nUniqueNeighBasalAccum));
+        
+
 for nRea = 1:nRealizations
+
+    imgVolumeBasal = volumePerSurface{nRea}.(['sr' strrep(num2str(sr),'.','_')]);
+    imgVolumeBasalNorm = imgVolumeBasal./mean(imgVolumeBasal);
+    imgNeighBasalAccum = numNeighAccumPerSurfaces{nRea}.(['sr' strrep(num2str(sr),'.','_')]);
+    meanVolumePerSideBasalAccum(nRea,:) = arrayfun(@(x) mean(imgVolumeBasalNorm(ismember(imgNeighBasalAccum,x))),nUniqueNeighBasalAccum);
 
     load(['Image_' num2str(nRea) '_Diagram_' num2str(nDiagram) '\Image_' num2str(nRea) '_Diagram_' num2str(nDiagram) '.mat'])
     indSr = listLOriginalProjection.surfaceRatio == sr;
@@ -41,18 +58,27 @@ for nRea = 1:nRealizations
 
 end
 
+%% lewis 3D 
+meanVol=mean(meanVolumePerSideBasalAccum);
+stdVol=std(meanVolumePerSideBasalAccum);
+valInd=~isnan(meanVol);
+lewis3D_volNorm = [nUniqueNeighBasalAccum(valInd)'; meanVol(valInd);stdVol(valInd)];
+
+%% polyDistr
 polyDist = cell2mat(vertcat(polygonDis{:}));
 meanPolyDist = mean(polyDist);
 stdPolyDist = std(polyDist);
+
+%% Area dispersion
 dispersionLogNormArea = vertcat(logNormArea{:});
 dispersionNormArea = vertcat(normArea{:});
 
+%% Lewis 2D
 relationNormArea_numSides = [horzcat(basalSidesCells{:})',dispersionNormArea];
 uniqSides = unique(horzcat(basalSidesCells{:}));
 lewis_NormArea = [uniqSides;arrayfun(@(x) mean(relationNormArea_numSides(ismember(relationNormArea_numSides(:,1),x),2)),uniqSides);
     arrayfun(@(x) std(relationNormArea_numSides(ismember(relationNormArea_numSides(:,1),x),2)),uniqSides)];
 
-save(['polygonDistribution_diag_' num2str(nDiagram) 'sr' num2str(sr) '.mat'],'meanPolyDist','stdPolyDist','polyDist','dispersionLogNormArea','dispersionNormArea','lewis_NormArea','apicalSidesCells','totalSidesCells')
-
+save(['polygonDistribution_diag_' num2str(nDiagram) 'sr' num2str(sr) '.mat'],'meanPolyDist','stdPolyDist','polyDist','dispersionLogNormArea','dispersionNormArea','lewis_NormArea','apicalSidesCells','totalSidesCells','lewis3D_volNorm')
 
 
