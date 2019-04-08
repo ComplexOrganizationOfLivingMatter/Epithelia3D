@@ -12,11 +12,17 @@ numSeeds = 1000;
 %number of different randomizations
 numRand = 20;
 
+%number of lloyd iterations
+nLloydIt = 7;
+
+
 srInit = 10 * 1./(1:10);
 surfaceRatios = unique([srInit,1.8,3:1000]);
 numNeighsAccum = zeros(numRand,length(surfaceRatios));
 neighsAccum = cell(numRand,length(surfaceRatios));
+polyDisTotal = cell(numRand,1);
 
+addpath(genpath('src'))
 
 for nRand = 1:numRand
     % select random position for seeds
@@ -43,6 +49,14 @@ for nRand = 1:numRand
     seedsXcentral(1:numSeeds),seedsY(1:numSeeds); seedsXcentral(numSeeds+1:2*numSeeds),seedsY(numSeeds+1:2*numSeeds);seedsXcentral(2*numSeeds+1:3*numSeeds),seedsY(2*numSeeds+1:3*numSeeds);...
     seedsXright(1:numSeeds),seedsY(1:numSeeds); seedsXright(numSeeds+1:2*numSeeds),seedsY(numSeeds+1:2*numSeeds);seedsXright(2*numSeeds+1:3*numSeeds),seedsY(2*numSeeds+1:3*numSeeds)];
     
+    
+    %% lloyd algorithm
+    if nLloydIt > 0
+        idCentralRegion = (numSeeds*3+1):numSeeds*6;
+        matrixSeeds=lloydWithDelaunayCylinder(matrixSeeds,xImg,yImg,numSeeds,idCentralRegion,nLloydIt);
+    end
+
+
     %init neighsAccum
     nNeighPerSR = zeros(1,length(surfaceRatios));
 
@@ -58,6 +72,7 @@ for nRand = 1:numRand
         TRIsort = sort(TRI,2);
         TRIunique = unique(TRIsort,'rows');
 
+        
         %calculateNeighboursPerTriangledSeed only for label of interest
         neighs = arrayfun(@(x) setdiff(unique(TRIunique(sum(ismember(TRIunique,x),2)>0,:)),x),labelOfInterest,'UniformOutput',false);
 
@@ -87,7 +102,8 @@ for nRand = 1:numRand
         
 %         sidesCells = cellfun(@length,uniqueNeighsReformated);
 %         [polyDisImg] = calculate_polygon_distribution( sidesCells, 1:1000 );
-
+%         polyDisTotal{nRand}=polyDisImg(2,:);
+        
         if SR==1
             neighsAccum{nRand,SR} = uniqueNeighsReformated;
         else
@@ -100,7 +116,7 @@ for nRand = 1:numRand
 
 end
 
-tableSR = array2table([surfaceRatios],'RowNames',{'surfaceRatio'});
+tableSR = array2table(surfaceRatios,'RowNames',{'surfaceRatio'});
 tableNeighsAccum = array2table(numNeighsAccum,'VariableNames',tableSR.Properties.VariableNames);
 tableEuler3D = [tableSR;tableNeighsAccum];
 meanEuler3D = mean(numNeighsAccum);
