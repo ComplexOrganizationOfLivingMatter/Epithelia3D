@@ -23,6 +23,8 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
             colorPlot = [200/255,200/255,200/255];
         case 8
             colorPlot = [0.2,0.4,1];
+        case 0 %% Gland
+            colorPlot = [151 238 152]/255;
     end
         
     
