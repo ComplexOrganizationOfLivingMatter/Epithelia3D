@@ -311,8 +311,8 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
     
     legend({['rsquare ' num2str(outputFitting.rsquare) ' - rmse ' num2str(outputFitting.rmse) ],['Voronoi ' num2str(initialDiagram)],['95% Confidence'],'','6-line'})
     set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
-%     savefig(h,[path2save 'euler3D_Voronoi' num2str(initialDiagram) '_' date])
-%     print(h,[path2save 'euler3D'],'-dtiff','-r300')
+    savefig(h,[path2save 'euler3D_Voronoi' num2str(initialDiagram) '_' date])
+    print(h,[path2save 'euler3D'],'-dtiff','-r300')
     
      %% Euler 3D (LOG10)
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');   
