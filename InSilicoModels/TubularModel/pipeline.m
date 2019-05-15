@@ -22,6 +22,8 @@ addpath(genpath('src'))
 % %possible code bugs for this alternative, but our first intention is that
 % %this code work with accuracy)
 % apicalReductions=[];
+clear all
+close all
 
 N_images=20;
 H=4096;
@@ -30,11 +32,11 @@ distanceBetwSeeds=5;%minimum distances between seeds, avoiding overlaping
 thresholdPixelsScutoid=4;
 setOfSeeds=200;
 apicalReductions=1:-0.1:0.1;
-basalExpansions= 1./apicalReductions;
-basalExpansions = unique([basalExpansions,[2 3 4 6 7 8 9]]);
+% basalExpansions= 1./apicalReductions;
+% basalExpansions = unique([basalExpansions,[1.75 1.8 1.85 2 3 4 6 7 8 9]]);
 apicalReductions=[];
-% basalExpansions = 1:0.25:5;
-initialVoronoiDiagramNumber = 9;
+basalExpansions = 1:0.25:10;
+initialVoronoiDiagramNumber = 1;
 N_CVT_frames= 12;
 
 
