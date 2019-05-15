@@ -312,7 +312,21 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
     legend({['rsquare ' num2str(outputFitting.rsquare) ' - rmse ' num2str(outputFitting.rmse) ],['Voronoi ' num2str(initialDiagram)],['95% Confidence'],'','6-line'})
     set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
     savefig(h,[path2save 'euler3D_Voronoi' num2str(initialDiagram) '_' date])
-    print(h,[path2save 'euler3D_' date],'-dtiff','-r300')
+
+    print(h,[path2save 'euler3D'],'-dtiff','-r300')
+    
+     %% Euler 3D (LOG10)
+    h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');   
+%     stdNeighBasalAcum = std(log10(cat(1,meanNeighBasalAcum{:,:})));
+%     meanNeighBasalAcum = mean(log10(cat(1,meanNeighBasalAcum{:,:})));  
+   
+    myfittypePoly=fittype('a +b*x','dependent', {'y'}, 'independent',{'x'},'coefficients', {'a','b'});
+   [myfitPoly,outputFitting]=fit(log10(surfRatios)',meanNeighBasalAcum(1:length(surfRatios))',myfittypePoly,'StartPoint',[1 6]);
+
+    plot(myfitPoly, [min(log10(surfRatios)) max(log10(surfRatios))], [myfitPoly(1) myfitPoly(max(log10(surfRatios)))])
+    children = get(gca, 'children');
+    delete(children(2));
+    set(children(1),'LineWidth',2,'Color',colorPlot)  
     
 %      %% Euler 3D (LOG10)
 %     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');   
