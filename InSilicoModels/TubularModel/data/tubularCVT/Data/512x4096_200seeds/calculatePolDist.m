@@ -1,7 +1,7 @@
 %calculate polygon distribution
 
 addpath(genpath('..\..\..\..\src'))
-nDiagram = 9;
+nDiagram = 8;
 nRealizations = 20;
 
 polygonDis = cell(1,nRealizations);
@@ -14,16 +14,19 @@ for nRea = 1:nRealizations
     
     [~,sidesCells]=calculateNeighbours(L_original);
     
-    polygonDisImg = calculate_polygon_distribution(sidesCells,valid_cells);
+    noValidCells = unique([L_original(1,:),L_original(end,:)]);
+    validCells = setdiff(unique(L_original),noValidCells);
+    
+    polygonDisImg = calculate_polygon_distribution(sidesCells,validCells);
     polygonDis{nRea} = polygonDisImg(2,:);
     
     
     areaCells = regionprops(L_original,'Area');
     areaCells = cat(1,areaCells.Area);
-    areaValidCells = areaCells(valid_cells);
+    areaValidCells = areaCells(validCells);
     logNormArea{nRea} = log10(areaValidCells./(mean(areaValidCells)));
     normArea{nRea} = areaValidCells./(mean(areaValidCells));
-    totalSidesCells{nRea} = sidesCells(valid_cells);
+    totalSidesCells{nRea} = sidesCells(validCells);
 
 end
 
