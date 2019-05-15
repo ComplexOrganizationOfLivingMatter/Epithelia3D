@@ -45,12 +45,12 @@ function matrixSeeds = lloydWithDelaunayCylinder(matrixSeeds,xImg,yImg,numSeeds,
         verticesInfo.verticesConnectCells = triOfInterest;
         
         %calculate no valid cells vertices
-        verticesNoValidCellsInfo = getVerticesNoValidCellsDelaunay(pairNoValidCells,fliplr(matrixSeeds),[],-yImg,2*yImg,0);
+        verticesNoValidCellsInfo = getVerticesNoValidCellsDelaunayLloyd(pairNoValidCells,fliplr(matrixSeeds),-yImg,2*yImg,0);
         
         Cx = zeros(numSeeds*9,1);
         Cy = zeros(numSeeds*9,1);
         close all
-        figure;
+        figure('Visible','off');
         for nCell = idCentralRegion
             idValidVert = sum(ismember(vertcat(verticesInfo.verticesConnectCells),nCell),2)>0;
             idNoValidVert = sum(ismember(vertcat(verticesNoValidCellsInfo.verticesConnectCells{:}),nCell),2)>0;    
@@ -101,6 +101,6 @@ function matrixSeeds = lloydWithDelaunayCylinder(matrixSeeds,xImg,yImg,numSeeds,
         Cy(6*numSeeds+1:9*numSeeds) = Cy(3*numSeeds+1:6*numSeeds);
         matrixSeeds = [Cx,Cy];
     end
-
+    close all
 end
 
