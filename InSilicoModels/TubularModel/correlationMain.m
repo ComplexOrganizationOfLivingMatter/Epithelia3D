@@ -4,12 +4,12 @@ close all
 
 addpath(genpath('src'))
 %input parameters
-initialDiagrams = 1;%[1 5];
+initialDiagrams = 8;%[1 5];
 
 cylinderTypes = {'Voronoi'};%, 'Frusta'};
-basalExpansions= 1./([1:-0.1:0.1]);
-surfaceRatios = unique([basalExpansions,[1.8 2:10]]);
-% surfaceRatios = unique([basalExpansions,[4:10]]);
+% basalExpansions= 1./([1:-0.1:0.1]);
+% surfaceRatios = unique([basalExpansions,[1.8 2:10]]);
+surfaceRatios = 1:0.25:10;
 
 reductionFactor = 2;
 nRealizations = 20;
