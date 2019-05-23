@@ -13,7 +13,7 @@ function [maskCylinder3D]=create3DCylinder( initialSeeds, H_apical, W_apical,sur
     R_basalMax=round(R_basalMax);
     
     %% Get limitations of space and surfaces 3d indexes
-    [imgInvalidRegion,~,~,~]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_basalMax,R_apical,H_apical,[]);
+    [imgInvalidRegion,~,~,~]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_apical,H_apical,[]);
         
     if contains(lower(cyliderType),'frusta')
         imgBasal = imresize(imgApical,[size(imgApical,1),round(size(imgApical,2)*surfaceRatio)],'nearest');
