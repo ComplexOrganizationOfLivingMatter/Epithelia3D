@@ -40,16 +40,16 @@ function delaunayGraphics(folderName,tableTotalResults,voronoiNumber)
     y = [6 6];
     line(x,y,'Color','red','LineStyle','--')
     hold off
-%     ylim([5,12]);
-%     yticks(5:12)  
-%     xlim([0,12]);
-%     xticks(0:12)  
+    ylim([5,12]);
+    yticks(5:12)  
+    xlim([0,12]);
+    xticks(0:12)  
     set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
     legend('hide')
-    print(h,[folderName 'delaunay_euler3D_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
+    print(h,[folderName 'euler3D_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
     legend({['Voronoi ' num2str(voronoiNumber) ' - R^2 ' num2str(outputFitting.rsquare)]})
-    savefig(h,[folderName 'delaunay_euler3D_Voronoi' num2str(voronoiNumber) '_' date])
-    print(h,[folderName 'delaunay_euler3D_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
+    savefig(h,[folderName 'euler3D_Voronoi' num2str(voronoiNumber) '_' date])
+    print(h,[folderName 'euler3D_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
     
     
     %% figure Apico-Basal transitions 3D
@@ -74,17 +74,17 @@ function delaunayGraphics(folderName,tableTotalResults,voronoiNumber)
     plot([arrayTableInd(1,:) max(arrayTableInd(1,:))+1],preD,'--','Color',colorPlot)
 
     hold off
-%     ylim([0,11]);
-%     yticks(0:11)  
-%     xlim([0,12]);
-%     xticks(0:12)  
+    ylim([0,11]);
+    yticks(0:11)  
+    xlim([0,12]);
+    xticks(0:12)  
     
     set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
     legend('hide')
-    print(h,[folderName 'delaunay_apicoBasalTransitions_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
+    print(h,[folderName 'apicoBasalTransitions_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
     legend({['Voronoi ' num2str(voronoiNumber) ' - R^2 ' num2str(outputFitting.rsquare)]})
-    savefig(h,[folderName 'delaunay_apicoBasalTransitions_Voronoi' num2str(voronoiNumber) '_' date])
-    print(h,[folderName 'delaunay_apicoBasalTransitions_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
+    savefig(h,[folderName 'apicoBasalTransitions_Voronoi' num2str(voronoiNumber) '_' date])
+    print(h,[folderName 'apicoBasalTransitions_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
 
     %% figure percentage of scutoids
     close all
@@ -98,21 +98,21 @@ function delaunayGraphics(folderName,tableTotalResults,voronoiNumber)
     ylabel('scutoids proportion')
 
     hold off
-%     ylim([0,1.2]);
-%     yticks(0:0.1:1.2)  
-%     xlim([0,11]);
-%     xticks(0:11)  
+    ylim([0,1.2]);
+    yticks(0:0.1:1.2)  
+    xlim([0,11]);
+    xticks(0:11)  
   
     set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
     legend('hide')
-    print(h,[folderName 'delaunay_scutoidsProportion_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
+    print(h,[folderName 'scutoidsProportion_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
     legend(['Voronoi ' num2str(voronoiNumber)])
-    savefig(h,[folderName 'delaunay_scutoidsProportion_Voronoi' num2str(voronoiNumber) '_' date])
-    print(h,[folderName 'delaunay_scutoidsProportion_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
+    savefig(h,[folderName 'scutoidsProportion_Voronoi' num2str(voronoiNumber) '_' date])
+    print(h,[folderName 'scutoidsProportion_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
     
     
     
-    % n total VS n apico_basal
+    % n total VS n apico_basal transitions
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');   
     plot(arrayTableInd(4,:),arrayTableInd(2,:),'o','MarkerSize',5,'MarkerFaceColor',colorPlot,'MarkerEdgeColor',colorPlot)
     legend(['Voronoi ' num2str(voronoiNumber)])
@@ -120,10 +120,10 @@ function delaunayGraphics(folderName,tableTotalResults,voronoiNumber)
     xlabel('n apico basal transitions')
     set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
 
-    print(h,[folderName 'delaunay_NapicoBasalTran_Ntotal_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
+    print(h,[folderName 'nApicoBasalTran_Ntotal_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
     legend(['Voronoi ' num2str(voronoiNumber)])
-    savefig(h,[folderName 'delaunay_NapicoBasalTran_Ntotal_Voronoi' num2str(voronoiNumber) '_' date])
-    print(h,[folderName 'delaunay_NapicoBasalTran_Ntotal_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
+    savefig(h,[folderName 'nApicoBasalTran_Ntotal_Voronoi' num2str(voronoiNumber) '_' date])
+    print(h,[folderName 'nApicoBasalTran_Ntotal_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
     
     
     % n total VS % scutoids
@@ -132,24 +132,24 @@ function delaunayGraphics(folderName,tableTotalResults,voronoiNumber)
     ylabel('n total')
     xlabel('scutoids proportion')
     set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
-    print(h,[folderName 'delaunay_Ntotal_Scutoids_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
+    print(h,[folderName 'nTotal_Scutoids_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
     legend(['Voronoi ' num2str(voronoiNumber)])
-    savefig(h,[folderName 'delaunay_Ntotal_Scutoids_Voronoi' num2str(voronoiNumber) '_' date])
-    print(h,[folderName 'delaunay_Ntotal_Scutoids_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
+    savefig(h,[folderName 'nTotal_Scutoids_Voronoi' num2str(voronoiNumber) '_' date])
+    print(h,[folderName 'nTotal_Scutoids_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
     
     
     
-    % n apico basal VS n scutoids
+    % n apico basal transitions VS n scutoids
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');   
     plot(arrayTableInd(6,:),arrayTableInd(4,:),'o','MarkerSize',5,'MarkerFaceColor',colorPlot,'MarkerEdgeColor',colorPlot)
     ylabel('n apico basal transitions')
     xlabel('scutoids proportion')
     set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
-    print(h,[folderName 'delaunay_NapicoBasalTran_Scutoids_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
+    print(h,[folderName 'nApicoBasalTran_Scutoids_Voronoi' num2str(voronoiNumber) '_noLegend_' date],'-dtiff','-r300')
     legend(['Voronoi ' num2str(voronoiNumber)])
-    savefig(h,[folderName 'delaunay_NapicoBasalTran_Scutoids_Voronoi' num2str(voronoiNumber) '_' date])
-    print(h,[folderName 'delaunay_NapicoBasalTran_Scutoids_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
+    savefig(h,[folderName 'nApicoBasalTran_Scutoids_Voronoi' num2str(voronoiNumber) '_' date])
+    print(h,[folderName 'nApicoBasalTran_Scutoids_Voronoi' num2str(voronoiNumber) '_legend_' date],'-dtiff','-r300')
     
-    
+    close all
 end
 
