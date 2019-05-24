@@ -1,6 +1,7 @@
+clear all
 % SR = unique([1./(1:-0.1:0.1),2:9]);
 initialDiagrams = 8;%[1 8];
-% SR = [1 1.75 1.8 1.85];
+% SR = unique([SR 1.8 4]);
 SR = 1:0.25:10;
 nImages = 20;
 typeProjection = 'expansion';
@@ -9,62 +10,108 @@ typeProjection = 'expansion';
 addpath(genpath('src'))
 
 for initialDiagram = initialDiagrams
+    
     path2load = ['data\tubularVoronoiModel\' typeProjection '\512x4096_200seeds\diagram' num2str(initialDiagram) '_Markov'];
-    polyDisImg = cell(nImages,length(SR));
-    polyDisImgAccum = cell(nImages,length(SR));
-    percentageScutoids = cell(nImages,length(SR));
-    numberWonNeighs = cell(nImages,length(SR));
-    numberLostNeighs = cell(nImages,length(SR));
-    neighsPerSRPerImg = cell(nImages,length(SR));
-    validCellsPerImg = cell(nImages,length(SR));
-    for nImg = 1 : nImages
+    totalPathFile = [path2load '\polygonsDistributions\dataPolygonDistributionAndPercentageScutoids_15-May-2019.mat'];
+    if ~exist(totalPathFile,'file')
+    
+        polyDisImg = cell(nImages,length(SR));
+        polyDisImgAccum = cell(nImages,length(SR));
+        neighsPerSRPerImg = cell(nImages,length(SR));
+        validCellsPerImg = cell(nImages,length(SR));
+        numNeighsAccum = zeros(nImages,length(SR));
+        numNeighSurface = zeros(nImages,length(SR));
+        neighsAccum = cell(nImages,length(SR));
+        numWonNeighsAccum = cell(nImages,length(SR));
+        numLostNeighsAccum = cell(nImages,length(SR));
+        numTransitions = cell(nImages,length(SR));
+        percentageScutoids = zeros(nImages,length(SR));
 
-        load([path2load '\Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) '\Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) '.mat'],'listLOriginalProjection');
+        for nRand = 1 : nImages
 
-        if strcmp(typeProjection,'expansion')
-            idImg = [listLOriginalProjection{:,1}]==SR(end);
-        else
-            idImg = [listLOriginalProjection{:,1}]==SR(1);
-        end
-        img = listLOriginalProjection{idImg,2};
-        if iscell(img)
-           img = img{1}; 
-        end
-        noValidCells = unique([img(1,:),img(end,:)]);
-        validCells = setdiff(unique(img),noValidCells);
-        validCellsPerImg{nImg} = validCells;
-        neighsAccum = cell(1,max(img(:)));
-        
-%         load([path2load 'diagram' num2str(initialDiagram) '\Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) '\Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) 'specialCase.mat']);
-        for srImg = 1:length(SR)
+            load([path2load '\Image_' num2str(nRand) '_Diagram_' num2str(initialDiagram) '\Image_' num2str(nRand) '_Diagram_' num2str(initialDiagram) '.mat'],'listLOriginalProjection');
 
-            idImg = [listLOriginalProjection{:,1}]==SR(srImg);
+            if strcmp(typeProjection,'expansion')
+                idImg = [listLOriginalProjection{:,1}]==SR(end);
+            else
+                idImg = [listLOriginalProjection{:,1}]==SR(1);
+            end
             img = listLOriginalProjection{idImg,2};
             if iscell(img)
                img = img{1}; 
             end
-            neighs = calculateNeighbours(img);
-            neighsPerSRPerImg{nImg,srImg} = neighs;
-            if srImg==1
-                neighsInit = neighs;
+            noValidCells = unique([img(1,:),img(end,:)]);
+            validCells = setdiff(unique(img),noValidCells);
+            validCellsPerImg{nRand} = validCells;
+
+
+    %         load([path2load 'diagram' num2str(initialDiagram) '\Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) '\Image_' num2str(nImg) '_Diagram_' num2str(initialDiagram) 'specialCase.mat']);
+            %init neighsAccum
+            nNeighPerSR = zeros(1,length(SR));
+            euler2D = zeros(1,length(SR));
+            for srImg = 1:length(SR)
+
+                idImg = [listLOriginalProjection{:,1}]==SR(srImg);
+                img = listLOriginalProjection{idImg,2};
+                if iscell(img)
+                   img = img{1}; 
+                end
+                neighs = calculateNeighbours(img);
+                neighsValid = neighs(validCells);
+                neighsPerSRPerImg{nRand,srImg} = neighsValid;
+                if srImg==1
+                    neighsInit = neighsValid;
+                end
+
+                if srImg==1
+                    neighsAccum{nRand,srImg} = neighsValid;
+                    numLostNeighsAccum{nRand,srImg} = cell(size(neighsValid));
+                    numWonNeighsAccum{nRand,srImg} = cell(size(neighsValid));
+                else
+
+                    neighsAccum{nRand,srImg} = cellfun(@(x,y) unique([x;y]),neighsValid,neighsAccum{nRand,srImg-1},'UniformOutput',false);
+
+                    lostNeigh = cellfun(@(x,y) setdiff(x,y),neighsAccum{nRand,srImg-1},neighsValid,'UniformOutput',false);
+                    wonNeigh = cellfun(@(x,y) setdiff(y,x),neighsAccum{nRand,srImg-1},neighsAccum{nRand,srImg},'UniformOutput',false);
+
+                    numLostNeighsAccum{nRand,srImg} = cellfun(@(x,y) unique([x;y]),lostNeigh,numLostNeighsAccum{nRand,srImg-1},'UniformOutput',false);
+                    numWonNeighsAccum{nRand,srImg} = cellfun(@(x,y) unique([x;y]),wonNeigh,numWonNeighsAccum{nRand,srImg-1},'UniformOutput',false);
+
+                    numTransitions{nRand,srImg} = cellfun(@(x,y) length(([x;y])),numLostNeighsAccum{nRand,srImg},numWonNeighsAccum{nRand,srImg});     
+                    percentageScutoids(nRand,srImg) = sum(arrayfun(@(x) sum(x)>0,numTransitions{nRand,srImg}))/length(neighsValid);
+
+                end
+                nNeighPerSR(srImg) = mean(cellfun(@length,neighsAccum{nRand,srImg}));
+                euler2D(srImg) = mean(cellfun(@length,neighsValid));
+
+                [polyDisImg{nRand,srImg}] = calculate_polygon_distribution(cellfun(@length,neighs), validCells );
+                [polyDisImgAccum{nRand,srImg}] = calculate_polygon_distribution(cellfun(@length,neighsAccum{nRand,srImg}), 1:length(neighsAccum{nRand,srImg}));
+
             end
-            neighsAccum = cellfun(@(x,y) unique([x;y]),neighs,neighsAccum,'UniformOutput',false);
-            sidesCells = cellfun(@(x) length(x),neighs);
-            sidesCellsAccum = cellfun(@(x) length(x),neighsAccum);
+            numNeighsAccum(nRand,:) = nNeighPerSR;
+            numNeighSurface(nRand,:) = euler2D;
 
-            [polyDisImg{nImg,srImg}] = calculate_polygon_distribution( sidesCells, validCells );
-            [polyDisImgAccum{nImg,srImg}] = calculate_polygon_distribution( sidesCellsAccum, validCells );
-
-            lostNeigh = cellfun(@(x,y) length(setdiff(x,y)),neighsInit,neighs);
-            wonNeigh = cellfun(@(x,y) length(setdiff(y,x)),neighsInit,neighs);
-            percentageScutoids{nImg,srImg} = sum(sum([lostNeigh(validCells);wonNeigh(validCells)])>0)/length(validCells);
-            numberWonNeighs{nImg,srImg} = wonNeigh;
-            numberLostNeighs{nImg,srImg} = lostNeigh;
+            disp(['rand ' num2str(nRand) ' - finished'])
         end
-    end
-    mkdir([path2load '\polygonsDistributions\'])
-    save([path2load '\polygonsDistributions\dataPolygonDistributionAndPercentageScutoidsSpecial.mat'],'polyDisImg','polyDisImgAccum','percentageScutoids','numberWonNeighs','numberLostNeighs','validCellsPerImg','neighsPerSRPerImg','SR');
 
+        averageTransitions = cellfun(@mean, numTransitions);
+        % averageLost = mean(cellfun(@(x) mean(cellfun(@length, x)),numLostNeighsAccum));
+        % averageWon = mean(cellfun(@(x) mean(cellfun(@length, x)),numWonNeighsAccum));
+
+        tableSR = array2table(SR,'RowNames',{'surfaceRatio'});
+        tableNeighsAccum = array2table(numNeighsAccum,'VariableNames',tableSR.Properties.VariableNames);
+        tableEuler3D = [tableSR;tableNeighsAccum];
+        neighsAccumFinalSR = neighsAccum(:,end);
+        tableTotalResults = [tableSR;array2table([mean(numNeighsAccum);std(numNeighsAccum);mean(averageTransitions);std(averageTransitions);mean(percentageScutoids);std(percentageScutoids)],'VariableNames',tableSR.Properties.VariableNames,'RowNames',{'meanNeighbours','stdNeighbours','meanTransitions','stdTransitions','meanScutoids','stdScutoids'})];
+
+
+        mkdir([path2load '\polygonsDistributions\'])
+        save([path2load '\polygonsDistributions\dataPolygonDistributionAndPercentageScutoids_' date '.mat'],'polyDisImg','polyDisImgAccum','SR','percentageScutoids','averageTransitions','numTransitions','tableEuler3D','neighsAccum','neighsAccumFinalSR','tableTotalResults');
+
+    else
+        load(totalPathFile,'tableTotalResults')
+        delaunayGraphics([path2load '\polygonsDistributions\'],tableTotalResults,initialDiagrams);
+    end
 %     tablePolDistAccum = [];
 %     tablePolDist = [];
 %     for srImg = 1:length(SR)
