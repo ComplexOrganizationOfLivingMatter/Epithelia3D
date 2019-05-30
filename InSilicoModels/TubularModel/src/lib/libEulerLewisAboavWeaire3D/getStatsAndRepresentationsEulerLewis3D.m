@@ -286,14 +286,17 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
     stdNeighBasalAcum = std(cat(1,meanNeighBasalAcum{:,:}));
     meanNeighBasalAcum = mean(cat(1,meanNeighBasalAcum{:,:}));   
    
-    myfittypeLn=fittype('6 +b*log(x)','dependent', {'y'}, 'independent',{'x'},'coefficients', {'b'});
-    [myfitLn,outputFitting]=fit(surfRatios',meanNeighBasalAcum(1:length(surfRatios))',myfittypeLn,'StartPoint',[1]);
+    myfittypeLn=fittype('6 +b*log(1+(x-1)*c)','dependent', {'y'}, 'independent',{'x'});
+    opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
+    opts.Display = 'Off';
+
+    [myfitLn,outputFitting]=fit(surfRatios',meanNeighBasalAcum(1:length(surfRatios))',myfittypeLn);
     myfitLn
     plot(myfitLn, [1 11], [6 myfitLn(11)])
     children = get(gca, 'children');
     delete(children(2));
     set(children(1),'LineWidth',2,'Color',colorPlot)  
-    
+
     hold on
     errorbar(surfRatios,meanNeighBasalAcum(1:length(surfRatios)),stdNeighBasalAcum(1:length(surfRatios)),'o','MarkerSize',5,...
             'Color',[0 0 0],'MarkerFaceColor',colorPlot,'LineWidth',0.2)
