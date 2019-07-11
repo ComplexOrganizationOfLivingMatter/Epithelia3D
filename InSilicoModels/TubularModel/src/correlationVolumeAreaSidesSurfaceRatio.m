@@ -2,6 +2,8 @@ function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram
 
     totalCells = 1:nSeeds;
     namesSR = arrayfun(@(x) ['sr' strrep(num2str(x),'.','_')],surfaceRatios,'UniformOutput', false);
+    
+    %Init parameters to measure
     numNeighPerSurface = cell(nRealizations,1);
     numNeighAccumPerSurfaces = cell(nRealizations,1);
     numNeighOfNeighPerSurface = cell(nRealizations,1);
@@ -11,7 +13,7 @@ function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram
 
     %path to load and save
     rootPath =  ['data\tubularVoronoiModel\' typeProjection '\'];
-    folder = [num2str(W_init) 'x' num2str(H_init) '_' num2str(nSeeds) 'seeds\diagram' num2str(initialDiagram) '_Markov\'];
+    folder = [num2str(W_init) 'x' num2str(H_init) '_' num2str(nSeeds) 'seeds\diagram' num2str(initialDiagram) '\'];
 
     path2save = [rootPath folder cyliderType 'LewisEuler_redFactor_' num2str(reductionFactor)  '\'];
 
@@ -49,18 +51,18 @@ function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram
                     area = regionprops(L_img,'Area');
                     areaCells{idSR} = cat(1,area.Area);
                     neighsAccumSurfaces{idSR} = neighsSurface{idSR};
-%                     volumes{idSR} =  areaCells{idSR};
-%                     %% Get total 3D cylinder
-%                     [voronoi3D] = create3DCylinder( seedsApical(:,2:3), H_init, W_init, surfaceRatios, max(surfaceRatios),reductionFactor,L_imgApical,cyliderType);
+                    volumes{idSR} =  areaCells{idSR};
+                    %% Get total 3D cylinder
+                    [voronoi3D] = create3DCylinder( seedsApical(:,2:3), H_init, W_init, surfaceRatios, max(surfaceRatios),reductionFactor,L_imgApical,cyliderType);
                     disp(['created 3D cylinder ' num2str(nImg) ' - starting measurements'])
                 else 
-%                     %% get invalid region for each surface ratio
-%                     H_apical=round(H_init/reductionFactor);
-%                     W_apical=round(W_init/reductionFactor);
-%                     R_apical=round(W_apical/(2*pi));
-%                     R_basal=round(surfaceRatios(idSR)*R_apical);
-%                     R_basalMax=round(max(surfaceRatios)*R_apical);
-%                     [imgInvalidRegion,~,~,~]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_basalMax,R_apical,H_apical,[]);
+                    %% get invalid region for each surface ratio
+                    H_apical=round(H_init/reductionFactor);
+                    W_apical=round(W_init/reductionFactor);
+                    R_apical=round(W_apical/(2*pi));
+                    R_basal=round(surfaceRatios(idSR)*R_apical);
+                    R_basalMax=round(max(surfaceRatios)*R_apical);
+                    [imgInvalidRegion,~,~,~]=get3DCylinderLimitsBasalApicalandIntermediate(R_basal,R_basalMax,R_apical,H_apical,[]);
 
                     %% get area, neighbours and no valid cells in Voronoi cases
                     if contains(lower(cyliderType),'voronoi')
@@ -80,15 +82,15 @@ function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram
                         neighsAccumSurfaces{idSR} = neighboursApical;
                     end
 
-%                     %% quantify volume per cell and SR
-%                     voronoi3DSR = voronoi3D;
-%                     voronoi3DSR(imgInvalidRegion>0)=0;
-%                     voronoi3Dresized = imresize(voronoi3DSR,reductionFactor,'nearest');
-%                     totalLabelsRepeated = voronoi3Dresized(voronoi3Dresized(:)>0);
-%                     if length(unique(totalLabelsRepeated)) < max(totalCells)
-%                         disp('Resolution error. Seeds overlapping')
-%                     end
-%                     volumes{idSR} = arrayfun(@(x) sum(totalLabelsRepeated(:) == x),totalCells');
+                    %% quantify volume per cell and SR
+                    voronoi3DSR = voronoi3D;
+                    voronoi3DSR(imgInvalidRegion>0)=0;
+                    voronoi3Dresized = imresize(voronoi3DSR,reductionFactor,'nearest');
+                    totalLabelsRepeated = voronoi3Dresized(voronoi3Dresized(:)>0);
+                    if length(unique(totalLabelsRepeated)) < max(totalCells)
+                        disp('Resolution error. Seeds overlapping')
+                    end
+                    volumes{idSR} = arrayfun(@(x) sum(totalLabelsRepeated(:) == x),totalCells');
                 end
                 disp(['Completed volume realization - ' num2str(nImg) ' - SR - ' num2str(surfaceRatios(idSR))])
             end
@@ -120,7 +122,7 @@ function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram
             numNeighOfNeighPerSurface{nImg} = array2table(numNeighOfNeighPerSurfacesRealization(validCellsTotal,:),'VariableNames',namesSR);
             numNeighOfNeighAccumPerSurface{nImg} = array2table(numNeighOfNeighAccumPerSurfacesRealization(validCellsTotal,:),'VariableNames',namesSR);
             areaCellsPerSurface{nImg} = array2table(areaCellsPerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
-%             volumePerSurface{nImg} = array2table(volumePerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
+            volumePerSurface{nImg} = array2table(volumePerSurfaceRealization(validCellsTotal,:),'VariableNames',namesSR);
             save([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighOfNeighPerSurface','numNeighOfNeighAccumPerSurface','numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
 
         end
@@ -129,6 +131,7 @@ function [] = correlationVolumeAreaSidesSurfaceRatio(cyliderType, initialDiagram
         load([path2save 'relationAreaVolumeSidesSurfaceRatio.mat'],'numNeighOfNeighPerSurface','numNeighOfNeighAccumPerSurface','numNeighPerSurface','numNeighAccumPerSurfaces','areaCellsPerSurface','volumePerSurface')
     end
 
+    %% Represent data extracted
     getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNeighOfNeighAccumPerSurface,numNeighPerSurface,numNeighAccumPerSurfaces,areaCellsPerSurface,volumePerSurface,path2save,surfaceRatios,initialDiagram);
 end
 
