@@ -123,3 +123,7 @@ InSilicoModels/paperCode/SpheroidModel/logFile
 *.rtf
 *.nd2
 *.tmp
+*.lsm
+*.gif
+*.avi
+*.mp4
