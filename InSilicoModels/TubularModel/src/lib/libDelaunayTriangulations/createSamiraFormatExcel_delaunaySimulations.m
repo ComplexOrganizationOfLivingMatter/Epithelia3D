@@ -69,7 +69,6 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_delaunaySimulations(path
             [~,indMin] = sort([a,b,c]);
             
             pairNoValidCells(sum(ismember(pairNoValidCells,[tripletNoValidCells(nTri,indMin(2)),tripletNoValidCells(nTri,indMin(3))]),2)==2,:)=[];
-            
             pairNoValidCells = [pairNoValidCells;[tripletNoValidCells(nTri,indMin(1)),tripletNoValidCells(nTri,indMin(2)),0]];
             pairNoValidCells = [pairNoValidCells;[tripletNoValidCells(nTri,indMin(1)),tripletNoValidCells(nTri,indMin(3)),0]];
         end
