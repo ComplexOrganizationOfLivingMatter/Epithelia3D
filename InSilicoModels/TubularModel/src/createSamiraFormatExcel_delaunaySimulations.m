@@ -9,6 +9,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_delaunaySimulations(path
     load(strcat(pathFile, nameOfSimulation,'.mat'), 'listSeedsProjected');
     
     initialSeeds = listSeedsProjected{vertcat(listSeedsProjected{:,1})==1,2};
+    initialSeeds= initialSeeds{1};
     initialSeeds = initialSeeds(:,2:3);
     
     
