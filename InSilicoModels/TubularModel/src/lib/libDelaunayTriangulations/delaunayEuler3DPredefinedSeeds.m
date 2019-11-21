@@ -99,7 +99,7 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
                         numLostNeighsAccumApicalToBasal{nRand,nSR} = cell(size(neighsPerSR_ValidCells{nSR}));
                         numWonNeighsAccumApicalToBasal{nRand,nSR} = cell(size(neighsPerSR_ValidCells{nSR}));
                     else
-                        neighsAccumApicalToBasal{nRand,nSR} = cellfun(@(x,y) unique([x;y]),neighsPerSR_ValidCells{nSR},neighsAccumApicalToBasal{nSR-1},'UniformOutput',false);
+                        neighsAccumApicalToBasal{nRand,nSR} = cellfun(@(x,y) unique([x;y]),neighsPerSR_ValidCells{nSR},neighsAccumApicalToBasal{nRand,nSR-1},'UniformOutput',false);
 
                         lostNeigh = cellfun(@(x,y) setdiff(x,y),neighsPerSR_ValidCells{nSR-1},neighsPerSR_ValidCells{nSR},'UniformOutput',false);
                         wonNeigh = cellfun(@(x,y) setdiff(y,x),neighsPerSR_ValidCells{nSR-1},neighsPerSR_ValidCells{nSR},'UniformOutput',false);
@@ -124,7 +124,7 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
                         numLostNeighsAccumBasalToApical{nRand,nSR} = cell(size(neighsPerSR_ValidCells{nSR}));
                         numWonNeighsAccumBasalToApical{nRand,nSR} = cell(size(neighsPerSR_ValidCells{nSR}));
                     else
-                        neighsAccumBasalToApical{nRand,nSR} = cellfun(@(x,y) unique([x;y]),neighsPerSR_ValidCells{nSR},neighsAccumBasalToApical{nSR+1},'UniformOutput',false);
+                        neighsAccumBasalToApical{nRand,nSR} = cellfun(@(x,y) unique([x;y]),neighsPerSR_ValidCells{nSR},neighsAccumBasalToApical{nRand,nSR+1},'UniformOutput',false);
 
                         lostNeigh = cellfun(@(x,y) setdiff(x,y),neighsPerSR_ValidCells{nSR+1},neighsPerSR_ValidCells{nSR},'UniformOutput',false);
                         wonNeigh = cellfun(@(x,y) setdiff(y,x),neighsPerSR_ValidCells{nSR+1},neighsPerSR_ValidCells{nSR},'UniformOutput',false);
