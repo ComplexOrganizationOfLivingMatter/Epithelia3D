@@ -19,12 +19,14 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
     nUniqueNeighApical = unique(totalNeighApical);
     
     switch initialDiagram
-        case 1
+        case 1 %% Voronoi 1
             colorPlot = [200/255,200/255,200/255];
-        case 8
+        case 8 %% Voronoi 8
             colorPlot = [0.2,0.4,1];
-        case 0 %% Gland
+        case 0 %% WT Gland
             colorPlot = [151 238 152]/255;
+        case 2 %% Ecadhi flatten
+            colorPlot = [238 173 60]/255;
     end
         
     
