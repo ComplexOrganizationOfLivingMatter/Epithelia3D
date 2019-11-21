@@ -1,7 +1,7 @@
 %%Stl tube building
 H_apical = 512;
-W_apical = 4096;
-numSeeds = 200;
+W_apical = 1024;
+numSeeds = 40;
 numTotalImages = 1;
 reductionFactor = 2;
 % surfaceRatio = 5;
@@ -12,27 +12,32 @@ colors = winter(numSeeds);
 colors = colors(randperm(numSeeds),:);
 
 % nameFig = ['data\tubularVoronoiModel\expansion\' num2str(H_apical) 'x' num2str(W_apical) '_' num2str(numSeeds) 'seeds\Image_1_Diagram_8\sr2.fig'];
-nameFig = ['data\tubularVoronoiModel\expansion\' num2str(H_apical) 'x' num2str(W_apical) '_' num2str(numSeeds) 'seeds\diagram' num2str(initialDiagram) '\Image_1_Diagram_' num2str(initialDiagram) '\sr4.fig'];
+nameFig = ['data\tubularVoronoiModel\expansion\' num2str(H_apical) 'x' num2str(W_apical) '_' num2str(numSeeds) 'seeds\Image_1_Diagram_' num2str(initialDiagram) '\sr5.fig'];
 h=openfig(nameFig);
 lighting gouraud
 material dull
-print(h,'-dpdf','-r300',strrep(nameFig,'.fig','.pdf'))
-% set(gca,'color','none')
-% axis off
-refFig = gca;
+savefig(h,nameFig);
+print(h,'-dpdf','-r600',strrep(nameFig,'.fig',['_' date '.pdf']))
 
-for surfaceRatio = [1.8]%,4]
+load('C:\Users\PedroPC\Desktop|reffig.mat','refFig')
+%%refFig = gca;
+
+
+for surfaceRatio = [3.333,2,1.25]
     
-    path2save = ['data\tubularVoronoiModel\expansion\' num2str(H_apical) 'x' num2str(W_apical) '_' num2str(numSeeds) 'seeds\diagram' num2str(initialDiagram) '\stlInfo\SR' num2str(surfaceRatio) '\'];
+    %path2save = ['data\tubularVoronoiModel\expansion\' num2str(H_apical) 'x' num2str(W_apical) '_' num2str(numSeeds) 'seeds\diagram' num2str(initialDiagram) '\stlInfo\SR' num2str(surfaceRatio) '\'];
 
-    addpath(genpath('beforePaperCode\srcBeforePaperCode\projectionSurfaceVoronoi5\'));
-    addpath(genpath('src'))
+    nameFig = ['data\tubularVoronoiModel\expansion\' num2str(H_apical) 'x' num2str(W_apical) '_' num2str(numSeeds) 'seeds\Image_1_Diagram_' num2str(initialDiagram) '\sr' num2str(surfaceRatio) '.fig'];
+    h=openfig(nameFig);
+    
+%     addpath(genpath('beforePaperCode\srcBeforePaperCode\projectionSurfaceVoronoi5\'));
+%     addpath(genpath('src'))
     % tic
 %     main3dVoronoiSegmentCylinder(H_apical,W_apical,numSeeds,numTotalImages,surfaceRatio,intermediateSurfaceRatios,reductionFactor,initialDiagram,typeProjection,path2save);
 %     h=paint3DVoronoiTubes(path2save,numSeeds,colors);
 %     
 %     % toc
-    h=openfig(strrep(nameFig,'sr4','sr1.8'));
+    %h=openfig(strrep(nameFig,'sr4','sr1.8'));
 
     newFig = gca;
     newFig.XScale = refFig.XScale;
@@ -51,7 +56,6 @@ for surfaceRatio = [1.8]%,4]
     camproj('perspective')
     lighting gouraud
     material dull
-    nameSaveFig = strrep(nameFig,'sr4.fig',['sr' num2str(surfaceRatio) '.fig']);
-    savefig(h,nameSaveFig);
-    print(h,'-dpdf','-r300',strrep(nameSaveFig,'.fig','.pdf'))
+
+    print(h,'-dpdf','-r600',strrep(nameFig,'.fig',['_' date '.pdf']))
 end
