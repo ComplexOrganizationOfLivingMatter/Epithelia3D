@@ -51,10 +51,14 @@ for nRea = 1:nRealizations
     areaValidCells = areaCells(validCells);
     logNormArea{nRea} = log10(areaValidCells./(mean(areaValidCells)));
     normArea{nRea} = areaValidCells./(mean(areaValidCells));
-    basalSidesCells{nRea} = sidesCellsBasal(validCells);
-    apicalSidesCells{nRea} = sidesCellsApical(validCells);
-
-    totalSidesCells{nRea} = cellfun(@(x,y) length(unique([x;y])),neighsBasal(validCells),neighsApical(validCells));
+    basalSidesCells{nRea} = sidesCellsBasal;
+    apicalSidesCells{nRea} = sidesCellsApical;
+    apicalSidesCellsValidCells{nRea} = sidesCellsApical(validCells);
+    basalSidesCellsValidCells{nRea} = sidesCellsBasal(validCells);
+    neighsBasalRealizations{nRea} = neighsBasal;
+    neighsApicalRealizations{nRea} = neighsApical;
+    validCellsRealizations{nRea} = validCells;
+    totalSidesCells{nRea} = cellfun(@(x,y) length(unique([x;y])),neighsBasal,neighsApical);
 
 end
 
@@ -74,11 +78,13 @@ dispersionLogNormArea = vertcat(logNormArea{:});
 dispersionNormArea = vertcat(normArea{:});
 
 %% Lewis 2D
-relationNormArea_numSides = [horzcat(basalSidesCells{:})',dispersionNormArea];
-uniqSides = unique(horzcat(basalSidesCells{:}));
+relationNormArea_numSides = [horzcat(basalSidesCellsValidCells{:})',dispersionNormArea];
+uniqSides = unique(horzcat(basalSidesCellsValidCells{:}));
 lewis_NormArea = [uniqSides;arrayfun(@(x) mean(relationNormArea_numSides(ismember(relationNormArea_numSides(:,1),x),2)),uniqSides);
     arrayfun(@(x) std(relationNormArea_numSides(ismember(relationNormArea_numSides(:,1),x),2)),uniqSides)];
 
-save(['polygonDistribution_diag_' num2str(nDiagram) 'sr' num2str(sr) '_volume.mat'],'meanPolyDist','stdPolyDist','polyDist','dispersionLogNormArea','dispersionNormArea','lewis_NormArea','apicalSidesCells','totalSidesCells','lewis3D_volNorm')
+save(['polygonDistribution_diag_' num2str(nDiagram) 'sr' num2str(sr) '_volume.mat'],'meanPolyDist','stdPolyDist',...
+    'polyDist','dispersionLogNormArea','dispersionNormArea','lewis_NormArea','apicalSidesCells','basalSidesCells',...
+    'totalSidesCells','neighsBasalRealizations','neighsApicalRealizations','lewis3D_volNorm','validCellsRealizations')
 
 
