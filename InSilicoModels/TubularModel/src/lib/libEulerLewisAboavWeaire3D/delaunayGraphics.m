@@ -1,4 +1,4 @@
-function delaunayGraphics(folderName,tableTotalResults,voronoiNumber)
+function delaunayGraphics(folderName,tableTotalResults,voronoiNumber,srOfInterest)
 
     switch voronoiNumber
         case 1
@@ -11,7 +11,6 @@ function delaunayGraphics(folderName,tableTotalResults,voronoiNumber)
             colorPlot = [0 0 0];
     end
 
-    srOfInterest = 1:0.25:10;
     arrayTable = table2array(tableTotalResults);
     arrayTable(isnan(arrayTable)) = 0;
     srInd = ismember(arrayTable(1,:),srOfInterest);
