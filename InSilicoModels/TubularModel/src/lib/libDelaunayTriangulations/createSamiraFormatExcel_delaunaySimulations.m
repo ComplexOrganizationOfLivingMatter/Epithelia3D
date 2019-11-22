@@ -6,13 +6,11 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_delaunaySimulations(path
     nameOfSimulation = pathSplitted{end-1};
 
     %% Simulations
-    load(strcat(pathFile, nameOfSimulation,'.mat'), 'listSeedsProjected');
     
-    initialSeeds = listSeedsProjected{vertcat(listSeedsProjected{:,1})==1,2};
-    initialSeeds= initialSeeds{1};
-    initialSeeds = initialSeeds(:,2:3);
-    
-    
+    load([pathSplitted{1} '\tubularCVT\Data\' pathSplitted{4} '\' nameOfSimulation '.mat'],'seeds')
+                
+    initialSeeds = seeds;
+
     nameSplitted = strsplit(nameOfSimulation, '_');
     samiraTableVoronoi = {};
     dir2save = strcat(strjoin(pathSplitted(1:end-2), '\'),'\verticesSamira\');

@@ -20,12 +20,13 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
         neighsAccumApicalToBasal=cell(numRand,length(surfaceRatios));
         neighsAccumBasalToApical=cell(numRand,length(surfaceRatios));
 
-        % path2save = ['..\..\3D_laws\delaunayData\delaunayCyl_Voronoi' num2str(nVoronoi) '_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'];
         folderName = ['..\..\3D_laws\delaunayData\Voronoi ' num2str(nVoronoi) '\'];
-        fileName = ['delaunayCyl_Voronoi' num2str(nVoronoi) '_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'];
+        %fileName = ['delaunayCyl_Voronoi' num2str(nVoronoi) '_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'];
+        fileName = ['delaunayCyl_Voronoi' num2str(nVoronoi) '_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_22-Nov-2019.mat'];
+        
         mkdir(folderName)
         path2save = [folderName fileName];
-        %if ~exist(path2save,'file')
+        if ~exist(path2save,'file')
             
             for nRand = 1:numRand
  
@@ -143,9 +144,6 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
             averageTransitionsApiToBasal = cellfun(@mean, numTransitionsApicalToBasal);
             averageTransitionsBasToApical = cellfun(@mean, numTransitionsBasalToApical);
 
-            % averageLost = mean(cellfun(@(x) mean(cellfun(@length, x)),numLostNeighsAccum));
-            % averageWon = mean(cellfun(@(x) mean(cellfun(@length, x)),numWonNeighsAccum));
-
             tableSR = array2table(surfaceRatios,'RowNames',{'surfaceRatio'});
             tableNeighsAccumApiToBasal = array2table(numAverageNeighsAccumApiToBasal,'VariableNames',tableSR.Properties.VariableNames);
             tableEuler3D = [tableSR;tableNeighsAccumApiToBasal];
@@ -154,19 +152,16 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
 
             tableTotalResultsApiToBasal = [tableSR;array2table([mean(numAverageNeighsAccumApiToBasal);std(numAverageNeighsAccumApiToBasal);mean(averageTransitionsApiToBasal);std(averageTransitionsApiToBasal);mean(percentageScutoidsApicalToBasal);std(percentageScutoidsApicalToBasal)],'VariableNames',tableSR.Properties.VariableNames,'RowNames',{'meanNeighbours','stdNeighbours','meanTransitions','stdTransitions','meanScutoids','stdScutoids'})];
             tableTotalResultsBasToApical = [tableSR;array2table([mean(numAverageNeighsAccumBasToApical);std(numAverageNeighsAccumBasToApical);mean(averageTransitionsBasToApical);std(averageTransitionsBasToApical);mean(percentageScutoidsBasalToApical);std(percentageScutoidsBasalToApical)],'VariableNames',tableSR.Properties.VariableNames,'RowNames',{'meanNeighbours','stdNeighbours','meanTransitions','stdTransitions','meanScutoids','stdScutoids'})];
-
-            % averageLost = mean(cellfun(@(x) mean(cellfun(@length, x)),numLostNeighsAccum));
-            % averageWon = mean(cellfun(@(x) mean(cellfun(@length, x)),numWonNeighsAccum));
             
             save(path2save,'percentageScutoidsApicalToBasal','averageTransitionsApiToBasal','numTransitionsApicalToBasal','tableEuler3D','neighsAccumApicalToBasal','neighsAccumApiToBasalFinalSR','tableTotalResultsApiToBasal',...
                 'numLostNeighsAccumApicalToBasal','numWonNeighsAccumApicalToBasal','numLostNeighsAccumBasalToApical','numWonNeighsAccumBasalToApical','percentageScutoidsBasalToApical',...
                 'averageTransitionsBasToApical','numTransitionsBasalToApical','neighsAccumBasalToApical','neighsAccumBasToApicalFinalSR','tableTotalResultsBasToApical');
-    %    else
+       else
 
             load(path2save,'tableTotalResultsApiToBasal','tableTotalResultsBasToApical')
-     %   end
+       end
 
-       % delaunayGraphics(folderName,tableTotalResultsApiToBasal,nVoronoi,surfaceRatios)
+       delaunayGraphics(folderName,tableTotalResultsApiToBasal,nVoronoi,surfaceRatios)
 %         delaunayGraphics(folderName,tableTotalResultsBasToApical,nVoronoi);
 
     end
