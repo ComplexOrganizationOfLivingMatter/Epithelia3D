@@ -21,11 +21,11 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
         neighsAccumBasalToApical=cell(numRand,length(surfaceRatios));
 
         % path2save = ['..\..\3D_laws\delaunayData\delaunayCyl_Voronoi' num2str(nVoronoi) '_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'];
-        folderName = '..\..\3D_laws\delaunayData\';
+        folderName = ['..\..\3D_laws\delaunayData\Voronoi ' num2str(nVoronoi) '\'];
         fileName = ['delaunayCyl_Voronoi' num2str(nVoronoi) '_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'];
-        mkdir([folderName 'Voronoi ' num2str(nVoronoi)])
-        path2save = [folderName 'Voronoi ' num2str(nVoronoi) '\' fileName];
-        if ~exist(path2save,'file')
+        mkdir(folderName)
+        path2save = [folderName fileName];
+        %if ~exist(path2save,'file')
             
             for nRand = 1:numRand
  
@@ -99,13 +99,13 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
                         numLostNeighsAccumApicalToBasal{nRand,nSR} = cell(size(neighsPerSR_ValidCells{nSR}));
                         numWonNeighsAccumApicalToBasal{nRand,nSR} = cell(size(neighsPerSR_ValidCells{nSR}));
                     else
-                        neighsAccumApicalToBasal{nRand,nSR} = cellfun(@(x,y) unique([x;y]),neighsPerSR_ValidCells{nSR},neighsAccumApicalToBasal{nRand,nSR-1},'UniformOutput',false);
+                        neighsAccumApicalToBasal{nRand,nSR} = cellfun(@(x,y) unique([[x(:)];[y(:)]]),neighsPerSR_ValidCells{nSR},neighsAccumApicalToBasal{nRand,nSR-1},'UniformOutput',false);
 
-                        lostNeigh = cellfun(@(x,y) setdiff(x,y),neighsPerSR_ValidCells{nSR-1},neighsPerSR_ValidCells{nSR},'UniformOutput',false);
-                        wonNeigh = cellfun(@(x,y) setdiff(y,x),neighsPerSR_ValidCells{nSR-1},neighsPerSR_ValidCells{nSR},'UniformOutput',false);
+                        lostNeigh = cellfun(@(x,y) setdiff(x(:),y(:)),neighsPerSR_ValidCells{nSR-1},neighsPerSR_ValidCells{nSR},'UniformOutput',false);
+                        wonNeigh = cellfun(@(x,y) setdiff(y(:),x(:)),neighsPerSR_ValidCells{nSR-1},neighsPerSR_ValidCells{nSR},'UniformOutput',false);
 
-                        numLostNeighsAccumApicalToBasal{nRand,nSR} = cellfun(@(x,y) unique([x;y]),lostNeigh,numLostNeighsAccumApicalToBasal{nRand,nSR-1},'UniformOutput',false);
-                        numWonNeighsAccumApicalToBasal{nRand,nSR} = cellfun(@(x,y) unique([x;y]),wonNeigh,numWonNeighsAccumApicalToBasal{nRand,nSR-1},'UniformOutput',false);
+                        numLostNeighsAccumApicalToBasal{nRand,nSR} = cellfun(@(x,y) unique([[x(:)];[y(:)]]),lostNeigh,numLostNeighsAccumApicalToBasal{nRand,nSR-1},'UniformOutput',false);
+                        numWonNeighsAccumApicalToBasal{nRand,nSR} = cellfun(@(x,y) unique([[x(:)];[y(:)]]),wonNeigh,numWonNeighsAccumApicalToBasal{nRand,nSR-1},'UniformOutput',false);
 
                         numTransitionsApicalToBasal{nRand,nSR} = cellfun(@(x,y) length(([x;y])),numLostNeighsAccumApicalToBasal{nRand,nSR},numWonNeighsAccumApicalToBasal{nRand,nSR});     
                         percentageScutoidsApicalToBasal(nRand,nSR) = sum(arrayfun(@(x) sum(x)>0,numTransitionsApicalToBasal{nRand,nSR}))/length(validCells);
@@ -124,13 +124,13 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
                         numLostNeighsAccumBasalToApical{nRand,nSR} = cell(size(neighsPerSR_ValidCells{nSR}));
                         numWonNeighsAccumBasalToApical{nRand,nSR} = cell(size(neighsPerSR_ValidCells{nSR}));
                     else
-                        neighsAccumBasalToApical{nRand,nSR} = cellfun(@(x,y) unique([x;y]),neighsPerSR_ValidCells{nSR},neighsAccumBasalToApical{nRand,nSR+1},'UniformOutput',false);
+                        neighsAccumBasalToApical{nRand,nSR} = cellfun(@(x,y) unique([[x(:)];[y(:)]]),neighsPerSR_ValidCells{nSR},neighsAccumBasalToApical{nRand,nSR+1},'UniformOutput',false);
 
                         lostNeigh = cellfun(@(x,y) setdiff(x,y),neighsPerSR_ValidCells{nSR+1},neighsPerSR_ValidCells{nSR},'UniformOutput',false);
                         wonNeigh = cellfun(@(x,y) setdiff(y,x),neighsPerSR_ValidCells{nSR+1},neighsPerSR_ValidCells{nSR},'UniformOutput',false);
 
-                        numLostNeighsAccumBasalToApical{nRand,nSR} = cellfun(@(x,y) unique([x;y]),lostNeigh,numLostNeighsAccumBasalToApical{nRand,nSR+1},'UniformOutput',false);
-                        numWonNeighsAccumBasalToApical{nRand,nSR} = cellfun(@(x,y) unique([x;y]),wonNeigh,numWonNeighsAccumBasalToApical{nRand,nSR+1},'UniformOutput',false);
+                        numLostNeighsAccumBasalToApical{nRand,nSR} = cellfun(@(x,y) unique([[x(:)];[y(:)]]),lostNeigh,numLostNeighsAccumBasalToApical{nRand,nSR+1},'UniformOutput',false);
+                        numWonNeighsAccumBasalToApical{nRand,nSR} = cellfun(@(x,y) unique([[x(:)];[y(:)]]),wonNeigh,numWonNeighsAccumBasalToApical{nRand,nSR+1},'UniformOutput',false);
 
                         numTransitionsBasalToApical{nRand,nSR} = cellfun(@(x,y) length(([x;y])),numLostNeighsAccumBasalToApical{nRand,nSR},numWonNeighsAccumBasalToApical{nRand,nSR});     
                         percentageScutoidsBasalToApical(nRand,nSR) = sum(arrayfun(@(x) sum(x)>0,numTransitionsBasalToApical{nRand,nSR}))/length(validCells);
@@ -159,13 +159,14 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
             % averageWon = mean(cellfun(@(x) mean(cellfun(@length, x)),numWonNeighsAccum));
             
             save(path2save,'percentageScutoidsApicalToBasal','averageTransitionsApiToBasal','numTransitionsApicalToBasal','tableEuler3D','neighsAccumApicalToBasal','neighsAccumApiToBasalFinalSR','tableTotalResultsApiToBasal',...
-                'percentageScutoidsBasalToApical','averageTransitionsBasToApical','numTransitionsBasalToApical','neighsAccumBasalToApical','neighsAccumBasToApicalFinalSR','tableTotalResultsBasToApical');
-        else
+                'numLostNeighsAccumApicalToBasal','numWonNeighsAccumApicalToBasal','numLostNeighsAccumBasalToApical','numWonNeighsAccumBasalToApical','percentageScutoidsBasalToApical',...
+                'averageTransitionsBasToApical','numTransitionsBasalToApical','neighsAccumBasalToApical','neighsAccumBasToApicalFinalSR','tableTotalResultsBasToApical');
+    %    else
 
             load(path2save,'tableTotalResultsApiToBasal','tableTotalResultsBasToApical')
-        end
+     %   end
 
-        delaunayGraphics(folderName,tableTotalResultsApiToBasal,nVoronoi,surfaceRatios);
+       % delaunayGraphics(folderName,tableTotalResultsApiToBasal,nVoronoi,surfaceRatios)
 %         delaunayGraphics(folderName,tableTotalResultsBasToApical,nVoronoi);
 
     end
