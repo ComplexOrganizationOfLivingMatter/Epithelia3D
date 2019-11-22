@@ -41,7 +41,7 @@ function cellWithVertices = groupingVerticesPerCellSurface(verticesInfo,vertices
             row2={nRand radius nCell booleanNoValidCell 2 reshape(vertRight.', 1, [])};
             row=[row1;row2];
         else
-            if any(distBetwVert > W/2) && isstruct(verticesInfo)
+            if any(distBetwVert > W/1.5) && isstruct(verticesInfo)
                 indRightBorder = vert(:,2) > W/2;
                 vertRight = vert;
                 vertLeft = vert;
