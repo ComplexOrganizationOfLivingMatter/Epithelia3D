@@ -61,12 +61,22 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_delaunaySimulations(path
         %subdivide triplet of no valid cells in pairs and delete extra
         %connections
         for nTri =1 : size(tripletNoValidCells,1)
-            a = sum(ismember(pairNoValidCells(:),tripletNoValidCells(nTri,1)));
-            b = sum(ismember(pairNoValidCells(:),tripletNoValidCells(nTri,2)));
-            c = sum(ismember(pairNoValidCells(:),tripletNoValidCells(nTri,3)));
+            
+            triAux = tripletNoValidCells(nTri,:);
+            triAux(triAux>nSeeds)= triAux(triAux>nSeeds) - nSeeds;
+            triAux(triAux>nSeeds)= triAux(triAux>nSeeds) - nSeeds;
+            triAux = [triAux; triAux + nSeeds; triAux + 2*nSeeds];
+            
+            a = sum(ismember(pairNoValidCells(:),triAux(:,1)));
+            b = sum(ismember(pairNoValidCells(:),triAux(:,2)));
+            c = sum(ismember(pairNoValidCells(:),triAux(:,3)));
+            
+%             a = sum(ismember(pairNoValidCells(:),tripletNoValidCells(nTri,1)));
+%             b = sum(ismember(pairNoValidCells(:),tripletNoValidCells(nTri,2)));
+%             c = sum(ismember(pairNoValidCells(:),tripletNoValidCells(nTri,3)));
             [~,indMin] = sort([a,b,c]);
             
-            pairNoValidCells(sum(ismember(pairNoValidCells,[tripletNoValidCells(nTri,indMin(2)),tripletNoValidCells(nTri,indMin(3))]),2)==2,:)=[];
+            pairNoValidCells(sum(ismember(pairNoValidCells,[triAux(:,indMin(2)),triAux(:,indMin(3))]),2)==2,:)=[];
             pairNoValidCells = [pairNoValidCells;[tripletNoValidCells(nTri,indMin(1)),tripletNoValidCells(nTri,indMin(2)),0]];
             pairNoValidCells = [pairNoValidCells;[tripletNoValidCells(nTri,indMin(1)),tripletNoValidCells(nTri,indMin(3)),0]];
         end
