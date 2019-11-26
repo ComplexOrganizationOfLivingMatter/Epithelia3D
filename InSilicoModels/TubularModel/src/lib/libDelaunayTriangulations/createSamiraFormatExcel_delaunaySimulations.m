@@ -60,6 +60,7 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_delaunaySimulations(path
         
         %subdivide triplet of no valid cells in pairs and delete extra
         %connections
+        tripletNoValidCellsAux = tripletNoValidCells;
         for nTri =1 : size(tripletNoValidCells,1)
             
             triAux = tripletNoValidCells(nTri,:);
@@ -71,14 +72,36 @@ function [samiraTableVoronoi] = createSamiraFormatExcel_delaunaySimulations(path
             b = sum(ismember(pairNoValidCells(:),triAux(:,2)));
             c = sum(ismember(pairNoValidCells(:),triAux(:,3)));
             
-%             a = sum(ismember(pairNoValidCells(:),tripletNoValidCells(nTri,1)));
-%             b = sum(ismember(pairNoValidCells(:),tripletNoValidCells(nTri,2)));
-%             c = sum(ismember(pairNoValidCells(:),tripletNoValidCells(nTri,3)));
-            [~,indMin] = sort([a,b,c]);
+            setSorting = [a,b,c];
+            [~,indMin] = sort(setSorting);
+            if setSorting(indMin(1)) == setSorting(indMin(2))
+                sumInd1 = sum(ismember(tripletNoValidCellsAux(:),triAux(:,indMin(1))));
+                sumInd2 = sum(ismember(tripletNoValidCellsAux(:),triAux(:,indMin(2))));
+                
+                if sumInd1 > sumInd2
+                    indMin = [indMin(2),indMin(1),indMin(3)];
+                end
+                tripletNoValidCellsAux(sum(ismember(tripletNoValidCellsAux,[triAux(:,indMin(1)),triAux(:,indMin(2))]),2)==2,:)=[];
+            end
             
             pairNoValidCells(sum(ismember(pairNoValidCells,[triAux(:,indMin(2)),triAux(:,indMin(3))]),2)==2,:)=[];
             pairNoValidCells = [pairNoValidCells;[tripletNoValidCells(nTri,indMin(1)),tripletNoValidCells(nTri,indMin(2)),0]];
             pairNoValidCells = [pairNoValidCells;[tripletNoValidCells(nTri,indMin(1)),tripletNoValidCells(nTri,indMin(3)),0]];
+        end
+        
+        %delete extra non-valid cells due to combinations of triplets of
+        %non-valid cells
+        pairNoValidCellsVis = pairNoValidCells;
+        pairNoValidCellsVis(pairNoValidCellsVis>nSeeds)= pairNoValidCellsVis(pairNoValidCellsVis>nSeeds) - nSeeds;
+        pairNoValidCellsVis(pairNoValidCellsVis>nSeeds)= pairNoValidCellsVis(pairNoValidCellsVis>nSeeds) - nSeeds;
+        
+        uv = unique(pairNoValidCellsVis(:));
+        uv = uv(2:end);
+        n  = histc(pairNoValidCellsVis(:),uv);
+        if any(n>2)
+            pairs2delete = uv(n>2)';
+            pairs2delete = [pairs2delete;pairs2delete+nSeeds;pairs2delete+2*nSeeds];
+            pairNoValidCells(sum(ismember(pairNoValidCells,pairs2delete),2)==2,:)=[];
         end
         
         %relocate seeds close to the origin
