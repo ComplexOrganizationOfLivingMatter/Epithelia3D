@@ -5,7 +5,7 @@ wInit = 512;
 hInit = 4096;
 numSeeds = 200;
 numRand = 20;
-sr = 1:0.25:10;
+sr = 1:0.25:5;
 
 %initial Voronoi diagrams
 setVoronoi = 1 : 10;
