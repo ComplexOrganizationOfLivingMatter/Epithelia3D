@@ -141,8 +141,6 @@ function [logEulerTable, piecewiseEulerTable, logisticEulerTable] = delaunayGrap
     %% figure fitting Euler 3D - Logistic function
     close all
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');  
-    
-    %fitting using master equation
     outputFitting.rsquare = [];
     opts = fitoptions('Method','NonlinearLeastSquares','Robust','on','Algorithm','levenberg-marquardt','TolFun',10^-3,'TolX',10^-4,'MaxFunEvals',10^5,'MaxIter',10^5);
     %'Lower',[-4,-10,-10,40],'Upper',[0,0,0,100],
