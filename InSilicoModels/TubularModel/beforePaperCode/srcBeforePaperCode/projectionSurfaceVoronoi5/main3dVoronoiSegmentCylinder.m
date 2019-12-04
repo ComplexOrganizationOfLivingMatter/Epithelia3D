@@ -14,9 +14,9 @@ function main3dVoronoiSegmentCylinder (H_apical,W_apical,numSeeds,numTotalImages
         num2str(numSeeds) 'seeds\diagram' num2str(initialDiagram) '\Image_' num2str(numImage) '_Diagram_' num2str(initialDiagram) ...
         '\Image_' num2str(numImage) '_Diagram_' num2str(initialDiagram) '.mat'];
     
-        load(path2load,'listSeedsProjected','listLOriginalProjection')
+        structLoad=load(path2load,'listSeedsProjected','listLOriginalProjection');
 
-        initialSeeds=listSeedsProjected.seedsApical{listSeedsProjected.surfaceRatio==1};
+        initialSeeds=structLoad.listSeedsProjected{[structLoad.listSeedsProjected{:,1}]==1,2};
         initialSeeds=initialSeeds(:,2:end);
         
         name2save= ['Image_' num2str(numImage) '_' num2str(numSeeds) 'seeds'];
