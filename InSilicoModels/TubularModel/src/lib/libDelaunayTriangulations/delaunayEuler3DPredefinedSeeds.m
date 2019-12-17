@@ -4,10 +4,12 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
     cellTableFittingEulerLogApiToBas = cell(length(setVoronoi));
     cellTableFittingEulerPiecewiseApiToBas = cell(length(setVoronoi));
     cellTableFittingEulerLogisticApiToBas = cell(length(setVoronoi));
+    cellTableFittingEulerLogisticApiToBasBuceta= cell(length(setVoronoi));
     
     cellTableFittingEulerLogBasToApi = cell(length(setVoronoi));
     cellTableFittingEulerPiecewiseBasToApi = cell(length(setVoronoi));
     cellTableFittingEulerLogisticBasToApi = cell(length(setVoronoi));
+    cellTableFittingEulerLogisticBasToApiBuceta= cell(length(setVoronoi));
     
     cellTotalVoronoiResultsApiToBasal = cell(length(setVoronoi),1);
     cellTotalVoronoiResultsBasToApical = cell(length(setVoronoi),1);
@@ -174,8 +176,8 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
             load(path2save,'tableTotalResultsApiToBasal','tableTotalResultsBasToApical','neighsAccumApicalToBasal','neighsAccumBasalToApical')
        end
 
-       %[cellTableFittingEulerLogApiToBas{nVoronoi}, cellTableFittingEulerPiecewiseApiToBas{nVoronoi}, cellTableFittingEulerLogisticApiToBas{nVoronoi}] = delaunayGraphics([folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\'],tableTotalResultsApiToBasal,setVoronoi(nVoronoi),surfaceRatios,'FromApicalToBasal',neighsAccumApicalToBasal,numRand);
-       %[cellTableFittingEulerLogBasToApi{nVoronoi},cellTableFittingEulerPiecewiseBasToApi{nVoronoi},cellTableFittingEulerLogisticBasToApi{nVoronoi}] = delaunayGraphics([folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\'],tableTotalResultsBasToApical,setVoronoi(nVoronoi),surfaceRatios,'FromBasalToApical',neighsAccumBasalToApical,numRand);
+       [cellTableFittingEulerLogApiToBas{nVoronoi}, cellTableFittingEulerPiecewiseApiToBas{nVoronoi}, cellTableFittingEulerLogisticApiToBas{nVoronoi}, cellTableFittingEulerLogisticApiToBasBuceta{nVoronoi}] = delaunayGraphics([folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\'],tableTotalResultsApiToBasal,setVoronoi(nVoronoi),surfaceRatios,'FromApicalToBasal',neighsAccumApicalToBasal,numRand);
+       %[cellTableFittingEulerLogBasToApi{nVoronoi},cellTableFittingEulerPiecewiseBasToApi{nVoronoi},cellTableFittingEulerLogisticBasToApi{nVoronoi},cellTableFittingEulerLogisticBasToApiBuceta{nVoronoi}] = delaunayGraphics([folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\'],tableTotalResultsBasToApical,setVoronoi(nVoronoi),surfaceRatios,'FromBasalToApical',neighsAccumBasalToApical,numRand);
     
        cellTotalVoronoiResultsApiToBasal{nVoronoi} = tableTotalResultsApiToBasal;
        cellTotalVoronoiResultsBasToApical{nVoronoi} = tableTotalResultsBasToApical;
@@ -184,10 +186,12 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
     cellTableFittingEulerLogApiToBas = vertcat(cellTableFittingEulerLogApiToBas{:});
     cellTableFittingEulerPiecewiseApiToBas = vertcat(cellTableFittingEulerPiecewiseApiToBas{:});
     cellTableFittingEulerLogisticApiToBas = vertcat(cellTableFittingEulerLogisticApiToBas{:});
+    cellTableFittingEulerLogisticApiToBasBuceta = vertcat(cellTableFittingEulerLogisticApiToBasBuceta{:});
     
     cellTableFittingEulerLogBasToApi = vertcat(cellTableFittingEulerLogBasToApi{:});
     cellTableFittingEulerPiecewiseBasToApi = vertcat(cellTableFittingEulerPiecewiseBasToApi{:});
     cellTableFittingEulerLogisticBasToApi = vertcat(cellTableFittingEulerLogisticBasToApi{:});
+    cellTableFittingEulerLogisticBasToApiBuceta = vertcat(cellTableFittingEulerLogisticBasToApiBuceta{:});
     
     graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal)
     
