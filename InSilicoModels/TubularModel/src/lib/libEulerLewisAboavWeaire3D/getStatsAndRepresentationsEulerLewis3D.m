@@ -228,6 +228,82 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
     end  
     
     
+    %% Euler 3D - logistic fitting with physical constrictions
+    %restrictions     
+    %c > 0      x(1)
+    %d < 0      x(2)
+    %If d < -1 then c*ln(-d) < 1.
+    %Nmax > 0   x(3) 
+    %d > b
+    %b is the dependent variable to force <m(s=1)> = 6.
+    
+    b=1;d=1;c=-1;
+    nMax=0;
+    coeffvals = [b c d nMax];
+    
+    rng default % For reproducibility
+    gs = GlobalSearch;
+     
+    vBound = 0.01;
+    p0=[vBound,-vBound,6];
+    lb = [vBound,-inf,6];
+    ub = [inf,-vBound,inf];
+    global xdata;
+    global ydata;
+    xdata=surfRatios;
+    stdNeighBasalAcum = std(cat(1,meanNeighBasalAcum{:,:}));
+    meanNeighBasalAcum = mean(cat(1,meanNeighBasalAcum{:,:}));
+    ydata=meanNeighBasalAcum;
+
+    problem = createOptimProblem('fmincon','x0',p0,...
+        'objective',@fittingLogFunc,'lb',lb,'ub',ub);%),'options',options);
+    
+    sol = run(gs,problem);
+    c = sol(1);
+    d = sol(2);
+    Nmax = sol(3);
+    b = (6*d - exp(1/c)*(Nmax-6))/Nmax;
+    coeffvals = [b sol];
+    sse = fittingLogFunc(sol);
+    global rsquare;
+    
+    f = fittype('Nmax*(((6*d - exp(1/c)*(Nmax-6))/Nmax) + exp(s/c))/(d + exp(s/c))','independent','s','coefficients',{'c','d','Nmax'});
+    myfitLogConstrained = cfit(f,c,d,Nmax);
+    
+    logisticEulerTableBuceta = array2table([coeffvals sse rsquare],'VariableNames',{'b','c','d','Nmax','sse','rsquared'}, 'RowNames',{'SalivaryGland'});
+
+    h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');   
+      
+    plot(myfitLogConstrained, [1 max(surfRatios)+1], [6 myfitLogConstrained(max(surfRatios)+1)])
+    
+    children = get(gca, 'children');
+    delete(children(2));
+    set(children(1),'LineWidth',2,'Color',colorPlot)  
+    
+    hold on
+    errorbar(surfRatios,meanNeighBasalAcum,stdNeighBasalAcum,'o','MarkerSize',5,...
+            'Color',[0 0 0],'MarkerFaceColor',colorPlot,'LineWidth',0.2)
+    title(['euler neighbours 3D - Sal. Gland'])
+    xlabel('surface ratio')
+    ylabel('neighbours total')
+    
+    x = [0 max(surfRatios)+2];
+    y = [6 6];
+    line(x,y,'Color','red','LineStyle','--')
+    hold off
+    ylim([5,12]);
+    yticks(5:12)  
+    xlim([0,max(surfRatios)+2]);
+    xticks(0:max(surfRatios)+2)  
+    set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
+    legend('hide')
+    
+    print(h,[path2save 'euler3D_SalGland_LogisticConstrained_noLegend_' date],'-dtiff','-r300')
+    legend({['Sal. Gland - R^2 ' num2str(rsquare)]})
+    savefig(h,[path2save 'euler3D_SalGland_LogisticConstrained_' date])
+    print(h,[path2save 'euler3D_SalGland_LogisticConstrained_legend_' date],'-dtiff','-r300')
+    
+    
     %% Euler 3D
     close all
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');   

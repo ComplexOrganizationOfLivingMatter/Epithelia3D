@@ -47,10 +47,8 @@ function sse=fittingLogFunc(x)
     global rsquare;
     
     rsquare = 1 - sum((ydata(:)-f(:)).^2)/sum((ydata(:)).^2);
-    
-    
-%fun = @(x)sseval(x,tdata,ydata);
-%x0 = rand(2,1); bestx = fminsearch(fun,x0);
+
+       
 end
 
 %https://es.mathworks.com/help/matlab/math/example-curve-fitting-via-optimization.html
