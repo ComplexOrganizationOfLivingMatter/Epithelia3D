@@ -20,7 +20,7 @@ refFig = gca;
 
 delete(gcp('nocreate'))
 parpool(4);
-surfaceRatios = [4.5,4,3.5,3,2.5,2,1.75,1.5,1.25];
+surfaceRatios = [2,1.75,1.5,1.25];
 
 for nSr = 1:length(surfaceRatios)
     

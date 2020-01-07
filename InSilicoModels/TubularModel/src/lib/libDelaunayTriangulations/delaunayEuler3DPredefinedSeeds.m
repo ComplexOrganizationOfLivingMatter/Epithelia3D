@@ -175,15 +175,18 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
                 'averageTransitionsBasToApical','numTransitionsBasalToApical','neighsAccumBasalToApical','neighsAccumBasToApicalFinalSR','tableTotalResultsBasToApical');
        else
 
-            load(path2save,'tableTotalResultsApiToBasal','tableTotalResultsBasToApical','neighsAccumApicalToBasal','neighsAccumBasalToApical','neighsPerLayerGlobal')
+            load(path2save,'tableTotalResultsApiToBasal','tableTotalResultsBasToApical','neighsAccumApicalToBasal','neighsAccumBasalToApical','neighsPerLayerGlobal',...
+                'numLostNeighsAccumApicalToBasal','numWonNeighsAccumApicalToBasal','numLostNeighsAccumBasalToApical','numWonNeighsAccumBasalToApical');
        end
 
-       [cellTableFittingEulerLogApiToBas{nVoronoi}, cellTableFittingEulerPiecewiseApiToBas{nVoronoi}, cellTableFittingEulerLogisticApiToBas{nVoronoi}, cellTableFittingEulerLogisticApiToBasBuceta{nVoronoi}] = delaunayGraphics([folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\'],tableTotalResultsApiToBasal,setVoronoi(nVoronoi),surfaceRatios,'FromApicalToBasal',neighsAccumApicalToBasal,neighsPerLayerGlobal,numRand);
+       %[cellTableFittingEulerLogApiToBas{nVoronoi}, cellTableFittingEulerPiecewiseApiToBas{nVoronoi}, cellTableFittingEulerLogisticApiToBas{nVoronoi}, cellTableFittingEulerLogisticApiToBasBuceta{nVoronoi}] = delaunayGraphics([folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\'],tableTotalResultsApiToBasal,setVoronoi(nVoronoi),surfaceRatios,'FromApicalToBasal',neighsAccumApicalToBasal,neighsPerLayerGlobal,numRand);
        %[cellTableFittingEulerLogBasToApi{nVoronoi},cellTableFittingEulerPiecewiseBasToApi{nVoronoi},cellTableFittingEulerLogisticBasToApi{nVoronoi},cellTableFittingEulerLogisticBasToApiBuceta{nVoronoi}] = delaunayGraphics([folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\'],tableTotalResultsBasToApical,setVoronoi(nVoronoi),surfaceRatios,'FromBasalToApical',neighsAccumBasalToApical,neighsPerLayerGlobal,numRand);
     
-       %cellTotalVoronoiResultsApiToBasal{nVoronoi} = tableTotalResultsApiToBasal;
-       %cellTotalVoronoiResultsBasToApical{nVoronoi} = tableTotalResultsBasToApical;
-       
+       cellTotalVoronoiResultsApiToBasal{nVoronoi} = tableTotalResultsApiToBasal;
+       cellTotalVoronoiResultsBasToApical{nVoronoi} = tableTotalResultsBasToApical;
+       totalVoronoiWonNeigApiToBasal{nVoronoi} = numWonNeighsAccumApicalToBasal;
+       totalVoronoiWonNeigBasToApical{nVoronoi} = numWonNeighsAccumBasalToApical;
+       totalVoronoiNeighPerLayer{nVoronoi} = neighsPerLayerGlobal;
     end
     cellTableFittingEulerLogApiToBas = vertcat(cellTableFittingEulerLogApiToBas{:});
     cellTableFittingEulerPiecewiseApiToBas = vertcat(cellTableFittingEulerPiecewiseApiToBas{:});
@@ -195,7 +198,10 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
     cellTableFittingEulerLogisticBasToApi = vertcat(cellTableFittingEulerLogisticBasToApi{:});
     cellTableFittingEulerLogisticBasToApiBuceta = vertcat(cellTableFittingEulerLogisticBasToApiBuceta{:});
     
-    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal)
+    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal,totalVoronoiWonNeigApiToBasal,totalVoronoiNeighPerLayer)
+    
+    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsBasToApical,totalVoronoiWonNeigBasToApical,totalVoronoiNeighPerLayer)
+
     
 end
 
