@@ -1,4 +1,4 @@
-function graphsGroupingAllVoronois(folderName,cellTotalVoronoiResults,totalVoronoiWonNeigh,totalVoronoiNeighPerLayer)
+function graphsGroupingAllVoronois(folderName,cellTotalVoronoiResults,totalVoronoiWonNeigh,totalVoronoiNeighPerLayer,namePoorGetRicher)
 
     
     voronoiNResults = cellTotalVoronoiResults{1};
@@ -93,7 +93,7 @@ function graphsGroupingAllVoronois(folderName,cellTotalVoronoiResults,totalVoron
             
             vorNwonN = totalVoronoiWonNeigh{nVoronoi};
             vorNwonNSR = vorNwonN(:,idSR);
-            vorNwonNSRTotalRep = cellfun(@length,horzcat(vorNwonNSR{:,:})');
+            vorNwonNSRTotalRep = cell2mat(horzcat(vorNwonNSR{:,:})');
             
             meanWonGroup4vN(nVoronoi) = mean(vorNwonNSRTotalRep(group4));
             stdWonGroup4vN(nVoronoi) = std(vorNwonNSRTotalRep(group4));
@@ -113,28 +113,28 @@ function graphsGroupingAllVoronois(folderName,cellTotalVoronoiResults,totalVoron
         matrixMeanHM = [meanWonGroup4vN',meanWonGroup5vN',meanWonGroup6vN',meanWonGroup7vN',meanWonGroup8vN'];
 
         heatmap(xvalues,yvalues,matrixMeanHM,'CellLabelFormat','%.2f');
-        title(['Average 3D neighbours added - SR ' num2str(nSR)]);
+        title(['Average 3D neighbours ' namePoorGetRicher ' - SR ' num2str(nSR)]);
         xlabel('number of sides cell-group');
         ylabel('Voronoi type');
         colormap(cmap);
 
         set(gca,'FontSize', 24,'FontName','Helvetica');
    
-        print(h,[folderName 'heatMaps\heatMapPoorGetRicher_SR' num2str(nSR) '_' date],'-dtiff','-r300')
-        savefig(h,[folderName 'heatMaps\heatMapPoorGetRicher_SR' num2str(nSR) '_' date '.fig'])
+        print(h,[folderName 'heatMaps\heatMapPoorGetRicher' namePoorGetRicher '_SR' num2str(nSR) '_' date '.tif'],'-dtiff','-r300')
+        savefig(h,[folderName 'heatMaps\heatMapPoorGetRicher' namePoorGetRicher '_SR' num2str(nSR) '_' date '.fig'])
  
         h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');
         matrixStdHM = [stdWonGroup4vN',stdWonGroup5vN',stdWonGroup6vN',stdWonGroup7vN',stdWonGroup8vN'];
 
         heatmap(xvalues,yvalues,matrixStdHM,'CellLabelFormat','%.2f');
-        title(['Std 3D neighbours added - SR ' num2str(nSR)]);
+        title(['Std 3D neighbours ' namePoorGetRicher ' - SR ' num2str(nSR)]);
         xlabel('number of sides cell-group');
         ylabel('Voronoi type');
         colormap(ones(100,3));
         set(gca,'FontSize', 24,'FontName','Helvetica');
 
-        print(h,[folderName 'heatMaps\heatMapPoorGetRicherStd_SR' num2str(nSR) '_' date],'-dtiff','-r300')
-        savefig(h,[folderName 'heatMaps\heatMapPoorGetRicherStd_SR' num2str(nSR) '_' date '.fig'])
+        print(h,[folderName 'heatMaps\heatMapPoorGetRicherStd_' namePoorGetRicher '_SR' num2str(nSR) '_' date '.tif'],'-dtiff','-r300')
+        savefig(h,[folderName 'heatMaps\heatMapPoorGetRicherStd_' namePoorGetRicher '_SR' num2str(nSR) '_' date '.fig'])
     end
     
     

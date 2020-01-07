@@ -184,8 +184,26 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
     
        cellTotalVoronoiResultsApiToBasal{nVoronoi} = tableTotalResultsApiToBasal;
        cellTotalVoronoiResultsBasToApical{nVoronoi} = tableTotalResultsBasToApical;
-       totalVoronoiWonNeigApiToBasal{nVoronoi} = numWonNeighsAccumApicalToBasal;
-       totalVoronoiWonNeigBasToApical{nVoronoi} = numWonNeighsAccumBasalToApical;
+       
+       numWonApiBas = cellfun(@(x) cellfun(@length,x,'UniformOutput',false),numWonNeighsAccumApicalToBasal,'UniformOutput',false);
+       numLostApiBas = cellfun(@(x) cellfun(@length,x,'UniformOutput',false),numLostNeighsAccumApicalToBasal,'UniformOutput',false);
+       difWonLostApiBas = cellfun(@(x,y) cellfun(@(z,w)z-w,x,y,'UniformOutput',false),numWonApiBas,numLostApiBas,'UniformOutput',false);
+       sumWonLostApiBas= cellfun(@(x,y) cellfun(@(z,w)z+w,x,y,'UniformOutput',false),numWonApiBas,numLostApiBas,'UniformOutput',false);
+       totalVoronoiWonNeigApiToBasal{nVoronoi} = numWonApiBas;
+       totalVoronoiLostNeigApiToBasal{nVoronoi} = numLostApiBas;
+       totalVoronoiDifNeigApiToBasal{nVoronoi} = difWonLostApiBas;
+       totalVoronoiSumNeigApiToBasal{nVoronoi} = sumWonLostApiBas;
+       
+       
+       numWonBasApi = cellfun(@(x) cellfun(@length,x,'UniformOutput',false),numWonNeighsAccumApicalToBasal,'UniformOutput',false);
+       numLostBasApi = cellfun(@(x) cellfun(@length,x,'UniformOutput',false),numLostNeighsAccumApicalToBasal,'UniformOutput',false);
+       difWonLostBasApi = cellfun(@(x,y) cellfun(@(z,w)z-w,x,y,'UniformOutput',false),numWonBasApi,numLostBasApi,'UniformOutput',false);
+       sumWonLostBasApi = cellfun(@(x,y) cellfun(@(z,w)z+w,x,y,'UniformOutput',false),numWonBasApi,numLostBasApi,'UniformOutput',false);
+       totalVoronoiWonNeigBasToApical{nVoronoi} = numWonBasApi;
+       totalVoronoiLostNeigBasToApical{nVoronoi} = numLostBasApi;
+       totalVoronoiDifNeigBasToApical{nVoronoi} = difWonLostBasApi;
+       totalVoronoiSumNeigBasToApical{nVoronoi} = sumWonLostBasApi;
+
        totalVoronoiNeighPerLayer{nVoronoi} = neighsPerLayerGlobal;
     end
     cellTableFittingEulerLogApiToBas = vertcat(cellTableFittingEulerLogApiToBas{:});
@@ -198,9 +216,13 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
     cellTableFittingEulerLogisticBasToApi = vertcat(cellTableFittingEulerLogisticBasToApi{:});
     cellTableFittingEulerLogisticBasToApiBuceta = vertcat(cellTableFittingEulerLogisticBasToApiBuceta{:});
     
-    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal,totalVoronoiWonNeigApiToBasal,totalVoronoiNeighPerLayer)
     
-    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsBasToApical,totalVoronoiWonNeigBasToApical,totalVoronoiNeighPerLayer)
+    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal,totalVoronoiLostNeigApiToBasal,totalVoronoiNeighPerLayer,'lost')
+    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal,totalVoronoiWonNeigApiToBasal,totalVoronoiNeighPerLayer,'won')
+    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal,totalVoronoiSumNeigApiToBasal,totalVoronoiNeighPerLayer,'sum (won+lost)')
+    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal,totalVoronoiDifNeigApiToBasal,totalVoronoiNeighPerLayer,'dif (won-lost)')
+
+    %graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsBasToApical,totalVoronoiWonNeigBasToApical,totalVoronoiNeighPerLayer)
 
     
 end
