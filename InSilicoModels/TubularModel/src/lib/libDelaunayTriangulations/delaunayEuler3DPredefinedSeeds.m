@@ -1,4 +1,4 @@
-function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,surfaceRatios)
+function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,surfaceRatios,srOfInterest,hydeNumberLabels)
 %delaunay - euler 3d
     
     cellTableFittingEulerLogApiToBas = cell(length(setVoronoi));
@@ -195,8 +195,8 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
        totalVoronoiSumNeigApiToBasal{nVoronoi} = sumWonLostApiBas;
        
        
-       numWonBasApi = cellfun(@(x) cellfun(@length,x,'UniformOutput',false),numWonNeighsAccumApicalToBasal,'UniformOutput',false);
-       numLostBasApi = cellfun(@(x) cellfun(@length,x,'UniformOutput',false),numLostNeighsAccumApicalToBasal,'UniformOutput',false);
+       numWonBasApi = cellfun(@(x) cellfun(@length,x,'UniformOutput',false),numWonNeighsAccumBasalToApical,'UniformOutput',false);
+       numLostBasApi = cellfun(@(x) cellfun(@length,x,'UniformOutput',false),numLostNeighsAccumBasalToApical,'UniformOutput',false);
        difWonLostBasApi = cellfun(@(x,y) cellfun(@(z,w)z-w,x,y,'UniformOutput',false),numWonBasApi,numLostBasApi,'UniformOutput',false);
        sumWonLostBasApi = cellfun(@(x,y) cellfun(@(z,w)z+w,x,y,'UniformOutput',false),numWonBasApi,numLostBasApi,'UniformOutput',false);
        totalVoronoiWonNeigBasToApical{nVoronoi} = numWonBasApi;
@@ -217,12 +217,13 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
     cellTableFittingEulerLogisticBasToApiBuceta = vertcat(cellTableFittingEulerLogisticBasToApiBuceta{:});
     
     
-    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal,totalVoronoiLostNeigApiToBasal,totalVoronoiNeighPerLayer,'lost')
-    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal,totalVoronoiWonNeigApiToBasal,totalVoronoiNeighPerLayer,'won')
-    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal,totalVoronoiSumNeigApiToBasal,totalVoronoiNeighPerLayer,'sum (won+lost)')
-    graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsApiToBasal,totalVoronoiDifNeigApiToBasal,totalVoronoiNeighPerLayer,'dif (won-lost)')
+% %     graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsApiToBasal,totalVoronoiLostNeigApiToBasal,totalVoronoiNeighPerLayer,'lost',hydeNumberLabels)
+    graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsApiToBasal,totalVoronoiWonNeigApiToBasal,totalVoronoiNeighPerLayer,'won',hydeNumberLabels)
+% %     graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsApiToBasal,totalVoronoiSumNeigApiToBasal,totalVoronoiNeighPerLayer,'sum (won+lost)',hydeNumberLabels)
+% %     graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsApiToBasal,totalVoronoiDifNeigApiToBasal,totalVoronoiNeighPerLayer,'dif (won-lost)',hydeNumberLabels)
 
-    %graphsGroupingAllVoronois(folderName,cellTotalVoronoiResultsBasToApical,totalVoronoiWonNeigBasToApical,totalVoronoiNeighPerLayer)
+%     graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsBasToApical,totalVoronoiWonNeigBasToApical,totalVoronoiNeighPerLayer,'WonBasalToApical',hydeNumberLabels)
+
 
     
 end

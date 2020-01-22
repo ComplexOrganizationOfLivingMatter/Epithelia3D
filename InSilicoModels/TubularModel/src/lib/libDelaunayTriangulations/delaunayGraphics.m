@@ -139,93 +139,8 @@ function [logEulerTable, piecewiseEulerTable, logisticEulerTable,logisticEulerTa
 %     print(h,[folderName 'euler3D_Piecewise_Voronoi' num2str(voronoiNumber) '_' nameData '_legend_' date],'-dtiff','-r300')
 %     
     
-%     %% figure fitting Euler 3D - Logistic function
-%     close all
-%     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');  
-%     outputFitting.rsquare = [];
-%     opts = fitoptions('Method','NonlinearLeastSquares','Robust','on','Algorithm','levenberg-marquardt','TolFun',10^-3,'TolX',10^-3,'MaxFunEvals',10^3,'MaxIter',10^3);
-%     %'Lower',[-4,-10,-10,40],'Upper',[0,0,0,100],
-%     opts.Display = 'Off';
-%     coeffvals = [1 1 -1 0];
-%     while (isempty(outputFitting.rsquare) || outputFitting.rsquare < 0.985 || coeffvals(1)>0 || coeffvals(2)>0 || coeffvals(3)<0 || coeffvals(4)<0)
-%         myFitLogistic =fittype('k*((1+a*exp(-x/c))/(1+b*exp(-x/c)))','dependent', {'y'}, 'independent',{'x'},'coefficients',{'a', 'b', 'c', 'k'},'options',opts);
-%         try
-%             [myfitLogistic,outputFitting]=fit(arrayTableInd(1,:)',arrayTableInd(2,:)',myFitLogistic); 
-%             % Save the coeffiecient values for 'a', 'b', 'c' and 'k' in a vector
-%             coeffvals=coeffvalues(myfitLogistic);
-%         catch
-%             outputFitting.rsquare = [];
-%         end
-%         
-%     end
-%     logisticEulerTable = array2table([coeffvals outputFitting.rsquare],'VariableNames',{'a','b','c','k','Rsquare'}, 'RowNames',{['Voronoi ' num2str(voronoiNumber)]});
-%     
-%     
-%     plot(myfitLogistic, [1 max(arrayTableInd(1,:))+1], [6 myfitLogistic(max(arrayTableInd(1,:))+1)])
-%     children = get(gca, 'children');
-%     delete(children(2));
-%     set(children(1),'LineWidth',2,'Color',colorPlot)  
-%     hold on
-%     errorbar(arrayTableInd(1,:),arrayTableInd(2,:),arrayTableInd(3,:),'o','MarkerSize',5,...
-%             'Color',[0 0 0],'MarkerFaceColor',colorPlot,'LineWidth',0.2)
-%     title(['euler neighbours 3D - Voronoi ' num2str(voronoiNumber) ])
-%     xlabel('surface ratio')
-%     ylabel('neighbours total')
-%     
-%     preD = predint(myfitLogistic,[arrayTableInd(1,:) max(arrayTableInd(1,:))+1],0.95,'observation','off');
-%     plot([arrayTableInd(1,:) max(arrayTableInd(1,:))+1],preD,'--','Color',colorPlot)
-%     x = [0 max(arrayTableInd(1,:))+2];
-%     y = [6 6];
-%     line(x,y,'Color','red','LineStyle','--')
-%     hold off
-%     ylim([5,12]);
-%     yticks(5:12) 
-%     xlim([0,max(arrayTableInd(1,:))+2]);
-%     xticks(0:max(arrayTableInd(1,:))+2)  
-%     set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
-%     legend('hide')
-% 
-%     print(h,[folderName 'euler3D_logistic_Voronoi' num2str(voronoiNumber) '_' nameData '_noLegend_' date],'-dtiff','-r300')
-%     legend({['Voronoi ' num2str(voronoiNumber) ' - R^2 ' num2str(outputFitting.rsquare)]})
-%     savefig(h,[folderName 'euler3D_logistic_Voronoi' num2str(voronoiNumber) '_' nameData '_' date])
-%     print(h,[folderName 'euler3D_logistic_Voronoi' num2str(voronoiNumber) '_' nameData '_legend_' date],'-dtiff','-r300')
-%     
-
-    
-
-%     %% figure fitting Euler 3D - Logistic function - 3 param.
-%     %c>0, Nmax>0, b<0 y d<0
-%     %'n(s)= Nmax*(b + exp(s/c))/(d + exp(s/c))';
-%     %fixing n(s=1)=6   ---->   d=(Nmax*(exp(1/c)+b)/6) - exp(1/c);
-%     %'n(s)= Nmax*(b + exp(s/c))/((Nmax*(exp(1/c)+b)/6) - exp(1/c)) + exp(s/c))';
-%     close all
-%     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');  
-%     outputFitting.rsquare = [];
-%     opts = fitoptions('Method','NonlinearLeastSquares','Robust','on','Algorithm','levenberg-marquardt','TolFun',10^-3,'TolX',10^-3,'MaxFunEvals',10^3,'MaxIter',10^3);
-%     %'Lower',[-4,-10,-10,40],'Upper',[0,0,0,100],
-%     opts.Display = 'Off';
-%     
-    b=1;
-    d=1;
-    c=-1;
-    nMax=0;
-    coeffvals = [b c d nMax];
-%     while (isempty(outputFitting.rsquare) || outputFitting.rsquare < 0.985 || coeffvals(1)>0 || coeffvals(2)>0 || coeffvals(3)<0 || coeffvals(4)<0)
-%         myFitLogistic =fittype('Nmax*(b + exp(x/c))/(((Nmax*(exp(1/c)+b)/6) - exp(1/c)) + exp(x/c))','dependent', {'y'}, 'independent',{'x'},'coefficients',{'b', 'c', 'Nmax'},'options',opts);
-%         try
-%             [myfitLogistic,outputFitting]=fit(arrayTableInd(1,:)',arrayTableInd(2,:)',myFitLogistic); 
-%             % Save the coeffiecient values for 'a', 'b', 'c' and 'k' in a vector
-%             coeffvalsAux=coeffvalues(myfitLogistic);
-%             coeffvals([1,3,4])=coeffvalsAux;
-%             coeffvals(2)=(coeffvals(4)*(exp(1/coeffvals(3))+coeffvals(1))/6) - exp(1/coeffvals(3));
-%         catch
-%             outputFitting.rsquare = [];
-%         end
-%         
-%     end
-%     logisticEulerTableBuceta = array2table([coeffvals outputFitting.rsquare],'VariableNames',{'b','d','c','Nmax','Rsquare'}, 'RowNames',{['Voronoi ' num2str(voronoiNumber)]});
-%     
-%     
+    %% figure fitting Euler 3D - Logistic function
+    %Global min
     
     %fixing n(s=1)=6   ---->   b = (6*d - exp(1/c)*(Nmax-6))/Nmax;
     %'n(s)= Nmax*(((6*d - exp(1/c)*(Nmax-6))/Nmax) + exp(s/c))/(d + exp(s/c))';
@@ -238,7 +153,13 @@ function [logEulerTable, piecewiseEulerTable, logisticEulerTable,logisticEulerTa
     %Nmax > 0   x(3) 
     %d > b
     %b is the dependent variable to force <m(s=1)> = 6. 
-
+ 
+    b=1;
+    d=1;
+    c=-1;
+    nMax=0;
+    coeffvals = [b c d nMax];
+    
     rng default % For reproducibility
     gs = GlobalSearch;
      
@@ -305,61 +226,6 @@ function [logEulerTable, piecewiseEulerTable, logisticEulerTable,logisticEulerTa
     savefig(h,[folderName 'euler3D_Voronoi' num2str(voronoiNumber) '_' nameData '_LogisticConstrained_' date])
     print(h,[folderName 'euler3D_Voronoi' num2str(voronoiNumber) '_' nameData '_LogisticConstrained_legend_' date],'-dtiff','-r300')
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-%     plot(myfitLogistic, [1 max(arrayTableInd(1,:))+1], [6 myfitLogistic(max(arrayTableInd(1,:))+1)])
-%     children = get(gca, 'children');
-%     delete(children(2));
-%     set(children(1),'LineWidth',2,'Color',colorPlot)  
-%     hold on
-%     errorbar(arrayTableInd(1,:),arrayTableInd(2,:),arrayTableInd(3,:),'o','MarkerSize',5,...
-%             'Color',[0 0 0],'MarkerFaceColor',colorPlot,'LineWidth',0.2)
-%     title(['euler neighbours 3D - Voronoi ' num2str(voronoiNumber) ])
-%     xlabel('surface ratio')
-%     ylabel('neighbours total')
-%     
-%     preD = predint(myfitLogistic,[arrayTableInd(1,:) max(arrayTableInd(1,:))+1],0.95,'observation','off');
-%     plot([arrayTableInd(1,:) max(arrayTableInd(1,:))+1],preD,'--','Color',colorPlot)
-%     x = [0 max(arrayTableInd(1,:))+2];
-%     y = [6 6];
-%     line(x,y,'Color','red','LineStyle','--')
-%     hold off
-%     ylim([5,12]);
-%     yticks(5:12) 
-%     xlim([0,max(arrayTableInd(1,:))+2]);
-%     xticks(0:max(arrayTableInd(1,:))+2)  
-%     set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
-%     legend('hide')
-% 
-%     print(h,[folderName 'euler3D_logistic_Voronoi' num2str(voronoiNumber) '_bcNmax_sr10_' nameData '_noLegend_' date],'-dtiff','-r300')
-%     legend({['Voronoi ' num2str(voronoiNumber) ' - R^2 ' num2str(outputFitting.rsquare)]})
-%     savefig(h,[folderName 'euler3D_logistic_Voronoi' num2str(voronoiNumber) '_bcNmax_sr10_' nameData '_' date])
-%     print(h,[folderName 'euler3D_logistic_Voronoi' num2str(voronoiNumber) '_bcNmax_sr10_' nameData '_legend_' date],'-dtiff','-r300')
-%     
-%     
 
 %     %% figure Apico-Basal transitions 3D
 %     close all
