@@ -114,6 +114,8 @@ function graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResul
         idSR = ismember(surfRatios,nSR); 
         for nVoronoi = 1:length(totalVoronoiNeighPerLayer)
             vorNneighPerLayer = totalVoronoiNeighPerLayer{nVoronoi};
+            vorNneighPerLayer = vorNneighPerLayer(:,idOfInterest);
+            
             if contains(namePoorGetRicher,'BasalToApical')
                 neighInit = vorNneighPerLayer(:,idSR);
             else
@@ -129,7 +131,7 @@ function graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResul
             group8 = ismember(neighInitTotalRep,8);
             
             vorNwonN = totalVoronoiWonNeigh{nVoronoi};
-            
+            vorNwonN = vorNwonN(:,idOfInterest);
             if contains(namePoorGetRicher,'BasalToApical')
                 vorNwonNSR = vorNwonN(:,idSR);
                 vorNwonNSR1 = vorNwonN(:,1);
@@ -193,7 +195,7 @@ function graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResul
 %             end
 %         end
 
-        
+        h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');
         if labelHyde
             heatmap(xvalues,yvalues,matrixMeanHM,'CellLabelColor','none');
         else
