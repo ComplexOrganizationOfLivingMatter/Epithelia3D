@@ -1,6 +1,8 @@
 function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,surfaceRatios,srOfInterest,hydeNumberLabels)
-%delaunay - euler 3d
+%This function will get all the data related with the Flintstones law
+%paper, regarding the Voronoi simulations.
     
+    %----------Init tables to save data-------------%
     cellTableFittingEulerLogApiToBas = cell(length(setVoronoi));
     cellTableFittingEulerPiecewiseApiToBas = cell(length(setVoronoi));
     cellTableFittingEulerLogisticApiToBas = cell(length(setVoronoi));
@@ -18,6 +20,9 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
     
     for nVoronoi = 1:length(setVoronoi)
 
+        %----------Number of total 3D neighbors (accum), number of lost and won
+        %connections, percentage of scutoids. Measured beginning in both
+        %apical and basal--------------%
         numAverageNeighsAccumApiToBasal = zeros(numRand,length(surfaceRatios));
         numAverageNeighsAccumBasToApical= zeros(numRand,length(surfaceRatios));
         numNeighSurface = zeros(numRand,length(surfaceRatios));
@@ -30,22 +35,26 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
         numTransitionsBasalToApical = cell(numRand,length(surfaceRatios));
         percentageScutoidsBasalToApical = zeros(numRand,length(surfaceRatios));
         
+        %--------------Polygon distribution---------------%
         polyDisTotal = cell(numRand,length(surfaceRatios));
         
         neighsAccumApicalToBasal=cell(numRand,length(surfaceRatios));
         neighsAccumBasalToApical=cell(numRand,length(surfaceRatios));
         neighsPerLayerGlobal = cell(numRand,length(surfaceRatios));
 
+        %-----------folder to save the data-------------%
         folderName = ['..\..\3D_laws\delaunayData\'];
+        mkdir(folderName)
+        %-----------file to load or to save the data-------%
         %fileName = ['delaunayCyl_Voronoi' num2str(nVoronoi) '_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'];
         fileName = ['delaunayCyl_Voronoi' num2str(setVoronoi(nVoronoi)) '_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_18-Dec-2019.mat'];
-        
-        mkdir(folderName)
         path2save = [folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\' fileName];
+        
         if ~exist(path2save,'file')
             
             for nRand = 1:numRand
- 
+                
+                %--------------Load saved seeds to develop the Delaunay triangutions---------------%
                 load(['data\tubularCVT\Data\' num2str(wInit) 'x' num2str(hInit) '_' num2str(numSeeds) 'seeds\Image_' num2str(nRand) '_Diagram_' num2str(setVoronoi(nVoronoi)) '.mat'],'seeds')
                 
                 %init neighsAccum
@@ -61,19 +70,19 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
                 
                 for nSR = 1:length(surfaceRatios)
                     srSeeds = seeds;
-                    %change seeds and dimensions using the surface ratio
+                    %-----------Applying the surface ratio transformation to the seeds-------------%
                     srSeeds(:,2) = srSeeds(:,2)*surfaceRatios(nSR);
                     wSR = wInit*surfaceRatios(nSR);
                     nSeeds = size(srSeeds,1);
 
-                    %Triplet the number of seeds
+                    %------------------Triplet the number of seeds-----------------%
                     tripletSeeds = [srSeeds;srSeeds(:,1), srSeeds(:,2)+wSR;srSeeds(:,1), srSeeds(:,2)+2*wSR];
 
-                    %% delaunay triangulation
+                    %% Delaunay triangulation
                     DT = delaunayTriangulation(tripletSeeds);
-                    %triplets of neighbours cells
+                    %---------------triplets of neighbours cells-------------%
                     triOfInterest = DT.ConnectivityList;
-                    %get vertices position using the triangle circumcenter
+                    %---------------get vertices position using the triangle circumcenter-------------%
                     verticesTRI = DT.circumcenter; 
 
                     %delete vertices out of the image region 2 avoid repeatition in
@@ -98,16 +107,19 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
                     triOfInterestRelabel(triOfInterestRelabel>nSeeds) = triOfInterestRelabel(triOfInterestRelabel>nSeeds) - nSeeds;
         
                     triPerSR{nSR} = unique(sort(triOfInterestRelabel,2),'rows');
+                    
+                    %-----------Calculate neighbours-------------%
                     [neighsPerSR{nSR},sidesCells{nSR}]=calculateNeighboursDelaunay(triOfInterestRelabel);
                     noValidCellsSR{nSR} = noValidCells;
       
                 end
-                
+                %-----------Get neighbours from valid cells (no border cells)-------------%
                 noValidCellsTotal = unique(vertcat(noValidCellsSR{:}));
                 validCells = setxor([1:nSeeds],noValidCellsTotal);
                 neighsPerSR_ValidCells = cellfun(@(x) x(validCells), neighsPerSR,'UniformOutput',false);
                                
                 for nSR = 1:length(surfaceRatios)    
+                    %-------------Calculate polygon distribution------------%
                     [polyDisImg] = calculate_polygon_distribution( sidesCells{nSR}, validCells );
                     polyDisTotal{nRand,nSR}=polyDisImg(2,:);
 
@@ -177,14 +189,18 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
 
             load(path2save,'tableTotalResultsApiToBasal','tableTotalResultsBasToApical','neighsAccumApicalToBasal','neighsAccumBasalToApical','neighsPerLayerGlobal',...
                 'numLostNeighsAccumApicalToBasal','numWonNeighsAccumApicalToBasal','numLostNeighsAccumBasalToApical','numWonNeighsAccumBasalToApical');
-       end
+        end
 
-       %[cellTableFittingEulerLogApiToBas{nVoronoi}, cellTableFittingEulerPiecewiseApiToBas{nVoronoi}, cellTableFittingEulerLogisticApiToBas{nVoronoi}, cellTableFittingEulerLogisticApiToBasBuceta{nVoronoi}] = delaunayGraphics([folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\'],tableTotalResultsApiToBasal,setVoronoi(nVoronoi),surfaceRatios,'FromApicalToBasal',neighsAccumApicalToBasal,neighsPerLayerGlobal,numRand);
-       %[cellTableFittingEulerLogBasToApi{nVoronoi},cellTableFittingEulerPiecewiseBasToApi{nVoronoi},cellTableFittingEulerLogisticBasToApi{nVoronoi},cellTableFittingEulerLogisticBasToApiBuceta{nVoronoi}] = delaunayGraphics([folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\'],tableTotalResultsBasToApical,setVoronoi(nVoronoi),surfaceRatios,'FromBasalToApical',neighsAccumBasalToApical,neighsPerLayerGlobal,numRand);
+       %----------------Get some graphics from the data, and store the tables with the fittings goodness------------------%
+       %----------------Logistic fitting to Flintstones law, percentage of scutoids, apico-basal intercalations, n3d vs intercalations, n3d vs scutoids, scutoids vs intercalations----------------% 
+       [cellTableFittingEulerLogApiToBas{nVoronoi}, cellTableFittingEulerPiecewiseApiToBas{nVoronoi}, cellTableFittingEulerLogisticApiToBas{nVoronoi}, cellTableFittingEulerLogisticApiToBasBuceta{nVoronoi}] = delaunayGraphics([folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\'],tableTotalResultsApiToBasal,setVoronoi(nVoronoi),surfaceRatios,'FromApicalToBasal',neighsAccumApicalToBasal,neighsPerLayerGlobal,numRand);
+       [cellTableFittingEulerLogBasToApi{nVoronoi},cellTableFittingEulerPiecewiseBasToApi{nVoronoi},cellTableFittingEulerLogisticBasToApi{nVoronoi},cellTableFittingEulerLogisticBasToApiBuceta{nVoronoi}] = delaunayGraphics([folderName 'Voronoi ' num2str(setVoronoi(nVoronoi)) '\'],tableTotalResultsBasToApical,setVoronoi(nVoronoi),surfaceRatios,'FromBasalToApical',neighsAccumBasalToApical,neighsPerLayerGlobal,numRand);
     
        cellTotalVoronoiResultsApiToBasal{nVoronoi} = tableTotalResultsApiToBasal;
        cellTotalVoronoiResultsBasToApical{nVoronoi} = tableTotalResultsBasToApical;
        
+       
+       %--------------Storing neighs won, lost, won+lost, won-lost - From apical to basal & from basal to apical------------%
        numWonApiBas = cellfun(@(x) cellfun(@length,x,'UniformOutput',false),numWonNeighsAccumApicalToBasal,'UniformOutput',false);
        numLostApiBas = cellfun(@(x) cellfun(@length,x,'UniformOutput',false),numLostNeighsAccumApicalToBasal,'UniformOutput',false);
        difWonLostApiBas = cellfun(@(x,y) cellfun(@(z,w)z-w,x,y,'UniformOutput',false),numWonApiBas,numLostApiBas,'UniformOutput',false);
@@ -217,12 +233,13 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
     cellTableFittingEulerLogisticBasToApiBuceta = vertcat(cellTableFittingEulerLogisticBasToApiBuceta{:});
     
     
-% %     graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsApiToBasal,totalVoronoiLostNeigApiToBasal,totalVoronoiNeighPerLayer,'lost',hydeNumberLabels)
-    graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsApiToBasal,totalVoronoiWonNeigApiToBasal,totalVoronoiNeighPerLayer,'won',hydeNumberLabels)
-% %     graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsApiToBasal,totalVoronoiSumNeigApiToBasal,totalVoronoiNeighPerLayer,'sum (won+lost)',hydeNumberLabels)
-% %     graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsApiToBasal,totalVoronoiDifNeigApiToBasal,totalVoronoiNeighPerLayer,'dif (won-lost)',hydeNumberLabels)
 
-%     graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsBasToApical,totalVoronoiWonNeigBasToApical,totalVoronoiNeighPerLayer,'WonBasalToApical',hydeNumberLabels)
+    %----------------Bunch of graphs: heatmaps for percentage of scutoids,
+    %num of apico-basal intercalations, poor get reacher tendency,
+    %n3d-----------%
+    graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsApiToBasal,totalVoronoiWonNeigApiToBasal,totalVoronoiNeighPerLayer,'won',hydeNumberLabels)
+
+    %      graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsBasToApical,totalVoronoiWonNeigBasToApical,totalVoronoiNeighPerLayer,'WonBasalToApical',hydeNumberLabels)
 
 
     
