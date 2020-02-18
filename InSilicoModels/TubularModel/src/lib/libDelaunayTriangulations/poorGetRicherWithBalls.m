@@ -1,7 +1,4 @@
 function poorGetRicherWithBalls (gain4c,gain5c,gain6c,gain7c,gain8c)
-
-    %add to the path the nonBoxPlot function
-    addpath(genpath('..\..\..\LimeSeg_Pipeline\'))
     
     %%  figure Relation apical - basal nSides. 'Poor get richer'
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');

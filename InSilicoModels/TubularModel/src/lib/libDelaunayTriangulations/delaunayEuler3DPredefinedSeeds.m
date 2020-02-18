@@ -239,7 +239,7 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
     %n3d-----------%
     graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsApiToBasal,totalVoronoiWonNeigApiToBasal,totalVoronoiNeighPerLayer,'won',hydeNumberLabels)
 
-    %      graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsBasToApical,totalVoronoiWonNeigBasToApical,totalVoronoiNeighPerLayer,'WonBasalToApical',hydeNumberLabels)
+    %graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsBasToApical,totalVoronoiWonNeigBasToApical,totalVoronoiNeighPerLayer,'WonBasalToApical',hydeNumberLabels)
 
 
     
