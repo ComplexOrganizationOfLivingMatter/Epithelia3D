@@ -270,7 +270,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
     f = fittype('Nmax*(((6*d - exp(1/c)*(Nmax-6))/Nmax) + exp(s/c))/(d + exp(s/c))','independent','s','coefficients',{'c','d','Nmax'});
     myfitLogConstrained = cfit(f,c,d,Nmax);
     
-    logisticEulerTableBuceta = array2table([coeffvals sse rsquare],'VariableNames',{'b','c','d','Nmax','sse','rsquared'}, 'RowNames',{'SalivaryGland'});
+    logisticEulerTableBuceta = array2table([coeffvals sse rsquare_value],'VariableNames',{'b','c','d','Nmax','sse','rsquare_valued'}, 'RowNames',{'SalivaryGland'});
 
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');   
       
