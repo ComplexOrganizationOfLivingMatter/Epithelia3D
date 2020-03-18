@@ -46,7 +46,7 @@ function sse=fittingLogFunc(x)
     
     global rsquare;
     
-    rsquare = 1 - sum((ydata(:)-f(:)).^2)/sum((ydata(:)).^2);
+    rsquare = 1 - sum((f(:)-mean(ydata(:))).^2)/sum((ydata(:)-mean(ydata(:))).^2);
 
        
 end
