@@ -265,7 +265,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
     b = (6*d - exp(1/c)*(Nmax-6))/Nmax;
     coeffvals = [b sol];
     sse = fittingLogFunc(sol);
-    global rsquare;
+    global rsquare_value;
     
     f = fittype('Nmax*(((6*d - exp(1/c)*(Nmax-6))/Nmax) + exp(s/c))/(d + exp(s/c))','independent','s','coefficients',{'c','d','Nmax'});
     myfitLogConstrained = cfit(f,c,d,Nmax);
@@ -299,7 +299,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
     legend('hide')
     
     print(h,[path2save 'euler3D_SalGland_LogisticConstrained_noLegend_' date],'-dtiff','-r300')
-    legend({['Sal. Gland - R^2 ' num2str(rsquare)]})
+    legend({['Sal. Gland - R^2 ' num2str(rsquare_value)]})
     savefig(h,[path2save 'euler3D_SalGland_LogisticConstrained_' date])
     print(h,[path2save 'euler3D_SalGland_LogisticConstrained_legend_' date],'-dtiff','-r300')
     
@@ -349,7 +349,7 @@ function getStatsAndRepresentationsEulerLewis3D(numNeighOfNeighPerSurface,numNei
     ylim([5,12]);
     yticks(5:12)  
     xticks(0:12)
-    legend({['Voronoi ' num2str(initialDiagram) ' - R^2 ' num2str(outputFitting.rsquare,4)]})
+    legend({['Voronoi ' num2str(initialDiagram) ' - R^2 ' num2str(outputFitting.rsquare_value,4)]})
     set(gca,'FontSize', 24,'FontName','Helvetica','YGrid','on','TickDir','out','Box','off');
     savefig(h,[path2save 'euler3D_Voronoi' num2str(initialDiagram) '_' date])
 
