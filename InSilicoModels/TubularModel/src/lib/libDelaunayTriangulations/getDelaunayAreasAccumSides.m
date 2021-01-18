@@ -34,6 +34,7 @@ for nRea = 1:nRealizations
             verticesCell = table2array(tableSR(tableSR.CellIDs==validCells(nCell),5:end));
             verticesCell = verticesCell(~isnan(verticesCell));
             areaCells(nCell) = polyarea(verticesCell(1:2:end-1),verticesCell(2:2:end));
+           
         end
         
         %neighs used in next iteration
