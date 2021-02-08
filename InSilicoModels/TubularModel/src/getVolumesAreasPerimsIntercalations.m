@@ -3,7 +3,7 @@ clear all
 %intercalations
 
 voronoiOfInterest = 1:10;
-SRs=2:2:10;
+SRs=1.25:0.25:10;
 allSRs = 1:0.25:10;
 nRealizations = 20;
 
@@ -23,12 +23,12 @@ end
 idsSRs = ismember(allSRs,SRs);
 
 
-averageVolumeV1_s10 = 41501171.2595563;
-averagePerimApicalV1 = 408.8351431;
-averagePerimV1_s10 = 1282.297676;
-averageAreaApicalV1 = 10418.191542;
-averageAreaV1_s10 = 102669.356842;
-averageAreaLateralV1_s10 = 674797.6656;
+% averageVolumeV1_s10 = 41501171.2595563;
+% averagePerimApicalV1 = 408.8351431;
+% averagePerimV1_s10 = 1282.297676;
+% averageAreaApicalV1 = 10418.191542;
+% averageAreaV1_s10 = 102669.356842;
+% averageAreaLateralV1_s10 = 674797.6656;
 
 for nVor = voronoiOfInterest
 
@@ -73,13 +73,13 @@ for nVor = voronoiOfInterest
         selectedBasalPerims = cellPerim(:,idsSRs);  
         selectedIntercalations = numTransitionsApicalToBasal(:,idsSRs);
         
-        cellsAreaApical = cellAreas(:,1)./averageAreaApicalV1;
-        cellsPerimApical = cellPerim(:,1)./averagePerimApicalV1;
+        cellsAreaApical = cellAreas(:,1);
+        cellsPerimApical = cellPerim(:,1);
         for nSr = 1:length(SRs)
-           cellsVolumeSR = selectedCellVolumes(:,nSr)./averageVolumeV1_s10;
-           cellsAreaBasalSR = selectedBasalAreas(:,nSr)./averageAreaV1_s10;
-           cellsPerimBasalSR = selectedBasalPerims(:,nSr)./averagePerimV1_s10;
-           cellsLateralAreaSR = selectedLateralAreas(:,nSr)./averageAreaLateralV1_s10;
+           cellsVolumeSR = selectedCellVolumes(:,nSr);
+           cellsAreaBasalSR = selectedBasalAreas(:,nSr);
+           cellsPerimBasalSR = selectedBasalPerims(:,nSr);
+           cellsLateralAreaSR = selectedLateralAreas(:,nSr);
            intercalationsSR=horzcat(selectedIntercalations{:,nSr})';
            table2save = array2table([cellIds, cellsVolumeSR, cellsAreaApical, cellsAreaBasalSR,cellsLateralAreaSR,cellsPerimApical,cellsPerimBasalSR,intercalationsSR],'VariableNames',{'id','volume','apicalArea','basalArea','lateralArea','apicalPerim','basalPerim','nIntercalations'});
            
