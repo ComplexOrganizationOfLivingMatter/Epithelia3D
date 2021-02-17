@@ -12,7 +12,7 @@ nameSurfaces = {'apicalToBasal', 'basalToApical'};
 
 SRs ={1:7,7:-1:1}; 
 
-for kindSr = 1%1:2
+for kindSr = 1:2
     sr = SRs{kindSr};  
 
     totalMeanPerimCellsMicrons2 = zeros(size(files,1),7);

@@ -1,7 +1,7 @@
 clear all
 close all
 
-path2load= '..\..\..\3D_laws\delaunayData\volumeAreaPerimIntercalations';
+path2load= '..\DelaunayData\geometryMeasurementsVoronoiTubes\volumeAreaPerimIntercalations_VoronoiTubes_apicalToBasal\';
 SRs = 2:1:10;
 nRealizations =20;
 h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');
@@ -36,7 +36,7 @@ for voronoiNumber = 1:10
 
     for nSr = 1:length(SRs)
 
-        tableData = readtable(fullfile(path2load,['V' num2str(voronoiNumber) '_s' num2str(SRs(nSr)) '_volumeAreaPerimIntercalation_01-Feb-2021.xls']));
+        tableData = readtable(fullfile(path2load,['V' num2str(voronoiNumber) '_s' num2str(SRs(nSr)) '_volumeAreaPerimIntercalation_04-Feb-2021.xls']));
 
         lateralAreas{nSr} = tableData.lateralArea(:);
         nIntercations{nSr} = tableData.nIntercalations(:);
@@ -72,8 +72,8 @@ for voronoiNumber = 1:10
        volumes2Realization = allVolumes2(idsPerRealization{nRealization},:);
        
        %cross-correlation lateral Area (s) VS intercalations (s)
-       c1=cell(size(lateralAreasRealization));
-       c2=cell(size(lateralAreasRealization));
+       c1=cell(size(lateralAreasRealization,1),1);
+       c2=cell(size(lateralAreasRealization,1),1);
        for nCell=1:length(lateralAreasRealization)
             [c1{nCell},lags1]=xcorr(lateralAreasRealization(nCell,:),intercalationsRealization(nCell,:),'normalized');
             [c2{nCell},lags2]=xcorr(volumes2Realization(nCell,:),intercalationsRealization(nCell,:),'normalized');
@@ -84,9 +84,9 @@ for voronoiNumber = 1:10
        %croos correlation of the means
         meanLatArea = mean(lateralAreasRealization);
         meanIntercalations = mean(intercalationsRealization);
-        meanVolume2 = mean(volumes2Realization);
-        [meanCorrOfMeansRea1{nCell},lagsMean1]=xcorr(meanLatArea,meanIntercalations,'normalized');
-        [meanCorrOfMeansRea2{nCell},lagsMean2]=xcorr(meanVolume2,meanIntercalations,'normalized');
+        fluctuationsVolume = std(volumes2Realization).^2;
+        [meanCorrOfMeansRea1{nRealization},lagsMean1]=xcorr(meanLatArea,meanIntercalations,'normalized');
+        [meanCorrOfMeansRea2{nRealization},lagsMean2]=xcorr(fluctuationsVolume,meanIntercalations,'normalized');
 
        
    end
@@ -126,10 +126,10 @@ set(gca,'FontSize', 24,'FontName','Helvetica');
 % print(h,fullfile(path2load,['cross_correlation_volume^2_nIntercalations_' date '.tif']),'-dtiff','-r300')
 % savefig(h,fullfile(path2load,['cross_correlation_volume^2_nIntercalations_' date '.fig']))
 
-title('cross-correlation <lateral area(s)> - <intercalations(s)>')
+title('cross-correlation variance volume (s) - <intercalations(s)>')
 legend({'V1','V2','V3','V4','V5','V6','V7','V8','V9','V10'})
 
-print(h,fullfile(path2load,['cross_correlation_meanLateral area(s)_meanIntercalations(s)_' date '.tif']),'-dtiff','-r300')
-savefig(h,fullfile(path2load,['cross_correlation_meanLateral area(s)_meanIntercalations(s)_' date '.fig']))
+print(h,fullfile(path2load,['cross_correlation_meanLateralArea(s)_meanIntercalations(s)_' date '.tif']),'-dtiff','-r300')
+savefig(h,fullfile(path2load,['cross_correlation_meanLateralArea(s)_meanIntercalations(s)_' date '.fig']))
 
 

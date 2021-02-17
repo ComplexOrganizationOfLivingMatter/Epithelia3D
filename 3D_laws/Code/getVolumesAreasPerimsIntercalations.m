@@ -10,12 +10,12 @@ nRealizations = 20;
 wImg = 512;
 R = wImg/(2*pi);
 
-pathData = 'D:\Pedro\Epithelia3D\3D_laws\delaunayData\';
+pathData = '..\delaunayData\geometryMeasurementsVoronoiTubes';
+path
+filesAreas = dir(fullfile(pathData,'areas','*Voronoi*xls'));
+filesPerims = dir(fullfile(pathData,'perimeters','tablePerim_Voronoi_*xls'));
 
-filesAreas = dir(fullfile(pathData,'volumes','folderAreas','*Voronoi*xls'));
-filesPerims = dir(fullfile(pathData,'lateral area','perimData','tablePerim_Voronoi_*xls'));
-
-path2save = fullfile(pathData,'volumeAreaPerimIntercalations');
+path2save = fullfile(pathData,'volumeAreaPerimIntercalations_VoronoiTubes_apicalToBasal');
 if ~exist(path2save,'dir')
     mkdir(path2save)
 end
