@@ -43,7 +43,7 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
         neighsPerLayerGlobal = cell(numRand,length(surfaceRatios));
 
         %-----------folder to save the data-------------%
-        folderName = ['..\..\3D_laws\delaunayData\'];
+        folderName = ['..\..\3D_laws\delaunayData\VoronoiRealizations\'];
         mkdir(folderName)
         %-----------file to load or to save the data-------%
         %fileName = ['delaunayCyl_Voronoi' num2str(nVoronoi) '_' num2str(numSeeds) 'seeds_sr' num2str(max(surfaceRatios)) '_' date '.mat'];
@@ -239,7 +239,7 @@ function delaunayEuler3DPredefinedSeeds(wInit,hInit,numSeeds,numRand,setVoronoi,
     %n3d-----------%
     graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsApiToBasal,totalVoronoiWonNeigApiToBasal,totalVoronoiNeighPerLayer,'won',hydeNumberLabels)
 
-    %graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsBasToApical,totalVoronoiWonNeigBasToApical,totalVoronoiNeighPerLayer,'WonBasalToApical',hydeNumberLabels)
+%     graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResultsBasToApical,totalVoronoiWonNeigBasToApical,totalVoronoiNeighPerLayer,'WonBasalToApical',hydeNumberLabels)
 
 
     
