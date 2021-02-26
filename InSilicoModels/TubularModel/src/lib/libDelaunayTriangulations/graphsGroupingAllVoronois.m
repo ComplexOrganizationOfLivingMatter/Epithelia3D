@@ -106,7 +106,7 @@ function graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResul
 
     %% HeatMap poorGetRicher at some SR (1.5, 2 and 5)
     
-    selectedSRs = [1.5 2 5];
+    selectedSRs = [1.75 2 5];
 
     xvalues = [4 5 6 7 8];
     
@@ -164,19 +164,25 @@ function graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResul
         
         %% Heatmap poor get richer using V8 at SR 1.75 and 4, comparing with the glands
         matrixMeanHM = [meanWonGroup4vN',meanWonGroup5vN',meanWonGroup6vN',meanWonGroup7vN',meanWonGroup8vN'];
-        if nSR==1.75 || nSR==4
-            if nSR==1.75
-                matrixMeanHMAux1 = [meanWonGroup4vN(8)',meanWonGroup5vN(8)',meanWonGroup6vN(8)',meanWonGroup7vN(8)',meanWonGroup8vN(8)'];
-            else
+        if nSR==1.75 %|| nSR==4
+%             if nSR==1.75
+%                 matrixMeanHMAux1 = [meanWonGroup4vN(8)',meanWonGroup5vN(8)',meanWonGroup6vN(8)',meanWonGroup7vN(8)',meanWonGroup8vN(8)'];
+%             else
                 matrixMeanHMAux2 = [meanWonGroup4vN(8)',meanWonGroup5vN(8)',meanWonGroup6vN(8)',meanWonGroup7vN(8)',meanWonGroup8vN(8)'];
                 
                 %-------load the data form the glands-----------%
-                folderSalGland = ['..\..\..\LimeSeg_Pipeline\docs\figuresMathPaper\lewis2D_3D_averagePolygon_AreasDistribution_04-Nov-2019.mat'];
-                load(folderSalGland,'totalSidesTotalApical')
-                sidesTotalApical = arrayfun(@(x) mean(totalSidesTotalApical{x-3}-x),4:9,'UniformOutput',false);
-                matrixMeanHMAux= [[sidesTotalApical{1},sidesTotalApical{2},sidesTotalApical{3},sidesTotalApical{4},sidesTotalApical{5}];...
-                    matrixMeanHMAux1;matrixMeanHMAux2];
-                yvaluesAux={'Sal. Gland','V8_SR1.75', 'V8_SR4'};
+                folderSalGland = ['E:\Pedro\LimeSeg_Pipeline\docs\figuresMathPaper\lewis2D_3D_averagePolygon_AreasDistribution_04-Nov-2019.mat'];
+                if contains(namePoorGetRicher,'BasalToApical')
+                    load(folderSalGland,'totalSidesTotalBasal')
+                    sidesTotalGland = arrayfun(@(x) mean(totalSidesTotalBasal{x-3}-x),4:9,'UniformOutput',false);
+                else
+                    load(folderSalGland,'totalSidesTotalApical')
+                    sidesTotalGland = arrayfun(@(x) mean(totalSidesTotalApical{x-3}-x),4:9,'UniformOutput',false);
+                end
+                
+                matrixMeanHMAux= [[sidesTotalGland{1},sidesTotalGland{2},sidesTotalGland{3},sidesTotalGland{4},sidesTotalGland{5}];...
+                    matrixMeanHMAux2];%matrixMeanHMAux1;matrixMeanHMAux2];
+                yvaluesAux={'Sal. Gland','V8_SR1.75'};%, 'V8_SR4'};
                 
                 h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');
                 if labelHyde
@@ -193,14 +199,14 @@ function graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResul
                 set(gca,'FontSize', 24,'FontName','Helvetica');
 
                 if labelHyde
-                    print(h,[folderName 'heatMaps\heatMapPoorGetRicher_' namePoorGetRicher '_Glands_noText_' date '.tif'],'-dtiff','-r300')
-                    savefig(h,[folderName 'heatMaps\heatMapPoorGetRicher_' namePoorGetRicher '_Glands_noText_' date '.fig'])
+                    print(h,[folderName 'heatMapPoorGetRicher_' namePoorGetRicher '_Glands_noText_' date '.tif'],'-dtiff','-r300')
+                    savefig(h,[folderName 'heatMapPoorGetRicher_' namePoorGetRicher '_Glands_noText_' date '.fig'])
                 else
-                    print(h,[folderName 'heatMaps\heatMapPoorGetRicher' namePoorGetRicher '_Glands_' date '.tif'],'-dtiff','-r300')
-                    savefig(h,[folderName 'heatMaps\heatMapPoorGetRicher' namePoorGetRicher '_Glands_' date '.fig'])
+                    print(h,[folderName 'heatMapPoorGetRicher' namePoorGetRicher '_Glands_' date '.tif'],'-dtiff','-r300')
+                    savefig(h,[folderName 'heatMapPoorGetRicher' namePoorGetRicher '_Glands_' date '.fig'])
                 end
                 
-            end
+            %end
         end
 
         h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');
