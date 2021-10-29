@@ -1,4 +1,9 @@
-function [logisticEulerTable] = fittingFlintstonesLaw(SR,n3d_mean,n3d_std,av_totalCells,colorPlot,path2save,name)
+function [logisticEulerTable] = fittingFlintstonesLaw(SR,n3d_mean,n3d_std,upperBoundNmax,n3d_0,colorPlot,path2save,name)
+
+%%Default settings suggestions
+%nTotalCells = number of total valid cells;
+%upperBoundNmax= (nTotalCells+5)/2; %theoretically calculated. Other option use upperBoundNmax = inf;
+% n3d_0 = arrayTableInd(2,1); %other option use n3d_0 = 6;
 
     
 %% figure fitting Euler 3D - Logistic function
@@ -18,25 +23,21 @@ function [logisticEulerTable] = fittingFlintstonesLaw(SR,n3d_mean,n3d_std,av_tot
     
     addpath(genpath('lib'))
     
-    n3d_0 = 6;
+%     n3d_0 = 6;
 %     n3d_0=n3d_mean(1,1);
     
     rng default % For reproducibility
-    gs = GlobalSearch;
+    vBound = 1e+20;
+    gs = GlobalSearch('FunctionTolerance',1e-30,'XTolerance',1e-30,'NumTrialPoints', 1e+5);%'NumTrialPoints', 1e+5, 'FunctionTolerance', 1e-20,'XTolerance',1e-20,
      
-    vBound = 0.1;
     
-    %paper Nmax definition
-    upperBoundNmax= (av_totalCells+5)/2;
-    
+    %p0 is just an arbitrary initial searching point to look for the global
+    %minimum
     p0=[vBound,-vBound,n3d_0];
-    lb = [vBound,-inf,n3d_0];
-    ub = [inf,-vBound,upperBoundNmax];
+    lb = [0,-inf,n3d_0];
+    ub = [inf,0,upperBoundNmax];
     
-%     p0=[vBound,-vBound];
-%     lb = [vBound,-inf];
-%     ub = [inf,-vBound];
-    
+  
     global xdata;
     global ydata;
     global n3d_s1;
@@ -47,8 +48,9 @@ function [logisticEulerTable] = fittingFlintstonesLaw(SR,n3d_mean,n3d_std,av_tot
     n3d_s1 = n3d_0;
 %     Nmax=n_max;
 
+%     opts = optimoptions(@fmincon,'UseParallel',true);
     problem = createOptimProblem('fmincon','x0',p0,...
-        'objective',@fittingLogFunc,'lb',lb,'ub',ub);%),'options',options);
+        'objective',@fittingLogFunc,'lb',lb,'ub',ub);%,'options',opts);
     
     sol = run(gs,problem);
     c = sol(1);
@@ -76,10 +78,7 @@ function [logisticEulerTable] = fittingFlintstonesLaw(SR,n3d_mean,n3d_std,av_tot
 
     h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');   
    
-    opts = fitoptions('Method','NonlinearLeastSquares','Lower',0,...
-               'Upper',Inf,'StartPoint',0);
-    opts.Display = 'Off';
-    
+
     %maxFuncLine = max(SR)+1;
     maxFuncLine = max(SR)+5;
     plot(myfitLogConstrained, [1 maxFuncLine], [6 myfitLogConstrained(maxFuncLine)])
@@ -108,11 +107,14 @@ function [logisticEulerTable] = fittingFlintstonesLaw(SR,n3d_mean,n3d_std,av_tot
    
     legend('hide')
     
-    print(h,fullfile(path2save, ['euler3D_' name '_LogisticConstrained_noLegend_' date]),'-dtiff','-r300')
-    legend({[name ' - R^2 ' num2str(rsquare_value)]})
-    savefig(h,fullfile(path2save, ['euler3D_' name '_LogisticConstrained_' date]))
-    print(h,fullfile(path2save, ['euler3D_' name '_LogisticConstrained_legend_' date]),'-dtiff','-r300')
-    
+    if ~isempty(path2save)
+        print(h,fullfile(path2save, ['euler3D_' name '_LogisticConstrained_noLegend_' date]),'-dtiff','-r300')
+        legend({[name ' - R^2 ' num2str(rsquare_value)]})
+        savefig(h,fullfile(path2save, ['euler3D_' name '_LogisticConstrained_' date]))
+        print(h,fullfile(path2save, ['euler3D_' name '_LogisticConstrained_legend_' date]),'-dtiff','-r300')
+    else
+        close all
+    end
 
 
 end
