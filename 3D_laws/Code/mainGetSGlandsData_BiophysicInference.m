@@ -1,33 +1,39 @@
 clear all
 close all
 %1. Load final segmented glands
-pathKindPhenotype = uigetdir('E:\Pedro\SalivaryGlands\data');
+pathKindPhenotype = uigetdir(fullfile('E:','Pedro','SalivaryGlands','data'));
 
 pathGlands = dir(fullfile(pathKindPhenotype,'**','layersTissue.mat'));
-sr = 1:0.5:5.5;
+
+pathSectionsSRs = dir(fullfile(pathGlands(1).folder,'dividedGlandBySr','*mat'));
+nSRsteps = size(pathSectionsSRs,1);
+
+maxSR = 1+0.5*nSRsteps;
+sr = 1:0.5:maxSR;
+
 nOfSrs = length(sr);
 
 %Init arrays to store data
 
-tableAveragePerim=zeros(size(pathGlands,1),length(sr));
-tableStdPerim=zeros(size(pathGlands,1),length(sr));
-tableVarPerim=zeros(size(pathGlands,1),length(sr));
-tableAveragePerim2=zeros(size(pathGlands,1),length(sr));
-tableStdPerim2=zeros(size(pathGlands,1),length(sr));
-tableVarPerim2=zeros(size(pathGlands,1),length(sr));
+tableAveragePerim=zeros(size(pathGlands,1),nOfSrs);
+tableStdPerim=zeros(size(pathGlands,1),nOfSrs);
+tableVarPerim=zeros(size(pathGlands,1),nOfSrs);
+tableAveragePerim2=zeros(size(pathGlands,1),nOfSrs);
+tableStdPerim2=zeros(size(pathGlands,1),nOfSrs);
+tableVarPerim2=zeros(size(pathGlands,1),nOfSrs);
 
-tableAverageLateralArea = zeros(size(pathGlands,1),length(sr));
-tableStdLateralArea = zeros(size(pathGlands,1),length(sr));
-tableVarLateralArea = zeros(size(pathGlands,1),length(sr));
+tableAverageLateralArea = zeros(size(pathGlands,1),nOfSrs);
+tableStdLateralArea = zeros(size(pathGlands,1),nOfSrs);
+tableVarLateralArea = zeros(size(pathGlands,1),nOfSrs);
 
-tableAverageVolume = zeros(size(pathGlands,1),length(sr));
-tableStdVolume = zeros(size(pathGlands,1),length(sr));
-tableVarVolume = zeros(size(pathGlands,1),length(sr));
+tableAverageVolume = zeros(size(pathGlands,1),nOfSrs);
+tableStdVolume = zeros(size(pathGlands,1),nOfSrs);
+tableVarVolume = zeros(size(pathGlands,1),nOfSrs);
 
-tableMeanIntercalations = zeros(size(pathGlands,1),length(sr));
+tableMeanIntercalations = zeros(size(pathGlands,1),nOfSrs);
 
 %%get kind of gland
-kindGland = strsplit(pathKindPhenotype,{'\','/'});
+[~,kindGland,~] = fileparts(pathKindPhenotype);
 
 
 % parpool(10)
@@ -145,4 +151,4 @@ parfor nGland = 1:size(pathGlands,1)
     end
     
 end
-save(fullfile('..','salivaryGlandsData','geometryMeasurementsSalivaryGlands', [kindGland{end} '_geometricParamsForBiophysicInference_' date '.mat']),'tableAveragePerim','tableStdPerim','tableVarPerim','tableAveragePerim2','tableStdPerim2','tableVarPerim2','tableAverageLateralArea','tableStdLateralArea','tableVarLateralArea','tableAverageVolume','tableStdVolume','tableVarVolume','tableMeanIntercalations')
+save(fullfile('..','salivaryGlandsData','geometryMeasurementsSalivaryGlands', [kindGland '_geometricParamsForBiophysicInference_' date '.mat']),'tableAveragePerim','tableStdPerim','tableVarPerim','tableAveragePerim2','tableStdPerim2','tableVarPerim2','tableAverageLateralArea','tableStdLateralArea','tableVarLateralArea','tableAverageVolume','tableStdVolume','tableVarVolume','tableMeanIntercalations')
