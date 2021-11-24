@@ -114,75 +114,78 @@ function graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResul
         idSR = ismember(surfRatios,nSR); 
         for nVoronoi = 1:length(totalVoronoiNeighPerLayer)
             
-            vorNneighPerLayer = totalVoronoiNeighPerLayer{nVoronoi};
-            vorNneighPerLayer = vorNneighPerLayer(:,idOfInterest);
+                vorNneighPerLayer = totalVoronoiNeighPerLayer{nVoronoi};
+                vorNneighPerLayer = vorNneighPerLayer(:,idOfInterest);
 
-            if contains(namePoorGetRicher,'BasalToApical')
-                neighInit = vorNneighPerLayer(:,idSR);
-            else
-                neighInit = vorNneighPerLayer(:,1);
+                if contains(namePoorGetRicher,'BasalToApical')
+                    neighInit = vorNneighPerLayer(:,idSR);
+                else
+                    neighInit = vorNneighPerLayer(:,1);
+                end
+
+                neighInitTotalRep = horzcat(neighInit{:,:})';
+
+                group4 = ismember(neighInitTotalRep,4);
+                group5 = ismember(neighInitTotalRep,5);
+                group6 = ismember(neighInitTotalRep,6);
+                group7 = ismember(neighInitTotalRep,7);
+                group8 = ismember(neighInitTotalRep,8);
+
+                vorNwonN = totalVoronoiWonNeigh{nVoronoi};
+                vorNwonN = vorNwonN(:,idOfInterest);
+                if contains(namePoorGetRicher,'BasalToApical')
+                    vorNwonNSR = vorNwonN(:,idSR);
+                    vorNwonNSR1 = vorNwonN(:,1);
+                    vorNwonNSRTotalRep = cell2mat(horzcat(vorNwonNSR1{:,:})') - cell2mat(horzcat(vorNwonNSR{:,:})');
+                else
+                    vorNwonNSR = vorNwonN(:,idSR);
+                    vorNwonNSRTotalRep = cell2mat(horzcat(vorNwonNSR{:,:})');
+                end
+
+
+
+                meanWonGroup4vN(nVoronoi) = mean(vorNwonNSRTotalRep(group4));
+                stdWonGroup4vN(nVoronoi) = std(vorNwonNSRTotalRep(group4));
+                meanWonGroup5vN(nVoronoi) = mean(vorNwonNSRTotalRep(group5));
+                stdWonGroup5vN(nVoronoi) = std(vorNwonNSRTotalRep(group5));
+                meanWonGroup6vN(nVoronoi) = mean(vorNwonNSRTotalRep(group6));
+                stdWonGroup6vN(nVoronoi) = std(vorNwonNSRTotalRep(group6));
+                meanWonGroup7vN(nVoronoi) = mean(vorNwonNSRTotalRep(group7));
+                stdWonGroup7vN(nVoronoi) = std(vorNwonNSRTotalRep(group7));
+                meanWonGroup8vN(nVoronoi) = mean(vorNwonNSRTotalRep(group8));
+                stdWonGroup8vN(nVoronoi) = std(vorNwonNSRTotalRep(group8));
+
+                %individual abbsolute poor get richer using balls with
+                %non-boxplot graph method
+            if nVoronoi == 8 && nSR==1.75
+                poorGetRicherWithBalls(folderName,vorNwonNSRTotalRep(group4),vorNwonNSRTotalRep(group5),vorNwonNSRTotalRep(group6),vorNwonNSRTotalRep(group7),vorNwonNSRTotalRep(group8))
             end
-
-            neighInitTotalRep = horzcat(neighInit{:,:})';
-
-            group4 = ismember(neighInitTotalRep,4);
-            group5 = ismember(neighInitTotalRep,5);
-            group6 = ismember(neighInitTotalRep,6);
-            group7 = ismember(neighInitTotalRep,7);
-            group8 = ismember(neighInitTotalRep,8);
-
-            vorNwonN = totalVoronoiWonNeigh{nVoronoi};
-            vorNwonN = vorNwonN(:,idOfInterest);
-            if contains(namePoorGetRicher,'BasalToApical')
-                vorNwonNSR = vorNwonN(:,idSR);
-                vorNwonNSR1 = vorNwonN(:,1);
-                vorNwonNSRTotalRep = cell2mat(horzcat(vorNwonNSR1{:,:})') - cell2mat(horzcat(vorNwonNSR{:,:})');
-            else
-                vorNwonNSR = vorNwonN(:,idSR);
-                vorNwonNSRTotalRep = cell2mat(horzcat(vorNwonNSR{:,:})');
-            end
-
-
-
-            meanWonGroup4vN(nVoronoi) = mean(vorNwonNSRTotalRep(group4));
-            stdWonGroup4vN(nVoronoi) = std(vorNwonNSRTotalRep(group4));
-            meanWonGroup5vN(nVoronoi) = mean(vorNwonNSRTotalRep(group5));
-            stdWonGroup5vN(nVoronoi) = std(vorNwonNSRTotalRep(group5));
-            meanWonGroup6vN(nVoronoi) = mean(vorNwonNSRTotalRep(group6));
-            stdWonGroup6vN(nVoronoi) = std(vorNwonNSRTotalRep(group6));
-            meanWonGroup7vN(nVoronoi) = mean(vorNwonNSRTotalRep(group7));
-            stdWonGroup7vN(nVoronoi) = std(vorNwonNSRTotalRep(group7));
-            meanWonGroup8vN(nVoronoi) = mean(vorNwonNSRTotalRep(group8));
-            stdWonGroup8vN(nVoronoi) = std(vorNwonNSRTotalRep(group8));
-
-            %individual abbsolute poor get richer using balls with
-            %non-boxplot graph method
-            poorGetRicherWithBalls(vorNwonNSRTotalRep(group4),vorNwonNSRTotalRep(group5),vorNwonNSRTotalRep(group6),vorNwonNSRTotalRep(group7),vorNwonNSRTotalRep(group8))
-
 
         end
         
         %% Heatmap poor get richer using V8 at SR 1.75 and 4, comparing with the glands
         matrixMeanHM = [meanWonGroup4vN',meanWonGroup5vN',meanWonGroup6vN',meanWonGroup7vN',meanWonGroup8vN'];
-        if nSR==1.75 %|| nSR==4
-%             if nSR==1.75
-%                 matrixMeanHMAux1 = [meanWonGroup4vN(8)',meanWonGroup5vN(8)',meanWonGroup6vN(8)',meanWonGroup7vN(8)',meanWonGroup8vN(8)'];
-%             else
+        if nSR==1.75 
                 matrixMeanHMAux2 = [meanWonGroup4vN(8)',meanWonGroup5vN(8)',meanWonGroup6vN(8)',meanWonGroup7vN(8)',meanWonGroup8vN(8)'];
                 
                 %-------load the data form the glands-----------%
-                folderSalGland = ['E:\Pedro\LimeSeg_Pipeline\docs\figuresMathPaper\lewis2D_3D_averagePolygon_AreasDistribution_04-Nov-2019.mat'];
+                folderSalGland = fullfile('E:','Pedro','SalivaryGlands','data','WT','poorGetRicher_19-Nov-2021.mat');%['E:\Pedro\LimeSeg_Pipeline\docs\figuresMathPaper\lewis2D_3D_averagePolygon_AreasDistribution_04-Nov-2019.mat'];
                 if contains(namePoorGetRicher,'BasalToApical')
-                    load(folderSalGland,'totalSidesTotalBasal')
-                    sidesTotalGland = arrayfun(@(x) mean(totalSidesTotalBasal{x-3}-x),4:9,'UniformOutput',false);
+                    load(folderSalGland,'kindPolyBasal','meanNetGainBasalToApical')
+                    sidesTotalGland=zeros(1,max(xvalues));
+                    ids = ismember(kindPolyBasal,xvalues);
+                    sidesTotalGland(kindPolyBasal) = meanNetGainBasalToApical(ids);
+                    sidesTotalGland=sidesTotalGland(xvalues);
                 else
-                    load(folderSalGland,'totalSidesTotalApical')
-                    sidesTotalGland = arrayfun(@(x) mean(totalSidesTotalApical{x-3}-x),4:9,'UniformOutput',false);
+                    load(folderSalGland,'kindPolyApical','meanNetGainApicalToBasal')
+                    sidesTotalGland=zeros(1,max(xvalues));
+                    ids = ismember(kindPolyApical,xvalues);
+                    sidesTotalGland(kindPolyApical(ids)) = meanNetGainApicalToBasal(ids);
+                    sidesTotalGland=sidesTotalGland(xvalues);
                 end
                 
-                matrixMeanHMAux= [[sidesTotalGland{1},sidesTotalGland{2},sidesTotalGland{3},sidesTotalGland{4},sidesTotalGland{5}];...
-                    matrixMeanHMAux2];%matrixMeanHMAux1;matrixMeanHMAux2];
-                yvaluesAux={'Sal. Gland','V8_SR1.75'};%, 'V8_SR4'};
+                matrixMeanHMAux= [sidesTotalGland;matrixMeanHMAux2];
+                yvaluesAux={'Sal. Gland','V8_SR1.75'};
                 
                 h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');
                 if labelHyde
@@ -206,7 +209,6 @@ function graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResul
                     savefig(h,[folderName 'heatMapPoorGetRicher' namePoorGetRicher '_Glands_' date '.fig'])
                 end
                 
-            %end
         end
 
         h = figure('units','normalized','outerposition',[0 0 1 1],'Visible','on');
@@ -223,11 +225,11 @@ function graphsGroupingAllVoronois(folderName,srOfInterest,cellTotalVoronoiResul
         set(gca,'FontSize', 24,'FontName','Helvetica');
        
         if labelHyde
-            print(h,[folderName 'heatMaps\heatMapPoorGetRicher_' namePoorGetRicher '_SR' num2str(nSR) '_noText_' date '.tif'],'-dtiff','-r300')
-            savefig(h,[folderName 'heatMaps\heatMapPoorGetRicher_' namePoorGetRicher '_SR' num2str(nSR) '_noText_' date '.fig'])
+            print(h,[folderName 'heatMapPoorGetRicher_' namePoorGetRicher '_SR' num2str(nSR) '_noText_' date '.tif'],'-dtiff','-r300')
+            savefig(h,[folderName 'heatMapPoorGetRicher_' namePoorGetRicher '_SR' num2str(nSR) '_noText_' date '.fig'])
         else
-            print(h,[folderName 'heatMaps\heatMapPoorGetRicher' namePoorGetRicher '_SR' num2str(nSR) '_' date '.tif'],'-dtiff','-r300')
-            savefig(h,[folderName 'heatMaps\heatMapPoorGetRicher' namePoorGetRicher '_SR' num2str(nSR) '_' date '.fig'])
+            print(h,[folderName 'heatMapPoorGetRicher' namePoorGetRicher '_SR' num2str(nSR) '_' date '.tif'],'-dtiff','-r300')
+            savefig(h,[folderName 'heatMapPoorGetRicher' namePoorGetRicher '_SR' num2str(nSR) '_' date '.fig'])
         end
         
     end
