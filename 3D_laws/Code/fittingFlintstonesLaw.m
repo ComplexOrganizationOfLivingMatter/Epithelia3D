@@ -27,7 +27,7 @@ function [logisticEulerTable] = fittingFlintstonesLaw(SR,n3d_mean,n3d_std,upperB
 %     n3d_0=n3d_mean(1,1);
     
     rng default % For reproducibility
-    vBound = 1e+20;
+    vBound = 1e-20;
     gs = GlobalSearch('FunctionTolerance',1e-30,'XTolerance',1e-30,'NumTrialPoints', 1e+5);%'NumTrialPoints', 1e+5, 'FunctionTolerance', 1e-20,'XTolerance',1e-20,
      
     

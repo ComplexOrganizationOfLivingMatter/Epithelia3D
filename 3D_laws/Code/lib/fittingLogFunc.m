@@ -41,16 +41,14 @@ function sse=fittingLogFunc(x)
     sse = sum(sseIt);
     
     
-    if (c<=0) | (d>=0) | (Nmax < n3d_s1) | (d <= b) | ((d < -1) & (c*log(-d)>=1)) | (((d/(b*Nmax)) < 0.01) | (b/(c*(b-d))) < 0.2)
-        sse = 100;
-    end
+%     if (c<=0) | (d>=0) | (Nmax < n3d_s1) | (d <= b) | ((d < -1) & (c*log(-d)>=1)) | (((d/(b*Nmax)) < 0.01) | (b/(c*(b-d))) < 0.2)
+%         sse = 100;
+%     end
     
    
 %     %%experimental limitation in beta magnitude scale
 %     if ((d/(b*Nmax)) < 0.01) | (b/(c*(b-d))) < 0.2
 %        sse = 100; 
-%     else
-%         sse =1.
 %     end   
 %     
     global rsquare_value;
