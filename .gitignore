@@ -127,3 +127,5 @@ InSilicoModels/paperCode/SpheroidModel/logFile
 *.gif
 *.avi
 *.mp4
+*.idraw
+*.svg
