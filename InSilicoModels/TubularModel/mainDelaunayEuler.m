@@ -13,11 +13,15 @@ numRand = 20;
 
 %surfaces ratios to expand the basal surface
 sr = 1:0.25:10;
+% sr=1:0.05:1.75;
+
 %surfaces ratios to plot in graphs
 srOfInterest = 1:0.25:10;
+% srOfInterest=1:0.05:1.75;
 
 %Kinds of initial Voronoi diagrams regarding the Lloyd algorithm.
 setVoronoi = 1 : 10;
+% setVoronoi=8;
 setNLloydIt = setVoronoi -1;
 
 %hyde or show numbers of heatMaps plots
