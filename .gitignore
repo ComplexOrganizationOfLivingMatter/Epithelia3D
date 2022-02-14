@@ -129,3 +129,6 @@ InSilicoModels/paperCode/SpheroidModel/logFile
 *.mp4
 *.idraw
 *.svg
+*.Rmd
+*.rda
+3D_laws/stats_polygonDistributions/excelData/.Rhistory
