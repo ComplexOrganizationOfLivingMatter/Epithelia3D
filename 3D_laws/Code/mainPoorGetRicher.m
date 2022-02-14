@@ -42,6 +42,6 @@ meanNetGainBasalToApical = cellfun(@mean, netGainBasalToApical);
 meanNetIntercalationsBasalToApical = cellfun(@mean, netIntercalationBasalToApical);
 
 path2save=fullfile('D:','Pedro','Epithelia3D','3D_laws','salivaryGlandsData','heatMaps');
-poorGetRicherWithBalls(path2save,netGainApicalToBasal{kindPolyApical==4},netGainApicalToBasal{kindPolyApical==5},netGainApicalToBasal{kindPolyApical==6},netGainApicalToBasal{kindPolyApical==7},netGainApicalToBasal{kindPolyApical==8})
+% poorGetRicherWithBalls(path2save,netGainApicalToBasal{kindPolyApical==4},netGainApicalToBasal{kindPolyApical==5},netGainApicalToBasal{kindPolyApical==6},netGainApicalToBasal{kindPolyApical==7},netGainApicalToBasal{kindPolyApical==8})
 
 save(fullfile(pathGlands(nGland).folder,'..','..','..',['poorGetRicher_' date '.mat']),'kindPolyApical','kindPolyBasal','meanPolDist3d','stdPolDist3d','netGainApicalToBasal','meanNetGainApicalToBasal','netGainBasalToApical','meanNetGainBasalToApical','netIntercalationApicalToBasal','meanNetIntercalationsApicalToBasal','netIntercalationBasalToApical','meanNetIntercalationsBasalToApical');

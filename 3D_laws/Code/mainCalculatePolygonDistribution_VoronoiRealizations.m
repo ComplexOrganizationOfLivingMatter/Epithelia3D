@@ -21,10 +21,10 @@ for nVor = voronoiRea
        poolDistSr = zeros(nRealizations,8);
        poolDist3DSr = zeros(nRealizations,8);
        for realization = 1:nRealizations
-           polyDist = calculate_polygon_distribution(neighsSR{realization,:},1:length(horzcat(neighsSR{realization,:})));
+           polyDist = calculatePolygonDistribution(neighsSR{realization,:},1:length(horzcat(neighsSR{realization,:})));
            poolDistSr(realization,:)=horzcat(polyDist{2,:});
            
-           polyDist3D = calculate_polygon_distribution(cellfun(@length,neighs3DSR{realization,:}),1:length(horzcat(cellfun(@length, neighs3DSR{realization,:}))));
+           polyDist3D = calculatePolygonDistribution(cellfun(@length,neighs3DSR{realization,:}),1:length(horzcat(cellfun(@length, neighs3DSR{realization,:}))));
            poolDist3DSr(realization,:)=horzcat(polyDist3D{2,:});
        end  
        
@@ -38,7 +38,7 @@ for nVor = voronoiRea
        polDist3DPerSr((nSr*2)-1:nSr*2,:)=[meanPolDist3D;stdPolDist3D];
    end
    
-%    writetable(table(polDistPerSr),fullfile(initPath,['polyDist_basalSurfaces_Voronoi_' date '.xlsx']),'Sheet',['Voronoi' num2str(nVor)]);
+   writetable(table(polDistPerSr),fullfile(initPath,['polyDist_basalSurfaces_Voronoi_' date '.xlsx']),'Sheet',['Voronoi' num2str(nVor)]);
    writetable(table(polDist3DPerSr),fullfile(initPath,['polyDist_3D_Voronoi_' date '.xlsx']),'Sheet',['Voronoi' num2str(nVor)]);
 
     
